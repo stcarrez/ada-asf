@@ -1,0 +1,180 @@
+-----------------------------------------------------------------------
+--  writer -- Response stream writer
+--  Copyright (C) 2009, 2010 Stephane Carrez
+--  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+--
+--  Licensed under the Apache License, Version 2.0 (the "License");
+--  you may not use this file except in compliance with the License.
+--  You may obtain a copy of the License at
+--
+--      http://www.apache.org/licenses/LICENSE-2.0
+--
+--  Unless required by applicable law or agreed to in writing, software
+--  distributed under the License is distributed on an "AS IS" BASIS,
+--  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--  See the License for the specific language governing permissions and
+--  limitations under the License.
+-----------------------------------------------------------------------
+
+--  The <b>ASF.Contexts.Writer</b> defines the response writer to
+--  write the rendered result to the response stream.  The <b>IOWriter</b>
+--  interface defines the procedure for writing the buffer to the output
+--  stream.  The <b>ResponseWriter</b> is the main type that provides
+--  various methods for writing the content.
+--
+--  The result stream is encoded according to the encoding type.
+--
+with Unicode.Encodings;
+with Ada.Streams;
+with Ada.Finalization;
+with Ada.Strings.Unbounded;
+with EL.Objects;
+package ASF.Contexts.Writer is
+
+   use Ada.Strings.Unbounded;
+
+   --  ------------------------------
+   --  IO Writer
+   --  ------------------------------
+   type IOWriter is limited interface;
+   procedure Write (Stream : in out IOWriter;
+                    Buffer : in Ada.Streams.Stream_Element_Array) is abstract;
+
+   --  ------------------------------
+   --  Response Writer
+   --  ------------------------------
+   type ResponseWriter is abstract new Ada.Finalization.Limited_Controlled
+                                   and IOWriter with private;
+   type ResponseWriter_Access is access all ResponseWriter'Class;
+
+   --  Initialize the response stream for the given content type and
+   --  encoding.  An internal buffer is allocated for writing the stream.
+   procedure Initialize (Stream       : in out ResponseWriter;
+                         Content_Type : in String;
+                         Encoding     : in String;
+                         Size         : in Positive);
+
+   --  Get the content type.
+   function Get_Content_Type (Stream : in ResponseWriter) return String;
+
+   --  Get the character encoding.
+   function Get_Encoding (Stream : in ResponseWriter) return String;
+
+   --  Start an XML element with the given name.
+   procedure Start_Element (Stream : in out ResponseWriter;
+                            Name   : in String);
+
+   --  Start an optional XML element with the given name.
+   --  The element is written only if it has at least one attribute.
+   --  The optional XML element must not contain other XML entities.
+   procedure Start_Optional_Element (Stream : in out ResponseWriter;
+                                     Name   : in String);
+
+   --  Closes an XML element of the given name.
+   procedure End_Element (Stream : in out ResponseWriter;
+                          Name   : in String);
+
+   --  Closes an optional XML element of the given name.
+   --  The ending tag is written only if the start tag was written.
+   procedure End_Optional_Element (Stream : in out ResponseWriter;
+                                   Name   : in String);
+
+   --  Write an XML element using the given name and with the content.
+   --  This is similar to calling <b>Start_Element</b>, <b>Write_Text</b>
+   --  and <b>End_Element</b>.
+   procedure Write_Element (Stream   : in out ResponseWriter;
+                            Name     : in String;
+                            Content  : in String);
+
+   procedure Write_Wide_Element (Stream   : in out ResponseWriter;
+                                 Name     : in String;
+                                 Content  : in Wide_Wide_String);
+
+   --  Write an XML attribute within an XML element.
+   --  The attribute value is escaped according to the XML escape rules.
+   procedure Write_Attribute (Stream : in out ResponseWriter;
+                              Name   : in String;
+                              Value  : in String);
+
+   procedure Write_Attribute (Stream : in out ResponseWriter;
+                              Name   : in String;
+                              Value  : in Unbounded_String);
+
+   procedure Write_Attribute (Stream : in out ResponseWriter;
+                              Name   : in String;
+                              Value  : in EL.Objects.Object);
+
+   --  Write a text escaping any character as necessary.
+   procedure Write_Text (Stream : in out ResponseWriter;
+                         Text   : in String);
+   procedure Write_Text (Stream : in out ResponseWriter;
+                         Text   : in Unbounded_String);
+   procedure Write_Wide_Text (Stream : in out ResponseWriter;
+                              Text   : in Wide_Wide_String);
+   procedure Write_Text (Stream : in out ResponseWriter;
+                         Value  : in EL.Objects.Object);
+
+   --  Write a character on the response stream and escape that character
+   --  as necessary.
+   procedure Write_Char (Stream : in out ResponseWriter;
+                         Char   : in Character);
+
+   --  Write a character on the response stream and escape that character
+   --  as necessary.
+   procedure Write_Wide_Char (Stream : in out ResponseWriter;
+                              Char   : in Wide_Wide_Character);
+
+   --  Write a raw character on the response stream.  The character is not
+   --  escaped.
+   procedure Write (Stream : in out ResponseWriter;
+                    Char   : in Character);
+
+   --  Write a raw string on the response stream.  The string is not
+   --  escaped.
+   procedure Write (Stream : in out ResponseWriter;
+                    Item   : in String);
+
+   --  Write a raw string on the response stream.  The string is not
+   --  escaped.
+   procedure Write (Stream : in out ResponseWriter;
+                    Item   : in Unbounded_String);
+
+   --  Flush the response stream.
+   procedure Flush (Stream : in out ResponseWriter);
+
+private
+
+   use Ada.Streams;
+
+   --  Flush the response stream and release the buffer.
+   procedure Finalize (Object : in out ResponseWriter);
+
+   type Buffer_Access is access Ada.Streams.Stream_Element_Array;
+
+   type ResponseWriter is abstract new Ada.Finalization.Limited_Controlled
+     and IOWriter with record
+      --  The buffer where the response is written before being flushed.
+      Buffer      : Buffer_Access := null;
+
+      --  The next write position within the buffer.
+      Pos         : Stream_Element_Offset := 0;
+
+      --  The last valid write position within the buffer.
+      Last        : Stream_Element_Offset := 0;
+
+      --  Whether an XML element must be closed (that is a '>' is necessary)
+      Close_Start : Boolean := False;
+
+      --  The encoding scheme.
+      Encoding    : Unicode.Encodings.Unicode_Encoding;
+
+      --  The content type.
+      Content_Type : Unbounded_String;
+
+      --  An optional element to write in the stream.
+      Optional_Element         : String (1 .. 32);
+      Optional_Element_Size    : Natural := 0;
+      Optional_Element_Written : Boolean := False;
+   end record;
+
+end ASF.Contexts.Writer;

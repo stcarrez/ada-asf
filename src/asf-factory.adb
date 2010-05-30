@@ -83,19 +83,6 @@ package body ASF.Factory is
       end loop;
    end Check;
 
-   function Hash (Key : Name_Access) return Ada.Containers.Hash_Type is
-   begin
-      return Ada.Strings.Hash (Key.all);
-   end Hash;
-
-   function Equivalent_Keys (Left, Right : Name_Access) return Boolean is
-   begin
-      if Left = null or Right = null then
-         return False;
-      end if;
-      return Left.all = Right.all;
-   end Equivalent_Keys;
-
    --  ------------------------------
    --  Find the create function in bound to the name in the given URI namespace.
    --  Returns null if no such binding exist.

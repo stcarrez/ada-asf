@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Strings;
 with ASF.Views.Nodes;
 
 private with Ada.Containers.Indefinite_Hashed_Maps;
@@ -33,7 +34,7 @@ package ASF.Factory is
    Unknown_Name : exception;
 
    --  Binding name
-   type Name_Access is access constant String;
+   type Name_Access is new Util.Strings.Name_Access;
 
    --  ------------------------------
    --  Binding definition.
@@ -91,9 +92,7 @@ package ASF.Factory is
 
 private
 
-   function Hash (Key : Name_Access) return Ada.Containers.Hash_Type;
-
-   function Equivalent_Keys (Left, Right : Name_Access) return Boolean;
+   use Util.Strings;
 
    --  Tag library map indexed on the library namespace.
    package Factory_Maps is new

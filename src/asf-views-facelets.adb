@@ -16,11 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Directories;
 with ASF.Views.Nodes.Reader;
 with Input_Sources.File;
 with Sax.Readers;
 with EL.Contexts.Default;
+with Util.Files;
 package body ASF.Views.Facelets is
 
    use ASF.Views.Nodes;
@@ -69,9 +69,6 @@ package body ASF.Views.Facelets is
    procedure Build_View (View    : in Facelet;
                          Context : in out ASF.Contexts.Facelets.Facelet_Context'Class;
                          Root    : in ASF.Components.UIComponent_Access) is
-      use ASF.Views.Nodes;
-
-      N : ASF.Components.UIComponent_Access;
    begin
       if View.Root /= null then
          View.Root.Build_Children (Parent  => Root,
@@ -94,30 +91,8 @@ package body ASF.Views.Facelets is
    --  ------------------------------
    function Find_Facelet_Path (Factory : Facelet_Factory;
                                Name    : String) return String is
-      use Ada.Directories;
-
-      Sep_Pos : Natural;
-      Pos     : Positive := 1;
-      Last    : constant Natural := Length (Factory.Paths);
    begin
-      while Pos <= Last loop
-         Sep_Pos := Index (Factory.Paths, ";", Pos);
-         if Sep_Pos = 0 then
-            Sep_Pos := Last;
-         else
-            Sep_Pos := Sep_Pos - 1;
-         end if;
-         declare
-            Dir  : constant String := Slice (Factory.Paths, Pos, Sep_Pos);
-            Path : constant String := Dir & "/" & Name;
-         begin
-            if Exists (Path) and Kind (Path) = Ordinary_File then
-               return Path;
-            end if;
-            Pos := Sep_Pos + 2;
-         end;
-      end loop;
-      return Name;
+      return Util.Files.Find_File_Path (Name, To_String (Factory.Paths));
    end Find_Facelet_Path;
 
    --  ------------------------------
@@ -217,12 +192,12 @@ package body ASF.Views.Facelets is
    protected body RW_Lock is
       entry Write when Reader_Count = 0 and Readable is
       begin
-         Readable := false;
+         Readable := False;
       end Write;
 
       procedure Release_Write is
       begin
-         Readable := true;
+         Readable := True;
       end Release_Write;
 
       entry Read when Readable is

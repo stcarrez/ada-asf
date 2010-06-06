@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Ada.Strings.Fixed;
+with Ada.Exceptions;
 with ASF.Views.Nodes.Reader;
 with Input_Sources.File;
 with Sax.Readers;
@@ -174,6 +175,7 @@ package body ASF.Views.Facelets is
       use ASF.Views.Nodes.Reader;
       use Input_Sources.File;
       use Sax.Readers;
+      use Ada.Exceptions;
 
       Path   : constant String := Find_Facelet_Path (Factory, Name);
       Reader : Xhtml_Reader;
@@ -193,11 +195,11 @@ package body ASF.Views.Facelets is
 
       Result := Facelet '(Root => Get_Root (Reader));
    exception
-      when others =>
+      when E : others =>
          Close (Read);
          Result.Root := null;
-         Log.Error ("Error while reading: '{0}'", Path);
-
+         Log.Error ("Error while reading: '{0}': {1}: {2}", Path,
+                   Exception_Name (E), Exception_Message (E));
    end Load;
 
    --  ------------------------------

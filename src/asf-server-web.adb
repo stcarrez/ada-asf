@@ -15,13 +15,9 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with AWS.Services;
-with AWS.Status;
-with AWS.Response;
 with AWS.Templates;
 with AWS.MIME;
 with AWS.Messages;
-with AWS.Services.Web_Block.Context;
 with AWS.Services.Web_Block.Registry;
 
 with Ada.Strings.Fixed;
@@ -59,7 +55,11 @@ package body ASF.Server.Web is
                             E       : in Exception_Occurrence)
                             return AWS.Response.Data;
 
-   -- Binding to record the ASF applications and bind them to URI prefixes.
+   function Dispatch (App  : Main.Application_Access;
+                      Page : String;
+                      Request : in AWS.Status.Data) return AWS.Response.Data;
+
+   --  Binding to record the ASF applications and bind them to URI prefixes.
    type Binding is record
       Application : Main.Application_Access;
       Base_URI    : access String;
@@ -139,7 +139,7 @@ package body ASF.Server.Web is
    procedure Register_Application (URI    : in String;
                                    App    : in Main.Application_Access) is
 
-      Apps : Binding_Array_Access := new Binding_Array (1 .. Nb_Bindings + 1);
+      Apps : constant Binding_Array_Access := new Binding_Array (1 .. Nb_Bindings + 1);
    begin
       if Applications /= null then
          Apps (1 .. Nb_Bindings) := Applications (1 .. Nb_Bindings);
@@ -174,7 +174,7 @@ package body ASF.Server.Web is
 
       Beans    : aliased Bean_Vectors.Vector;
       --  Get the view handler
-      Handler   : access View_Handler'Class := App.Get_View_Handler;
+      Handler   : constant access View_Handler'Class := App.Get_View_Handler;
    begin
       Root_Resolver.Application := App;
       Root_Resolver.Request := Req_Resolver'Unchecked_Access;
@@ -210,7 +210,7 @@ package body ASF.Server.Web is
    end Dispatch;
 
    ----------------------
-   -- Main server callback
+   --  Main server callback
    ----------------------
    function Server_Callback (Request : in AWS.Status.Data) return AWS.Response.Data is
       use Ada.Strings.Fixed;
@@ -218,7 +218,6 @@ package body ASF.Server.Web is
       URI        : constant String := AWS.Status.URI (Request);
       Slash_Pos  : constant Natural := Index (URI, "/", URI'First + 1);
       Prefix_End : Natural;
-      URI_Pos    : Natural;
    begin
       --  Find the module and action to invoke
       if Slash_Pos > 1 then
@@ -246,7 +245,7 @@ package body ASF.Server.Web is
    --  Return a 500 error
    function Reply_Page_500 (Request : in AWS.Status.Data;
                             E       : in Exception_Occurrence)
-                            return AWs.Response.Data is
+                            return AWS.Response.Data is
       use type AWS.Messages.Status_Code;
       use AWS.Services;
       use AWS;

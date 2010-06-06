@@ -17,17 +17,15 @@
 -----------------------------------------------------------------------
 
 --  The <bASF.Components</b> describes the components that form the
---  tree view.  Each component has a attributes and children.  Children
+--  tree view.  Each component has attributes and children.  Children
 --  represent sub-components and attributes control the rendering and
 --  behavior of the component.
 --
 --  The component tree is created from the <b>ASF.Views</b> tag nodes
 --  for each request.  Unlike tag nodes, the component tree is not shared.
 with Ada.Strings.Unbounded;
-with Ada.Finalization;
 with EL.Objects;
---  with EL.Expressions;
-with EL.Contexts;
+--  with EL.Contexts;
 with ASF.Contexts.Faces;
 limited with ASF.Views.Nodes;
 package ASF.Components is
@@ -98,12 +96,6 @@ package ASF.Components is
 
    procedure Encode_All (UI      : in UIComponent'Class;
                          Context : in out Faces_Context'Class);
---
---     type Component_Factory is interface;
---     type Component_Factory_Access is access all Component_Factory'Class;
---
---     function Create (Factory : Component_Factory)
---                      return UIComponent_Access is abstract;
 
    type UIComponent_Array is array (Natural range <>) of UIComponent_Access;
 
@@ -114,6 +106,7 @@ package ASF.Components is
    function Get_Context (UI : in UIComponent)
                          return ASF.Contexts.Faces.Faces_Context_Access;
 
+   --  Get the attribute value.
    function Get_Value (Attr : UIAttribute;
                        UI   : UIComponent'Class) return EL.Objects.Object;
 

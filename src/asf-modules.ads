@@ -19,13 +19,10 @@
 with Util.Strings;
 with Util.Events.Channels;
 
-with El.Beans;
-
 with ASF.Beans;
 with ASF.Applications;
 with ASF.Events.Modules;
 
-private with ASF.Beans;
 private with Ada.Containers.Indefinite_Hashed_Maps;
 
 --  The <b>ASF.Modules</b> package defines simple pluggable modules in

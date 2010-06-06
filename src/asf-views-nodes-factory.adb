@@ -16,9 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Containers.Indefinite_Hashed_Maps;
-with ASF.Views.Nodes.Core;
-with Ada.Strings.Unbounded.Hash;
 with EL.Functions.Default;
 package body ASF.Views.Nodes.Factory is
 

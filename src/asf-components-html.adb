@@ -15,12 +15,10 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Contexts.Writer;
 with EL.Objects;
 package body ASF.Components.Html is
 
    use EL.Objects;
-   use ASF.Contexts.Writer;
 
    procedure Render_Attributes (UI      : in UIHtmlComponent;
                                 Context : in out Faces_Context'Class;

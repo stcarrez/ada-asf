@@ -22,7 +22,6 @@
 --  The facelet node tree is composed of nodes represented by <b>Tag_Node</b>
 --  and attributes represented by <b>Tag_Attribute</b>.  In a sense, this
 --  is very close to an XML DOM tree.
-with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with EL.Expressions;
 with EL.Objects;

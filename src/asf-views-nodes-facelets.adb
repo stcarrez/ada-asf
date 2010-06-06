@@ -37,9 +37,6 @@ package body ASF.Views.Nodes.Facelets is
 
    INCLUDE_TAG      : aliased constant String := "include";
    COMPOSITION_TAG  : aliased constant String := "composition";
-   OTHERWISE_TAG : aliased constant String := "otherwise";
-   SET_TAG       : aliased constant String := "set";
-   WHEN_TAG      : aliased constant String := "when";
 
    URI           : aliased constant String := "http://java.sun.com/jsf/facelets";
 

@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Log.Loggers;
-with Ada.Strings.Hash;
 package body ASF.Factory is
 
    use Util.Log;

@@ -16,8 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with EL.Contexts.Default;
 with Ada.Unchecked_Deallocation;
+with ASF.Views.Nodes;
 package body ASF.Components is
 
    --  ------------------------------
@@ -51,7 +51,7 @@ package body ASF.Components is
    function Create_UIComponent (Parent : UIComponent_Access;
                                 Tag    : access ASF.Views.Nodes.Tag_Node'Class)
                                 return UIComponent_Access is
-      Result : UIComponent_Access := new UIComponent;
+      Result : constant UIComponent_Access := new UIComponent;
    begin
       Append (Parent, Result, Tag);
       return Result;
@@ -112,14 +112,12 @@ package body ASF.Components is
    function Get_Attribute (UI      : UIComponent;
                            Context : Faces_Context'Class;
                            Name    : String) return EL.Objects.Object is
-      N : Unbounded_String;
+      Attr : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
    begin
---        N := ASF.Views.Nodes.Get_Name (UI.Tag.all);
-      if UI.Tag = null then
+      if Attr = null then
          return EL.Objects.Null_Object;
       end if;
---        Attr := ASF.Views.Nodes.Get_Attribute (UI.Tag.all, Name);
-      raise Constraint_Error;
+      return ASF.Views.Nodes.Get_Value (Attr.all, UI);
    end Get_Attribute;
 
    --  ------------------------------
@@ -169,15 +167,17 @@ package body ASF.Components is
       UI.Encode_End (Context);
    end Encode_All;
 
+   --  ------------------------------
+   --  Get the attribute value.
+   --  ------------------------------
    function Get_Value (Attr : UIAttribute;
                        UI   : UIComponent'Class) return EL.Objects.Object is
    begin
-      return EL.Objects.Null_Object;
---        if not Is_Null (Attr.Object) then
---           return Attr.Object;
---        else
---           return Attr.Definition.Binding.Get_Value (UI.Get_Context);
---        end if;
+      if not EL.Objects.Is_Null (Attr.Value) then
+         return Attr.Value;
+      else
+         return ASF.Views.Nodes.Get_Value (Attr.Definition.all, UI);
+      end if;
    end Get_Value;
 
    procedure Free_Component is

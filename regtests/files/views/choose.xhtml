@@ -1,0 +1,25 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testOutput" styleClass="test" style="color: red;">
+  <c:choose>
+     <c:when test="#{false}">THIS IS NOT PRESENT</c:when>
+     <c:when test="#{false}">THIS IS NOT PRESENT</c:when>
+     <c:when test="#{false}">THIS IS NOT PRESENT</c:when>
+     <c:when test="#{false}">THIS IS NOT PRESENT</c:when>
+     <c:when test="#{true}"><p>THIS IS OK</p></c:when>
+     <c:otherwise>
+         <p>Not available</p>
+     </c:otherwise>
+  </c:choose>
+  Another choice (nothing matched)
+  <c:choose>
+     <c:when test="#{false}">THIS IS NOT PRESENT</c:when>
+     <c:when test="#{false}">THIS IS NOT PRESENT</c:when>  
+  </c:choose>
+  Another choice (otherwise taken)
+  <c:choose>
+     <c:otherwise>Otherwise is ok</c:otherwise>
+     <c:when test="#{false}">THIS IS NOT PRESENT</c:when>
+     <c:when test="#{false}">THIS IS NOT PRESENT</c:when>
+  </c:choose>
+</p>

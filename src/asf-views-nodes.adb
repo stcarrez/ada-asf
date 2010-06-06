@@ -17,8 +17,6 @@
 -----------------------------------------------------------------------
 
 with ASF.Contexts.Writer;
-with ASF.Components.Core;
-with Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 package body ASF.Views.Nodes is
 
@@ -63,7 +61,11 @@ package body ASF.Views.Nodes is
    function Get_Value (Attribute : Tag_Attribute;
                        UI        : UIComponent'Class) return EL.Objects.Object is
    begin
-      return EL.Objects.Null_Object;
+      if Attribute.Binding /= null then
+         return Attribute.Binding.Get_Value (UI.Get_Context.Get_ELContext.all);
+      else
+         return EL.Objects.To_Object (Attribute.Value);
+      end if;
    end Get_Value;
 
    --  ------------------------------
@@ -219,7 +221,7 @@ package body ASF.Views.Nodes is
    procedure Build_Components (Node    : access Text_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
-      UI : UIComponent_Access := ASF.Components.Core.Create_UIText (Parent, Node.all'Access);
+--        UI : UIComponent_Access := ASF.Components.Core.Create_UIText (Parent, Node.all'Access);
    begin
       null;
    end Build_Components;

@@ -16,14 +16,20 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Strings.Fixed;
 with ASF.Views.Nodes.Reader;
 with Input_Sources.File;
 with Sax.Readers;
 with EL.Contexts.Default;
 with Util.Files;
+with Util.Log.Loggers;
 package body ASF.Views.Facelets is
 
    use ASF.Views.Nodes;
+   use Util.Log;
+
+   --  The logger
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Modules");
 
    --  Find in the factory for the facelet with the given name.
    procedure Find (Factory : in out Facelet_Factory;
@@ -82,6 +88,8 @@ package body ASF.Views.Facelets is
    procedure Set_Search_Directory (Factory : in out Facelet_Factory;
                                    Paths   : in String) is
    begin
+      Log.Info ("Set facelet search directory to: '{0}'", Paths);
+
       Factory.Paths := To_Unbounded_String (Paths);
    end Set_Search_Directory;
 
@@ -91,9 +99,41 @@ package body ASF.Views.Facelets is
    --  ------------------------------
    function Find_Facelet_Path (Factory : Facelet_Factory;
                                Name    : String) return String is
+      use Util.Strings;
+
+      Pos : constant Natural := Ada.Strings.Fixed.Index (Name, "/", Name'First + 1);
    begin
+      if Pos > 0 then
+         --  Get the module
+         declare
+            Module   : constant String := Name (Name'First + 1 .. Pos - 1);
+            Path_Pos : constant String_Map.Cursor
+              := Factory.Path_Map.Find (Module'Unrestricted_Access);
+         begin
+            if String_Map.Has_Element (Path_Pos) then
+               Log.Info ("Looking module {0} in {1}", Module,
+                        String_Map.Element (Path_Pos).all);
+               return Util.Files.Find_File_Path (Name (Pos + 1 .. Name'Last),
+                                                 String_Map.Element (Path_Pos).all);
+            end if;
+         end;
+      end if;
       return Util.Files.Find_File_Path (Name, To_String (Factory.Paths));
    end Find_Facelet_Path;
+
+   --  ------------------------------
+   --  Register a module and directory where the module files are stored.
+   --  ------------------------------
+   procedure Register_Module (Factory : in out Facelet_Factory;
+                              Name    : in String;
+                              Paths   : in String) is
+      N : constant Util.Strings.Name_Access := new String '(Name);
+      P : constant Util.Strings.Name_Access := new String '(Paths);
+   begin
+      Log.Info ("Search path for '{0}' is '{1}'", Name, Paths);
+
+      Factory.Path_Map.Include (N, P);
+   end Register_Module;
 
    --  ------------------------------
    --  Find in the factory for the facelet with the given name.
@@ -140,6 +180,8 @@ package body ASF.Views.Facelets is
       Read   : File_Input;
       Context : aliased EL.Contexts.Default.Default_Context;
    begin
+      Log.Info ("Loading facelet: '{0}'", Path);
+
       Open (Path, Read);
 
       --  If True, xmlns:* attributes will be reported in Start_Element
@@ -154,6 +196,7 @@ package body ASF.Views.Facelets is
       when others =>
          Close (Read);
          Result.Root := null;
+         Log.Error ("Error while reading: '{0}'", Path);
 
    end Load;
 

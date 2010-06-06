@@ -23,6 +23,7 @@ with ASF.Views.Nodes;
 with ASF.Contexts.Facelets;
 with ASF.Factory;
 with ASF.Components;
+with Util.Strings;
 
 --  The <b>ASF.Views.Facelets</b> package contains the facelet factory
 --  responsible for getting the facelet tree from a facelet name.
@@ -68,6 +69,11 @@ package ASF.Views.Facelets is
    procedure Register (Factory  : in out Facelet_Factory;
                        Bindings : in ASF.Factory.Factory_Bindings_Access);
 
+   --  Register a module and directory where the module files are stored.
+   procedure Register_Module (Factory : in out Facelet_Factory;
+                              Name    : in String;
+                              Paths   : in String);
+
    --  Clear the facelet cache
    procedure Clear_Cache (Factory : in out Facelet_Factory);
 
@@ -106,6 +112,8 @@ private
       Paths   : Unbounded_String := To_Unbounded_String ("");
       Lock    : RW_Lock;
       Map     : Facelet_Maps.Map;
+
+      Path_Map : Util.Strings.String_Map.Map;
 
       --  The component factory
       Factory  : aliased ASF.Factory.Component_Factory;

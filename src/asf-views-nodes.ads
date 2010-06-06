@@ -116,7 +116,12 @@ package ASF.Views.Nodes is
    --  ------------------------------
    --  Text nodes mixed with EL expressions.
    --  ------------------------------
-   --
+   --  The text node is used when the XHTML reader does not recognize an entity.
+   --  The reader appends the content to a text node until an entity is recognized.
+   --  The text node can contain attributes associated with the unrecognize entities.
+   --  Attributes and raw text may contain EL expressions that will be evaluated
+   --  when the component is rendered.  The <b>Text_Tag_Node</b> contains a list
+   --  of raw text and EL expression to evaluate.
    type Text_Tag_Node is new Tag_Node with private;
    type Text_Tag_Node_Access is access all Text_Tag_Node;
 

@@ -1,0 +1,80 @@
+-----------------------------------------------------------------------
+--  contexts-facelets -- Contexts for facelets
+--  Copyright (C) 2009, 2010 Stephane Carrez
+--  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+--
+--  Licensed under the Apache License, Version 2.0 (the "License");
+--  you may not use this file except in compliance with the License.
+--  You may obtain a copy of the License at
+--
+--      http://www.apache.org/licenses/LICENSE-2.0
+--
+--  Unless required by applicable law or agreed to in writing, software
+--  distributed under the License is distributed on an "AS IS" BASIS,
+--  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--  See the License for the specific language governing permissions and
+--  limitations under the License.
+-----------------------------------------------------------------------
+
+package body ASF.Contexts.Facelets is
+
+   --  ------------------------------
+   --  Get the EL context for evaluating expressions.
+   --  ------------------------------
+   function Get_ELContext (Context : in Facelet_Context)
+                           return EL.Contexts.ELContext_Access is
+   begin
+      return Context.Context;
+   end Get_ELContext;
+
+   --  ------------------------------
+   --  Set the EL context for evaluating expressions.
+   --  ------------------------------
+   procedure Set_ELContext (Context   : in out Facelet_Context;
+                            ELContext : in EL.Contexts.ELContext_Access) is
+   begin
+      Context.Context := ELContext;
+   end Set_ELContext;
+
+   --  ------------------------------
+   --  Set the attribute having given name with the value.
+   --  ------------------------------
+   procedure Set_Attribute (Context : in out Facelet_Context;
+                            Name    : in String;
+                            Value   : in EL.Objects.Object) is
+   begin
+      null;
+   end Set_Attribute;
+
+   --  ------------------------------
+   --  Set the attribute having given name with the value.
+   --  ------------------------------
+   procedure Set_Attribute (Context : in out Facelet_Context;
+                            Name    : in Unbounded_String;
+                            Value   : in EL.Objects.Object) is
+   begin
+      null;
+   end Set_Attribute;
+
+   --  ------------------------------
+   --  Include the facelet from the given source file.
+   --  The included views appended to the parent component tree.
+   --  ------------------------------
+   procedure Include_Facelet (Context : in out Facelet_Context;
+                              Source  : in String;
+                              Parent  : in UIComponent_Access) is
+   begin
+      null;
+   end Include_Facelet;
+
+   --  ------------------------------
+   --  Include the definition having the given name.
+   --  ------------------------------
+   procedure Include_Definition (Context : in out Facelet_Context;
+                                 Name    : in String;
+                                 Parent  : in UIComponent_Access) is
+   begin
+      null;
+   end Include_Definition;
+
+end ASF.Contexts.Facelets;

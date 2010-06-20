@@ -52,8 +52,7 @@ package ASF.Components.Core is
    procedure Encode_Begin (UI      : in UIText;
                            Context : in out Faces_Context'Class);
 
-   function Create_UIText (UI  : UIComponent_Access;
-                           Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
+   function Create_UIText (Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
                            return UIComponent_Access;
 private
 

@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with ASF.Components.Core;
 with ASF.Contexts.Writer;
 with Ada.Unchecked_Deallocation;
 package body ASF.Views.Nodes is
@@ -198,9 +199,8 @@ package body ASF.Views.Nodes is
    procedure Build_Components (Node    : access Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
-      UI : UIComponent_Access;
+      UI : constant UIComponent_Access := Node.Factory.all;
    begin
-      UI := Node.Factory.all;
       Append (Parent, UI, Node);
       Node.Build_Children (UI, Context);
    end Build_Components;
@@ -221,9 +221,10 @@ package body ASF.Views.Nodes is
    procedure Build_Components (Node    : access Text_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
---        UI : UIComponent_Access := ASF.Components.Core.Create_UIText (Parent, Node.all'Access);
+      UI : constant UIComponent_Access
+        := ASF.Components.Core.Create_UIText (Node.all'Access);
    begin
-      null;
+      Append (Parent, UI, Node);
    end Build_Components;
 
    --  ------------------------------

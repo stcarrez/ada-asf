@@ -71,12 +71,10 @@ package body ASF.Components.Core is
       UI.Text.Encode_All (Context);
    end Encode_Begin;
 
-   function Create_UIText (UI  : UIComponent_Access;
-                           Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
+   function Create_UIText (Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
                            return UIComponent_Access is
       Result : constant UIText_Access := new UIText;
    begin
-      Append (UI, Result.all'Access, Tag);
       Result.Text := Tag;
       return Result.all'Access;
    end Create_UIText;

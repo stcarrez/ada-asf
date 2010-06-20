@@ -17,6 +17,9 @@
 -----------------------------------------------------------------------
 package ASF.Components.Html.Text is
 
+   --  ------------------------------
+   --  Output Component
+   --  ------------------------------
    type UIOutput is new UIHtmlComponent with private;
 
    --  Get the value to write on the output.
@@ -29,6 +32,9 @@ package ASF.Components.Html.Text is
    procedure Encode_Begin (UI      : in UIOutput;
                            Context : in out Faces_Context'Class);
 
+   --  ------------------------------
+   --  Label Component
+   --  ------------------------------
    type UILabel is new UIOutput with private;
 
    procedure Encode_Begin (UI      : in UILabel;

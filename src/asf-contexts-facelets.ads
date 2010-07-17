@@ -64,7 +64,8 @@ package ASF.Contexts.Facelets is
    --  Include the definition having the given name.
    procedure Include_Definition (Context : in out Facelet_Context;
                                  Name    : in Unbounded_String;
-                                 Parent  : in UIComponent_Access);
+                                 Parent  : in UIComponent_Access;
+                                 Found   : out Boolean);
 
    --  Push into the current facelet context the <ui:define> nodes contained in
    --  the composition/decorate tag.

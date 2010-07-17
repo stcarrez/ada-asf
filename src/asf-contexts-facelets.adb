@@ -73,9 +73,9 @@ package body ASF.Contexts.Facelets is
    --  ------------------------------
    procedure Include_Definition (Context : in out Facelet_Context;
                                  Name    : in Unbounded_String;
-                                 Parent  : in UIComponent_Access) is
+                                 Parent  : in UIComponent_Access;
+                                 Found   : out Boolean) is
       Node  : Composition_Tag_Node;
-      Found : Boolean;
       Iter  : Defines_Vector.Cursor := Context.Defines.Last;
    begin
       while Defines_Vector.Has_Element (Iter) loop
@@ -89,6 +89,7 @@ package body ASF.Contexts.Facelets is
          end if;
          Defines_Vector.Previous (Iter);
       end loop;
+      Found := False;
    end Include_Definition;
 
    --  ------------------------------

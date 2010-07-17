@@ -231,6 +231,7 @@ package body ASF.Views.Nodes.Facelets is
       Node.Parent     := Parent;
       Node.Attributes := Attributes;
       if Attr = null then
+         Log.Error ("Missing attribute 'name' on node");
          null;
       else
          Node.Define_Name := Attr.Value;
@@ -277,8 +278,14 @@ package body ASF.Views.Nodes.Facelets is
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
       Name : constant EL.Objects.Object := Get_Value (Node.Insert_Name.all, Context);
+      Found : Boolean;
    begin
-      Context.Include_Definition (EL.Objects.To_Unbounded_String (Name), Parent);
+      Context.Include_Definition (EL.Objects.To_Unbounded_String (Name), Parent, Found);
+
+      --  If the definition was not found, insert the content of the <ui:insert> node.
+      if not Found then
+         Node.Build_Children (Parent, Context);
+      end if;
    end Build_Components;
 
 end ASF.Views.Nodes.Facelets;

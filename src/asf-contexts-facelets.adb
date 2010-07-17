@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with ASF.Views.Nodes.Facelets;
 package body ASF.Contexts.Facelets is
 
    --  ------------------------------
@@ -71,10 +72,44 @@ package body ASF.Contexts.Facelets is
    --  Include the definition having the given name.
    --  ------------------------------
    procedure Include_Definition (Context : in out Facelet_Context;
-                                 Name    : in String;
+                                 Name    : in Unbounded_String;
                                  Parent  : in UIComponent_Access) is
+      Node  : Composition_Tag_Node;
+      Found : Boolean;
+      Iter  : Defines_Vector.Cursor := Context.Defines.Last;
    begin
-      null;
+      while Defines_Vector.Has_Element (Iter) loop
+         Node := Defines_Vector.Element (Iter);
+         Node.Include_Definition (Parent  => Parent,
+                                  Context => Context,
+                                  Name    => Name,
+                                  Found   => Found);
+         if Found then
+            return;
+         end if;
+         Defines_Vector.Previous (Iter);
+      end loop;
    end Include_Definition;
+
+   --  ------------------------------
+   --  Push into the current facelet context the <ui:define> nodes contained in
+   --  the composition/decorate tag.
+   --  ------------------------------
+   procedure Push_Defines (Context : in out Facelet_Context;
+                           Node : access ASF.Views.Nodes.Facelets.Composition_Tag_Node) is
+   begin
+      Context.Defines.Append (Node.all'Access);
+   end Push_Defines;
+
+   --  ------------------------------
+   --  Pop from the current facelet context the <ui:define> nodes.
+   --  ------------------------------
+   procedure Pop_Defines (Context : in out Facelet_Context) is
+      use Ada.Containers;
+   begin
+      if Context.Defines.Length > 0 then
+         Context.Defines.Delete_Last;
+      end if;
+   end Pop_Defines;
 
 end ASF.Contexts.Facelets;

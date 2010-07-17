@@ -29,10 +29,10 @@ package body ASF.Applications.Views is
    end record;
 
    --  Include the definition having the given name.
-   overriding
-   procedure Include_Definition (Context : in out Facelet_Context;
-                                 Name    : in String;
-                                 Parent  : in UIComponent_Access);
+--     overriding
+--     procedure Include_Definition (Context : in out Facelet_Context;
+--                                   Name    : in Ada.Strings.Unbounded.Unbounded_String;
+--                                   Parent  : in UIComponent_Access);
 
    --  Include the definition having the given name.
    overriding
@@ -43,23 +43,23 @@ package body ASF.Applications.Views is
    --  ------------------------------
    --  Include the definition having the given name.
    --  ------------------------------
-   overriding
-   procedure Include_Definition (Context : in out Facelet_Context;
-                                 Name    : in String;
-                                 Parent  : in UIComponent_Access) is
-
-      use ASF.Views;
-
-      Tree : Facelets.Facelet;
-   begin
-      Facelets.Find_Facelet (Factory => Context.Facelets.all,
-                             Name    => Name,
-                             Result  => Tree);
-
-      Facelets.Build_View (View    => Tree,
-                           Context => Context,
-                           Root    => Parent);
-   end Include_Definition;
+--     overriding
+--     procedure Include_Definition (Context : in out Facelet_Context;
+--                                   Name    : in Ada.Strings.Unbounded.Unbounded_String;
+--                                   Parent  : in UIComponent_Access) is
+--
+--        use ASF.Views;
+--
+--        Tree : Facelets.Facelet;
+--     begin
+--        Facelets.Find_Facelet (Factory => Context.Facelets.all,
+--                               Name    => Ada.Strings.Unbounded.To_String (Name),
+--                               Result  => Tree);
+--
+--        Facelets.Build_View (View    => Tree,
+--                             Context => Context,
+--                             Root    => Parent);
+--     end Include_Definition;
 
    --  ------------------------------
    --  Include the definition having the given name.

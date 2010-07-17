@@ -20,6 +20,8 @@ with EL.Objects;
 with EL.Contexts;
 with ASF.Components;
 with Ada.Strings.Unbounded;
+with Ada.Containers.Indefinite_Vectors;
+limited with ASF.Views.Nodes.Facelets;
 package ASF.Contexts.Facelets is
 
    use ASF.Components;
@@ -61,13 +63,29 @@ package ASF.Contexts.Facelets is
 
    --  Include the definition having the given name.
    procedure Include_Definition (Context : in out Facelet_Context;
-                                 Name    : in String;
+                                 Name    : in Unbounded_String;
                                  Parent  : in UIComponent_Access);
+
+   --  Push into the current facelet context the <ui:define> nodes contained in
+   --  the composition/decorate tag.
+   procedure Push_Defines (Context : in out Facelet_Context;
+                           Node : access ASF.Views.Nodes.Facelets.Composition_Tag_Node);
+
+   --  Pop from the current facelet context the <ui:define> nodes.
+   procedure Pop_Defines (Context : in out Facelet_Context);
+
 private
+
+   type Composition_Tag_Node is access all ASF.Views.Nodes.Facelets.Composition_Tag_Node'Class;
+
+   package Defines_Vector is
+     new Ada.Containers.Indefinite_Vectors (Index_Type => Natural,
+                                            Element_Type => Composition_Tag_Node);
 
    type Facelet_Context is tagged record
       --  The expression context;
-      Context : EL.Contexts.ELContext_Access;
+      Context : EL.Contexts.ELContext_Access := null;
+      Defines : Defines_Vector.Vector;
    end record;
 
 end ASF.Contexts.Facelets;

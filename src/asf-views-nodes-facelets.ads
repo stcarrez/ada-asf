@@ -29,7 +29,10 @@
 --    <ui:param name="..." value="..."/>
 --    <ui:composition .../>
 --
+with Ada.Strings.Unbounded;
+with Ada.Strings.Unbounded.Hash;
 with ASF.Factory;
+with Ada.Containers.Indefinite_Hashed_Maps;
 package ASF.Views.Nodes.Facelets is
 
    --  Tag factory for nodes defined in this package.
@@ -77,16 +80,88 @@ package ASF.Views.Nodes.Facelets is
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class);
 
-   --  Java Facelet provides a <c:repeat> tag.  It must not be implemented
-   --  because it was proven this was not a good method for iterating over a list.
+   --  Freeze the tag node tree and perform any initialization steps
+   --  necessary to build the components efficiently.  After this call
+   --  the tag node tree should not be modified and it represents a read-only
+   --  tree.
+   overriding
+   procedure Freeze (Node : access Composition_Tag_Node);
+
+   --  Include in the component tree the definition identified by the name.
+   --  Upon completion, return in <b>Found</b> whether the definition was found
+   --  within this composition context.
+   procedure Include_Definition (Node    : access Composition_Tag_Node;
+                                 Parent  : in UIComponent_Access;
+                                 Context : in out Facelet_Context'Class;
+                                 Name    : in Unbounded_String;
+                                 Found   : out Boolean);
+
+   --  ------------------------------
+   --  Define Tag
+   --  ------------------------------
+   --  The <ui:define name="...">...</ui:define>
+   type Define_Tag_Node is new Tag_Node with private;
+   type Define_Tag_Node_Access is access all Define_Tag_Node'Class;
+
+   --  Create the Define Tag
+   function Create_Define_Tag_Node (Name       : Unbounded_String;
+                                    Parent     : Tag_Node_Access;
+                                    Attributes : Tag_Attribute_Array_Access)
+                                    return Tag_Node_Access;
+
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   overriding
+   procedure Build_Components (Node    : access Define_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class);
+
+   --  ------------------------------
+   --  Insert Tag
+   --  ------------------------------
+   --  The <ui:insert name="...">...</ui:insert>
+   type Insert_Tag_Node is new Tag_Node with private;
+   type Insert_Tag_Node_Access is access all Insert_Tag_Node'Class;
+
+   --  Create the Insert Tag
+   function Create_Insert_Tag_Node (Name       : Unbounded_String;
+                                    Parent     : Tag_Node_Access;
+                                    Attributes : Tag_Attribute_Array_Access)
+                                    return Tag_Node_Access;
+
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   overriding
+   procedure Build_Components (Node    : access Insert_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class);
+
 private
+
+   --  Tag library map indexed on the library namespace.
+   package Define_Maps is new
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => Unbounded_String,
+                                            Element_Type    => Define_Tag_Node_Access,
+                                            Hash            => Ada.Strings.Unbounded.Hash,
+                                            Equivalent_Keys => "=");
 
    type Include_Tag_Node is new Tag_Node with record
       Source : Tag_Attribute_Access;
    end record;
 
    type Composition_Tag_Node is new Tag_Node with record
-      Source : Tag_Attribute_Access;
+      Source  : Tag_Attribute_Access;
+      Defines : Define_Maps.Map;
+   end record;
+
+   type Define_Tag_Node is new Tag_Node with record
+      Define_Name : Unbounded_String;
+   end record;
+
+   type Insert_Tag_Node is new Tag_Node with record
+      Insert_Name : Tag_Attribute_Access;
    end record;
 
 end ASF.Views.Nodes.Facelets;

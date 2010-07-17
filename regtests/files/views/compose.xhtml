@@ -1,0 +1,30 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testOutput" styleClass="test" style="color: red;">
+  <ui:composition>
+     <ui:define name="block">
+        <i>The block 'block;</i>
+     </ui:define>
+     <ui:define name="block2">
+        <p>The block 'block;</p>
+     </ui:define>
+
+     <ui:define name="inner">
+         <ui:composition>
+             <ui:define name="block">
+                 <b>The inner block in bold</b>
+             </ui:define>
+             <ul>
+               <li><ui:insert name="block2"/></li>
+               <li><ui:insert name="block"/></li>
+             </ul>
+         </ui:composition>
+     </ui:define>
+
+     <ui:insert name="block"/>
+     <ui:insert name="block2"/>
+     <ui:insert name="block"/>
+     <ui:insert name="inner"/>
+  </ui:composition>
+</p>

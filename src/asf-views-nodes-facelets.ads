@@ -97,6 +97,19 @@ package ASF.Views.Nodes.Facelets is
                                  Found   : out Boolean);
 
    --  ------------------------------
+   --  Decorate Tag
+   --  ------------------------------
+   --  The <ui:decorate template="...">...</ui:decorate>
+   type Decorate_Tag_Node is new Composition_Tag_Node with private;
+   type Decorate_Tag_Node_Access is access all Decorate_Tag_Node'Class;
+
+   --  Create the Decorate Tag
+   function Create_Decorate_Tag_Node (Name       : Unbounded_String;
+                                      Parent     : Tag_Node_Access;
+                                      Attributes : Tag_Attribute_Array_Access)
+                                      return Tag_Node_Access;
+
+   --  ------------------------------
    --  Define Tag
    --  ------------------------------
    --  The <ui:define name="...">...</ui:define>
@@ -152,9 +165,11 @@ private
    end record;
 
    type Composition_Tag_Node is new Tag_Node with record
-      Source  : Tag_Attribute_Access;
-      Defines : Define_Maps.Map;
+      Template : Tag_Attribute_Access;
+      Defines  : Define_Maps.Map;
    end record;
+
+   type Decorate_Tag_Node is new Composition_Tag_Node with null record;
 
    type Define_Tag_Node is new Tag_Node with record
       Define_Name : Unbounded_String;

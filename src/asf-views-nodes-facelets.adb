@@ -42,6 +42,7 @@ package body ASF.Views.Nodes.Facelets is
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Views.Nodes.Facelets");
 
    COMPOSITION_TAG  : aliased constant String := "composition";
+   DECORATE_TAG    : aliased constant String := "decorate";
    DEFINE_TAG       : aliased constant String := "define";
    INCLUDE_TAG      : aliased constant String := "include";
    INSERT_TAG       : aliased constant String := "insert";
@@ -53,6 +54,10 @@ package body ASF.Views.Nodes.Facelets is
        (Name      => COMPOSITION_TAG'Access,
         Component => null,
         Tag       => Create_Composition_Tag_Node'Access),
+
+       (Name      => DECORATE_TAG'Access,
+        Component => null,
+        Tag       => Create_Decorate_Tag_Node'Access),
 
        (Name      => DEFINE_TAG'Access,
         Component => null,
@@ -139,7 +144,7 @@ package body ASF.Views.Nodes.Facelets is
       Node.Name       := Name;
       Node.Parent     := Parent;
       Node.Attributes := Attributes;
-      Node.Source     := Find_Attribute (Attributes, "template");
+      Node.Template   := Find_Attribute (Attributes, "template");
       return Node.all'Access;
    end Create_Composition_Tag_Node;
 
@@ -163,9 +168,9 @@ package body ASF.Views.Nodes.Facelets is
       --  Set a variable mapper for the include context.
       --  The <ui:param> variables will be declared in that mapper.
       Ctx.all.Set_Variable_Mapper (Mapper'Unchecked_Access);
-      if Node.Source /= null then
+      if Node.Template /= null then
          declare
-            Source : constant String := To_String (Get_Value (Node.Source.all, Context));
+            Source : constant String := To_String (Get_Value (Node.Template.all, Context));
          begin
             Log.Info ("Include facelet {0}", Source);
             Context.Include_Facelet (Source => Source, Parent => Parent);
@@ -218,6 +223,27 @@ package body ASF.Views.Nodes.Facelets is
    end Include_Definition;
 
    --  ------------------------------
+   --  Decorate Tag
+   --  ------------------------------
+
+   --  Create the Decorate Tag
+   function Create_Decorate_Tag_Node (Name       : Unbounded_String;
+                                      Parent     : Tag_Node_Access;
+                                      Attributes : Tag_Attribute_Array_Access)
+                                      return Tag_Node_Access is
+      Node : constant Decorate_Tag_Node_Access := new Decorate_Tag_Node;
+   begin
+      Node.Name       := Name;
+      Node.Parent     := Parent;
+      Node.Attributes := Attributes;
+      Node.Template   := Find_Attribute (Attributes, "template");
+      if Node.Template = null then
+         Log.Error ("Missing attribute 'template' on the decorator");
+      end if;
+      return Node.all'Access;
+   end Create_Decorate_Tag_Node;
+
+   --  ------------------------------
    --  Create the Define Tag
    --  ------------------------------
    function Create_Define_Tag_Node (Name       : Unbounded_String;
@@ -232,7 +258,6 @@ package body ASF.Views.Nodes.Facelets is
       Node.Attributes := Attributes;
       if Attr = null then
          Log.Error ("Missing attribute 'name' on node");
-         null;
       else
          Node.Define_Name := Attr.Value;
       end if;

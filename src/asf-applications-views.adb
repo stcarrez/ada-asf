@@ -71,10 +71,11 @@ package body ASF.Applications.Views is
 
       use ASF.Views;
 
+      Path : constant String := Context.Resolve_Path (Source);
       Tree : Facelets.Facelet;
    begin
       Facelets.Find_Facelet (Factory => Context.Facelets.all,
-                             Name    => Source,
+                             Name    => Path,
                              Result  => Tree);
 
       Facelets.Build_View (View    => Tree,

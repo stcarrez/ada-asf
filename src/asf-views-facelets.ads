@@ -83,6 +83,7 @@ private
 
    type Facelet is record
       Root : ASF.Views.Nodes.Tag_Node_Access;
+      Path : Unbounded_String;
    end record;
 
    --  Tag library map indexed on the library namespace.

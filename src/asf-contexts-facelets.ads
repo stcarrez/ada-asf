@@ -75,6 +75,19 @@ package ASF.Contexts.Facelets is
    --  Pop from the current facelet context the <ui:define> nodes.
    procedure Pop_Defines (Context : in out Facelet_Context);
 
+   --  Set the path to resolve relative facelet paths and get the previous path.
+   procedure Set_Relative_Path (Context  : in out Facelet_Context;
+                                Path     : in Unbounded_String;
+                                Previous : out Unbounded_String);
+
+   --  Set the path to resolve relative facelet paths.
+   procedure Set_Relative_Path (Context  : in out Facelet_Context;
+                                Path     : in Unbounded_String);
+
+   --  Resolve the facelet relative path
+   function Resolve_Path (Context : Facelet_Context;
+                          Path    : String) return String;
+
 private
 
    type Composition_Tag_Node is access all ASF.Views.Nodes.Facelets.Composition_Tag_Node'Class;
@@ -87,6 +100,7 @@ private
       --  The expression context;
       Context : EL.Contexts.ELContext_Access := null;
       Defines : Defines_Vector.Vector;
+      Path    : Unbounded_String;
    end record;
 
 end ASF.Contexts.Facelets;

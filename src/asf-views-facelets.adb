@@ -18,6 +18,7 @@
 
 with Ada.Strings.Fixed;
 with Ada.Exceptions;
+with Ada.Directories;
 with ASF.Views.Nodes.Reader;
 with Input_Sources.File;
 with Sax.Readers;
@@ -68,6 +69,7 @@ package body ASF.Views.Facelets is
          Update (Factory, Fname, Res);
       end if;
       Result.Root := Res.Root;
+      Result.Path := Res.Path;
    end Find_Facelet;
 
    --  ------------------------------
@@ -76,10 +78,12 @@ package body ASF.Views.Facelets is
    procedure Build_View (View    : in Facelet;
                          Context : in out ASF.Contexts.Facelets.Facelet_Context'Class;
                          Root    : in ASF.Components.UIComponent_Access) is
+      Old : Unbounded_String;
    begin
       if View.Root /= null then
-         View.Root.Build_Children (Parent  => Root,
-                                   Context => Context);
+         Context.Set_Relative_Path (Path => View.Path, Previous => Old);
+         View.Root.Build_Children (Parent  => Root, Context => Context);
+         Context.Set_Relative_Path (Path => Old);
       end if;
    end Build_View;
 
@@ -176,6 +180,7 @@ package body ASF.Views.Facelets is
       use Input_Sources.File;
       use Sax.Readers;
       use Ada.Exceptions;
+      use Ada.Directories;
 
       Path   : constant String := Find_Facelet_Path (Factory, Name);
       Reader : Xhtml_Reader;
@@ -193,7 +198,8 @@ package body ASF.Views.Facelets is
       Parse (Reader, Read, Factory.Factory'Unchecked_Access, Context'Unchecked_Access);
       Close (Read);
 
-      Result := Facelet '(Root => Get_Root (Reader));
+      Result := Facelet '(Root => Get_Root (Reader),
+                          Path => To_Unbounded_String (Containing_Directory (Path) & '/'));
    exception
       when E : others =>
          Close (Read);

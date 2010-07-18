@@ -113,4 +113,37 @@ package body ASF.Contexts.Facelets is
       end if;
    end Pop_Defines;
 
+   --  ------------------------------
+   --  Set the path to resolve relative facelet paths and get the previous path.
+   --  ------------------------------
+   procedure Set_Relative_Path (Context  : in out Facelet_Context;
+                                Path     : in Unbounded_String;
+                                Previous : out Unbounded_String) is
+   begin
+      Previous := Context.Path;
+      Context.Path := Path;
+   end Set_Relative_Path;
+
+   --  ------------------------------
+   --  Set the path to resolve relative facelet paths.
+   --  ------------------------------
+   procedure Set_Relative_Path (Context  : in out Facelet_Context;
+                                Path     : in Unbounded_String) is
+   begin
+      Context.Path := Path;
+   end Set_Relative_Path;
+
+   --  ------------------------------
+   --  Resolve the facelet relative path
+   --  ------------------------------
+   function Resolve_Path (Context : Facelet_Context;
+                          Path    : String) return String is
+   begin
+      if Path (Path'First) = '/' then
+         return Path;
+      else
+         return To_String (Context.Path) & Path;
+      end if;
+   end Resolve_Path;
+
 end ASF.Contexts.Facelets;

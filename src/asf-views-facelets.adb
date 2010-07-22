@@ -19,6 +19,7 @@
 with Ada.Strings.Fixed;
 with Ada.Exceptions;
 with Ada.Directories;
+with Ada.IO_Exceptions;
 with ASF.Views.Nodes.Reader;
 with Input_Sources.File;
 with Sax.Readers;
@@ -201,6 +202,11 @@ package body ASF.Views.Facelets is
       Result := Facelet '(Root => Get_Root (Reader),
                           Path => To_Unbounded_String (Containing_Directory (Path) & '/'));
    exception
+      when E : Ada.IO_Exceptions.Name_Error =>
+         Close (Read);
+         Result.Root := null;
+         Log.Error ("Cannot read '{0}': file does not exist", Path);
+
       when E : others =>
          Close (Read);
          Result.Root := null;

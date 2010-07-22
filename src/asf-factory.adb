@@ -30,11 +30,11 @@ package body ASF.Factory is
    function Find (Factory : Factory_Bindings;
                   Name    : String) return Binding is
       Left  : Natural := Factory.Bindings'First;
-      Right : Natural := Factory.Bindings'Last + 1;
+      Right : Natural := Factory.Bindings'Last;
    begin
       while Left <= Right loop
          declare
-            Pos  : constant Natural := (Left + Right) / 2;
+            Pos  : constant Natural := (Left + Right + 1) / 2;
             Item : constant Name_Access := Factory.Bindings (Pos).Name;
          begin
             if Name = Item.all then

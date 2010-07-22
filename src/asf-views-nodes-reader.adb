@@ -93,7 +93,7 @@ package body ASF.Views.Nodes.Reader is
          NS := Element (Pos);
          return Mapper.Mapper.Get_Function (To_String (NS), Name);
       end if;
-      raise No_Function;
+      raise No_Function with "Function '" & Namespace & ':' & Name & "' not found";
    end Get_Function;
 
    --  ------------------------------
@@ -125,6 +125,8 @@ package body ASF.Views.Nodes.Reader is
                             URI    : in String) is
       use NS_Mapping;
    begin
+      Log.Debug ("Add namespace {0}:{1}", Prefix, URI);
+
       Mapper.Mapping.Include (To_Unbounded_String (Prefix),
                               To_Unbounded_String (URI));
    end Set_Namespace;
@@ -138,6 +140,8 @@ package body ASF.Views.Nodes.Reader is
       NS  : constant Unbounded_String := To_Unbounded_String (Prefix);
       Pos : NS_Mapping.Cursor := NS_Mapping.Find (Mapper.Mapping, NS);
    begin
+      Log.Debug ("Remove namespace {0}", Prefix);
+
       if Has_Element (Pos) then
          NS_Mapping.Delete (Mapper.Mapping, Pos);
       end if;
@@ -282,9 +286,8 @@ package body ASF.Views.Nodes.Reader is
                             Qname         : in Unicode.CES.Byte_Sequence := "";
                             Atts          : in Sax.Attributes.Attributes'Class) is
 
-      pragma Unreferenced (Qname);
-
       use ASF.Factory;
+      use Ada.Exceptions;
 
       Attr_Count : Natural;
       Attributes : Tag_Attribute_Array_Access;
@@ -308,10 +311,26 @@ package body ASF.Views.Nodes.Reader is
             begin
                Attr.Name  := To_Unbounded_String (Get_Qname (Atts, I));
                if Index (Value, "#{") > 0 then
-                  Expr := new EL.Expressions.ValueExpression;
-                  Expr.all := EL.Expressions.Create_Expression
-                    (Value, Handler.ELContext.all);
-                  Attr.Binding := Expr.all'Access;
+                  begin
+                     Expr := new EL.Expressions.ValueExpression;
+                     Attr.Binding := Expr.all'Access;
+                     Expr.all := EL.Expressions.Create_Expression
+                       (Value, Handler.ELContext.all);
+                  exception
+                     when E : EL.Functions.No_Function =>
+                        Log.Error ("{0}: Invalid expression: {1}",
+                                   To_String (Handler.Locator),
+                                   Exception_Message (E));
+                        Attr.Value := To_Unbounded_String ("");
+
+                     when E : EL.Expressions.Invalid_Expression =>
+                        Log.Error ("{0}: Invalid expression: {1}",
+                                   To_String (Handler.Locator),
+                                   Exception_Message (E));
+                        Attr.Value := To_Unbounded_String ("");
+
+
+                  end;
                else
                   Attr.Value := To_Unbounded_String (Value);
                end if;
@@ -328,17 +347,20 @@ package body ASF.Views.Nodes.Reader is
       exception
          when Unknown_Name =>
 
+            if Namespace_URI /= "" and Index (Qname, ":") > 0 then
+               Log.Info ("Element {0}:{1} not found {2}", Namespace_URI, Local_Name, Qname);
+            end if;
             if Handler.Text = null then
                Handler.Text := new Text_Tag_Node;
                Handler.Text.Last := Handler.Text.Content'Access;
                Append_Tag (Handler.Current.Parent, Handler.Text.all'Access);
-               Handler.Current.Text := True;
             end if;
+            Handler.Current.Text := True;
             declare
                Content : Tag_Content_Access := Handler.Text.Last;
             begin
                Append (Content.Text, '<');
-               Append (Content.Text, Local_Name);
+               Append (Content.Text, Qname);
                if Attr_Count /= 0 then
                   for I in 0 .. Attr_Count - 1 loop
                      Append (Content.Text, ' ');
@@ -386,7 +408,7 @@ package body ASF.Views.Nodes.Reader is
             Content : constant Tag_Content_Access := Handler.Text.Last;
          begin
             Append (Content.Text, "</");
-            Append (Content.Text, Local_Name);
+            Append (Content.Text, Qname);
             Append (Content.Text, '>');
          end;
       end if;
@@ -422,7 +444,7 @@ package body ASF.Views.Nodes.Reader is
                                    Ch      : in Unicode.CES.Byte_Sequence) is
       pragma Unmodified (Handler);
    begin
-      null;
+      Characters (Handler, Ch);
    end Ignorable_Whitespace;
 
    --  ------------------------------

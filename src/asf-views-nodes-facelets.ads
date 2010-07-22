@@ -151,6 +151,28 @@ package ASF.Views.Nodes.Facelets is
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class);
 
+   --  ------------------------------
+   --  Param Tag
+   --  ------------------------------
+   --  The <ui:param name="name" value="#{expr}"/> parameter creation.
+   --  The parameter is created in the faces context.
+   type Param_Tag_Node is new Tag_Node with private;
+   type Param_Tag_Node_Access is access all Param_Tag_Node'Class;
+
+   --  Create the Param Tag
+   function Create_Param_Tag_Node (Name       : Unbounded_String;
+                                   Parent     : Tag_Node_Access;
+                                   Attributes : Tag_Attribute_Array_Access)
+                                   return Tag_Node_Access;
+
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   overriding
+   procedure Build_Components (Node    : access Param_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class);
+
 private
 
    --  Tag library map indexed on the library namespace.
@@ -177,6 +199,11 @@ private
 
    type Insert_Tag_Node is new Tag_Node with record
       Insert_Name : Tag_Attribute_Access;
+   end record;
+
+   type Param_Tag_Node is new Tag_Node with record
+      Var   : Tag_Attribute_Access;
+      Value : Tag_Attribute_Access;
    end record;
 
 end ASF.Views.Nodes.Facelets;

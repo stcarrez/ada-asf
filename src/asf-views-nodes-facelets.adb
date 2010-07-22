@@ -42,10 +42,11 @@ package body ASF.Views.Nodes.Facelets is
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Views.Nodes.Facelets");
 
    COMPOSITION_TAG  : aliased constant String := "composition";
-   DECORATE_TAG    : aliased constant String := "decorate";
+   DECORATE_TAG     : aliased constant String := "decorate";
    DEFINE_TAG       : aliased constant String := "define";
    INCLUDE_TAG      : aliased constant String := "include";
    INSERT_TAG       : aliased constant String := "insert";
+   PARAM_TAG        : aliased constant String := "param";
 
    URI           : aliased constant String := "http://java.sun.com/jsf/facelets";
 
@@ -68,6 +69,10 @@ package body ASF.Views.Nodes.Facelets is
         Tag       => Create_Include_Tag_Node'Access),
 
        (Name      => INSERT_TAG'Access,
+        Component => null,
+        Tag       => Create_Insert_Tag_Node'Access),
+
+       (Name      => PARAM_TAG'Access,
         Component => null,
         Tag       => Create_Insert_Tag_Node'Access)
       );
@@ -311,6 +316,44 @@ package body ASF.Views.Nodes.Facelets is
       if not Found then
          Node.Build_Children (Parent, Context);
       end if;
+   end Build_Components;
+
+   --  ------------------------------
+   --  Param Tag
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the Param Tag
+   --  ------------------------------
+   function Create_Param_Tag_Node (Name       : Unbounded_String;
+                                   Parent     : Tag_Node_Access;
+                                   Attributes : Tag_Attribute_Array_Access)
+                                   return Tag_Node_Access is
+      Node : constant Param_Tag_Node_Access := new Param_Tag_Node;
+   begin
+      Node.Name       := Name;
+      Node.Parent     := Parent;
+      Node.Attributes := Attributes;
+      Node.Value      := Find_Attribute (Attributes, "value");
+      Node.Var        := Find_Attribute (Attributes, "name");
+      return Node.all'Access;
+   end Create_Param_Tag_Node;
+
+   --  ------------------------------
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   --  ------------------------------
+   overriding
+   procedure Build_Components (Node    : access Param_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class) is
+      pragma Unreferenced (Parent);
+
+      Value  : EL.Expressions.ValueExpression;
+      --          := Node.Value.Get_ValueExpression (Context);
+   begin
+      Context.Set_Variable (Node.Var.Value, Value);
    end Build_Components;
 
 end ASF.Views.Nodes.Facelets;

@@ -19,6 +19,8 @@
 with ASF.Components.Core;
 with ASF.Contexts.Writer;
 with Ada.Unchecked_Deallocation;
+with Ada.Exceptions;
+with Util.Log.Loggers;
 package body ASF.Views.Nodes is
 
    use EL.Expressions;
@@ -34,6 +36,11 @@ package body ASF.Views.Nodes is
    procedure Free is
      new Ada.Unchecked_Deallocation (EL.Expressions.Expression'Class,
                                      EL.Expressions.Expression_Access);
+
+   use Util.Log;
+
+   --  The logger
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Views.Nodes");
 
    --  ------------------------------
    --  Attribute of a node.
@@ -91,8 +98,24 @@ package body ASF.Views.Nodes is
       else
          return EL.Objects.To_Object (Attribute.Value);
       end if;
+
+   exception
+      when E : others =>
+         Log.Error ("Expression error: {0}", Ada.Exceptions.Exception_Message (E));
+         return EL.Objects.Null_Object;
    end Get_Value;
 
+   function Get_ValueExpression (Attribute : Tag_Attribute;
+                                 Context   : Facelet_Context'Class)
+                                 return EL.Expressions.ValueExpression is
+      V : EL.Objects.Object := EL.Objects.To_Object (Attribute.Value);
+   begin
+      if Attribute.Binding /= null then
+         return EL.Expressions.Create_ValueExpression (V);
+      else
+         return EL.Expressions.Create_ValueExpression (V);
+      end if;
+   end Get_ValueExpression;
 
    --  ------------------------------
    --  Find the tag attribute having the given name.

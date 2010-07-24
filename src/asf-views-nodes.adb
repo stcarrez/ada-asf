@@ -46,6 +46,17 @@ package body ASF.Views.Nodes is
    --  Attribute of a node.
    --  ------------------------------
 
+   procedure Error (Attribute : Tag_Attribute;
+                    Message   : in String;
+                    Param1    : in String) is
+   begin
+      if Attribute.Tag /= null then
+         Attribute.Tag.Error (Message, Param1);
+      else
+         Log.Error (Message, Param1);
+      end if;
+   end Error;
+
    --  ------------------------------
    --  Get the attribute name.
    --  ------------------------------
@@ -74,6 +85,11 @@ package body ASF.Views.Nodes is
       else
          return EL.Objects.To_Object (Attribute.Value);
       end if;
+
+   exception
+      when E : others =>
+         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+         return EL.Objects.Null_Object;
    end Get_Value;
 
    --  ------------------------------
@@ -88,6 +104,11 @@ package body ASF.Views.Nodes is
       else
          return EL.Objects.To_Object (Attribute.Value);
       end if;
+
+   exception
+      when E : others =>
+         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+         return EL.Objects.Null_Object;
    end Get_Value;
 
    function Get_Value (Attribute : Tag_Attribute;
@@ -101,14 +122,14 @@ package body ASF.Views.Nodes is
 
    exception
       when E : others =>
-         Log.Error ("Expression error: {0}", Ada.Exceptions.Exception_Message (E));
+         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
          return EL.Objects.Null_Object;
    end Get_Value;
 
    function Get_ValueExpression (Attribute : Tag_Attribute;
                                  Context   : Facelet_Context'Class)
                                  return EL.Expressions.ValueExpression is
-      V : EL.Objects.Object := EL.Objects.To_Object (Attribute.Value);
+      V : constant EL.Objects.Object := EL.Objects.To_Object (Attribute.Value);
    begin
       if Attribute.Binding /= null then
          return EL.Expressions.Create_ValueExpression (V);
@@ -138,6 +159,26 @@ package body ASF.Views.Nodes is
    end Find_Attribute;
 
    --  ------------------------------
+   --  Source line information
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Get the line number
+   --  ------------------------------
+   function Line (Info : Line_Info) return Natural is
+   begin
+      return Info.Line;
+   end Line;
+
+   --  ------------------------------
+   --  Get the source file
+   --  ------------------------------
+   function File (Info : Line_Info) return String is
+   begin
+      return Info.File.all;
+   end File;
+
+   --  ------------------------------
    --  XHTML node
    --  ------------------------------
 
@@ -148,6 +189,33 @@ package body ASF.Views.Nodes is
    begin
       return Node.Name;
    end Get_Name;
+
+   --  ------------------------------
+   --  Get the line information where the tag node is defined.
+   --  ------------------------------
+   function Get_Line_Info (Node : Tag_Node) return Line_Info is
+   begin
+      return Node.Line;
+   end Get_Line_Info;
+
+   --  ------------------------------
+   --  Get the line information as a string.
+   --  ------------------------------
+   function Get_Line_Info (Node : Tag_Node) return String is
+      L : constant String := Natural'Image (Node.Line.Line);
+      C : constant String := Natural'Image (Node.Line.Column);
+      use Util.Strings;
+   begin
+      if Node.Line.File = null then
+         return "?:"
+           & L (L'First + 1 .. L'Last)
+           & ':' & C (C'First + 1 .. C'Last);
+      else
+         return Node.Line.File.all
+           & ':' & L (L'First + 1 .. L'Last)
+           & ':' & C (C'First + 1 .. C'Last);
+      end if;
+   end Get_Line_Info;
 
    --  ------------------------------
    --  Get the node attribute with the given name.
@@ -161,6 +229,26 @@ package body ASF.Views.Nodes is
       end if;
       return Find_Attribute (Node.Attributes, Name);
    end Get_Attribute;
+
+   --  ------------------------------
+   --  Initialize the node
+   --  ------------------------------
+   procedure Initialize (Node       : in Tag_Node_Access;
+                         Name       : in Unbounded_String;
+                         Line       : in Line_Info;
+                         Parent     : in Tag_Node_Access;
+                         Attributes : in Tag_Attribute_Array_Access) is
+   begin
+      Node.Name := Name;
+      Node.Line := Line;
+      Node.Parent := Parent;
+      Node.Attributes := Attributes;
+      if Node.Attributes /= null then
+         for I in Attributes.all'Range loop
+            Attributes (I).Tag := Node;
+         end loop;
+      end if;
+   end Initialize;
 
    --  ------------------------------
    --  Append a child tag node.
@@ -213,6 +301,15 @@ package body ASF.Views.Nodes is
          Free (Node.Attributes);
       end if;
    end Delete;
+
+   --  Report an error message
+   procedure Error (Node    : in Tag_Node'Class;
+                    Message : in String;
+                    Param1  : in String := "") is
+      L : constant String := Node.Get_Line_Info;
+   begin
+      Log.Error (L & ":" & Message, Param1);
+   end Error;
 
    --  ------------------------------
    --  Build the component tree from the tag node and attach it as
@@ -269,6 +366,11 @@ package body ASF.Views.Nodes is
             if not EL.Objects.Is_Null (Value) then
                Writer.Write_Text (Value);
             end if;
+
+         exception
+            when E : others =>
+               Node.Error ("Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+
          end;
          Content := Content.Next;
          exit when Content = null;
@@ -299,14 +401,13 @@ package body ASF.Views.Nodes is
 
    --  Create the text Tag
    function Create_Component_Node (Name       : Unbounded_String;
+                                   Line       : Line_Info;
                                    Parent     : Tag_Node_Access;
                                    Attributes : Tag_Attribute_Array_Access)
                                    return Tag_Node_Access is
       Node : constant Tag_Node_Access := new Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       return Node.all'Access;
    end Create_Component_Node;
 

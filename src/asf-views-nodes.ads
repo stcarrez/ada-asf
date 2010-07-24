@@ -25,6 +25,7 @@
 with Ada.Strings.Unbounded;
 with EL.Expressions;
 with EL.Objects;
+with Util.Strings;
 with ASF.Components;
 with ASF.Contexts.Faces;
 with ASF.Contexts.Facelets;
@@ -64,11 +65,28 @@ package ASF.Views.Nodes is
    function Get_Value (Attribute : Tag_Attribute;
                        Context   : Facelet_Context'Class) return EL.Objects.Object;
 
+   function Get_ValueExpression (Attribute : Tag_Attribute;
+                                 Context   : Facelet_Context'Class)
+                                 return EL.Expressions.ValueExpression;
+
    --  Find the tag attribute having the given name.
    --  Returns an access to the attribute cell within the array or null
    --  if the no attribute matches the name.
    function Find_Attribute (Attributes : Tag_Attribute_Array_Access;
                             Name       : String) return Tag_Attribute_Access;
+
+   --  ------------------------------
+   --  Source line information
+   --  ------------------------------
+   type Line_Info is private;
+
+   --  Get the line number
+   function Line (Info : Line_Info) return Natural;
+   pragma Inline (Line);
+
+   --  Get the source file
+   function File (Info : Line_Info) return String;
+   pragma Inline (File);
 
    --  ------------------------------
    --  XHTML node
@@ -84,6 +102,12 @@ package ASF.Views.Nodes is
    --  Returns null if the node does not have such attribute.
    function Get_Attribute (Node : Tag_Node;
                            Name : String) return Tag_Attribute_Access;
+
+   --  Get the line information where the tag node is defined.
+   function Get_Line_Info (Node : Tag_Node) return Line_Info;
+
+   --  Get the line information as a string.
+   function Get_Line_Info (Node : Tag_Node) return String;
 
    --  Append a child tag node.
    procedure Append_Tag (Node  : in Tag_Node_Access;
@@ -111,6 +135,11 @@ package ASF.Views.Nodes is
 
    --  Delete the node and its children freeing the memory as necessary
    procedure Delete (Node : access Tag_Node);
+
+   --  Report an error message
+   procedure Error (Node    : in Tag_Node'Class;
+                    Message : in String;
+                    Param1  : in String := "");
 
    --  ------------------------------
    --  Text nodes mixed with EL expressions.
@@ -148,22 +177,31 @@ package ASF.Views.Nodes is
    --  Create function to build a tag node
    type Tag_Node_Create_Access is access
      function (Name       : Unbounded_String;
+               Line       : Line_Info;
                Parent     : Tag_Node_Access;
                Attributes : Tag_Attribute_Array_Access) return Tag_Node_Access;
 
    --  Create the When Tag
    function Create_Component_Node (Name       : Unbounded_String;
+                                   Line       : Line_Info;
                                    Parent     : Tag_Node_Access;
                                    Attributes : Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;
 
 private
 
+   type Line_Info is record
+      Line   : Natural := 0;
+      Column : Natural := 0;
+      File   : Util.Strings.Name_Access := null;
+   end record;
+
    type Cursor is record
       Node : Tag_Node_Access;
    end record;
 
    type Tag_Attribute is record
+      Tag     : Tag_Node_Access;
       Name    : Unbounded_String;
       Value   : Unbounded_String;
       Binding : EL.Expressions.Expression_Access;
@@ -185,7 +223,17 @@ private
       Next        : Tag_Node_Access;
       First_Child : Tag_Node_Access;
       Last_Child  : Tag_Node_Access;
+
+      --  Source line information where the tag node is defined (for error messages)
+      Line        : Line_Info;
    end record;
+
+   --  Initialize the node
+   procedure Initialize (Node       : in Tag_Node_Access;
+                         Name       : in Unbounded_String;
+                         Line       : in Line_Info;
+                         Parent     : in Tag_Node_Access;
+                         Attributes : in Tag_Attribute_Array_Access);
 
    type Tag_Content;
    type Tag_Content_Access is access all Tag_Content;

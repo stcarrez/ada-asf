@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with EL.Variables;
 with ASF.Views.Nodes.Facelets;
 package body ASF.Contexts.Facelets is
 
@@ -56,6 +57,20 @@ package body ASF.Contexts.Facelets is
    begin
       null;
    end Set_Attribute;
+
+   --  ------------------------------
+   --  Set the attribute having given name with the value expression.
+   --  ------------------------------
+   procedure Set_Variable (Context : in out Facelet_Context;
+                           Name    : in Unbounded_String;
+                           Value   : in EL.Expressions.ValueExpression) is
+      Mapper : constant access EL.Variables.VariableMapper'Class
+        := Context.Context.Get_Variable_Mapper;
+   begin
+      if Mapper /= null then
+         Mapper.Set_Variable (Name, Value);
+      end if;
+   end Set_Variable;
 
    --  ------------------------------
    --  Include the facelet from the given source file.

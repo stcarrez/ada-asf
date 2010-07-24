@@ -18,6 +18,7 @@
 
 with EL.Objects;
 with EL.Contexts;
+with EL.Expressions;
 with ASF.Components;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Vectors;
@@ -54,6 +55,11 @@ package ASF.Contexts.Facelets is
    procedure Set_Attribute (Context : in out Facelet_Context;
                             Name    : in Unbounded_String;
                             Value   : in EL.Objects.Object);
+
+   --  Set the attribute having given name with the value expression.
+   procedure Set_Variable (Context : in out Facelet_Context;
+                           Name    : in Unbounded_String;
+                           Value   : in EL.Expressions.ValueExpression);
 
    --  Include the facelet from the given source file.
    --  The included views appended to the parent component tree.

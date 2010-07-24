@@ -108,6 +108,9 @@ package body ASF.Server.Web is
                        Base     : access EL.Beans.Readonly_Bean'Class;
                        Name     : Unbounded_String) return EL.Objects.Object is
       use EL.Objects;
+      use EL.Beans;
+      use EL.Variables;
+
       Result : Object := Resolver.Request.Get_Value (Context, Base, Name);
       Bean   : EL.Beans.Readonly_Bean_Access;
       Free   : ASF.Beans.Free_Bean_Access;
@@ -117,6 +120,10 @@ package body ASF.Server.Web is
          return Result;
       end if;
       Resolver.Application.Create (Name, Bean, Free, Scope);
+      if Bean = null then
+         raise No_Variable
+           with "Bean not found: '" & To_String (Name) & "'";
+      end if;
       Resolver.Beans.Append (Bean_Object '(Bean, Free));
       Result := To_Object (Bean);
       Resolver.Request.Register (Name, Result);
@@ -163,6 +170,7 @@ package body ASF.Server.Web is
       use EL.Variables.Default;
       use EL.Contexts;
       use EL.Objects;
+      use EL.Beans;
 
       Writer   : aliased Contexts.Writer.String.String_Writer;
       Context  : aliased Faces_Context;
@@ -200,7 +208,9 @@ package body ASF.Server.Web is
             declare
                Bean : Bean_Object := Bean_Vectors.Element (C);
             begin
-               Bean.Free (Bean.Bean);
+               if Bean.Bean /= null then
+                  Bean.Free (Bean.Bean);
+               end if;
             end;
             Bean_Vectors.Next (C);
          end loop;

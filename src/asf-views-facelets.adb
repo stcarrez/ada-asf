@@ -202,6 +202,7 @@ package body ASF.Views.Facelets is
       Close (Read);
 
       Result := Facelet '(Root => Get_Root (Reader),
+                          File => File,
                           Path => To_Unbounded_String (Containing_Directory (Path) & '/'));
    exception
       when Ada.IO_Exceptions.Name_Error =>
@@ -233,6 +234,8 @@ package body ASF.Views.Facelets is
    --  ------------------------------
    procedure Clear_Cache (Factory : in out Facelet_Factory) is
    begin
+      Log.Info ("Clearing facelet cache");
+
       Factory.Lock.Write;
       loop
          declare

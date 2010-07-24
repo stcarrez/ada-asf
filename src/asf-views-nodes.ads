@@ -75,6 +75,11 @@ package ASF.Views.Nodes is
    function Find_Attribute (Attributes : Tag_Attribute_Array_Access;
                             Name       : String) return Tag_Attribute_Access;
 
+   --  Report an error message for the attribute.
+   procedure Error (Attribute : in Tag_Attribute;
+                    Message   : in String;
+                    Param1    : in String);
+
    --  ------------------------------
    --  Source line information
    --  ------------------------------
@@ -162,6 +167,9 @@ package ASF.Views.Nodes is
    procedure Build_Components (Node    : access Text_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class);
+
+   --  Delete the node and its children freeing the memory as necessary
+   procedure Delete (Node : access Text_Tag_Node);
 
 
    type Cursor is private;

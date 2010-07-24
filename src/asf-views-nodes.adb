@@ -34,6 +34,10 @@ package body ASF.Views.Nodes is
                                      Tag_Attribute_Array_Access);
 
    procedure Free is
+     new Ada.Unchecked_Deallocation (Tag_Content,
+                                     Tag_Content_Access);
+
+   procedure Free is
      new Ada.Unchecked_Deallocation (EL.Expressions.Expression'Class,
                                      EL.Expressions.Expression_Access);
 
@@ -46,7 +50,10 @@ package body ASF.Views.Nodes is
    --  Attribute of a node.
    --  ------------------------------
 
-   procedure Error (Attribute : Tag_Attribute;
+   --  ------------------------------
+   --  Report an error message for the attribute.
+   --  ------------------------------
+   procedure Error (Attribute : in Tag_Attribute;
                     Message   : in String;
                     Param1    : in String) is
    begin
@@ -302,7 +309,9 @@ package body ASF.Views.Nodes is
       end if;
    end Delete;
 
+   --  ------------------------------
    --  Report an error message
+   --  ------------------------------
    procedure Error (Node    : in Tag_Node'Class;
                     Message : in String;
                     Param1  : in String := "") is
@@ -346,6 +355,24 @@ package body ASF.Views.Nodes is
    begin
       Append (Parent, UI, Node);
    end Build_Components;
+
+   --  ------------------------------
+   --  Delete the node and its children freeing the memory as necessary
+   --  ------------------------------
+   procedure Delete (Node : access Text_Tag_Node) is
+      Content : Tag_Content_Access := Node.Content.Next;
+   begin
+      while Content /= null loop
+         declare
+            Next : constant Tag_Content_Access := Content.Next;
+         begin
+            Free (Content);
+            Content := Next;
+         end;
+      end loop;
+      Node.Content.Next := null;
+      Node.Last := null;
+   end Delete;
 
    --  ------------------------------
    --  Encode the content represented by this text node.

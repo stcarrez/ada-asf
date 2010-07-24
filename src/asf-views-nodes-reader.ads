@@ -114,6 +114,7 @@ package ASF.Views.Nodes.Reader is
    --  This is not re-entrant: you can not call Parse with the same Parser
    --  argument in one of the SAX callbacks. This has undefined behavior.
    procedure Parse (Parser  : in out Xhtml_Reader;
+                    Name    : in Util.Strings.Name_Access;
                     Input   : in out Input_Sources.Input_Source'Class;
                     Factory : access ASF.Factory.Component_Factory;
                     Context : in EL.Contexts.ELContext_Access);
@@ -188,6 +189,7 @@ private
       Context    : aliased EL.Contexts.Default.Default_Context;
       Stack      : Element_Context_Array_Access;
       Stack_Pos  : Natural := 0;
+      Line       : Line_Info;
    end record;
 
 end ASF.Views.Nodes.Reader;

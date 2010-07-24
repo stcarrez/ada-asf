@@ -260,8 +260,21 @@ package body ASF.Views.Nodes.Reader is
             end if;
 
             Append (Content.Text, Value (Pos .. N - 1));
-            Content.Expr := EL.Expressions.Create_Expression
-              (Value (N .. Last_Pos), Handler.ELContext.all);
+            begin
+               Content.Expr := EL.Expressions.Create_Expression
+                 (Value (N .. Last_Pos), Handler.ELContext.all);
+            exception
+               when E : EL.Functions.No_Function | EL.Expressions.Invalid_Expression =>
+                  Log.Error ("{0}: Invalid expression: {1}",
+                             To_String (Handler.Locator),
+                             Exception_Message (E));
+
+               when E : others =>
+                  Log.Error ("{0}: Internal error: {1}:{2}",
+                             To_String (Handler.Locator),
+                             Exception_Name (E),
+                             Exception_Message (E));
+            end;
             Content.Next := new Tag_Content;
             Content := Content.Next;
             Handler.Text.Last := Content;
@@ -269,11 +282,6 @@ package body ASF.Views.Nodes.Reader is
          end if;
          Pos := Last + 1;
       end loop;
-   exception
-      when E : others =>
-         Log.Error ("{0}: syntax error: {1}: {2}", To_String (Handler.Locator),
-                    Exception_Name (E), Exception_Message (E));
-
    end Collect_Text;
 
    --  ------------------------------
@@ -295,6 +303,8 @@ package body ASF.Views.Nodes.Reader is
       Name       : constant Unbounded_String := To_Unbounded_String (Local_Name);
       Factory    : ASF.Factory.Binding;
    begin
+      Handler.Line.Line := Sax.Locators.Get_Line_Number (Handler.Locator);
+      Handler.Line.Column := Sax.Locators.Get_Column_Number (Handler.Locator);
 
       --  Push the current context to keep track where we are.
       Push (Handler);
@@ -336,7 +346,9 @@ package body ASF.Views.Nodes.Reader is
                end if;
             end;
          end loop;
-         Node := Factory.Tag (Name => Name, Parent => Handler.Current.Parent,
+         Node := Factory.Tag (Name       => Name,
+                              Line       => Handler.Line,
+                              Parent     => Handler.Current.Parent,
                               Attributes => Attributes);
          Node.Factory   := Factory.Component;
          Append_Tag (Handler.Current.Parent, Node);
@@ -348,7 +360,8 @@ package body ASF.Views.Nodes.Reader is
          when Unknown_Name =>
 
             if Namespace_URI /= "" and Index (Qname, ":") > 0 then
-               Log.Info ("Element {0}:{1} not found {2}", Namespace_URI, Local_Name, Qname);
+               Log.Error ("{0}: Element '{1}' not found",
+                         To_String (Handler.Locator), Qname);
             end if;
             if Handler.Text = null then
                Handler.Text := new Text_Tag_Node;
@@ -519,6 +532,7 @@ package body ASF.Views.Nodes.Reader is
    --  argument in one of the SAX callbacks. This has undefined behavior.
    --  ------------------------------
    procedure Parse (Parser  : in out Xhtml_Reader;
+                    Name    : in Util.Strings.Name_Access;
                     Input   : in out Input_Sources.Input_Source'Class;
                     Factory : access ASF.Factory.Component_Factory;
                     Context : in EL.Contexts.ELContext_Access) is
@@ -526,6 +540,7 @@ package body ASF.Views.Nodes.Reader is
    begin
       Parser.Stack_Pos := 1;
       Push (Parser);
+      Parser.Line.File := Name;
       Parser.Root   := new Tag_Node;
       Parser.Functions.Factory := Factory;
       Parser.Current.Parent := Parser.Root;

@@ -187,6 +187,7 @@ package body ASF.Views.Facelets is
       Reader : Xhtml_Reader;
       Read   : File_Input;
       Context : aliased EL.Contexts.Default.Default_Context;
+      File   : constant Util.Strings.Name_Access := new String '(Path);
    begin
       Log.Info ("Loading facelet: '{0}'", Path);
 
@@ -196,13 +197,14 @@ package body ASF.Views.Facelets is
       Set_Feature (Reader, Namespace_Prefixes_Feature, False);
       Set_Feature (Reader, Validation_Feature, False);
 
-      Parse (Reader, Read, Factory.Factory'Unchecked_Access, Context'Unchecked_Access);
+      Parse (Reader, File,
+             Read, Factory.Factory'Unchecked_Access, Context'Unchecked_Access);
       Close (Read);
 
       Result := Facelet '(Root => Get_Root (Reader),
                           Path => To_Unbounded_String (Containing_Directory (Path) & '/'));
    exception
-      when E : Ada.IO_Exceptions.Name_Error =>
+      when Ada.IO_Exceptions.Name_Error =>
          Close (Read);
          Result.Root := null;
          Log.Error ("Cannot read '{0}': file does not exist", Path);

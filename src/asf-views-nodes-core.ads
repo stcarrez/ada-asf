@@ -44,6 +44,7 @@ package ASF.Views.Nodes.Core is
 
    --  Create the Set Tag
    function Create_Set_Tag_Node (Name       : Unbounded_String;
+                                 Line       : Line_Info;
                                  Parent     : Tag_Node_Access;
                                  Attributes : Tag_Attribute_Array_Access)
                                  return Tag_Node_Access;
@@ -68,6 +69,7 @@ package ASF.Views.Nodes.Core is
 
    --  Create the If Tag
    function Create_If_Tag_Node (Name       : Unbounded_String;
+                                Line       : Line_Info;
                                 Parent     : Tag_Node_Access;
                                 Attributes : Tag_Attribute_Array_Access)
                                 return Tag_Node_Access;
@@ -106,6 +108,7 @@ package ASF.Views.Nodes.Core is
 
    --  Create the <c:choose> tag node
    function Create_Choose_Tag_Node (Name       : Unbounded_String;
+                                    Line       : Line_Info;
                                     Parent     : Tag_Node_Access;
                                     Attributes : Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;
@@ -126,6 +129,7 @@ package ASF.Views.Nodes.Core is
 
    --  Create the When Tag
    function Create_When_Tag_Node (Name       : Unbounded_String;
+                                  Line       : Line_Info;
                                   Parent     : Tag_Node_Access;
                                   Attributes : Tag_Attribute_Array_Access)
                                  return Tag_Node_Access;
@@ -141,6 +145,7 @@ package ASF.Views.Nodes.Core is
 
    --  Create the Otherwise Tag
    function Create_Otherwise_Tag_Node (Name       : Unbounded_String;
+                                       Line       : Line_Info;
                                        Parent     : Tag_Node_Access;
                                        Attributes : Tag_Attribute_Array_Access)
                                        return Tag_Node_Access;

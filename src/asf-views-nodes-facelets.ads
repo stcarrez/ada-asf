@@ -47,6 +47,7 @@ package ASF.Views.Nodes.Facelets is
 
    --  Create the Include Tag
    function Create_Include_Tag_Node (Name       : Unbounded_String;
+                                     Line       : Line_Info;
                                      Parent     : Tag_Node_Access;
                                      Attributes : Tag_Attribute_Array_Access)
                                      return Tag_Node_Access;
@@ -68,6 +69,7 @@ package ASF.Views.Nodes.Facelets is
 
    --  Create the Composition Tag
    function Create_Composition_Tag_Node (Name       : Unbounded_String;
+                                         Line       : Line_Info;
                                          Parent     : Tag_Node_Access;
                                          Attributes : Tag_Attribute_Array_Access)
                                          return Tag_Node_Access;
@@ -105,6 +107,7 @@ package ASF.Views.Nodes.Facelets is
 
    --  Create the Decorate Tag
    function Create_Decorate_Tag_Node (Name       : Unbounded_String;
+                                      Line       : Line_Info;
                                       Parent     : Tag_Node_Access;
                                       Attributes : Tag_Attribute_Array_Access)
                                       return Tag_Node_Access;
@@ -118,6 +121,7 @@ package ASF.Views.Nodes.Facelets is
 
    --  Create the Define Tag
    function Create_Define_Tag_Node (Name       : Unbounded_String;
+                                    Line       : Line_Info;
                                     Parent     : Tag_Node_Access;
                                     Attributes : Tag_Attribute_Array_Access)
                                     return Tag_Node_Access;
@@ -139,6 +143,7 @@ package ASF.Views.Nodes.Facelets is
 
    --  Create the Insert Tag
    function Create_Insert_Tag_Node (Name       : Unbounded_String;
+                                    Line       : Line_Info;
                                     Parent     : Tag_Node_Access;
                                     Attributes : Tag_Attribute_Array_Access)
                                     return Tag_Node_Access;
@@ -161,6 +166,7 @@ package ASF.Views.Nodes.Facelets is
 
    --  Create the Param Tag
    function Create_Param_Tag_Node (Name       : Unbounded_String;
+                                   Line       : Line_Info;
                                    Parent     : Tag_Node_Access;
                                    Attributes : Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;

@@ -26,16 +26,21 @@ package body ASF.Views.Nodes.Core is
    --  Create the Set Tag
    --  ------------------------------
    function Create_Set_Tag_Node (Name       : Unbounded_String;
+                                 Line       : Line_Info;
                                  Parent     : Tag_Node_Access;
                                  Attributes : Tag_Attribute_Array_Access)
                                  return Tag_Node_Access is
       Node : constant Set_Tag_Node_Access := new Set_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Value      := Find_Attribute (Attributes, "value");
       Node.Var        := Find_Attribute (Attributes, "var");
+      if Node.Value = null then
+         Node.Error ("Missing 'value' attribute");
+      end if;
+      if Node.Var = null then
+         Node.Error ("Missing 'var' attribute");
+      end if;
       return Node.all'Access;
    end Create_Set_Tag_Node;
 
@@ -50,9 +55,10 @@ package body ASF.Views.Nodes.Core is
                                Context : in out Facelet_Context'Class) is
       pragma Unreferenced (Parent);
 
-      Value : constant EL.Objects.Object := Get_Value (Node.Value.all, Context);
+      Value  : EL.Expressions.ValueExpression;
+--          := Node.Value.Get_ValueExpression (Context);
    begin
-      Context.Set_Attribute (Node.Var.Value, Value);
+      Context.Set_Variable (Node.Var.Value, Value);
    end Build_Components;
 
    --  ------------------------------
@@ -63,16 +69,18 @@ package body ASF.Views.Nodes.Core is
    --  Create the If Tag
    --  ------------------------------
    function Create_If_Tag_Node (Name       : Unbounded_String;
+                                Line       : Line_Info;
                                 Parent     : Tag_Node_Access;
                                 Attributes : Tag_Attribute_Array_Access)
                                 return Tag_Node_Access is
       Node : constant If_Tag_Node_Access := new If_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Condition  := Find_Attribute (Attributes, "test");
       Node.Var        := Find_Attribute (Attributes, "var");
+      if Node.Condition = null then
+         Node.Error ("Missing 'test' attribute");
+      end if;
       return Node.all'Access;
    end Create_If_Tag_Node;
 
@@ -103,14 +111,13 @@ package body ASF.Views.Nodes.Core is
    --  Create the Choose Tag
    --  ------------------------------
    function Create_Choose_Tag_Node (Name       : Unbounded_String;
+                                    Line       : Line_Info;
                                     Parent     : Tag_Node_Access;
                                     Attributes : Tag_Attribute_Array_Access)
                                     return Tag_Node_Access is
       Node : constant Choose_Tag_Node_Access := new Choose_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       return Node.all'Access;
    end Create_Choose_Tag_Node;
 
@@ -176,15 +183,17 @@ package body ASF.Views.Nodes.Core is
    --  Create the When Tag
    --  ------------------------------
    function Create_When_Tag_Node (Name       : Unbounded_String;
+                                  Line       : Line_Info;
                                   Parent     : Tag_Node_Access;
                                   Attributes : Tag_Attribute_Array_Access)
                                   return Tag_Node_Access is
       Node : constant When_Tag_Node_Access := new When_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Condition  := Find_Attribute (Attributes, "test");
+      if Node.Condition = null then
+         Node.Error ("Missing 'test' attribute");
+      end if;
       --        Node.Var        := Find_Attribute (Attributes, "var");
       return Node.all'Access;
    end Create_When_Tag_Node;
@@ -202,14 +211,13 @@ package body ASF.Views.Nodes.Core is
    --  Create the Otherwise Tag
    --  ------------------------------
    function Create_Otherwise_Tag_Node (Name       : Unbounded_String;
+                                       Line       : Line_Info;
                                        Parent     : Tag_Node_Access;
                                        Attributes : Tag_Attribute_Array_Access)
                                        return Tag_Node_Access is
       Node : constant Otherwise_Tag_Node_Access := new Otherwise_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       return Node.all'Access;
    end Create_Otherwise_Tag_Node;
 

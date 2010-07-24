@@ -97,14 +97,13 @@ package body ASF.Views.Nodes.Facelets is
    --  Create the Include Tag
    --  ------------------------------
    function Create_Include_Tag_Node (Name       : Unbounded_String;
+                                     Line       : Line_Info;
                                      Parent     : Tag_Node_Access;
                                      Attributes : Tag_Attribute_Array_Access)
                                      return Tag_Node_Access is
       Node : constant Include_Tag_Node_Access := new Include_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Source     := Find_Attribute (Attributes, "src");
       return Node.all'Access;
    end Create_Include_Tag_Node;
@@ -141,14 +140,13 @@ package body ASF.Views.Nodes.Facelets is
    --  Create the Composition Tag
    --  ------------------------------
    function Create_Composition_Tag_Node (Name       : Unbounded_String;
+                                         Line       : Line_Info;
                                          Parent     : Tag_Node_Access;
                                          Attributes : Tag_Attribute_Array_Access)
                                          return Tag_Node_Access is
       Node : constant Composition_Tag_Node_Access := new Composition_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Template   := Find_Attribute (Attributes, "template");
       return Node.all'Access;
    end Create_Composition_Tag_Node;
@@ -233,14 +231,13 @@ package body ASF.Views.Nodes.Facelets is
 
    --  Create the Decorate Tag
    function Create_Decorate_Tag_Node (Name       : Unbounded_String;
+                                      Line       : Line_Info;
                                       Parent     : Tag_Node_Access;
                                       Attributes : Tag_Attribute_Array_Access)
                                       return Tag_Node_Access is
       Node : constant Decorate_Tag_Node_Access := new Decorate_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Template   := Find_Attribute (Attributes, "template");
       if Node.Template = null then
          Log.Error ("Missing attribute 'template' on the decorator");
@@ -252,15 +249,14 @@ package body ASF.Views.Nodes.Facelets is
    --  Create the Define Tag
    --  ------------------------------
    function Create_Define_Tag_Node (Name       : Unbounded_String;
+                                    Line       : Line_Info;
                                     Parent     : Tag_Node_Access;
                                     Attributes : Tag_Attribute_Array_Access)
                                     return Tag_Node_Access is
       Node : constant Define_Tag_Node_Access := new Define_Tag_Node;
       Attr : constant Tag_Attribute_Access := Find_Attribute (Attributes, "name");
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       if Attr = null then
          Log.Error ("Missing attribute 'name' on node");
       else
@@ -286,14 +282,13 @@ package body ASF.Views.Nodes.Facelets is
    --  Create the Insert Tag
    --  ------------------------------
    function Create_Insert_Tag_Node (Name       : Unbounded_String;
+                                    Line       : Line_Info;
                                     Parent     : Tag_Node_Access;
                                     Attributes : Tag_Attribute_Array_Access)
                                     return Tag_Node_Access is
       Node : constant Insert_Tag_Node_Access := new Insert_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Insert_Name := Find_Attribute (Attributes, "name");
       return Node.all'Access;
    end Create_Insert_Tag_Node;
@@ -326,14 +321,13 @@ package body ASF.Views.Nodes.Facelets is
    --  Create the Param Tag
    --  ------------------------------
    function Create_Param_Tag_Node (Name       : Unbounded_String;
+                                   Line       : Line_Info;
                                    Parent     : Tag_Node_Access;
                                    Attributes : Tag_Attribute_Array_Access)
                                    return Tag_Node_Access is
       Node : constant Param_Tag_Node_Access := new Param_Tag_Node;
    begin
-      Node.Name       := Name;
-      Node.Parent     := Parent;
-      Node.Attributes := Attributes;
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Value      := Find_Attribute (Attributes, "value");
       Node.Var        := Find_Attribute (Attributes, "name");
       return Node.all'Access;

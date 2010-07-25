@@ -268,6 +268,9 @@ package body ASF.Views.Nodes.Reader is
                   Log.Error ("{0}: Invalid expression: {1}",
                              To_String (Handler.Locator),
                              Exception_Message (E));
+                  Log.Error ("{0}: {1}",
+                             To_String (Handler.Locator),
+                             Value (N .. Last_Pos));
 
                when E : others =>
                   Log.Error ("{0}: Internal error: {1}:{2}",
@@ -331,15 +334,15 @@ package body ASF.Views.Nodes.Reader is
                         Log.Error ("{0}: Invalid expression: {1}",
                                    To_String (Handler.Locator),
                                    Exception_Message (E));
+                        Attr.Binding := null;
                         Attr.Value := To_Unbounded_String ("");
 
                      when E : EL.Expressions.Invalid_Expression =>
                         Log.Error ("{0}: Invalid expression: {1}",
                                    To_String (Handler.Locator),
                                    Exception_Message (E));
+                        Attr.Binding := null;
                         Attr.Value := To_Unbounded_String ("");
-
-
                   end;
                else
                   Attr.Value := To_Unbounded_String (Value);
@@ -351,7 +354,6 @@ package body ASF.Views.Nodes.Reader is
                               Parent     => Handler.Current.Parent,
                               Attributes => Attributes);
          Node.Factory   := Factory.Component;
-         Append_Tag (Handler.Current.Parent, Node);
          Handler.Current.Parent := Node;
          Handler.Current.Text   := False;
          Handler.Text   := null;
@@ -365,8 +367,9 @@ package body ASF.Views.Nodes.Reader is
             end if;
             if Handler.Text = null then
                Handler.Text := new Text_Tag_Node;
+               Initialize (Handler.Text.all'Access, Null_Unbounded_String,
+                           Handler.Line, Handler.Current.Parent, null);
                Handler.Text.Last := Handler.Text.Content'Access;
-               Append_Tag (Handler.Current.Parent, Handler.Text.all'Access);
             end if;
             Handler.Current.Text := True;
             declare
@@ -413,8 +416,9 @@ package body ASF.Views.Nodes.Reader is
 
       elsif Handler.Current.Text and Handler.Text = null then
          Handler.Text := new Text_Tag_Node;
+         Initialize (Handler.Text.all'Access, Null_Unbounded_String,
+                     Handler.Line, Handler.Current.Parent, null);
          Handler.Text.Last := Handler.Text.Content'Access;
-         Append_Tag (Handler.Current.Parent, Handler.Text.all'Access);
       end if;
       if Handler.Text /= null then
          declare
@@ -439,8 +443,9 @@ package body ASF.Views.Nodes.Reader is
    begin
       if Handler.Text = null then
          Handler.Text := new Text_Tag_Node;
+         Initialize (Handler.Text.all'Access, Null_Unbounded_String,
+                     Handler.Line, Handler.Current.Parent, null);
          Handler.Text.Last := Handler.Text.Content'Access;
-         Append_Tag (Handler.Current.Parent, Handler.Text.all'Access);
       end if;
       declare
          Content : Tag_Content_Access := Handler.Text.Last;

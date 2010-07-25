@@ -247,14 +247,14 @@ private
    type Tag_Content_Access is access all Tag_Content;
 
    type Tag_Content is record
-      Next : Tag_Content_Access;
+      Next : Tag_Content_Access := null;
       Text : Unbounded_String;
       Expr : EL.Expressions.Expression;
    end record;
 
    type Text_Tag_Node is new Tag_Node with record
       Content : aliased Tag_Content;
-      Last    : Tag_Content_Access;
+      Last    : Tag_Content_Access := null;
    end record;
 
 end ASF.Views.Nodes;

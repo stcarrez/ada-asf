@@ -83,7 +83,7 @@ package body ASF.Views.Facelets is
    begin
       if View.Root /= null then
          Context.Set_Relative_Path (Path => View.Path, Previous => Old);
-         View.Root.Build_Children (Parent  => Root, Context => Context);
+         View.Root.Build_Children (Parent => Root, Context => Context);
          Context.Set_Relative_Path (Path => Old);
       end if;
    end Build_View;

@@ -143,6 +143,11 @@ package body ASF.Views.Nodes is
       else
          return EL.Expressions.Create_ValueExpression (V);
       end if;
+
+   exception
+      when E : others =>
+         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+         return EL.Expressions.Create_ValueExpression (V);
    end Get_ValueExpression;
 
    --  ------------------------------
@@ -255,6 +260,7 @@ package body ASF.Views.Nodes is
             Attributes (I).Tag := Node;
          end loop;
       end if;
+      Append_Tag (Parent, Node);
    end Initialize;
 
    --  ------------------------------
@@ -386,13 +392,15 @@ package body ASF.Views.Nodes is
    begin
       loop
          Writer.Write (Content.Text);
-         declare
-            Value : constant EL.Objects.Object
-              := Content.Expr.Get_Value (Context.Get_ELContext.all);
          begin
-            if not EL.Objects.Is_Null (Value) then
-               Writer.Write_Text (Value);
-            end if;
+            declare
+               Value : constant EL.Objects.Object
+                 := Content.Expr.Get_Value (Context.Get_ELContext.all);
+            begin
+               if not EL.Objects.Is_Null (Value) then
+                  Writer.Write_Text (Value);
+               end if;
+            end;
 
          exception
             when E : others =>

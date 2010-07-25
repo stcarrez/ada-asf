@@ -119,6 +119,9 @@ package body ASF.Server.Web is
       if not EL.Objects.Is_Null (Result) then
          return Result;
       end if;
+      if Name = "contextPath" then
+         return EL.Objects.To_Object (String '("/am"));
+      end if;
       Resolver.Application.Create (Name, Bean, Free, Scope);
       if Bean = null then
          raise No_Variable
@@ -196,9 +199,25 @@ package body ASF.Server.Web is
 
       Context.Set_Request (Request'Unrestricted_Access);
       Set_Current (Context'Unchecked_Access);
-      Handler.Restore_View (Page, Context, View);
+      begin
+         Handler.Restore_View (Page, Context, View);
 
-      Handler.Render_View (Context, View);
+      exception
+         when E : others =>
+            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            raise;
+      end;
+
+      begin
+         Handler.Render_View (Context, View);
+
+      exception
+         when E: others =>
+            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            raise;
+      end;
       Writer.Flush;
 
       declare

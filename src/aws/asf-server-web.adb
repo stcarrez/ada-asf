@@ -30,6 +30,8 @@ with ASF.Components.Core;
 with ASF.Contexts.Faces;
 with ASF.Contexts.Writer.String;
 
+with ASF.Requests.Web;
+
 with EL.Objects;
 with EL.Contexts;
 with EL.Contexts.Default;
@@ -119,13 +121,11 @@ package body ASF.Server.Web is
       if not EL.Objects.Is_Null (Result) then
          return Result;
       end if;
-      if Name = "contextPath" then
-         return EL.Objects.To_Object (String '("/am"));
-      end if;
       Resolver.Application.Create (Name, Bean, Free, Scope);
       if Bean = null then
-         raise No_Variable
-           with "Bean not found: '" & To_String (Name) & "'";
+         return Resolver.Application.Get_Global (Name, Context);
+--           raise No_Variable
+--             with "Bean not found: '" & To_String (Name) & "'";
       end if;
       Resolver.Beans.Append (Bean_Object '(Bean, Free));
       Result := To_Object (Bean);
@@ -183,6 +183,7 @@ package body ASF.Server.Web is
       Req_Resolver   : aliased Default_ELResolver;
       Root_Resolver  : aliased Web_ELResolver;
 
+      Req      : aliased ASF.Requests.Web.Request;
       Beans    : aliased Bean_Vectors.Vector;
       --  Get the view handler
       Handler   : constant access View_Handler'Class := App.Get_View_Handler;
@@ -197,7 +198,7 @@ package body ASF.Server.Web is
       Context.Set_ELContext (ELContext'Unchecked_Access);
       Writer.Initialize ("text/xml", "UTF-8", 8192);
 
-      Context.Set_Request (Request'Unrestricted_Access);
+      Context.Set_Request (Req'Unchecked_Access);
       Set_Current (Context'Unchecked_Access);
       begin
          Handler.Restore_View (Page, Context, View);

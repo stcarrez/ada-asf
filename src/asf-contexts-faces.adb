@@ -87,14 +87,14 @@ package body ASF.Contexts.Faces is
    function Get_Parameter (Context : Faces_Context;
                            Name    : String) return String is
    begin
-      return AWS.Status.Parameter (Context.Request.all, Name);
+      return Context.Request.Get_Parameter (Name);
    end Get_Parameter;
 
    --  ------------------------------
    --  Get the request
    --  ------------------------------
    function Get_Request (Context : Faces_Context)
-                         return access AWS.Status.Data is
+                         return ASF.Requests.Request_Access is
    begin
       return Context.Request;
    end Get_Request;
@@ -103,7 +103,7 @@ package body ASF.Contexts.Faces is
    --  Set the request
    --  ------------------------------
    procedure Set_Request (Context : in out Faces_Context;
-                          Request : access AWS.Status.Data) is
+                          Request : in ASF.Requests.Request_Access) is
    begin
       Context.Request := Request;
    end Set_Request;

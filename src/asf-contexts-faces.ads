@@ -16,11 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with ASF.Requests;
 with ASF.Contexts.Writer;
 with EL.Objects;
 with EL.Contexts;
 with Ada.Strings.Unbounded;
-with AWS.Status;
 
 --  The <b>Faces_Context</b> is an object passed to the component tree and
 --  bean actions to provide the full context in which the view is rendered
@@ -68,11 +68,11 @@ package ASF.Contexts.Faces is
                            Name    : String) return String;
 
    --  Get the request
-   function Get_Request (Context : Faces_Context) return access AWS.Status.Data;
+   function Get_Request (Context : Faces_Context) return ASF.Requests.Request_Access;
 
    --  Set the request
    procedure Set_Request (Context : in out Faces_Context;
-                          Request : access AWS.Status.Data);
+                          Request : in ASF.Requests.Request_Access);
 
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
@@ -91,7 +91,7 @@ private
       Context : EL.Contexts.ELContext_Access;
 
       --  The request
-      Request : access AWS.Status.Data;
+      Request : ASF.Requests.Request_Access;
    end record;
 
 end ASF.Contexts.Faces;

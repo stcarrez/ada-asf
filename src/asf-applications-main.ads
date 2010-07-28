@@ -18,6 +18,9 @@
 with ASF.Applications.Views;
 with ASF.Beans;
 with EL.Beans;
+with EL.Objects;
+with EL.Contexts;
+with EL.Variables.Default;
 with Ada.Strings.Unbounded;
 with ASF.Modules;
 package ASF.Applications.Main is
@@ -34,6 +37,22 @@ package ASF.Applications.Main is
    --  Initialize the application
    procedure Initialize (App  : in out Application;
                          Conf : in Config);
+
+   --  Set a global variable in the global EL contexts.
+   procedure Set_Global (App     : in out Application;
+                         Name    : in String;
+                         Value   : in String);
+
+   procedure Set_Global (App     : in out Application;
+                         Name    : in String;
+                         Value   : in EL.Objects.Object);
+
+   --  Resolve a global variable and return its value.
+   --  Raises the <b>EL.Functions.No_Variable</b> exception if the variable does not exist.
+   function Get_Global (App : in Application;
+                        Name : in Ada.Strings.Unbounded.Unbounded_String;
+                        Context : in EL.Contexts.ELContext'Class)
+                        return EL.Objects.Object;
 
    --  Register under the given name a function to create the bean instance when
    --  it is accessed for a first time.  The scope defines the scope of the bean.
@@ -66,6 +85,7 @@ private
       View    : aliased ASF.Applications.Views.View_Handler;
       Factory : ASF.Beans.Bean_Factory;
       Modules : aliased ASF.Modules.Module_Registry;
+      Globals : aliased EL.Variables.Default.Default_Variable_Mapper;
    end record;
 
 end ASF.Applications.Main;

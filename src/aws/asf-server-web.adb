@@ -115,7 +115,7 @@ package body ASF.Server.Web is
 
       Result : Object := Resolver.Request.Get_Value (Context, Base, Name);
       Bean   : EL.Beans.Readonly_Bean_Access;
-      Free   : ASF.Beans.Free_Bean_Access;
+      Free   : ASF.Beans.Free_Bean_Access := null;
       Scope  : Scope_Type;
    begin
       if not EL.Objects.Is_Null (Result) then
@@ -228,7 +228,7 @@ package body ASF.Server.Web is
             declare
                Bean : Bean_Object := Bean_Vectors.Element (C);
             begin
-               if Bean.Bean /= null then
+               if Bean.Bean /= null and then Bean.Free /= null then
                   Bean.Free (Bean.Bean);
                end if;
             end;

@@ -18,6 +18,7 @@
 with ASF.Applications.Views;
 with ASF.Beans;
 with EL.Beans;
+with ASF.Locales;
 with EL.Objects;
 with EL.Contexts;
 with EL.Variables.Default;
@@ -69,6 +70,11 @@ package ASF.Applications.Main is
                        Name    : in String;
                        URI     : in String := "");
 
+   --  Register a bundle and bind it to a facelet variable.
+   procedure Register (App    : in out Application;
+                       Name   : in String;
+                       Bundle : in String);
+
    --  Create a bean by using the create operation registered for the name
    procedure Create (App     : in Application;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
@@ -84,6 +90,7 @@ private
    type Application is tagged limited record
       View    : aliased ASF.Applications.Views.View_Handler;
       Factory : ASF.Beans.Bean_Factory;
+      Locales : ASF.Locales.Factory;
       Modules : aliased ASF.Modules.Module_Registry;
       Globals : aliased EL.Variables.Default.Default_Variable_Mapper;
    end record;

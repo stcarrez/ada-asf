@@ -106,6 +106,16 @@ package body ASF.Applications.Main is
    end Register;
 
    --  ------------------------------
+   --  Register a bundle and bind it to a facelet variable.
+   --  ------------------------------
+   procedure Register (App    : in out Application;
+                       Name   : in String;
+                       Bundle : in String) is
+   begin
+      ASF.Locales.Register (App.Locales, App.Factory, Name, Bundle);
+   end Register;
+
+   --  ------------------------------
    --  Closes the application
    --  ------------------------------
    procedure Close (App : in out Application) is

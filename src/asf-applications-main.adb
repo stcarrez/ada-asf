@@ -35,6 +35,7 @@ package body ASF.Applications.Main is
    begin
       App.View.Initialize (Conf);
       ASF.Modules.Initialize (App.Modules, Conf);
+      ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
    end Initialize;
 
    --  ------------------------------

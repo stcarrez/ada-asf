@@ -18,10 +18,12 @@
 
 with ASF.Components.Html.Text;
 with ASF.Components.Html.Lists;
+with ASF.Components.Html.Links;
 with ASF.Views.Nodes;
 package body ASF.Components.Html.Factory is
 
    function Create_Output return UIComponent_Access;
+   function Create_Output_Link return UIComponent_Access;
    function Create_Label return UIComponent_Access;
    function Create_List return UIComponent_Access;
 
@@ -32,6 +34,14 @@ package body ASF.Components.Html.Factory is
    begin
       return new ASF.Components.Html.Text.UIOutput;
    end Create_Output;
+
+   --  ------------------------------
+   --  Create an UIOutputLink component
+   --  ------------------------------
+   function Create_Output_Link return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Links.UIOutputLink;
+   end Create_Output_Link;
 
    --  ------------------------------
    --  Create a label component
@@ -52,19 +62,23 @@ package body ASF.Components.Html.Factory is
    use ASF.Views.Nodes;
 
    URI        : aliased constant String := "http://java.sun.com/jsf/html";
-   OUTPUT_TAG : aliased constant String := "output";
-   LABEL_TAG  : aliased constant String := "label";
-   LIST_TAG   : aliased constant String := "list";
+   OUTPUT_TEXT_TAG : aliased constant String := "outputText";
+   OUTPUT_LINK_TAG : aliased constant String := "outputLink";
+   LABEL_TAG       : aliased constant String := "label";
+   LIST_TAG        : aliased constant String := "list";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (2 => (Name      => OUTPUT_TAG'Access,
+     := (4 => (Name      => OUTPUT_TEXT_TAG'Access,
                Component => Create_Output'Access,
                Tag       => Create_Component_Node'Access),
-         0 => (Name      => LABEL_TAG'Access,
+         1 => (Name      => LABEL_TAG'Access,
                Component => Create_Label'Access,
                Tag       => Create_Component_Node'Access),
-         1 => (Name      => LIST_TAG'Access,
+         2 => (Name      => LIST_TAG'Access,
                Component => Create_List'Access,
+               Tag       => Create_Component_Node'Access),
+         3 => (Name      => OUTPUT_LINK_TAG'Access,
+               Component => Create_Output_Link'Access,
                Tag       => Create_Component_Node'Access)
         );
 

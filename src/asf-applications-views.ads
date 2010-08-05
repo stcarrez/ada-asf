@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with EL.Functions.Default;
 with ASF.Modules;
 with ASF.Components.Core;
 with ASF.Contexts.Faces;
@@ -34,6 +35,10 @@ package ASF.Applications.Views is
    --  Initialize the view handler.
    procedure Initialize (Handler : out View_Handler;
                          Conf    : in Config);
+
+   --  Set the current faces context before processing a view.
+   procedure Set_Context (Handler : in out View_Handler;
+                          Context : in ASF.Contexts.Faces.Faces_Context_Access);
 
    --  Restore the view identified by the given name in the faces context
    --  and create the component tree representing that view.
@@ -68,10 +73,11 @@ package ASF.Applications.Views is
 private
 
    type View_Handler is tagged limited record
-      Facelets : aliased ASF.Views.Facelets.Facelet_Factory;
-      Paths    : Ada.Strings.Unbounded.Unbounded_String;
-      View_Ext : Ada.Strings.Unbounded.Unbounded_String;
-      File_Ext : Ada.Strings.Unbounded.Unbounded_String;
+      Facelets  : aliased ASF.Views.Facelets.Facelet_Factory;
+      Functions : aliased EL.Functions.Default.Default_Function_Mapper;
+      Paths     : Ada.Strings.Unbounded.Unbounded_String;
+      View_Ext  : Ada.Strings.Unbounded.Unbounded_String;
+      File_Ext  : Ada.Strings.Unbounded.Unbounded_String;
    end record;
 
 end ASF.Applications.Views;

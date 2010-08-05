@@ -55,12 +55,13 @@ package body ASF.Views.Nodes is
    --  ------------------------------
    procedure Error (Attribute : in Tag_Attribute;
                     Message   : in String;
-                    Param1    : in String) is
+                    Param1    : in String;
+                    Param2    : in String := "") is
    begin
       if Attribute.Tag /= null then
-         Attribute.Tag.Error (Message, Param1);
+         Attribute.Tag.Error (Message, Param1, Param2);
       else
-         Log.Error (Message, Param1);
+         Log.Error (Message, Param1, Param2);
       end if;
    end Error;
 
@@ -320,10 +321,11 @@ package body ASF.Views.Nodes is
    --  ------------------------------
    procedure Error (Node    : in Tag_Node'Class;
                     Message : in String;
-                    Param1  : in String := "") is
+                    Param1  : in String := "";
+                    Param2  : in String := "") is
       L : constant String := Node.Get_Line_Info;
    begin
-      Log.Error (L & ":" & Message, Param1);
+      Log.Error (L & ":" & Message, Param1, Param2);
    end Error;
 
    --  ------------------------------

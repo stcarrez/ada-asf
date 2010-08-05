@@ -78,7 +78,8 @@ package ASF.Views.Nodes is
    --  Report an error message for the attribute.
    procedure Error (Attribute : in Tag_Attribute;
                     Message   : in String;
-                    Param1    : in String);
+                    Param1    : in String;
+                    Param2    : in String := "");
 
    --  ------------------------------
    --  Source line information
@@ -144,7 +145,8 @@ package ASF.Views.Nodes is
    --  Report an error message
    procedure Error (Node    : in Tag_Node'Class;
                     Message : in String;
-                    Param1  : in String := "");
+                    Param1  : in String := "";
+                    Param2  : in String := "");
 
    --  ------------------------------
    --  Text nodes mixed with EL expressions.

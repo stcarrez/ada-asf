@@ -20,6 +20,7 @@ with AWS.MIME;
 with AWS.Messages;
 with AWS.Services.Web_Block.Registry;
 
+with Ada.Directories;
 with Ada.Strings.Fixed;
 with Ada.Exceptions;
 
@@ -72,79 +73,6 @@ package body ASF.Server.Web is
    Nb_Bindings  : Natural := 0;
    Applications : Binding_Array_Access := null;
 
-   type Bean_Object is record
-      Bean : EL.Beans.Readonly_Bean_Access;
-      Free : ASF.Beans.Free_Bean_Access;
-   end record;
-
-   package Bean_Vectors is new Ada.Containers.Vectors
-     (Index_Type => Natural, Element_Type => Bean_Object);
-
-   type Bean_Vector_Access is access all Bean_Vectors.Vector;
-
-   --  ------------------------------
-   --  Default Resolver
-   --  ------------------------------
-   type Web_ELResolver is new EL.Contexts.ELResolver with record
-      Request     : EL.Contexts.Default.Default_ELResolver_Access;
-      Application : Main.Application_Access;
-      Beans       : Bean_Vector_Access;
-   end record;
-
-   overriding
-   function Get_Value (Resolver : Web_ELResolver;
-                       Context  : EL.Contexts.ELContext'Class;
-                       Base     : access EL.Beans.Readonly_Bean'Class;
-                       Name     : Unbounded_String) return EL.Objects.Object;
-   overriding
-   procedure Set_Value (Resolver : in Web_ELResolver;
-                        Context  : in EL.Contexts.ELContext'Class;
-                        Base     : access EL.Beans.Bean'Class;
-                        Name     : in Unbounded_String;
-                        Value    : in EL.Objects.Object);
-
-   --  Get the value associated with a base object and a given property.
-   overriding
-   function Get_Value (Resolver : Web_ELResolver;
-                       Context  : EL.Contexts.ELContext'Class;
-                       Base     : access EL.Beans.Readonly_Bean'Class;
-                       Name     : Unbounded_String) return EL.Objects.Object is
-      use EL.Objects;
-      use EL.Beans;
-      use EL.Variables;
-
-      Result : Object := Resolver.Request.Get_Value (Context, Base, Name);
-      Bean   : EL.Beans.Readonly_Bean_Access;
-      Free   : ASF.Beans.Free_Bean_Access := null;
-      Scope  : Scope_Type;
-   begin
-      if not EL.Objects.Is_Null (Result) then
-         return Result;
-      end if;
-      Resolver.Application.Create (Name, Bean, Free, Scope);
-      if Bean = null then
-         return Resolver.Application.Get_Global (Name, Context);
---           raise No_Variable
---             with "Bean not found: '" & To_String (Name) & "'";
-      end if;
-      Resolver.Beans.Append (Bean_Object '(Bean, Free));
-      Result := To_Object (Bean);
-      Resolver.Request.Register (Name, Result);
-      return Result;
-   end Get_Value;
-
-   --  Set the value associated with a base object and a given property.
-   overriding
-   procedure Set_Value (Resolver : in Web_ELResolver;
-                        Context  : in EL.Contexts.ELContext'Class;
-                        Base     : access EL.Beans.Bean'Class;
-                        Name     : in Unbounded_String;
-                        Value    : in EL.Objects.Object) is
-   begin
-      Resolver.Request.Set_Value (Context, Base, Name, Value);
-   end Set_Value;
-
-
    --  Register the application to serve requests
    procedure Register_Application (URI    : in String;
                                    App    : in Main.Application_Access) is
@@ -158,85 +86,75 @@ package body ASF.Server.Web is
       Apps (Apps'Last).Application := App;
       Apps (Apps'Last).Base_URI := new String '(URI);
       Applications := Apps;
+
+
    end Register_Application;
+
+   function Is_Static (App : Main.Application_Access;
+                       Page : String) return Boolean is
+      use Ada.Strings.Fixed;
+
+      Slash_Pos   : constant Natural := Index (Page, "/", Page'First + 1);
+   begin
+      if Slash_Pos > Page'First then
+         declare
+            Dir         : constant String := Page (Page'First .. Slash_Pos);
+            Static_Dirs : constant String := App.Get_Config (ASF.Applications.VIEW_STATIC_DIR_PARAM);
+            Pos         : Natural := Index (Static_Dirs, ",");
+         begin
+            if Dir = "/scripts/" or Dir = "/themes/" then
+               return True;
+            end if;
+--              while Pos < Static_Dirs'Last loop
+--                 if Pos > 0 then
+--                    if Dir = Static_Dirs (Start .. Pos) then
+--                       return True;
+--                    end if;
+--                 end if;
+--              end loop;
+         end;
+      end if;
+      return False;
+   end Is_Static;
+
+   function Static_Dispatch (App     : Main.Application_Access;
+                             Page    : String;
+                             Request : AWS.Status.Data) return AWS.Response.Data is
+      use Ada.Directories;
+
+      Dir  : constant String := App.Get_Config (ASF.Applications.VIEW_DIR_PARAM);
+      File : constant String := Dir & "/" & Page;
+   begin
+      if not Ada.Directories.Exists (File)
+        or else Ada.Directories.Kind (File) /= Ada.Directories.Ordinary_File then
+         return AWS.Response.Build (Content_Type => AWS.MIME.Text_HTML,
+                                    Message_Body => "Invalid URI " & Page);
+      end if;
+      return AWS.Response.File (AWS.MIME.Content_Type (File), File);
+   end Static_Dispatch;
 
    function Dispatch (App  : Main.Application_Access;
                       Page : String;
                       Request : in AWS.Status.Data) return AWS.Response.Data is
 
-      use ASF;
-      use ASF.Contexts.Faces;
-      use ASF.Applications.Views;
-
-      use EL.Contexts.Default;
-      use EL.Variables;
-      use EL.Variables.Default;
-      use EL.Contexts;
-      use EL.Objects;
-      use EL.Beans;
-
-      Writer   : aliased Contexts.Writer.String.String_Writer;
-      Context  : aliased Faces_Context;
-      View     : Components.Core.UIViewRoot;
-      ELContext : aliased EL.Contexts.Default.Default_Context;
-      Variables : aliased Default_Variable_Mapper;
-      Req_Resolver   : aliased Default_ELResolver;
-      Root_Resolver  : aliased Web_ELResolver;
-
-      Req      : aliased ASF.Requests.Web.Request;
-      Beans    : aliased Bean_Vectors.Vector;
-      --  Get the view handler
-      Handler   : constant access View_Handler'Class := App.Get_View_Handler;
    begin
-      Root_Resolver.Application := App;
-      Root_Resolver.Request := Req_Resolver'Unchecked_Access;
-      Root_Resolver.Beans := Beans'Unchecked_Access;
-      ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
-      ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
+      if Is_Static (App, Page) then
+         return Static_Dispatch (App, Page, Request);
+      else
+         declare
+            Writer   : aliased ASF.Contexts.Writer.String.String_Writer;
+            Req      : aliased ASF.Requests.Web.Request;
+         begin
+            Writer.Initialize ("text/html", "UTF-8", 8192);
 
-      Context.Set_Response_Writer (Writer'Unchecked_Access);
-      Context.Set_ELContext (ELContext'Unchecked_Access);
-      Writer.Initialize ("text/xml", "UTF-8", 8192);
+            App.Dispatch (Page    => Page,
+                          Writer  => Writer'Unchecked_Access,
+                          Request => Req'Unchecked_Access);
 
-      Context.Set_Request (Req'Unchecked_Access);
-      Set_Current (Context'Unchecked_Access);
-      begin
-         Handler.Restore_View (Page, Context, View);
-
-      exception
-         when E : others =>
-            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
-                       Exception_Name (E), Exception_Message (E));
-            raise;
-      end;
-
-      begin
-         Handler.Render_View (Context, View);
-
-      exception
-         when E: others =>
-            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
-                       Exception_Name (E), Exception_Message (E));
-            raise;
-      end;
-      Writer.Flush;
-
-      declare
-         C : Bean_Vectors.Cursor := Beans.First;
-      begin
-         while Bean_Vectors.Has_Element (C) loop
-            declare
-               Bean : Bean_Object := Bean_Vectors.Element (C);
-            begin
-               if Bean.Bean /= null and then Bean.Free /= null then
-                  Bean.Free (Bean.Bean);
-               end if;
-            end;
-            Bean_Vectors.Next (C);
-         end loop;
-      end;
-      return AWS.Response.Build (Content_Type => Writer.Get_Content_Type,
-                                 UString_Message => Writer.Get_Response);
+            return AWS.Response.Build (Content_Type => Writer.Get_Content_Type,
+                                       UString_Message => Writer.Get_Response);
+         end;
+      end if;
    end Dispatch;
 
    ----------------------

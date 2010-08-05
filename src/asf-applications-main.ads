@@ -15,15 +15,19 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Applications.Views;
-with ASF.Beans;
+
 with EL.Beans;
-with ASF.Locales;
 with EL.Objects;
 with EL.Contexts;
 with EL.Variables.Default;
 with Ada.Strings.Unbounded;
+
+with ASF.Locales;
+with ASF.Applications.Views;
+with ASF.Beans;
 with ASF.Modules;
+with ASF.Requests;
+with ASF.Contexts.Writer;
 package ASF.Applications.Main is
 
    use ASF.Beans;
@@ -38,6 +42,10 @@ package ASF.Applications.Main is
    --  Initialize the application
    procedure Initialize (App  : in out Application;
                          Conf : in Config);
+
+   --  Get the configuration parameter;
+   function Get_Config (App   : Application;
+                        Param : Config_Param) return String;
 
    --  Set a global variable in the global EL contexts.
    procedure Set_Global (App     : in out Application;
@@ -85,6 +93,12 @@ package ASF.Applications.Main is
    --  Closes the application
    procedure Close (App : in out Application);
 
+   --  Dispatch the request received on a page.
+   procedure Dispatch (App     : in out Application;
+                       Page    : in String;
+                       Writer  : in ASF.Contexts.Writer.ResponseWriter_Access;
+                       Request : in ASF.Requests.Request_Access);
+
 private
 
    type Application is tagged limited record
@@ -93,6 +107,7 @@ private
       Locales : ASF.Locales.Factory;
       Modules : aliased ASF.Modules.Module_Registry;
       Globals : aliased EL.Variables.Default.Default_Variable_Mapper;
+      Conf    : Config;
    end record;
 
 end ASF.Applications.Main;

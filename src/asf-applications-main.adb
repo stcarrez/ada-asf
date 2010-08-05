@@ -15,8 +15,25 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+
+with Util.Log.Loggers;
+
+with ASF.Contexts.Faces;
+with ASF.Components;
+with ASF.Components.Core;
+
 with EL.Expressions;
+with EL.Contexts.Default;
+
+with Ada.Exceptions;
+with Ada.Containers.Vectors;
 package body ASF.Applications.Main is
+
+   use Util.Log;
+   use Ada.Strings.Unbounded;
+
+   --  The logger
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Applications.Main");
 
    --  ------------------------------
    --  Get the application view handler.
@@ -24,7 +41,7 @@ package body ASF.Applications.Main is
    function Get_View_Handler (App : access Application)
                               return access Views.View_Handler'Class is
    begin
-      return App.View'Access;
+      return App.View'Unchecked_Access;
    end Get_View_Handler;
 
    --  ------------------------------
@@ -33,10 +50,20 @@ package body ASF.Applications.Main is
    procedure Initialize (App  : in out Application;
                          Conf : in Config) is
    begin
+      App.Conf := Conf;
       App.View.Initialize (Conf);
       ASF.Modules.Initialize (App.Modules, Conf);
       ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
    end Initialize;
+
+   --  ------------------------------
+   --  Get the configuration parameter;
+   --  ------------------------------
+   function Get_Config (App   : Application;
+                        Param : Config_Param) return String is
+   begin
+      return App.Conf.Get (Param);
+   end Get_Config;
 
    --  ------------------------------
    --  Set a global variable in the global EL contexts.
@@ -55,13 +82,15 @@ package body ASF.Applications.Main is
       App.Globals.Bind (Name, Value);
    end Set_Global;
 
+   --  ------------------------------
    --  Resolve a global variable and return its value.
    --  Raises the <b>EL.Functions.No_Variable</b> exception if the variable does not exist.
+   --  ------------------------------
    function Get_Global (App : in Application;
                         Name : in Ada.Strings.Unbounded.Unbounded_String;
                         Context : in EL.Contexts.ELContext'Class)
                         return EL.Objects.Object is
-      Value : EL.Expressions.ValueExpression := App.Globals.Get_Variable (Name);
+      Value : constant EL.Expressions.ValueExpression := App.Globals.Get_Variable (Name);
    begin
       return Value.Get_Value (Context);
    end Get_Global;
@@ -123,5 +152,158 @@ package body ASF.Applications.Main is
    begin
       ASF.Applications.Views.Close (App.View);
    end Close;
+
+   type Bean_Object is record
+      Bean : EL.Beans.Readonly_Bean_Access;
+      Free : ASF.Beans.Free_Bean_Access;
+   end record;
+
+   package Bean_Vectors is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => Bean_Object);
+
+   type Bean_Vector_Access is access all Bean_Vectors.Vector;
+
+   --  ------------------------------
+   --  Default Resolver
+   --  ------------------------------
+   type Web_ELResolver is new EL.Contexts.ELResolver with record
+      Request     : EL.Contexts.Default.Default_ELResolver_Access;
+      Application : Main.Application_Access;
+      Beans       : Bean_Vector_Access;
+   end record;
+
+   overriding
+   function Get_Value (Resolver : Web_ELResolver;
+                       Context  : EL.Contexts.ELContext'Class;
+                       Base     : access EL.Beans.Readonly_Bean'Class;
+                       Name     : Unbounded_String) return EL.Objects.Object;
+   overriding
+   procedure Set_Value (Resolver : in Web_ELResolver;
+                        Context  : in EL.Contexts.ELContext'Class;
+                        Base     : access EL.Beans.Bean'Class;
+                        Name     : in Unbounded_String;
+                        Value    : in EL.Objects.Object);
+
+   --  Get the value associated with a base object and a given property.
+   overriding
+   function Get_Value (Resolver : Web_ELResolver;
+                       Context  : EL.Contexts.ELContext'Class;
+                       Base     : access EL.Beans.Readonly_Bean'Class;
+                       Name     : Unbounded_String) return EL.Objects.Object is
+      use EL.Objects;
+      use EL.Beans;
+      use EL.Variables;
+
+      Result : Object := Resolver.Request.Get_Value (Context, Base, Name);
+      Bean   : EL.Beans.Readonly_Bean_Access;
+      Free   : ASF.Beans.Free_Bean_Access := null;
+      Scope  : Scope_Type;
+   begin
+      if not EL.Objects.Is_Null (Result) then
+         return Result;
+      end if;
+      Resolver.Application.Create (Name, Bean, Free, Scope);
+      if Bean = null then
+         return Resolver.Application.Get_Global (Name, Context);
+         --           raise No_Variable
+         --             with "Bean not found: '" & To_String (Name) & "'";
+      end if;
+      Resolver.Beans.Append (Bean_Object '(Bean, Free));
+      Result := To_Object (Bean);
+      Resolver.Request.Register (Name, Result);
+      return Result;
+   end Get_Value;
+
+   --  Set the value associated with a base object and a given property.
+   overriding
+   procedure Set_Value (Resolver : in Web_ELResolver;
+                        Context  : in EL.Contexts.ELContext'Class;
+                        Base     : access EL.Beans.Bean'Class;
+                        Name     : in Unbounded_String;
+                        Value    : in EL.Objects.Object) is
+   begin
+      Resolver.Request.Set_Value (Context, Base, Name, Value);
+   end Set_Value;
+
+   --  ------------------------------
+   --  Dispatch the request received on a page.
+   --  ------------------------------
+   procedure Dispatch (App     : in out Application;
+                       Page    : String;
+                       Writer  : in ASF.Contexts.Writer.ResponseWriter_Access;
+                       Request : in ASF.Requests.Request_Access) is
+
+      use EL.Contexts.Default;
+      use EL.Variables;
+      use EL.Variables.Default;
+      use EL.Contexts;
+      use EL.Objects;
+      use EL.Beans;
+      use ASF.Applications.Views;
+      use Ada.Exceptions;
+
+      Context        : aliased ASF.Contexts.Faces.Faces_Context;
+      View           : Components.Core.UIViewRoot;
+      ELContext      : aliased EL.Contexts.Default.Default_Context;
+      Variables      : aliased Default_Variable_Mapper;
+      Req_Resolver   : aliased Default_ELResolver;
+      Root_Resolver  : aliased Web_ELResolver;
+
+      Beans          : aliased Bean_Vectors.Vector;
+      --  Get the view handler
+      Handler   : constant access View_Handler'Class := App.Get_View_Handler;
+   begin
+      Log.Info ("Dispatch {0}", Page);
+
+      Root_Resolver.Application := App'Unchecked_Access;
+      Root_Resolver.Request := Req_Resolver'Unchecked_Access;
+      Root_Resolver.Beans := Beans'Unchecked_Access;
+      ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
+      ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
+
+      Context.Set_Response_Writer (Writer);
+      Context.Set_ELContext (ELContext'Unchecked_Access);
+--        Writer.Initialize ("text/html", "UTF-8", 8192);
+
+      Context.Set_Request (Request);
+      Handler.Set_Context (Context'Unchecked_Access);
+      begin
+         Handler.Restore_View (Page, Context, View);
+
+      exception
+         when E : others =>
+            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            raise;
+      end;
+
+      begin
+         Handler.Render_View (Context, View);
+
+      exception
+         when E: others =>
+            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            raise;
+      end;
+      Writer.Flush;
+
+      declare
+         C : Bean_Vectors.Cursor := Beans.First;
+      begin
+         while Bean_Vectors.Has_Element (C) loop
+            declare
+               Bean : Bean_Object := Bean_Vectors.Element (C);
+            begin
+               if Bean.Bean /= null and then Bean.Free /= null then
+                  Bean.Free (Bean.Bean);
+               end if;
+            end;
+            Bean_Vectors.Next (C);
+         end loop;
+      end;
+--        return AWS.Response.Build (Content_Type    => Writer.Get_Content_Type,
+--                                   UString_Message => Writer.Get_Response);
+   end Dispatch;
 
 end ASF.Applications.Main;

@@ -41,6 +41,15 @@ package ASF.Applications is
    VIEW_FILE_EXT       : aliased constant String := "view.file_ext";
    DEF_VIEW_FILE_EXT   : aliased constant String := ".xhtml";
 
+   --  Extensions used by static pages
+   VIEW_STATIC_EXT_PARAM : constant Config_Param;
+   VIEW_STATIC_EXT       : aliased constant String := "view.static.ext";
+   DEF_STATIC_EXT        : aliased constant String := "";
+
+   --  Directories which contain static pages
+   VIEW_STATIC_DIR_PARAM : constant Config_Param;
+   VIEW_STATIC_DIR       : aliased constant String := "view.static.dir";
+   DEF_STATIC_DIR        : aliased constant String := "css,js,scripts,themes";
 
    --  Get the configuration parameter;
    function Get (Self  : Config;
@@ -63,6 +72,12 @@ private
 
    VIEW_FILE_EXT_PARAM : constant Config_Param := P '(Name    => VIEW_FILE_EXT'Access,
                                                       Default => DEF_VIEW_FILE_EXT'Access);
+
+   VIEW_STATIC_EXT_PARAM : constant Config_Param := P '(Name    => VIEW_STATIC_EXT'Access,
+                                                        Default => DEF_STATIC_EXT'Access);
+
+   VIEW_STATIC_DIR_PARAM : constant Config_Param := P '(Name    => VIEW_STATIC_DIR'Access,
+                                                        Default => DEF_STATIC_DIR'Access);
 
    type Config is new Util.Properties.Manager with null record;
 end ASF.Applications;

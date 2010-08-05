@@ -99,6 +99,28 @@ package ASF.Views.Nodes.Facelets is
                                  Found   : out Boolean);
 
    --  ------------------------------
+   --  Debug Tag
+   --  ------------------------------
+   --  The <ui:debug/>
+   type Debug_Tag_Node is new Tag_Node with private;
+   type Debug_Tag_Node_Access is access all Debug_Tag_Node'Class;
+
+   --  Create the Debug Tag
+   function Create_Debug_Tag_Node (Name       : Unbounded_String;
+                                   Line       : Line_Info;
+                                   Parent     : Tag_Node_Access;
+                                   Attributes : Tag_Attribute_Array_Access)
+                                   return Tag_Node_Access;
+
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   overriding
+   procedure Build_Components (Node    : access Debug_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class);
+
+   --  ------------------------------
    --  Decorate Tag
    --  ------------------------------
    --  The <ui:decorate template="...">...</ui:decorate>
@@ -179,6 +201,28 @@ package ASF.Views.Nodes.Facelets is
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class);
 
+   --  ------------------------------
+   --  Comment Tag
+   --  ------------------------------
+   --  The <ui:comment condition="...">...</ui:comment>
+   type Comment_Tag_Node is new Tag_Node with private;
+   type Comment_Tag_Node_Access is access all Comment_Tag_Node'Class;
+
+   --  Create the Comment Tag
+   function Create_Comment_Tag_Node (Name       : Unbounded_String;
+                                     Line       : Line_Info;
+                                     Parent     : Tag_Node_Access;
+                                     Attributes : Tag_Attribute_Array_Access)
+                                     return Tag_Node_Access;
+
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   overriding
+   procedure Build_Components (Node    : access Comment_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class);
+
 private
 
    --  Tag library map indexed on the library namespace.
@@ -197,6 +241,10 @@ private
       Defines  : Define_Maps.Map;
    end record;
 
+   type Debug_Tag_Node is new Tag_Node with record
+      Source : Tag_Attribute_Access;
+   end record;
+
    type Decorate_Tag_Node is new Composition_Tag_Node with null record;
 
    type Define_Tag_Node is new Tag_Node with record
@@ -210,6 +258,10 @@ private
    type Param_Tag_Node is new Tag_Node with record
       Var   : Tag_Attribute_Access;
       Value : Tag_Attribute_Access;
+   end record;
+
+   type Comment_Tag_Node is new Tag_Node with record
+      Condition : Tag_Attribute_Access;
    end record;
 
 end ASF.Views.Nodes.Facelets;

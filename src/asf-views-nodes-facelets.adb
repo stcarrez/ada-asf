@@ -27,8 +27,11 @@
 --    <ui:define name="..."/>
 --    <ui:insert name="..."/>
 --    <ui:param name="..." value="..."/>
+--    <ui:debug/>
+--    <ui:comment condition="...">...</ui:comment>
 --    <ui:composition .../>
 --
+with Ada.Exceptions;
 with Util.Log.Loggers;
 with EL.Contexts;
 with EL.Variables.Default;
@@ -43,18 +46,28 @@ package body ASF.Views.Nodes.Facelets is
 
    COMPOSITION_TAG  : aliased constant String := "composition";
    DECORATE_TAG     : aliased constant String := "decorate";
+   DEBUG_TAG        : aliased constant String := "debug";
    DEFINE_TAG       : aliased constant String := "define";
    INCLUDE_TAG      : aliased constant String := "include";
    INSERT_TAG       : aliased constant String := "insert";
    PARAM_TAG        : aliased constant String := "param";
+   COMMENT_TAG      : aliased constant String := "comment";
 
    URI           : aliased constant String := "http://java.sun.com/jsf/facelets";
 
    Tag_Bindings  : aliased constant ASF.Factory.Binding_Array
      := (
+       (Name      => COMMENT_TAG'Access,
+        Component => null,
+        Tag       => Create_Comment_Tag_Node'Access),
+
        (Name      => COMPOSITION_TAG'Access,
         Component => null,
         Tag       => Create_Composition_Tag_Node'Access),
+
+       (Name      => DEBUG_TAG'Access,
+        Component => null,
+        Tag       => Create_Decorate_Tag_Node'Access),
 
        (Name      => DECORATE_TAG'Access,
         Component => null,
@@ -105,6 +118,9 @@ package body ASF.Views.Nodes.Facelets is
    begin
       Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Source     := Find_Attribute (Attributes, "src");
+      if Node.Source = null then
+         Node.Error ("Missing 'src' attribute");
+      end if;
       return Node.all'Access;
    end Create_Include_Tag_Node;
 
@@ -216,14 +232,55 @@ package body ASF.Views.Nodes.Facelets is
                                  Name    : in Unbounded_String;
                                  Found   : out Boolean) is
       Pos : constant Define_Maps.Cursor := Node.Defines.Find (Name);
+      Old : Unbounded_String;
    begin
       if not Define_Maps.Has_Element (Pos) then
          Found := False;
       else
          Found := True;
-         Define_Maps.Element (Pos).Build_Children (Parent, Context);
+         declare
+            File : constant String := ASF.Views.Nodes.File (Node.Get_Line_Info);
+         begin
+            Context.Set_Relative_Path (Path     => To_Unbounded_String (File),
+                                       Previous => Old);
+            Define_Maps.Element (Pos).Build_Children (Parent, Context);
+            Context.Set_Relative_Path (Path => Old);
+
+         exception
+            when E : others =>
+               Node.Error ("Error when inserting definition: {0}",
+                           Ada.Exceptions.Exception_Message (E));
+         end;
+         Context.Set_Relative_Path (Path => Old);
       end if;
    end Include_Definition;
+
+   --  ------------------------------
+   --  Create the Debug Tag
+   --  ------------------------------
+   function Create_Debug_Tag_Node (Name       : Unbounded_String;
+                                   Line       : Line_Info;
+                                   Parent     : Tag_Node_Access;
+                                   Attributes : Tag_Attribute_Array_Access)
+                                   return Tag_Node_Access is
+      Node : constant Debug_Tag_Node_Access := new Debug_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      return Node.all'Access;
+   end Create_Debug_Tag_Node;
+
+   --  ------------------------------
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   --  ------------------------------
+   overriding
+   procedure Build_Components (Node    : access Debug_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class) is
+   begin
+      null;
+   end Build_Components;
 
    --  ------------------------------
    --  Decorate Tag
@@ -240,7 +297,7 @@ package body ASF.Views.Nodes.Facelets is
       Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Template   := Find_Attribute (Attributes, "template");
       if Node.Template = null then
-         Log.Error ("Missing attribute 'template' on the decorator");
+         Node.Error ("Missing attribute 'template' on the decorator");
       end if;
       return Node.all'Access;
    end Create_Decorate_Tag_Node;
@@ -258,7 +315,7 @@ package body ASF.Views.Nodes.Facelets is
    begin
       Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       if Attr = null then
-         Log.Error ("Missing attribute 'name' on node");
+         Node.Error ("Missing attribute 'name' on node");
       else
          Node.Define_Name := Attr.Value;
       end if;
@@ -348,6 +405,34 @@ package body ASF.Views.Nodes.Facelets is
       --          := Node.Value.Get_ValueExpression (Context);
    begin
       Context.Set_Variable (Node.Var.Value, Value);
+   end Build_Components;
+
+   --  ------------------------------
+   --  Comment Tag
+   --  ------------------------------
+
+   --  Create the Comment Tag
+   function Create_Comment_Tag_Node (Name       : Unbounded_String;
+                                     Line       : Line_Info;
+                                     Parent     : Tag_Node_Access;
+                                     Attributes : Tag_Attribute_Array_Access)
+                                     return Tag_Node_Access is
+      Node : constant Comment_Tag_Node_Access := new Comment_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Node.Condition := Find_Attribute (Attributes, "condition");
+      return Node.all'Access;
+   end Create_Comment_Tag_Node;
+
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   overriding
+   procedure Build_Components (Node    : access Comment_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class) is
+   begin
+      null;
    end Build_Components;
 
 end ASF.Views.Nodes.Facelets;

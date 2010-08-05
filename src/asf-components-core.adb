@@ -106,4 +106,40 @@ package body ASF.Components.Core is
       end if;
    end Finalize;
 
+   overriding
+   procedure Encode_Begin (UI      : in UIView;
+                           Context : in out Faces_Context'Class) is
+   begin
+      null;
+   end Encode_Begin;
+
+   --  ------------------------------
+   --  Component Parameter
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Get the parameter name
+   --  ------------------------------
+   function Get_Name (UI      : UIParameter;
+                      Context : Faces_Context'Class) return String is
+   begin
+      return EL.Objects.To_String (UI.Get_Attribute (Name => "name", Context => Context));
+   end Get_Name;
+
+   --  ------------------------------
+   --  Get the parameter value
+   --  ------------------------------
+   function Get_Value (UI      : UIParameter;
+                       Context : Faces_Context'Class) return EL.Objects.Object is
+   begin
+      return UI.Get_Attribute (Name => "value", Context => Context);
+   end Get_Value;
+
+   overriding
+   procedure Encode_Children (UI      : in UIParameter;
+                              Context : in out Faces_Context'Class) is
+   begin
+      null;
+   end Encode_Children;
+
 end ASF.Components.Core;

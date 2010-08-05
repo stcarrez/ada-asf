@@ -46,6 +46,16 @@ package ASF.Components.Core is
    procedure Set_Root (UI   : in out UIViewRoot;
                        Root : in UIComponent_Access);
 
+   --  ------------------------------
+   --  View component
+   --  ------------------------------
+   type UIView is new UIComponentBase with private;
+   type UIView_Access is access all UIView'Class;
+
+   overriding
+   procedure Encode_Begin (UI      : in UIView;
+                           Context : in out Faces_Context'Class);
+
    type UIText is new UIComponent with private;
    type UIText_Access is access all UIText'Class;
 
@@ -54,6 +64,26 @@ package ASF.Components.Core is
 
    function Create_UIText (Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
                            return UIComponent_Access;
+
+
+   --  ------------------------------
+   --  Component Parameter
+   --  ------------------------------
+   type UIParameter is new UIComponentBase with private;
+   type UIParameter_Access is access all UIParameter'Class;
+
+   --  Get the parameter name
+   function Get_Name (UI      : UIParameter;
+                      Context : Faces_Context'Class) return String;
+
+   --  Get the parameter value
+   function Get_Value (UI      : UIParameter;
+                       Context : Faces_Context'Class) return EL.Objects.Object;
+
+   overriding
+   procedure Encode_Children (UI      : in UIParameter;
+                              Context : in out Faces_Context'Class);
+
 private
 
    procedure Finalize (Object : in out UIViewRoot);
@@ -64,8 +94,16 @@ private
       Root : UIComponent_Access;
    end record;
 
+   type UIView is new UIComponentBase with record
+      N : Natural;
+   end record;
+
    type UIText is new UIComponent with record
       Text : ASF.Views.Nodes.Text_Tag_Node_Access;
+   end record;
+
+   type UIParameter is new UIComponentBase with record
+      N : Natural;
    end record;
 
 end ASF.Components.Core;

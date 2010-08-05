@@ -246,6 +246,9 @@ package body ASF.Views.Nodes.Reader is
       while Pos <= Value'Last loop
          N := Index (Value, "#{", Pos);
          if N = 0 then
+            N := Index (Value, "${", Pos);
+         end if;
+         if N = 0 then
             Last := Value'Last;
          else
             Last := N - 1;
@@ -259,7 +262,7 @@ package body ASF.Views.Nodes.Reader is
                Last_Pos := Value'Last;
             end if;
 
-            Append (Content.Text, Value (Pos .. N - 1));
+            --  Append (Content.Text, Value (Pos .. N - 1));
             begin
                Content.Expr := EL.Expressions.Create_Expression
                  (Value (N .. Last_Pos), Handler.ELContext.all);
@@ -281,7 +284,7 @@ package body ASF.Views.Nodes.Reader is
             Content.Next := new Tag_Content;
             Content := Content.Next;
             Handler.Text.Last := Content;
-            Last := Last_Pos + 1;
+            Last := Last_Pos;
          end if;
          Pos := Last + 1;
       end loop;
@@ -323,7 +326,7 @@ package body ASF.Views.Nodes.Reader is
                Expr  : EL.Expressions.ValueExpression_Access;
             begin
                Attr.Name  := To_Unbounded_String (Get_Qname (Atts, I));
-               if Index (Value, "#{") > 0 then
+               if Index (Value, "#{") > 0 or Index (Value, "${") > 0 then
                   begin
                      Expr := new EL.Expressions.ValueExpression;
                      Attr.Binding := Expr.all'Access;
@@ -361,10 +364,6 @@ package body ASF.Views.Nodes.Reader is
       exception
          when Unknown_Name =>
 
-            if Namespace_URI /= "" and Index (Qname, ":") > 0 then
-               Log.Error ("{0}: Element '{1}' not found",
-                         To_String (Handler.Locator), Qname);
-            end if;
             if Handler.Text = null then
                Handler.Text := new Text_Tag_Node;
                Initialize (Handler.Text.all'Access, Null_Unbounded_String,
@@ -374,8 +373,17 @@ package body ASF.Views.Nodes.Reader is
             Handler.Current.Text := True;
             declare
                Content : Tag_Content_Access := Handler.Text.Last;
+               Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
             begin
-               Append (Content.Text, '<');
+               if Is_Unknown then
+                  Log.Error ("{0}: Element '{1}' not found",
+                             To_String (Handler.Locator), Qname);
+               end if;
+               if Handler.Escape_Unknown_Tag and Is_Unknown then
+                  Append (Content.Text, "&lt;");
+               else
+                  Append (Content.Text, '<');
+               end if;
                Append (Content.Text, Qname);
                if Attr_Count /= 0 then
                   for I in 0 .. Attr_Count - 1 loop
@@ -392,7 +400,11 @@ package body ASF.Views.Nodes.Reader is
                      Append (Content.Text, '"');
                   end loop;
                end if;
-               Append (Content.Text, '>');
+               if Handler.Escape_Unknown_Tag and Is_Unknown then
+                  Append (Content.Text, "&gt;");
+               else
+                  Append (Content.Text, '>');
+               end if;
             end;
       end;
    end Start_Element;
@@ -405,7 +417,6 @@ package body ASF.Views.Nodes.Reader is
                           Namespace_URI : in Unicode.CES.Byte_Sequence := "";
                           Local_Name    : in Unicode.CES.Byte_Sequence := "";
                           Qname         : in Unicode.CES.Byte_Sequence := "") is
-      pragma Unreferenced (Namespace_URI, Qname);
    begin
       if Handler.Current.Parent = null then
          Handler.Text := null;
@@ -422,11 +433,18 @@ package body ASF.Views.Nodes.Reader is
       end if;
       if Handler.Text /= null then
          declare
-            Content : constant Tag_Content_Access := Handler.Text.Last;
+            Content    : constant Tag_Content_Access := Handler.Text.Last;
+            Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
          begin
-            Append (Content.Text, "</");
-            Append (Content.Text, Qname);
-            Append (Content.Text, '>');
+            if Handler.Escape_Unknown_Tag and Is_Unknown then
+               Append (Content.Text, "&lt;/");
+               Append (Content.Text, Qname);
+               Append (Content.Text, "&gt;");
+            else
+               Append (Content.Text, "</");
+               Append (Content.Text, Qname);
+               Append (Content.Text, '>');
+            end if;
          end;
       end if;
 
@@ -474,6 +492,7 @@ package body ASF.Views.Nodes.Reader is
                                      Data    : in Unicode.CES.Byte_Sequence) is
       pragma Unmodified (Handler);
    begin
+      Log.Error ("Processing instruction: {0}: {1}", Target, Data);
       null;
    end Processing_Instruction;
 
@@ -522,6 +541,42 @@ package body ASF.Views.Nodes.Reader is
       return null;
    end Resolve_Entity;
 
+   overriding
+   procedure Start_DTD (Handler   : in out Xhtml_Reader;
+                        Name      : Unicode.CES.Byte_Sequence;
+                        Public_Id : Unicode.CES.Byte_Sequence := "";
+                        System_Id : Unicode.CES.Byte_Sequence := "") is
+   begin
+      if Handler.Text = null then
+         Handler.Text := new Text_Tag_Node;
+         Initialize (Handler.Text.all'Access, Null_Unbounded_String,
+                     Handler.Line, Handler.Current.Parent, null);
+         Handler.Text.Last := Handler.Text.Content'Access;
+      end if;
+      declare
+         Content : constant Tag_Content_Access := Handler.Text.Last;
+      begin
+         Append (Content.Text, "<!DOCTYPE ");
+         Append (Content.Text, Name);
+         Append (Content.Text, " ");
+         if Public_Id'Length > 0 then
+            Append (Content.Text, " PUBLIC """);
+            Append (Content.Text, Public_Id);
+            Append (Content.Text, """ ");
+            if System_Id'Length > 0 then
+               Append (Content.Text, '"');
+               Append (Content.Text, System_Id);
+               Append (Content.Text, '"');
+            end if;
+         elsif System_Id'Length > 0 then
+            Append (Content.Text, " SYSTEM """);
+            Append (Content.Text, System_Id);
+            Append (Content.Text, """ ");
+         end if;
+         Append (Content.Text, " >" & ASCII.LF);
+      end;
+   end Start_DTD;
+
    --  ------------------------------
    --  Get the root node that was created upon parsing of the XHTML file.
    --  ------------------------------
@@ -544,6 +599,7 @@ package body ASF.Views.Nodes.Reader is
       pragma Unreferenced (Context);
    begin
       Parser.Stack_Pos := 1;
+      Parser.Escape_Unknown_Tag := True;
       Push (Parser);
       Parser.Line.File := Name;
       Parser.Root   := new Tag_Node;

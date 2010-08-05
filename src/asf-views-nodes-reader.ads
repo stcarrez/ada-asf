@@ -106,6 +106,13 @@ package ASF.Views.Nodes.Reader is
                             System_Id : Unicode.CES.Byte_Sequence)
                             return Input_Sources.Input_Source_Access;
 
+   overriding
+   procedure Start_DTD (Handler   : in out Xhtml_Reader;
+                        Name      : Unicode.CES.Byte_Sequence;
+                        Public_Id : Unicode.CES.Byte_Sequence := "";
+                        System_Id : Unicode.CES.Byte_Sequence := "");
+
+
    --  Get the root node that was created upon parsing of the XHTML file.
    function Get_Root (Reader : Xhtml_Reader) return Tag_Node_Access;
 
@@ -190,6 +197,7 @@ private
       Stack      : Element_Context_Array_Access;
       Stack_Pos  : Natural := 0;
       Line       : Line_Info;
+      Escape_Unknown_Tag : Boolean := True;
    end record;
 
 end ASF.Views.Nodes.Reader;

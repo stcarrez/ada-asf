@@ -90,9 +90,14 @@ package body ASF.Contexts.Facelets is
                                  Name    : in Unbounded_String;
                                  Parent  : in UIComponent_Access;
                                  Found   : out Boolean) is
-      Node  : Composition_Tag_Node;
-      Iter  : Defines_Vector.Cursor := Context.Defines.Last;
+      Node      : Composition_Tag_Node;
+      Iter      : Defines_Vector.Cursor := Context.Defines.Last;
+      The_Name  : aliased constant String := To_String (Name);
    begin
+      if Context.Inserts.Contains (The_Name'Unchecked_Access) then
+         return;
+      end if;
+      Context.Inserts.Insert (The_Name'Unchecked_Access);
       while Defines_Vector.Has_Element (Iter) loop
          Node := Defines_Vector.Element (Iter);
          Node.Include_Definition (Parent  => Parent,
@@ -100,11 +105,13 @@ package body ASF.Contexts.Facelets is
                                   Name    => Name,
                                   Found   => Found);
          if Found then
+            Context.Inserts.Delete (The_Name'Unchecked_Access);
             return;
          end if;
          Defines_Vector.Previous (Iter);
       end loop;
       Found := False;
+      Context.Inserts.Delete (The_Name'Unchecked_Access);
    end Include_Definition;
 
    --  ------------------------------

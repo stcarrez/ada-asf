@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Strings;
 with EL.Objects;
 with EL.Contexts;
 with EL.Expressions;
@@ -107,6 +108,7 @@ private
       Context : EL.Contexts.ELContext_Access := null;
       Defines : Defines_Vector.Vector;
       Path    : Unbounded_String;
+      Inserts : Util.Strings.String_Set.Set;
    end record;
 
 end ASF.Contexts.Facelets;

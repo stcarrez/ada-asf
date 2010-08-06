@@ -57,6 +57,7 @@ package body ASF.Factory is
    begin
       Log.Debug ("Check binding for {0}", Factory.URI.all);
 
+
       for I in Factory.Bindings'Range loop
          declare
             B : constant Binding := Factory.Bindings (I);

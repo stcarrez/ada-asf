@@ -261,8 +261,8 @@ package body ASF.Applications.Main is
       ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
       ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
 
-      Context.Set_Response_Writer (Writer);
       Context.Set_ELContext (ELContext'Unchecked_Access);
+      Context.Set_Response_Writer (Writer);
 --        Writer.Initialize ("text/html", "UTF-8", 8192);
 
       Context.Set_Request (Request);

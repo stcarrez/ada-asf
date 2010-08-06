@@ -76,7 +76,7 @@ package body ASF.Components.Util.Factory is
 
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
    begin
-      Mapper.Set_Function (Name      => "escapeJavascript",
+      Mapper.Set_Function (Name      => "escapeJavaScript",
                            Namespace => URI,
                            Func      => Escape_Javascript'Access);
    end Set_Functions;

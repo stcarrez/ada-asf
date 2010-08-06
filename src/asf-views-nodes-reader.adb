@@ -109,7 +109,7 @@ package body ASF.Views.Nodes.Reader is
    end Set_Function;
 
    --  ------------------------------
-   --  Find the create function in bound to the name in the given namespace.
+   --  Find the create function bound to the name in the given namespace.
    --  Returns null if no such binding exist.
    --  ------------------------------
    function Find (Mapper    : NS_Function_Mapper;
@@ -596,7 +596,6 @@ package body ASF.Views.Nodes.Reader is
                     Input   : in out Input_Sources.Input_Source'Class;
                     Factory : access ASF.Factory.Component_Factory;
                     Context : in EL.Contexts.ELContext_Access) is
-      pragma Unreferenced (Context);
    begin
       Parser.Stack_Pos := 1;
       Parser.Escape_Unknown_Tag := True;
@@ -607,7 +606,8 @@ package body ASF.Views.Nodes.Reader is
       Parser.Current.Parent := Parser.Root;
       Parser.ELContext := Parser.Context'Unchecked_Access;
       Parser.Context.Set_Function_Mapper (Parser.Functions'Unchecked_Access);
-      Parser.Functions.Mapper := ASF.Views.Nodes.Factory.Functions;
+      Parser.Functions.Mapper := Context.Get_Function_Mapper;
+--        ASF.Views.Nodes.Factory.Functions;
       Sax.Readers.Reader (Parser).Parse (Input);
       Parser.Functions.Factory := null;
       Parser.ELContext := null;

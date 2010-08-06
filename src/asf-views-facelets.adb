@@ -42,6 +42,7 @@ package body ASF.Views.Facelets is
    --  Load the facelet node tree by reading the facelet XHTML file.
    procedure Load (Factory : in out Facelet_Factory;
                    Name    : in String;
+                   Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
                    Result  : out Facelet);
 
    --  Update the factory to store the facelet node tree
@@ -56,13 +57,14 @@ package body ASF.Views.Facelets is
    --  ------------------------------
    procedure Find_Facelet (Factory : in out Facelet_Factory;
                            Name    : in String;
+                           Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
                            Result  : out Facelet) is
       Res   : Facelet;
       Fname : constant Unbounded_String := To_Unbounded_String (Name);
    begin
       Find (Factory, Fname, Res);
       if Res.Root = null then
-         Load (Factory, Name, Res);
+         Load (Factory, Name, Context, Res);
          if Res.Root = null then
             Result.Root := null;
             return;
@@ -176,6 +178,7 @@ package body ASF.Views.Facelets is
    --  ------------------------------
    procedure Load (Factory : in out Facelet_Factory;
                    Name    : in String;
+                   Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
                    Result  : out Facelet) is
       use ASF.Views.Nodes.Reader;
       use Input_Sources.File;
@@ -186,11 +189,12 @@ package body ASF.Views.Facelets is
       Path   : constant String := Find_Facelet_Path (Factory, Name);
       Reader : Xhtml_Reader;
       Read   : File_Input;
-      Context : aliased EL.Contexts.Default.Default_Context;
+      Ctx    : aliased EL.Contexts.Default.Default_Context;
       File   : constant Util.Strings.Name_Access := new String '(Path);
    begin
       Log.Info ("Loading facelet: '{0}'", Path);
 
+      Ctx.Set_Function_Mapper (Context.Get_ELContext.Get_Function_Mapper);
       Open (Path, Read);
 
       --  If True, xmlns:* attributes will be reported in Start_Element
@@ -198,7 +202,7 @@ package body ASF.Views.Facelets is
       Set_Feature (Reader, Validation_Feature, False);
 
       Parse (Reader, File,
-             Read, Factory.Factory'Unchecked_Access, Context'Unchecked_Access);
+             Read, Factory.Factory'Unchecked_Access, Ctx'Unchecked_Access);
       Close (Read);
 
       Result := Facelet '(Root => Get_Root (Reader),

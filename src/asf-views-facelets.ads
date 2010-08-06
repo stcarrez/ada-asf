@@ -49,6 +49,7 @@ package ASF.Views.Facelets is
    --  a set of directories configured in the facelet factory.
    procedure Find_Facelet (Factory : in out Facelet_Factory;
                            Name    : in String;
+                           Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
                            Result  : out Facelet);
 
    --  Create the component tree from the facelet view.

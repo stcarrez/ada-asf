@@ -78,6 +78,7 @@ package body ASF.Applications.Views is
    begin
       Facelets.Find_Facelet (Factory => Context.Facelets.all,
                              Name    => Path,
+                             Context => Context,
                              Result  => Tree);
 
       Facelets.Build_View (View    => Tree,
@@ -131,6 +132,7 @@ package body ASF.Applications.Views is
       Ctx.Set_ELContext (Context.Get_ELContext);
       Facelets.Find_Facelet (Factory => Handler.Facelets,
                              Name    => View_Name,
+                             Context => Ctx,
                              Result  => Tree);
 
       Facelets.Build_View (View => Tree, Context => Ctx, Root => Root);

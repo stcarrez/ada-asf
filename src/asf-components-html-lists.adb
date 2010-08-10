@@ -58,6 +58,10 @@ package body ASF.Components.Html.Lists is
       Name  : constant String := UI.Get_Var;
       Count : Natural;
    begin
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+
       if EL.Objects.Get_Type (Value) /= EL.Objects.TYPE_BEAN then
          Log.Error ("Invalid list");
          return;

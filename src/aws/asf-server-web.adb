@@ -127,11 +127,31 @@ package body ASF.Server.Web is
    begin
       if not Ada.Directories.Exists (File)
         or else Ada.Directories.Kind (File) /= Ada.Directories.Ordinary_File then
-         return AWS.Response.Build (Content_Type => AWS.MIME.Text_HTML,
-                                    Message_Body => "Invalid URI " & Page);
+         raise ASF.Applications.Views.No_View;
+--           return AWS.Response.Build (Content_Type => AWS.MIME.Text_HTML,
+--                                      Message_Body => "Invalid URI " & Page);
       end if;
       return AWS.Response.File (AWS.MIME.Content_Type (File), File);
    end Static_Dispatch;
+
+   function Application_Dispatch (App     : Main.Application_Access;
+                                  Page    : String;
+                                  Request : AWS.Status.Data;
+                                  Status  : AWS.Messages.Status_Code)
+                                  return AWS.Response.Data is
+      Writer   : aliased ASF.Contexts.Writer.String.String_Writer;
+      Req      : aliased ASF.Requests.Web.Request;
+   begin
+      Writer.Initialize ("text/html", "UTF-8", 8192);
+
+      App.Dispatch (Page    => Page,
+                    Writer  => Writer'Unchecked_Access,
+                    Request => Req'Unchecked_Access);
+
+      return AWS.Response.Build (Content_Type    => Writer.Get_Content_Type,
+                                 Status_Code     => Status,
+                                 UString_Message => Writer.Get_Response);
+   end Application_Dispatch;
 
    function Dispatch (App  : Main.Application_Access;
                       Page : String;
@@ -141,20 +161,17 @@ package body ASF.Server.Web is
       if Is_Static (App, Page) then
          return Static_Dispatch (App, Page, Request);
       else
-         declare
-            Writer   : aliased ASF.Contexts.Writer.String.String_Writer;
-            Req      : aliased ASF.Requests.Web.Request;
-         begin
-            Writer.Initialize ("text/html", "UTF-8", 8192);
-
-            App.Dispatch (Page    => Page,
-                          Writer  => Writer'Unchecked_Access,
-                          Request => Req'Unchecked_Access);
-
-            return AWS.Response.Build (Content_Type => Writer.Get_Content_Type,
-                                       UString_Message => Writer.Get_Response);
-         end;
+         return Application_Dispatch (App, Page, Request, AWS.Messages.S200);
       end if;
+
+   exception
+      when ASF.Applications.Views.No_View =>
+         return Application_Dispatch (App,
+                                      App.Get_Config (ASF.Applications.ERROR_404_PARAM),
+                                      Request, AWS.Messages.S404);
+
+      when E : others =>
+         return Reply_Page_500 (Request, E);
    end Dispatch;
 
    ----------------------
@@ -185,6 +202,7 @@ package body ASF.Server.Web is
       end;
       return AWS.Response.Build ("text/html", "<p>Unknown application</p>");
    exception
+
       when E : others =>
          return Reply_Page_500 (Request, E);
    end Server_Callback;

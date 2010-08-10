@@ -125,7 +125,6 @@ package body ASF.Applications.Views is
 
       Ctx       : Facelet_Context;
       Tree      : Facelets.Facelet;
-      Root      : constant UIComponent_Access := new Core.UIComponentBase;
       View_Name : constant String := Handler.Get_Facelet_Name (Name);
    begin
       Ctx.Facelets := Handler.Facelets'Unchecked_Access;
@@ -134,9 +133,17 @@ package body ASF.Applications.Views is
                              Name    => View_Name,
                              Context => Ctx,
                              Result  => Tree);
+      if Facelets.Is_Null (Tree) then
+         raise No_View;
+      end if;
 
-      Facelets.Build_View (View => Tree, Context => Ctx, Root => Root);
-      View.Set_Root (Root);
+      --  Build the component tree for this request.
+      declare
+         Root      : constant UIComponent_Access := new Core.UIComponentBase;
+      begin
+         Facelets.Build_View (View => Tree, Context => Ctx, Root => Root);
+         View.Set_Root (Root);
+      end;
    end Restore_View;
 
    --  ------------------------------
@@ -174,8 +181,11 @@ package body ASF.Applications.Views is
       Handler.View_Ext := To_Unbounded_String (Conf.Get (VIEW_EXT_PARAM));
       Handler.File_Ext := To_Unbounded_String (Conf.Get (VIEW_FILE_EXT_PARAM));
 
-      Facelets.Set_Search_Directory (Factory => Handler.Facelets,
-                                     Paths   => To_String (Handler.Paths));
+      Facelets.Initialize (Factory => Handler.Facelets,
+                           Paths   => To_String (Handler.Paths),
+                           Ignore_White_Spaces => Conf.Get (VIEW_IGNORE_WHITE_SPACES_PARAM),
+                           Escape_Unknown_Tags => Conf.Get (VIEW_ESCAPE_UNKNOWN_TAGS_PARAM));
+
    end Initialize;
 
    --  ------------------------------

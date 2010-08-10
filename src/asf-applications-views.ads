@@ -24,6 +24,8 @@ with ASF.Views.Facelets;
 with Ada.Strings.Unbounded;
 package ASF.Applications.Views is
 
+   No_View : exception;
+
    --  ------------------------------
    --  View Handler
    --  ------------------------------

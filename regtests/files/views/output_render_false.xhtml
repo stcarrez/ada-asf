@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:u="http://code.google.com/p/ada-asf/util"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jstl/core">
+<body>
+  <p>This page must be empty</p>
+  <h:outputFormat id="testOutputFormat" styleClass="format" style="color: red;"
+		  value="MUST NOT BE PRESENT. Testing output format as a span: {0} and parameter 1 {1}" rendered="#{false}">
+    <f:param value="String first param"/>
+    <f:param value="23"/>
+  </h:outputFormat>
+  <h:outputText id="testOutput" styleClass="test" style="color: red;" rendered="#{false}"
+	        value="MUST NOT BE PRESENT.  Testing output as a span">
+  </h:outputText>
+</body>
+</html>

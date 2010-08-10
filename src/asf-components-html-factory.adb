@@ -24,6 +24,7 @@ package body ASF.Components.Html.Factory is
 
    function Create_Output return UIComponent_Access;
    function Create_Output_Link return UIComponent_Access;
+   function Create_Output_Format return UIComponent_Access;
    function Create_Label return UIComponent_Access;
    function Create_List return UIComponent_Access;
 
@@ -44,6 +45,14 @@ package body ASF.Components.Html.Factory is
    end Create_Output_Link;
 
    --  ------------------------------
+   --  Create an UIOutput component
+   --  ------------------------------
+   function Create_Output_Format return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Text.UIOutputFormat;
+   end Create_Output_Format;
+
+   --  ------------------------------
    --  Create a label component
    --  ------------------------------
    function Create_Label return UIComponent_Access is
@@ -61,14 +70,15 @@ package body ASF.Components.Html.Factory is
 
    use ASF.Views.Nodes;
 
-   URI        : aliased constant String := "http://java.sun.com/jsf/html";
-   OUTPUT_TEXT_TAG : aliased constant String := "outputText";
-   OUTPUT_LINK_TAG : aliased constant String := "outputLink";
-   LABEL_TAG       : aliased constant String := "label";
-   LIST_TAG        : aliased constant String := "list";
+   URI               : aliased constant String := "http://java.sun.com/jsf/html";
+   OUTPUT_TEXT_TAG   : aliased constant String := "outputText";
+   OUTPUT_LINK_TAG   : aliased constant String := "outputLink";
+   OUTPUT_FORMAT_TAG : aliased constant String := "outputFormat";
+   LABEL_TAG         : aliased constant String := "label";
+   LIST_TAG          : aliased constant String := "list";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (4 => (Name      => OUTPUT_TEXT_TAG'Access,
+     := (5 => (Name      => OUTPUT_TEXT_TAG'Access,
                Component => Create_Output'Access,
                Tag       => Create_Component_Node'Access),
          1 => (Name      => LABEL_TAG'Access,
@@ -77,7 +87,10 @@ package body ASF.Components.Html.Factory is
          2 => (Name      => LIST_TAG'Access,
                Component => Create_List'Access,
                Tag       => Create_Component_Node'Access),
-         3 => (Name      => OUTPUT_LINK_TAG'Access,
+         3 => (Name      => OUTPUT_FORMAT_TAG'Access,
+               Component => Create_Output_Format'Access,
+               Tag       => Create_Component_Node'Access),
+         4 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,
                Tag       => Create_Component_Node'Access)
         );

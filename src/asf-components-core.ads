@@ -67,10 +67,31 @@ package ASF.Components.Core is
 
 
    --  ------------------------------
+   --  Abstract Leaf component
+   --  ------------------------------
+   --  The <b>UILeaf</b> component is an abstract component intended to be used
+   --  for components without children.
+   type UILeaf is new UIComponentBase with private;
+
+   overriding
+   procedure Encode_Children (UI      : in UILeaf;
+                              Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Encode_Begin (UI      : in UILeaf;
+                           Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Encode_End (UI      : in UILeaf;
+                         Context : in out Faces_Context'Class);
+
+   --  ------------------------------
    --  Component Parameter
    --  ------------------------------
-   type UIParameter is new UIComponentBase with private;
+   type UIParameter is new UILeaf with private;
    type UIParameter_Access is access all UIParameter'Class;
+
+   type UIParameter_Access_Array is array (Natural range <>) of UIParameter_Access;
 
    --  Get the parameter name
    function Get_Name (UI      : UIParameter;
@@ -80,9 +101,8 @@ package ASF.Components.Core is
    function Get_Value (UI      : UIParameter;
                        Context : Faces_Context'Class) return EL.Objects.Object;
 
-   overriding
-   procedure Encode_Children (UI      : in UIParameter;
-                              Context : in out Faces_Context'Class);
+   --  Get the list of parameters associated with a component.
+   function Get_Parameters (UI : UIComponent'Class) return UIParameter_Access_Array;
 
 private
 
@@ -102,7 +122,9 @@ private
       Text : ASF.Views.Nodes.Text_Tag_Node_Access;
    end record;
 
-   type UIParameter is new UIComponentBase with record
+   type UILeaf is new UIComponentBase with null record;
+
+   type UIParameter is new UILeaf with record
       N : Natural;
    end record;
 

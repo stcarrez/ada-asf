@@ -114,6 +114,30 @@ package body ASF.Components.Core is
    end Encode_Begin;
 
    --  ------------------------------
+   --  Abstract Leaf component
+   --  ------------------------------
+   overriding
+   procedure Encode_Children (UI      : in UILeaf;
+                              Context : in out Faces_Context'Class) is
+   begin
+      null;
+   end Encode_Children;
+
+   overriding
+   procedure Encode_Begin (UI      : in UILeaf;
+                           Context : in out Faces_Context'Class) is
+   begin
+      null;
+   end Encode_Begin;
+
+   overriding
+   procedure Encode_End (UI      : in UILeaf;
+                         Context : in out Faces_Context'Class) is
+   begin
+      null;
+   end Encode_End;
+
+   --  ------------------------------
    --  Component Parameter
    --  ------------------------------
 
@@ -122,8 +146,10 @@ package body ASF.Components.Core is
    --  ------------------------------
    function Get_Name (UI      : UIParameter;
                       Context : Faces_Context'Class) return String is
+      Name : constant EL.Objects.Object := UI.Get_Attribute (Name    => "name",
+                                                             Context => Context);
    begin
-      return EL.Objects.To_String (UI.Get_Attribute (Name => "name", Context => Context));
+      return EL.Objects.To_String (Name);
    end Get_Name;
 
    --  ------------------------------
@@ -135,11 +161,31 @@ package body ASF.Components.Core is
       return UI.Get_Attribute (Name => "value", Context => Context);
    end Get_Value;
 
-   overriding
-   procedure Encode_Children (UI      : in UIParameter;
-                              Context : in out Faces_Context'Class) is
+   --  ------------------------------
+   --  Get the list of parameters associated with a component.
+   --  ------------------------------
+   function Get_Parameters (UI : UIComponent'Class) return UIParameter_Access_Array is
+
+      Result : UIParameter_Access_Array (1 .. UI.Get_Children_Count);
+      Last   : Natural := 0;
+
+      procedure Collect (Child : in UIComponent_Access);
+      pragma Inline (Collect);
+
+      procedure Collect (Child : in UIComponent_Access) is
+      begin
+         if Child.all in UIParameter'Class then
+            Last := Last + 1;
+            Result (Last) :=  UIParameter (Child.all)'Access;
+         end if;
+      end Collect;
+
+      procedure Iter is new ASF.Components.Iterate (Process => Collect);
+      pragma Inline (Iter);
+
    begin
-      null;
-   end Encode_Children;
+      Iter (UI);
+      return Result (1 .. Last);
+   end Get_Parameters;
 
 end ASF.Components.Core;

@@ -54,6 +54,9 @@ package ASF.Components is
    --  Get the list of children.
    function Get_Children (UI : UIComponent) return UIComponent_List;
 
+   --  Get the number of children.
+   function Get_Children_Count (UI : UIComponent) return Natural;
+
    procedure Append (UI    : in UIComponent_Access;
                      Child : in UIComponent_Access;
                      Tag   : access ASF.Views.Nodes.Tag_Node'Class);
@@ -114,14 +117,21 @@ package ASF.Components is
                                 Tag    : access ASF.Views.Nodes.Tag_Node'Class)
                                 return UIComponent_Access;
 
+   generic
+      with procedure Process (Child   : in UIComponent_Access);
+   procedure Iterate (UI : in UIComponent'Class);
+
 private
 
    --  Delete the component tree recursively.
    procedure Delete (UI : in out UIComponent_Access);
 
+   type UIAttribute_Access is access all UIAttribute;
+
    type UIAttribute is record
       Definition : access ASF.Views.Nodes.Tag_Attribute;
       Value      : EL.Objects.Object;
+      Next_Attr  : UIAttribute_Access;
    end record;
 
    type UIComponent_List is record
@@ -135,6 +145,7 @@ private
       First_Child : UIComponent_Access;
       Last_Child  : UIComponent_Access;
       Next        : UIComponent_Access;
+      Attributes  : UIAttribute_Access;
    end record;
 
 end ASF.Components;

@@ -48,6 +48,20 @@ package body ASF.Components is
       return Result;
    end Get_Children;
 
+   --  ------------------------------
+   --  Get the number of children.
+   --  ------------------------------
+   function Get_Children_Count (UI : UIComponent) return Natural is
+      Result : Natural := 0;
+      Child  : UIComponent_Access := UI.First_Child;
+   begin
+      while Child /= null loop
+         Result := Result + 1;
+         Child := Child.Next;
+      end loop;
+      return Result;
+   end Get_Children_Count;
+
    function Create_UIComponent (Parent : UIComponent_Access;
                                 Tag    : access ASF.Views.Nodes.Tag_Node'Class)
                                 return UIComponent_Access is
@@ -96,6 +110,9 @@ package body ASF.Components is
                          Context : Faces_Context'Class) return Boolean is
       Attr : constant EL.Objects.Object := UI.Get_Attribute (Context, "rendered");
    begin
+      if EL.Objects.Is_Null (Attr) then
+         return True;
+      end if;
       return EL.Objects.To_Boolean (Attr);
    end Is_Rendered;
 
@@ -112,12 +129,22 @@ package body ASF.Components is
    function Get_Attribute (UI      : UIComponent;
                            Context : Faces_Context'Class;
                            Name    : String) return EL.Objects.Object is
-      Attr : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+      Attribute : UIAttribute_Access := UI.Attributes;
    begin
-      if Attr = null then
-         return EL.Objects.Null_Object;
-      end if;
-      return ASF.Views.Nodes.Get_Value (Attr.all, UI);
+      while Attribute /= null loop
+         if ASF.Views.Nodes.Get_Name (Attribute.Definition.all) = Name then
+            return Attribute.Value;
+         end if;
+         Attribute := Attribute.Next_Attr;
+      end loop;
+      declare
+         Attr : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+      begin
+         if Attr = null then
+            return EL.Objects.Null_Object;
+         end if;
+         return ASF.Views.Nodes.Get_Value (Attr.all, UI);
+      end;
    end Get_Attribute;
 
    --  ------------------------------
@@ -127,7 +154,11 @@ package body ASF.Components is
                            Name    : String)
                            return access ASF.Views.Nodes.Tag_Attribute is
    begin
-      return null;
+      if UI.Tag = null then
+         return null;
+      else
+         return UI.Tag.Get_Attribute (Name);
+      end if;
    end Get_Attribute;
 
    procedure Set_Attribute (UI    : in out UIComponent;
@@ -145,8 +176,14 @@ package body ASF.Components is
 
    procedure Encode_Children (UI      : in UIComponent;
                               Context : in out Faces_Context'Class) is
-      Child : UIComponent_Access := UI.First_Child;
+      Child : UIComponent_Access;
    begin
+      --  Do not render the children if the component is not rendered.
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+
+      Child := UI.First_Child;
       while Child /= null loop
          Child.Encode_All (Context);
          Child := Child.Next;
@@ -166,6 +203,15 @@ package body ASF.Components is
       UI.Encode_Children (Context);
       UI.Encode_End (Context);
    end Encode_All;
+
+   procedure Iterate (UI : in UIComponent'Class) is
+      Child : UIComponent_Access := UI.First_Child;
+   begin
+      while Child /= null loop
+         Process (Child);
+         Child := Child.Next;
+      end loop;
+   end Iterate;
 
    --  ------------------------------
    --  Get the attribute value.

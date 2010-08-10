@@ -51,6 +51,14 @@ package body ASF.Views.Facelets is
                      Item    : in Facelet);
 
    --  ------------------------------
+   --  Returns True if the facelet is null/empty.
+   --  ------------------------------
+   function Is_Null (F : Facelet) return Boolean is
+   begin
+      return F.Root = null;
+   end Is_Null;
+
+   --  ------------------------------
    --  Get the facelet identified by the given name.  If the facelet is already
    --  loaded, the cached value is returned.  The facelet file is searched in
    --  a set of directories configured in the facelet factory.
@@ -91,15 +99,22 @@ package body ASF.Views.Facelets is
    end Build_View;
 
    --  ------------------------------
+   --  Initialize the facelet factory.
    --  Set the search directories for facelet files.
+   --  Set the ignore white space configuration when reading XHTML files.
+   --  Set the escape unknown tags configuration when reading XHTML files.
    --  ------------------------------
-   procedure Set_Search_Directory (Factory : in out Facelet_Factory;
-                                   Paths   : in String) is
+   procedure Initialize (Factory             : in out Facelet_Factory;
+                         Paths               : in String;
+                         Ignore_White_Spaces : in Boolean;
+                         Escape_Unknown_Tags : in Boolean) is
    begin
       Log.Info ("Set facelet search directory to: '{0}'", Paths);
 
       Factory.Paths := To_Unbounded_String (Paths);
-   end Set_Search_Directory;
+      Factory.Ignore_White_Spaces := Ignore_White_Spaces;
+      Factory.Escape_Unknown_Tags := Escape_Unknown_Tags;
+   end Initialize;
 
    --  ------------------------------
    --  Find the facelet file in one of the facelet directories.
@@ -149,6 +164,8 @@ package body ASF.Views.Facelets is
    procedure Find (Factory : in out Facelet_Factory;
                    Name    : in Unbounded_String;
                    Result  : out Facelet) is
+      use Ada.Directories;
+      use Ada.Calendar;
    begin
       Result.Root := null;
       Factory.Lock.Read;
@@ -157,6 +174,11 @@ package body ASF.Views.Facelets is
       begin
          if Facelet_Maps.Has_Element (Pos) then
             Result := Element (Pos);
+            if Modification_Time (Result.File.all) > Result.Modify_Time then
+               Result.Root := null;
+               Log.Info ("Ignoring cache because file '{0}' was modified",
+                         Result.File.all);
+            end if;
          end if;
       end;
       Factory.Lock.Release_Read;
@@ -191,22 +213,27 @@ package body ASF.Views.Facelets is
       Read   : File_Input;
       Ctx    : aliased EL.Contexts.Default.Default_Context;
       File   : constant Util.Strings.Name_Access := new String '(Path);
+      Mtime  : Ada.Calendar.Time;
    begin
       Log.Info ("Loading facelet: '{0}'", Path);
 
       Ctx.Set_Function_Mapper (Context.Get_ELContext.Get_Function_Mapper);
+      Mtime  := Modification_Time (Path);
       Open (Path, Read);
 
       --  If True, xmlns:* attributes will be reported in Start_Element
       Set_Feature (Reader, Namespace_Prefixes_Feature, False);
       Set_Feature (Reader, Validation_Feature, False);
 
+      Set_Ignore_White_Spaces (Reader, Factory.Ignore_White_Spaces);
+      Set_Escape_Unknown_Tags (Reader, Factory.Escape_Unknown_Tags);
       Parse (Reader, File,
              Read, Factory.Factory'Unchecked_Access, Ctx'Unchecked_Access);
       Close (Read);
 
       Result := Facelet '(Root => Get_Root (Reader),
                           File => File,
+                          Modify_Time => Mtime,
                           Path => To_Unbounded_String (Containing_Directory (Path) & '/'));
    exception
       when Ada.IO_Exceptions.Name_Error =>

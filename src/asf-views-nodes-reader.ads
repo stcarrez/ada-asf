@@ -116,6 +116,18 @@ package ASF.Views.Nodes.Reader is
    --  Get the root node that was created upon parsing of the XHTML file.
    function Get_Root (Reader : Xhtml_Reader) return Tag_Node_Access;
 
+   --  Set the XHTML reader to ignore or not the white spaces.
+   --  When set to True, the ignorable white spaces will not be kept.
+   procedure Set_Ignore_White_Spaces (Reader : in out Xhtml_Reader;
+                                      Value  : in Boolean);
+
+   --  Set the XHTML reader to escape or not the unknown tags.
+   --  When set to True, the tags which are not recognized will be
+   --  emitted as a raw text component and they will be escaped using
+   --  the XML escape rules.
+   procedure Set_Escape_Unknown_Tags (Reader : in out Xhtml_Reader;
+                                      Value  : in Boolean);
+
    --  Parse an XML stream, and calls the appropriate SAX callbacks for each
    --  event.
    --  This is not re-entrant: you can not call Parse with the same Parser
@@ -197,7 +209,12 @@ private
       Stack      : Element_Context_Array_Access;
       Stack_Pos  : Natural := 0;
       Line       : Line_Info;
-      Escape_Unknown_Tag : Boolean := True;
+
+      --  Whether the unknown tags are escaped using XML escape rules.
+      Escape_Unknown_Tags : Boolean := True;
+
+      --  Whether white spaces can be ignored.
+      Ignore_White_Spaces : Boolean := True;
    end record;
 
 end ASF.Views.Nodes.Reader;

@@ -379,7 +379,7 @@ package body ASF.Views.Nodes.Reader is
                   Log.Error ("{0}: Element '{1}' not found",
                              To_String (Handler.Locator), Qname);
                end if;
-               if Handler.Escape_Unknown_Tag and Is_Unknown then
+               if Handler.Escape_Unknown_Tags and Is_Unknown then
                   Append (Content.Text, "&lt;");
                else
                   Append (Content.Text, '<');
@@ -400,7 +400,7 @@ package body ASF.Views.Nodes.Reader is
                      Append (Content.Text, '"');
                   end loop;
                end if;
-               if Handler.Escape_Unknown_Tag and Is_Unknown then
+               if Handler.Escape_Unknown_Tags and Is_Unknown then
                   Append (Content.Text, "&gt;");
                else
                   Append (Content.Text, '>');
@@ -436,7 +436,7 @@ package body ASF.Views.Nodes.Reader is
             Content    : constant Tag_Content_Access := Handler.Text.Last;
             Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
          begin
-            if Handler.Escape_Unknown_Tag and Is_Unknown then
+            if Handler.Escape_Unknown_Tags and Is_Unknown then
                Append (Content.Text, "&lt;/");
                Append (Content.Text, Qname);
                Append (Content.Text, "&gt;");
@@ -480,7 +480,9 @@ package body ASF.Views.Nodes.Reader is
                                    Ch      : in Unicode.CES.Byte_Sequence) is
       pragma Unmodified (Handler);
    begin
-      Characters (Handler, Ch);
+      if not Handler.Ignore_White_Spaces then
+         Characters (Handler, Ch);
+      end if;
    end Ignorable_Whitespace;
 
    --  ------------------------------
@@ -586,6 +588,28 @@ package body ASF.Views.Nodes.Reader is
    end Get_Root;
 
    --  ------------------------------
+   --  Set the XHTML reader to ignore or not the white spaces.
+   --  When set to True, the ignorable white spaces will not be kept.
+   --  ------------------------------
+   procedure Set_Ignore_White_Spaces (Reader : in out Xhtml_Reader;
+                                      Value  : in Boolean) is
+   begin
+      Reader.Ignore_White_Spaces := Value;
+   end Set_Ignore_White_Spaces;
+
+   --  ------------------------------
+   --  Set the XHTML reader to escape or not the unknown tags.
+   --  When set to True, the tags which are not recognized will be
+   --  emitted as a raw text component and they will be escaped using
+   --  the XML escape rules.
+   --  ------------------------------
+   procedure Set_Escape_Unknown_Tags (Reader : in out Xhtml_Reader;
+                                      Value  : in Boolean) is
+   begin
+      Reader.Escape_Unknown_Tags := Value;
+   end Set_Escape_Unknown_Tags;
+
+   --  ------------------------------
    --  Parse an XML stream, and calls the appropriate SAX callbacks for each
    --  event.
    --  This is not re-entrant: you can not call Parse with the same Parser
@@ -598,7 +622,6 @@ package body ASF.Views.Nodes.Reader is
                     Context : in EL.Contexts.ELContext_Access) is
    begin
       Parser.Stack_Pos := 1;
-      Parser.Escape_Unknown_Tag := True;
       Push (Parser);
       Parser.Line.File := Name;
       Parser.Root   := new Tag_Node;
@@ -607,7 +630,6 @@ package body ASF.Views.Nodes.Reader is
       Parser.ELContext := Parser.Context'Unchecked_Access;
       Parser.Context.Set_Function_Mapper (Parser.Functions'Unchecked_Access);
       Parser.Functions.Mapper := Context.Get_Function_Mapper;
---        ASF.Views.Nodes.Factory.Functions;
       Sax.Readers.Reader (Parser).Parse (Input);
       Parser.Functions.Factory := null;
       Parser.ELContext := null;

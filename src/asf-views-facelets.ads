@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Calendar;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Unbounded.Hash;
@@ -34,6 +35,9 @@ package ASF.Views.Facelets is
 
    type Facelet is private;
    type Facelet_Access is access all Facelet;
+
+   --  Returns True if the facelet is null/empty.
+   function Is_Null (F : Facelet) return Boolean;
 
    --  ------------------------------
    --  Facelet factory
@@ -57,9 +61,14 @@ package ASF.Views.Facelets is
                          Context : in out ASF.Contexts.Facelets.Facelet_Context'Class;
                          Root    : in ASF.Components.UIComponent_Access);
 
+   --  Initialize the facelet factory.
    --  Set the search directories for facelet files.
-   procedure Set_Search_Directory (Factory : in out Facelet_Factory;
-                                   Paths   : in String);
+   --  Set the ignore white space configuration when reading XHTML files.
+   --  Set the escape unknown tags configuration when reading XHTML files.
+   procedure Initialize (Factory             : in out Facelet_Factory;
+                         Paths               : in String;
+                         Ignore_White_Spaces : in Boolean;
+                         Escape_Unknown_Tags : in Boolean);
 
    --  Find the facelet file in one of the facelet directories.
    --  Returns the path to be used for reading the facelet file.
@@ -83,9 +92,10 @@ private
    use Ada.Strings.Unbounded;
 
    type Facelet is record
-      Root : ASF.Views.Nodes.Tag_Node_Access;
-      Path : Unbounded_String;
-      File : Util.Strings.Name_Access;
+      Root        : ASF.Views.Nodes.Tag_Node_Access;
+      Path        : Unbounded_String;
+      File        : Util.Strings.Name_Access;
+      Modify_Time : Ada.Calendar.Time;
    end record;
 
    --  Tag library map indexed on the library namespace.
@@ -120,6 +130,12 @@ private
 
       --  The component factory
       Factory  : aliased ASF.Factory.Component_Factory;
+
+      --  Whether the unknown tags are escaped using XML escape rules.
+      Escape_Unknown_Tags : Boolean := True;
+
+      --  Whether white spaces can be ignored.
+      Ignore_White_Spaces : Boolean := True;
    end record;
 
 end ASF.Views.Facelets;

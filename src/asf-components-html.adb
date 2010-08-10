@@ -25,6 +25,7 @@ package body ASF.Components.Html is
                                 Writer  : in ResponseWriter_Access) is
       Style  : constant Object := UI.Get_Attribute (Context, "style");
       Class  : constant Object := UI.Get_Attribute (Context, "styleClass");
+      Title  : constant Object := UI.Get_Attribute (Context, "title");
    begin
       Writer.Write_Attribute ("id", UI.Get_Client_Id);
       if not Is_Null (Class) then
@@ -32,6 +33,9 @@ package body ASF.Components.Html is
       end if;
       if not Is_Null (Style) then
          Writer.Write_Attribute ("style", Style);
+      end if;
+      if not Is_Null (Title) then
+         Writer.Write_Attribute ("title", Title);
       end if;
    end Render_Attributes;
 

@@ -72,7 +72,7 @@ package body ASF.Applications.Views.Tests is
       S : Util.Measures.Stamp;
       Conf      : Applications.Config;
    begin
-      Conf.Set ("view.file_ext", "");
+      Conf.Load_Properties ("regtests/view.properties");
       H.Initialize (Conf);
 
       Context.Set_Response_Writer (Writer'Unchecked_Access);

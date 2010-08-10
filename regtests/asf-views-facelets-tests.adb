@@ -21,10 +21,13 @@ with AUnit.Assertions;
 with Ada.Text_IO;
 with ASF.Testsuite;
 with AUnit.Assertions;
+with ASF.Contexts.Facelets;
+with ASF.Components.Util.Factory;
 package body ASF.Views.Facelets.Tests is
 
    use AUnit.Assertions;
    use ASF.Testsuite;
+   use ASF.Contexts.Facelets;
 
    --  Set up performed before each test case
    overriding
@@ -45,18 +48,20 @@ package body ASF.Views.Facelets.Tests is
    procedure Test_Load_Facelet (T : in out Test) is
       Factory : ASF.Views.Facelets.Facelet_Factory;
       View    : ASF.Views.Facelets.Facelet;
+      Ctx       : Facelet_Context;
    begin
-      Set_Search_Directory (Factory, "regtests/files;.");
-      Find_Facelet (Factory, "test.xhtml", View);
+      Initialize (Factory, "regtests/files;.", True, True);
+      Find_Facelet (Factory, "test.xhtml", Ctx, View);
    end Test_Load_Facelet;
 
    --  Test loading of an unknown file
    procedure Test_Load_Unknown_Facelet (T : in out Test) is
       Factory : ASF.Views.Facelets.Facelet_Factory;
       View    : ASF.Views.Facelets.Facelet;
+      Ctx       : Facelet_Context;
    begin
-      Set_Search_Directory (Factory, "regtests/files;.");
-      Find_Facelet (Factory, "not-found-file.xhtml", View);
+      Initialize (Factory, "regtests/files;.", True, True);
+      Find_Facelet (Factory, "not-found-file.xhtml", Ctx, View);
 
       Assert (Condition => False,
               Message   => "Exception not raised when loading a missing facelet");

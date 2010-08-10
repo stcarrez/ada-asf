@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with EL.Functions.Default;
 with AUnit.Test_Suites; use AUnit.Test_Suites;
 with AUnit.Test_Fixtures;
 
@@ -24,7 +25,7 @@ package ASF.Views.Facelets.Tests is
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
    type Test is new AUnit.Test_Fixtures.Test_Fixture with record
-      Writer : Integer;
+      Writer    : Integer;
    end record;
 
    overriding

@@ -22,6 +22,10 @@ package body ASF.Components.Html.Text is
 
    use EL.Objects;
 
+   TEXT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
+
+   LABEL_ATTRIBUTE_NAMES : Util.Strings.String_Set.Set;
+
    --  ------------------------------
    --  Get the value to write on the output.
    --  ------------------------------
@@ -47,7 +51,7 @@ package body ASF.Components.Html.Text is
       Escape : constant Object := UI.Get_Attribute (Context, "escape");
    begin
       Writer.Start_Optional_Element ("span");
-      UI.Render_Attributes (Context, Writer);
+      UI.Render_Attributes (Context, TEXT_ATTRIBUTE_NAMES, Writer);
       if Is_Null (Escape) or To_Boolean (Escape) then
          Writer.Write_Text (Value);
       else
@@ -72,7 +76,7 @@ package body ASF.Components.Html.Text is
       if UI.Is_Rendered (Context) then
          Writer := Context.Get_Response_Writer;
          Writer.Start_Element ("label");
-         UI.Render_Attributes (Context, Writer);
+         UI.Render_Attributes (Context, TEXT_ATTRIBUTE_NAMES, Writer);
       end if;
    end Encode_Begin;
 
@@ -121,4 +125,8 @@ package body ASF.Components.Html.Text is
       end;
    end Encode_Begin;
 
+begin
+   Set_Text_Attributes (TEXT_ATTRIBUTE_NAMES);
+   Set_Text_Attributes (LABEL_ATTRIBUTE_NAMES);
+   Set_Interactive_Attributes (LABEL_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Text;

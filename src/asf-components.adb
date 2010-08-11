@@ -129,12 +129,18 @@ package body ASF.Components is
    function Get_Attribute (UI      : UIComponent;
                            Context : Faces_Context'Class;
                            Name    : String) return EL.Objects.Object is
+      pragma Unreferenced (Context);
+
       Attribute : UIAttribute_Access := UI.Attributes;
    begin
       while Attribute /= null loop
-         if ASF.Views.Nodes.Get_Name (Attribute.Definition.all) = Name then
-            return Attribute.Value;
-         end if;
+         declare
+            Attr_Name : constant String := ASF.Views.Nodes.Get_Name (Attribute.Definition.all);
+         begin
+            if Attr_Name = Name then
+               return Attribute.Value;
+            end if;
+         end;
          Attribute := Attribute.Next_Attr;
       end loop;
       declare
@@ -204,6 +210,10 @@ package body ASF.Components is
       UI.Encode_End (Context);
    end Encode_All;
 
+   --  ------------------------------
+   --  Iterate over the children of the component and execute
+   --  the <b>Process</b> procedure.
+   --  ------------------------------
    procedure Iterate (UI : in UIComponent'Class) is
       Child : UIComponent_Access := UI.First_Child;
    begin
@@ -212,6 +222,33 @@ package body ASF.Components is
          Child := Child.Next;
       end loop;
    end Iterate;
+
+   --  ------------------------------
+   --  Iterate over the attributes defined on the component and
+   --  execute the <b>Process</b> procedure.
+   --  ------------------------------
+   procedure Iterate_Attributes (UI : in UIComponent'Class) is
+      Attribute : UIAttribute_Access := UI.Attributes;
+
+      procedure Process_Tag_Attribute (Attr : in ASF.Views.Nodes.Tag_Attribute_Access) is
+         A : UIAttribute;
+      begin
+         A.Definition := Attr;
+         Process (ASF.Views.Nodes.Get_Name (Attr.all), A);
+      end Process_Tag_Attribute;
+
+      procedure Iterate_Tag_Attributes is new
+        ASF.Views.Nodes.Iterate_Attributes (Process_Tag_Attribute);
+
+   begin
+      --  Iterate first over the component modified attributes.
+      while Attribute /= null loop
+         Process (ASF.Views.Nodes.Get_Name (Attribute.Definition.all), Attribute.all);
+         Attribute := Attribute.Next_Attr;
+      end loop;
+
+      Iterate_Tag_Attributes (UI.Tag.all);
+   end Iterate_Attributes;
 
    --  ------------------------------
    --  Get the attribute value.

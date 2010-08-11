@@ -117,9 +117,18 @@ package ASF.Components is
                                 Tag    : access ASF.Views.Nodes.Tag_Node'Class)
                                 return UIComponent_Access;
 
+   --  Iterate over the children of the component and execute
+   --  the <b>Process</b> procedure.
    generic
       with procedure Process (Child   : in UIComponent_Access);
    procedure Iterate (UI : in UIComponent'Class);
+
+   --  Iterate over the attributes defined on the component and
+   --  execute the <b>Process</b> procedure.
+   generic
+      with procedure Process (Name : in String;
+                              Attr : in UIAttribute);
+   procedure Iterate_Attributes (UI : in UIComponent'Class);
 
 private
 

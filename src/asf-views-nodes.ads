@@ -51,6 +51,9 @@ package ASF.Views.Nodes is
    --  Get the attribute name.
    function Get_Name (Attribute : Tag_Attribute) return Unbounded_String;
 
+   --  Get the attribute name.
+   function Get_Name (Attribute : Tag_Attribute) return String;
+
    --  Get the attribute literal value.
    function Get_Value (Attribute : Tag_Attribute) return Unbounded_String;
 
@@ -147,6 +150,12 @@ package ASF.Views.Nodes is
                     Message : in String;
                     Param1  : in String := "";
                     Param2  : in String := "");
+
+   --  Iterate over the attributes defined on the node and
+   --  execute the <b>Process</b> procedure.
+   generic
+      with procedure Process (Attr : in Tag_Attribute_Access);
+   procedure Iterate_Attributes (Node : in Tag_Node'Class);
 
    --  ------------------------------
    --  Text nodes mixed with EL expressions.

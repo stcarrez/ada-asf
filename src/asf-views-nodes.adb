@@ -74,6 +74,14 @@ package body ASF.Views.Nodes is
    end Get_Name;
 
    --  ------------------------------
+   --  Get the attribute name.
+   --  ------------------------------
+   function Get_Name (Attribute : Tag_Attribute) return String is
+   begin
+      return To_String (Attribute.Name);
+   end Get_Name;
+
+   --  ------------------------------
    --  Get the attribute literal value.
    --  ------------------------------
    function Get_Value (Attribute : Tag_Attribute) return Unbounded_String is
@@ -353,6 +361,21 @@ package body ASF.Views.Nodes is
          Child := Child.Next;
       end loop;
    end Build_Children;
+
+   --  ------------------------------
+   --  Iterate over the attributes defined on the node and
+   --  execute the <b>Process</b> procedure.
+   --  ------------------------------
+   procedure Iterate_Attributes (Node : in Tag_Node'Class) is
+   begin
+      for I in Node.Attributes'Range loop
+         declare
+            Attr : constant Tag_Attribute_Access := Node.Attributes (I)'Access;
+         begin
+            Process (Attr);
+         end;
+      end loop;
+   end Iterate_Attributes;
 
    overriding
    procedure Build_Components (Node    : access Text_Tag_Node;

@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with ASF.Contexts.Writer;
 with ASF.Components.Core;
+with Util.Strings;
 package ASF.Components.Html is
 
    use ASF.Contexts.Writer;
@@ -26,6 +27,21 @@ package ASF.Components.Html is
    procedure Render_Attributes (UI      : in UIHtmlComponent;
                                 Context : in out Faces_Context'Class;
                                 Writer  : in ResponseWriter_Access);
+
+   --  Render the attributes which are defined on the component and which are
+   --  in the list specified by <b>names</b>.
+   procedure Render_Attributes (UI      : in UIHtmlComponent;
+                                Context : in out Faces_Context'Class;
+                                Names   : in Util.Strings.String_Set.Set;
+                                Writer  : in ResponseWriter_Access);
+
+   --  Add in the <b>names</b> set, the basic text attributes that can be set
+   --  on HTML elements (dir, lang, style, title).
+   procedure Set_Text_Attributes (Names : in out Util.Strings.String_Set.Set);
+
+   --  Add in the <b>names</b> set, the onXXX attributes that can be set
+   --  on HTML elements (accesskey, tabindex, onXXX).
+   procedure Set_Interactive_Attributes (Names : in out Util.Strings.String_Set.Set);
 
 private
 

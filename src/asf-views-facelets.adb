@@ -217,7 +217,7 @@ package body ASF.Views.Facelets is
    begin
       Log.Info ("Loading facelet: '{0}'", Path);
 
-      Ctx.Set_Function_Mapper (Context.Get_ELContext.Get_Function_Mapper);
+      Ctx.Set_Function_Mapper (Context.Get_Function_Mapper);
       Mtime  := Modification_Time (Path);
       Open (Path, Read);
 

@@ -386,7 +386,13 @@ package body ASF.Views.Nodes.Facelets is
    begin
       Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       Node.Value      := Find_Attribute (Attributes, "value");
+      if Node.Value = null then
+         Node.Error ("Missing attribute 'value'");
+      end if;
       Node.Var        := Find_Attribute (Attributes, "name");
+      if Node.Var = null then
+         Node.Error ("Missing attribute 'name'");
+      end if;
       return Node.all'Access;
    end Create_Param_Tag_Node;
 
@@ -401,8 +407,8 @@ package body ASF.Views.Nodes.Facelets is
                                Context : in out Facelet_Context'Class) is
       pragma Unreferenced (Parent);
 
-      Value  : EL.Expressions.ValueExpression;
-      --          := Node.Value.Get_ValueExpression (Context);
+      Value  : constant EL.Expressions.ValueExpression
+              := Get_ValueExpression (Node.Value.all, Context);
    begin
       Context.Set_Variable (Node.Var.Value, Value);
    end Build_Components;

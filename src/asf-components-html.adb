@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with EL.Objects;
-with Util.Strings;
 package body ASF.Components.Html is
 
    use EL.Objects;
@@ -117,6 +116,17 @@ package body ASF.Components.Html is
    begin
       Names.Insert (ACCESS_KEY_ATTR'Access);
       Names.Insert (TABINDEX_ATTR'Access);
+      Names.Insert (ON_BLUR_ATTR'Access);
+      Names.Insert (ON_MOUSE_UP_ATTR'Access);
+      Names.Insert (ON_MOUSE_OVER_ATTR'Access);
+      Names.Insert (ON_MOUSE_OUT_ATTR'Access);
+      Names.Insert (ON_MOUSE_MOVE_ATTR'Access);
+      Names.Insert (ON_MOUSE_DOWN_ATTR'Access);
+      Names.Insert (ON_KEYUP_ATTR'Access);
+      Names.Insert (ON_KEYDOWN_ATTR'Access);
+      Names.Insert (ON_FOCUS_ATTR'Access);
+      Names.Insert (ON_DBLCLICK_ATTR'Access);
+      Names.Insert (ON_CLICK_ATTR'Access);
    end Set_Interactive_Attributes;
 
 end ASF.Components.Html;

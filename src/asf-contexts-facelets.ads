@@ -20,6 +20,7 @@ with Util.Strings;
 with EL.Objects;
 with EL.Contexts;
 with EL.Expressions;
+with EL.Functions;
 with ASF.Components;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Vectors;
@@ -46,6 +47,10 @@ package ASF.Contexts.Facelets is
    --  Set the EL context for evaluating expressions.
    procedure Set_ELContext (Context   : in out Facelet_Context;
                             ELContext : in EL.Contexts.ELContext_Access);
+
+   --  Get the function mapper associated with the EL context.
+   function Get_Function_Mapper (Context : in Facelet_Context)
+     return EL.Functions.Function_Mapper_Access;
 
    --  Set the attribute having given name with the value.
    procedure Set_Attribute (Context : in out Facelet_Context;

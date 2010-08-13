@@ -39,6 +39,20 @@ package body ASF.Contexts.Facelets is
    end Set_ELContext;
 
    --  ------------------------------
+   --  Get the function mapper associated with the EL context.
+   --  ------------------------------
+   function Get_Function_Mapper (Context : in Facelet_Context)
+                                 return EL.Functions.Function_Mapper_Access is
+      use EL.Contexts;
+   begin
+      if Context.Context = null then
+         return null;
+      else
+         return Context.Context.Get_Function_Mapper;
+      end if;
+   end Get_Function_Mapper;
+
+   --  ------------------------------
    --  Set the attribute having given name with the value.
    --  ------------------------------
    procedure Set_Attribute (Context : in out Facelet_Context;

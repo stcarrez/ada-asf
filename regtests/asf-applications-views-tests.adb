@@ -80,6 +80,8 @@ package body ASF.Applications.Views.Tests is
          begin
             Context.Set_Response_Writer (Writer'Unchecked_Access);
             Context.Set_ELContext (ELContext'Unchecked_Access);
+            ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
+            ELContext.Set_Resolver (Resolver'Unchecked_Access);
             Writer.Initialize ("text/xml", "UTF-8", 8192);
 
             Set_Current (Context'Unchecked_Access);

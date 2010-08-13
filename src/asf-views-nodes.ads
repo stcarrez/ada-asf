@@ -54,6 +54,9 @@ package ASF.Views.Nodes is
    --  Get the attribute name.
    function Get_Name (Attribute : Tag_Attribute) return String;
 
+   --  Returns True if the attribute is static (not an EL expression).
+   function Is_Static (Attribute : Tag_Attribute) return Boolean;
+
    --  Get the attribute literal value.
    function Get_Value (Attribute : Tag_Attribute) return Unbounded_String;
 
@@ -71,6 +74,13 @@ package ASF.Views.Nodes is
    function Get_ValueExpression (Attribute : Tag_Attribute;
                                  Context   : Facelet_Context'Class)
                                  return EL.Expressions.ValueExpression;
+
+   --  Reduce the expression by eliminating known variables and computing
+   --  constant expressions.  The result expression is either another
+   --  expression or a computed constant value.
+   function Reduce_Expression (Attribute : Tag_Attribute;
+                               Context   : Facelet_Context'Class)
+                               return EL.Expressions.Expression;
 
    --  Find the tag attribute having the given name.
    --  Returns an access to the attribute cell within the array or null

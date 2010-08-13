@@ -18,6 +18,8 @@
 
 with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
+with EL.Expressions;
+with EL.Contexts;
 package body ASF.Components is
 
    --  ------------------------------
@@ -62,12 +64,31 @@ package body ASF.Components is
       return Result;
    end Get_Children_Count;
 
-   function Create_UIComponent (Parent : UIComponent_Access;
-                                Tag    : access ASF.Views.Nodes.Tag_Node'Class)
+   function Create_UIComponent (Parent  : UIComponent_Access;
+                                Context : ASF.Contexts.Facelets.Facelet_Context'Class;
+                                Tag     : access ASF.Views.Nodes.Tag_Node'Class)
                                 return UIComponent_Access is
-      Result : constant UIComponent_Access := new UIComponent;
+      Result  : constant UIComponent_Access := new UIComponent;
+
+      procedure Process_Attribute (Attr : in ASF.Views.Nodes.Tag_Attribute_Access) is
+      begin
+         if not ASF.Views.Nodes.Is_Static (Attr.all) then
+            declare
+               Expr : constant EL.Expressions.Expression
+                 := ASF.Views.Nodes.Reduce_Expression (Attr.all, Context);
+            begin
+               null;
+            end;
+         end if;
+      end Process_Attribute;
+
+      --  Iterate over the attributes to resolve some value expressions.
+      procedure Iterate_Attributes is
+        new ASF.Views.Nodes.Iterate_Attributes (Process_Attribute);
+
    begin
       Append (Parent, Result, Tag);
+      Iterate_Attributes (Tag.all);
       return Result;
    end Create_UIComponent;
 
@@ -172,6 +193,30 @@ package body ASF.Components is
                             Value : in EL.Objects.Object) is
    begin
       null;
+   end Set_Attribute;
+
+   procedure Set_Attribute (UI    : in out UIComponent;
+                            Def   : access ASF.Views.Nodes.Tag_Attribute;
+                            Value : in EL.Expressions.Expression) is
+      Attribute : UIAttribute_Access := UI.Attributes;
+      Name      : constant String := ASF.Views.Nodes.Get_Name (Def.all);
+   begin
+      while Attribute /= null loop
+         declare
+            Attr_Name : constant String := ASF.Views.Nodes.Get_Name (Attribute.Definition.all);
+         begin
+            if Attr_Name = Name then
+               Attribute.Expr := Value;
+               Attribute.Value := EL.Objects.Null_Object;
+               return;
+            end if;
+         end;
+         Attribute := Attribute.Next_Attr;
+      end loop;
+      Attribute := new UIAttribute;
+      Attribute.Definition := Def;
+      Attribute.Value := EL.Objects.Null_Object;
+      Attribute.Expr  := Value;
    end Set_Attribute;
 
    procedure Encode_Begin (UI      : in UIComponent;

@@ -25,8 +25,10 @@
 --  for each request.  Unlike tag nodes, the component tree is not shared.
 with Ada.Strings.Unbounded;
 with EL.Objects;
+with EL.Expressions;
 --  with EL.Contexts;
 with ASF.Contexts.Faces;
+limited with ASF.Contexts.Facelets;
 limited with ASF.Views.Nodes;
 package ASF.Components is
 
@@ -88,6 +90,10 @@ package ASF.Components is
                             Name  : in String;
                             Value : in EL.Objects.Object);
 
+   procedure Set_Attribute (UI    : in out UIComponent;
+                            Def   : access ASF.Views.Nodes.Tag_Attribute;
+                            Value : in EL.Expressions.Expression);
+
    procedure Encode_Begin (UI      : in UIComponent;
                            Context : in out Faces_Context'Class);
 
@@ -113,7 +119,8 @@ package ASF.Components is
    function Get_Value (Attr : UIAttribute;
                        UI   : UIComponent'Class) return EL.Objects.Object;
 
-   function Create_UIComponent (Parent : UIComponent_Access;
+   function Create_UIComponent (Parent  : UIComponent_Access;
+                                Context : ASF.Contexts.Facelets.Facelet_Context'Class;
                                 Tag    : access ASF.Views.Nodes.Tag_Node'Class)
                                 return UIComponent_Access;
 
@@ -139,7 +146,9 @@ private
 
    type UIAttribute is record
       Definition : access ASF.Views.Nodes.Tag_Attribute;
+      Name       : Unbounded_String;
       Value      : EL.Objects.Object;
+      Expr       : El.Expressions.Expression;
       Next_Attr  : UIAttribute_Access;
    end record;
 

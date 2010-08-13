@@ -82,6 +82,14 @@ package body ASF.Views.Nodes is
    end Get_Name;
 
    --  ------------------------------
+   --  Returns True if the attribute is static (not an EL expression).
+   --  ------------------------------
+   function Is_Static (Attribute : Tag_Attribute) return Boolean is
+   begin
+      return Attribute.Binding = null;
+   end Is_Static;
+
+   --  ------------------------------
    --  Get the attribute literal value.
    --  ------------------------------
    function Get_Value (Attribute : Tag_Attribute) return Unbounded_String is
@@ -158,6 +166,20 @@ package body ASF.Views.Nodes is
          Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
          return EL.Expressions.Create_ValueExpression (V);
    end Get_ValueExpression;
+
+   --  ------------------------------
+   --  Reduce the expression by eliminating known variables and computing
+   --  constant expressions.  The result expression is either another
+   --  expression or a computed constant value.
+   --  ------------------------------
+   function Reduce_Expression (Attribute : Tag_Attribute;
+                               Context   : Facelet_Context'Class)
+                               return EL.Expressions.Expression is
+      E : constant EL.Expressions.Expression
+        := EL.Expressions.Expression (Attribute.Binding.all);
+   begin
+      return E.Reduce_Expression (Context.Get_ELContext.all);
+   end Reduce_Expression;
 
    --  ------------------------------
    --  Find the tag attribute having the given name.
@@ -345,8 +367,27 @@ package body ASF.Views.Nodes is
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
       UI : constant UIComponent_Access := Node.Factory.all;
+
+      procedure Process_Attribute (Attr : in Tag_Attribute_Access) is
+      begin
+         if Attr.Binding /= null then
+            declare
+               Expr : constant EL.Expressions.Expression
+                 := ASF.Views.Nodes.Reduce_Expression (Attr.all, Context);
+            begin
+               UI.Set_Attribute (Def   => Attr,
+                                 Value => Expr);
+            end;
+         end if;
+      end Process_Attribute;
+
+      --  Iterate over the attributes to resolve some value expressions.
+      procedure Iterate_Attributes is
+        new ASF.Views.Nodes.Iterate_Attributes (Process_Attribute);
+
    begin
       Append (Parent, UI, Node);
+      Iterate_Attributes (Node.all);
       Node.Build_Children (UI, Context);
    end Build_Components;
 

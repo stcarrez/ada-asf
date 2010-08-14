@@ -19,6 +19,7 @@
 with ASF.Components.Html.Text;
 with ASF.Components.Html.Lists;
 with ASF.Components.Html.Links;
+with ASF.Components.Html.Panels;
 with ASF.Views.Nodes;
 package body ASF.Components.Html.Factory is
 
@@ -27,6 +28,7 @@ package body ASF.Components.Html.Factory is
    function Create_Output_Format return UIComponent_Access;
    function Create_Label return UIComponent_Access;
    function Create_List return UIComponent_Access;
+   function Create_PanelGroup return UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIOutput component
@@ -68,6 +70,14 @@ package body ASF.Components.Html.Factory is
       return new ASF.Components.Html.Lists.UIList;
    end Create_List;
 
+   --  ------------------------------
+   --  Create an UIPanelGroup component
+   --  ------------------------------
+   function Create_PanelGroup return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Panels.UIPanelGroup;
+   end Create_PanelGroup;
+
    use ASF.Views.Nodes;
 
    URI               : aliased constant String := "http://java.sun.com/jsf/html";
@@ -76,6 +86,7 @@ package body ASF.Components.Html.Factory is
    OUTPUT_FORMAT_TAG : aliased constant String := "outputFormat";
    LABEL_TAG         : aliased constant String := "label";
    LIST_TAG          : aliased constant String := "list";
+   PANEL_GROUP_TAG   : aliased constant String := "panelGroup";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
      := (5 => (Name      => OUTPUT_TEXT_TAG'Access,
@@ -92,6 +103,9 @@ package body ASF.Components.Html.Factory is
                Tag       => Create_Component_Node'Access),
          4 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,
+               Tag       => Create_Component_Node'Access),
+         6 => (Name      => PANEL_GROUP_TAG'Access,
+               Component => Create_PanelGroup'Access,
                Tag       => Create_Component_Node'Access)
         );
 

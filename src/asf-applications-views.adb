@@ -176,6 +176,7 @@ package body ASF.Applications.Views is
                          Bindings => Nodes.Facelets.Definition);
 
       ASF.Components.Util.Factory.Set_Functions (Handler.Functions);
+      ASF.Views.Nodes.Core.Set_Functions (Handler.Functions);
 
       Handler.Paths    := To_Unbounded_String (Conf.Get (VIEW_DIR_PARAM));
       Handler.View_Ext := To_Unbounded_String (Conf.Get (VIEW_EXT_PARAM));

@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Util.Strings.Transforms;
 package body ASF.Views.Nodes.Core is
 
    --  ------------------------------
@@ -260,5 +260,52 @@ package body ASF.Views.Nodes.Core is
    begin
       return Tag_Factory'Access;
    end Definition;
+
+   --  Function names
+   CAPITALIZE_FN    : aliased constant String := "capitalize";
+   TO_UPPER_CASE_FN : aliased constant String := "toUpperCase";
+   TO_LOWER_CASE_FN : aliased constant String := "toLowerCase";
+
+   function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object;
+   function To_Upper_Case (Value : EL.Objects.Object) return EL.Objects.Object;
+   function To_Lower_Case (Value : EL.Objects.Object) return EL.Objects.Object;
+
+   function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object is
+      S : constant String := EL.Objects.To_String (Value);
+   begin
+      return EL.Objects.To_Object (Util.Strings.Transforms.Capitalize (S));
+   end Capitalize;
+
+   function To_Upper_Case (Value : EL.Objects.Object) return EL.Objects.Object is
+      S : constant String := EL.Objects.To_String (Value);
+   begin
+      return EL.Objects.To_Object (Util.Strings.Transforms.To_Upper_Case (S));
+   end To_Upper_Case;
+
+   function To_Lower_Case (Value : EL.Objects.Object) return EL.Objects.Object is
+      S : constant String := EL.Objects.To_String (Value);
+   begin
+      return EL.Objects.To_Object (Util.Strings.Transforms.To_Lower_Case (S));
+   end To_Lower_Case;
+
+   --  ------------------------------
+   --  Register a set of functions in the namespace
+   --  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+   --  Functions:
+   --    capitalize, toUpperCase, toLowerCase
+   --  ------------------------------
+   procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
+      URI : constant String := "http://java.sun.com/jsp/jstl/functions";
+   begin
+      Mapper.Set_Function (Name      => CAPITALIZE_FN,
+                           Namespace => URI,
+                           Func      => Capitalize'Access);
+      Mapper.Set_Function (Name      => TO_LOWER_CASE_FN,
+                           Namespace => URI,
+                           Func      => To_Lower_Case'Access);
+      Mapper.Set_Function (Name      => TO_UPPER_CASE_FN,
+                           Namespace => URI,
+                           Func      => To_Upper_Case'Access);
+   end Set_Functions;
 
 end ASF.Views.Nodes.Core;

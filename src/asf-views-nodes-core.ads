@@ -21,6 +21,7 @@
 --
 --    xmlns:c="http://java.sun.com/jstl/core"
 --    xmlns:ui="http://java.sun.com/jsf/facelets"
+--    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 --
 --  The following JSTL core elements are defined:
 --    <c:set var="name" value="#{expr}"/>
@@ -29,10 +30,17 @@
 --
 --
 with ASF.Factory;
+with EL.Functions;
 package ASF.Views.Nodes.Core is
 
    --  Tag factory for nodes defined in this package.
    function Definition return ASF.Factory.Factory_Bindings_Access;
+
+   --  Register a set of functions in the namespace
+   --  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+   --  Functions:
+   --    capitalize, toUpperCase, toLowerCase
+   procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
 
    --  ------------------------------
    --  Set Tag

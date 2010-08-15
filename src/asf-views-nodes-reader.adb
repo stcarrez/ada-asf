@@ -630,6 +630,9 @@ package body ASF.Views.Nodes.Reader is
       Parser.ELContext := Parser.Context'Unchecked_Access;
       Parser.Context.Set_Function_Mapper (Parser.Functions'Unchecked_Access);
       Parser.Functions.Mapper := Context.Get_Function_Mapper;
+      if Parser.Functions.Mapper = null then
+         LOG.Warn ("There is no function mapper");
+      end if;
       Sax.Readers.Reader (Parser).Parse (Input);
       Parser.Functions.Factory := null;
       Parser.ELContext := null;

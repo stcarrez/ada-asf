@@ -72,6 +72,11 @@ package ASF.Applications.Views is
    procedure Register_Module (Handler : in out View_Handler;
                               Module  : in ASF.Modules.Module_Access);
 
+   --  Register some functions
+   generic
+      with procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
+   procedure Register_Functions (Handler : in out View_Handler'Class);
+
 private
 
    type View_Handler is tagged limited record

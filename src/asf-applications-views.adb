@@ -226,4 +226,12 @@ package body ASF.Applications.Views is
       ASF.Views.Facelets.Register_Module (Handler.Facelets, URI, Dir);
    end Register_Module;
 
+   --  ------------------------------
+   --  Register some functions
+   --  ------------------------------
+   procedure Register_Functions (Handler : in out View_Handler'Class) is
+   begin
+      Set_Functions (Handler.Functions);
+   end Register_Functions;
+
 end ASF.Applications.Views;

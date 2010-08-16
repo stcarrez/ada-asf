@@ -59,6 +59,10 @@ package ASF.Components is
    --  Get the number of children.
    function Get_Children_Count (UI : UIComponent) return Natural;
 
+   --  Get the first child component.
+   --  Returns null if the component has no children.
+   function Get_First_Child (UI : UIComponent) return UIComponent_Access;
+
    procedure Append (UI    : in UIComponent_Access;
                      Child : in UIComponent_Access;
                      Tag   : access ASF.Views.Nodes.Tag_Node'Class);

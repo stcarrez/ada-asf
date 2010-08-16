@@ -64,6 +64,15 @@ package body ASF.Components is
       return Result;
    end Get_Children_Count;
 
+   --  ------------------------------
+   --  Get the first child component.
+   --  Returns null if the component has no children.
+   --  ------------------------------
+   function Get_First_Child (UI : UIComponent) return UIComponent_Access is
+   begin
+      return UI.First_Child;
+   end Get_First_Child;
+
    function Create_UIComponent (Parent  : UIComponent_Access;
                                 Context : ASF.Contexts.Facelets.Facelet_Context'Class;
                                 Tag     : access ASF.Views.Nodes.Tag_Node'Class)

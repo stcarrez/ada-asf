@@ -139,9 +139,11 @@ package body ASF.Applications.Views is
 
       --  Build the component tree for this request.
       declare
-         Root      : constant UIComponent_Access := new Core.UIComponentBase;
+         Root : aliased Core.UIComponentBase;
       begin
-         Facelets.Build_View (View => Tree, Context => Ctx, Root => Root);
+         Facelets.Build_View (View    => Tree,
+                              Context => Ctx,
+                              Root    => Root'Unchecked_Access);
          View.Set_Root (Root);
       end;
    end Restore_View;

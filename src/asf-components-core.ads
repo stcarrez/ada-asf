@@ -44,7 +44,7 @@ package ASF.Components.Core is
 
    --  Set the root node of the view.
    procedure Set_Root (UI   : in out UIViewRoot;
-                       Root : in UIComponent_Access);
+                       Root : in out UIComponent'Class);
 
    --  ------------------------------
    --  View component

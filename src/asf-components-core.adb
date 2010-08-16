@@ -91,12 +91,24 @@ package body ASF.Components.Core is
    --  Set the root node of the view.
    --  ------------------------------
    procedure Set_Root (UI   : in out UIViewRoot;
-                       Root : in UIComponent_Access) is
+                       Root : in out UIComponent'Class) is
    begin
       if UI.Root /= null then
          Delete (UI.Root);
       end if;
-      UI.Root := Root;
+      if Root.First_Child = null then
+         UI.Root := null;
+      elsif Root.First_Child.Next = null then
+         UI.Root := Root.First_Child;
+         Root.First_Child := null;
+         Root.Last_Child  := null;
+      else
+         UI.Root := new UIComponentBase;
+         UI.Root.First_Child := Root.First_Child;
+         UI.Root.Last_Child  := Root.Last_Child;
+         Root.First_Child := null;
+         Root.Last_Child  := null;
+      end if;
    end Set_Root;
 
    procedure Finalize (Object : in out UIViewRoot) is

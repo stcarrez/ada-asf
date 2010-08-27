@@ -16,11 +16,9 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ASF.Components.Html.Text;
-with ASF.Components.Html.Lists;
 with ASF.Components.Core;
 with ASF.Views.Nodes;
-with Util.Strings.Escapes; use Util.Strings;
+with Util.Strings.Transforms; use Util.Strings;
 with EL.Functions.Default;
 package body ASF.Components.Util.Factory is
 
@@ -74,21 +72,36 @@ package body ASF.Components.Util.Factory is
    --  the length specified by <b>Size</b>.
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object;
 
+   --  Escape the string using XML escape rules.
+   function Escape_Xml (Value : EL.Objects.Object) return EL.Objects.Object;
+
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
    begin
       Mapper.Set_Function (Name      => "escapeJavaScript",
                            Namespace => URI,
                            Func      => Escape_Javascript'Access);
+      Mapper.Set_Function (Name      => "escapeXml",
+                           Namespace => URI,
+                           Func      => Escape_Xml'Access);
    end Set_Functions;
 
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object is
       Result  : Ada.Strings.Unbounded.Unbounded_String;
       Content : constant String := EL.Objects.To_String (Value);
    begin
-      Escapes.Escape_Javascript (Content => Content,
-                                 Into    => Result);
+      Transforms.Escape_Javascript (Content => Content,
+                                    Into    => Result);
       return EL.Objects.To_Object (Result);
    end Escape_Javascript;
+
+   function Escape_Xml (Value : EL.Objects.Object) return EL.Objects.Object is
+      Result  : Ada.Strings.Unbounded.Unbounded_String;
+      Content : constant String := EL.Objects.To_String (Value);
+   begin
+      Transforms.Escape_Xml (Content => Content,
+                             Into    => Result);
+      return EL.Objects.To_Object (Result);
+   end Escape_Xml;
 
 begin
    ASF.Factory.Check (Core_Factory);

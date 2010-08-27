@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 with EL.Objects;
 with ASF.Components.Core;
-with Util.Strings;
+with Util.Texts.Formats;
 package body ASF.Components.Html.Text is
 
    use EL.Objects;
@@ -93,7 +93,7 @@ package body ASF.Components.Html.Text is
    type Object_Array is array (Positive range <>) of EL.Objects.Object;
 
    package Formats is
-     new Util.Strings.Formats (Stream => Ada.Strings.Unbounded.Unbounded_String,
+     new Util.Texts.Formats (Stream => Ada.Strings.Unbounded.Unbounded_String,
                                Char   => Character,
                                Input  => String,
                                Value  => EL.Objects.Object,

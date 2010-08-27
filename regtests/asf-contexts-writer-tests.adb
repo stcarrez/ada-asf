@@ -67,7 +67,7 @@ package body ASF.Contexts.Writer.Tests is
       T.Writer.End_Element ("p");
       T.Writer.Flush;
 
-      Assert_Equals ("<p><b><i>italic within a bold</i></b></p>",
+      Assert_Equals (T, "<p><b><i>italic within a bold</i></b></p>",
                      T.Writer.Response);
 
       T.Writer.Response := To_Unbounded_String ("");
@@ -77,7 +77,7 @@ package body ASF.Contexts.Writer.Tests is
       T.Writer.End_Element ("div");
       T.Writer.Flush;
 
-      Assert_Equals ("<div title=""A &quot;S&amp;'%^&amp;&lt;&gt;"" id=""23""></div>",
+      Assert_Equals (T, "<div title=""A &quot;S&amp;'%^&amp;&lt;&gt;"" id=""23""></div>",
                      T.Writer.Response);
    end Test_Write_Element;
 
@@ -100,7 +100,7 @@ package body ASF.Contexts.Writer.Tests is
       D := Ada.Calendar.Clock - Start;
       Ada.Text_IO.Put_Line ("Write text: " & Duration'Image (D));
 
-      Assert_Equals ("<p>&lt;&gt;~<i>""A' &lt;&gt;&amp;</i></p>",
+      Assert_Equals (T, "<p>&lt;&gt;~<i>""A' &lt;&gt;&amp;</i></p>",
                      T.Writer.Response);
    end Test_Write_Text;
 

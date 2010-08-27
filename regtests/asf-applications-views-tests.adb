@@ -93,7 +93,8 @@ package body ASF.Applications.Views.Tests is
                                   & View_Name);
 
             Util.Files.Write_File (Result_File, Writer.Response);
-            Util.Tests.Assert_Equal_Files (Expect  => To_String (T.Expect),
+            Util.Tests.Assert_Equal_Files (T       => T,
+                                           Expect  => To_String (T.Expect),
                                            Test    => Result_File,
                                            Message => "Restore and render view");
          end;

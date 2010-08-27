@@ -53,8 +53,8 @@ package body ASF.Views.Facelets.Tests is
       Initialize (Factory, "regtests/files/views;.", True, True);
       Find_Facelet (Factory, "text.xhtml", Ctx, View);
 
-      Assert (Condition => not Is_Null (View),
-              Message   => "Loading an existing facelet should return a view");
+      T.Assert (Condition => not Is_Null (View),
+                Message   => "Loading an existing facelet should return a view");
    end Test_Load_Facelet;
 
    --  Test loading of an unknown file
@@ -66,8 +66,8 @@ package body ASF.Views.Facelets.Tests is
       Initialize (Factory, "regtests/files;.", True, True);
       Find_Facelet (Factory, "not-found-file.xhtml", Ctx, View);
 
-      Assert (Condition => Is_Null (View),
-              Message   => "Loading a missing facelet should not raise any exception");
+      T.Assert (Condition => Is_Null (View),
+                Message   => "Loading a missing facelet should not raise any exception");
    end Test_Load_Unknown_Facelet;
 
    package Caller is new AUnit.Test_Caller (Test);

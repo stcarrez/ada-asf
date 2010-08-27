@@ -28,7 +28,7 @@ with EL.Objects;
 with EL.Expressions;
 --  with EL.Contexts;
 with ASF.Contexts.Faces;
-limited with ASF.Contexts.Facelets;
+--  limited with ASF.Contexts.Facelets;
 limited with ASF.Views.Nodes;
 package ASF.Components is
 
@@ -123,10 +123,10 @@ package ASF.Components is
    function Get_Value (Attr : UIAttribute;
                        UI   : UIComponent'Class) return EL.Objects.Object;
 
-   function Create_UIComponent (Parent  : UIComponent_Access;
-                                Context : ASF.Contexts.Facelets.Facelet_Context'Class;
-                                Tag    : access ASF.Views.Nodes.Tag_Node'Class)
-                                return UIComponent_Access;
+--   function Create_UIComponent (Parent  : UIComponent_Access;
+--                                Context : ASF.Contexts.Facelets.Facelet_Context'Class;
+--                                Tag    : access ASF.Views.Nodes.Tag_Node'Class)
+--                                return UIComponent_Access;
 
    --  Iterate over the children of the component and execute
    --  the <b>Process</b> procedure.

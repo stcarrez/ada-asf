@@ -20,6 +20,7 @@ with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with EL.Expressions;
 with EL.Contexts;
+with ASF.Contexts.Facelets;
 package body ASF.Components is
 
    --  ------------------------------

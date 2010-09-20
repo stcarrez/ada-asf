@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Simple_Test_Cases;
 with Ada.Text_IO;
 with ASF.Applications.Views;
 with ASF.Components.Core;
@@ -40,13 +39,6 @@ package body ASF.Applications.Views.Tests is
       null;
    end Set_Up;
    --  Set up performed before each test case
-
-   overriding
-   procedure Tear_Down (T : in out Test) is
-   begin
-      null;
-   end Tear_Down;
-   --  Tear down performed after each test case
 
    --  Test loading of facelet file
    procedure Test_Load_Facelet (T : in out Test) is
@@ -101,48 +93,20 @@ package body ASF.Applications.Views.Tests is
       end loop;
    end Test_Load_Facelet;
 
-   type Test_Case is new AUnit.Simple_Test_Cases.Test_Case with record
-      Name    : Unbounded_String;
-      File    : Unbounded_String;
-      Expect  : Unbounded_String;
-      Result  : Unbounded_String;
-      Fixture : Test;
-   end record;
-   type Test_Case_Access is access all Test_Case;
 
    --  Test case name
    overriding
-   function Name (Test : Test_Case) return Message_String;
-
-   --  Perform the test.
-   overriding
-   procedure Run_Test (Test : in out Test_Case);
-
-   overriding
-   procedure Set_Up (Test : in out Test_Case);
-
-   --  Test case name
-   overriding
-   function Name (Test : Test_Case) return Message_String is
+   function Name (T : Test) return Message_String is
    begin
-      return Format ("Test " & To_String (Test.Name));
+      return Format ("Test " & To_String (T.Name));
    end Name;
 
    --  Perform the test.
    overriding
-   procedure Run_Test (Test : in out Test_Case) is
+   procedure Run_Test (T : in out Test) is
    begin
-      Test.Fixture.Test_Load_Facelet;
+      T.Test_Load_Facelet;
    end Run_Test;
-
-   overriding
-   procedure Set_Up (Test : in out Test_Case) is
-   begin
-      Test.Fixture.File   := Test.File;
-      Test.Fixture.Expect := Test.Expect;
-      Test.Fixture.Result := Test.Result;
-      Test.Fixture.Set_Up;
-   end Set_Up;
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
       use Ada.Directories;
@@ -167,16 +131,16 @@ package body ASF.Applications.Views.Tests is
          declare
             Simple    : constant String := Simple_Name (Ent);
             File_Path : constant String := Full_Name (Ent);
-            Test      : Test_Case_Access;
+            Tst      : Test_Case_Access;
          begin
             if Simple /= "." and then Simple /= ".."
               and then Simple /= ".svn" then
-               Test := new Test_Case;
-               Test.Name := To_Unbounded_String (Dir & "/" & Simple);
-               Test.File := To_Unbounded_String (File_Path);
-               Test.Expect := To_Unbounded_String (Expect_Path & "/" & Simple);
-               Test.Result := To_Unbounded_String (Result_Path & "/" & Simple);
-               Suite.Add_Test (Test);
+               Tst := new Test;
+               Tst.Name := To_Unbounded_String (Dir & "/" & Simple);
+               Tst.File := To_Unbounded_String (File_Path);
+               Tst.Expect := To_Unbounded_String (Expect_Path & "/" & Simple);
+               Tst.Result := To_Unbounded_String (Result_Path & "/" & Simple);
+               Suite.Add_Test (Tst);
             end if;
          end;
       end loop;

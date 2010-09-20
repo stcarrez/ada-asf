@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with AUnit.Simple_Test_Cases;
 with AUnit.Test_Suites; use AUnit.Test_Suites;
 with AUnit.Test_Fixtures;
 
@@ -24,20 +25,25 @@ package ASF.Applications.Views.Tests is
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
-   type Test is new AUnit.Test_Fixtures.Test_Fixture with record
+   type Test is new AUnit.Simple_Test_Cases.Test_Case with record
       Writer : Integer;
-      File   : Ada.Strings.Unbounded.Unbounded_String;
-      Expect : Ada.Strings.Unbounded.Unbounded_String;
-      Result : Ada.Strings.Unbounded.Unbounded_String;
+      Name    : Ada.Strings.Unbounded.Unbounded_String;
+      File    : Ada.Strings.Unbounded.Unbounded_String;
+      Expect  : Ada.Strings.Unbounded.Unbounded_String;
+      Result  : Ada.Strings.Unbounded.Unbounded_String;
    end record;
+   type Test_Case_Access is access all Test;
+
+   --  Test case name
+   overriding
+   function Name (T : Test) return AUnit.Message_String;
+
+   --  Perform the test.
+   overriding
+   procedure Run_Test (T : in out Test);
 
    overriding
    procedure Set_Up (T : in out Test);
-   --  Set up performed before each test case
-
-   overriding
-   procedure Tear_Down (T : in out Test);
-   --  Tear down performed after each test case
 
    --  Test loading of facelet file
    procedure Test_Load_Facelet (T : in out Test);

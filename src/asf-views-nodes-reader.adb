@@ -291,6 +291,7 @@ package body ASF.Views.Nodes.Reader is
    begin
       if Length (Handler.Expr_Buffer) > 0 then
          Handler.Collect_Expression (Value, Pos);
+         Pos := Pos + 1;
       end if;
       if Handler.Text = null then
          Handler.Text := new Text_Tag_Node;

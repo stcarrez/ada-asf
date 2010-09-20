@@ -140,11 +140,19 @@ package ASF.Views.Nodes.Reader is
 
 private
 
-   --  Collect the text defined in <b>Value</b> into the content node
-   --  pointed to by <b>Content</b>
+   --  Collect the text for an EL expression.  The EL expression starts
+   --  with either '#{' or with '${' and ends with the matching '}'.
+   --  If the <b>Value</b> string does not contain the whole EL experssion
+   --  the <b>Expr_Buffer</b> stored in the reader is used to collect
+   --  that expression.
+   procedure Collect_Expression (Handler  : in out Xhtml_Reader;
+                                 Value    : in Unicode.CES.Byte_Sequence;
+                                 Pos      : in out Natural);
+
+   --  Collect the raw-text in a buffer.  The text must be flushed
+   --  when a new element is started or when an exiting element is closed.
    procedure Collect_Text (Handler : in out Xhtml_Reader;
-                           Content : in out ASF.Views.Nodes.Tag_Content_Access;
-                           Value   : in String);
+                           Value   : in Unicode.CES.Byte_Sequence);
 
    use EL.Functions;
    --  use ASF.Components.Factory;
@@ -209,6 +217,9 @@ private
       Stack      : Element_Context_Array_Access;
       Stack_Pos  : Natural := 0;
       Line       : Line_Info;
+
+      --  Current expression buffer (See Collect_Expression)
+      Expr_Buffer : Unbounded_String;
 
       --  Whether the unknown tags are escaped using XML escape rules.
       Escape_Unknown_Tags : Boolean := True;

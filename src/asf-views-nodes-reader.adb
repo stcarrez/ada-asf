@@ -230,19 +230,76 @@ package body ASF.Views.Nodes.Reader is
    end End_Prefix_Mapping;
 
    --  ------------------------------
-   --  Collect the text defined in <b>Value</b> into the content node
-   --  pointed to by <b>Content</b>
+   --  Collect the text for an EL expression.  The EL expression starts
+   --  with either '#{' or with '${' and ends with the matching '}'.
+   --  If the <b>Value</b> string does not contain the whole EL experssion
+   --  the <b>Expr_Buffer</b> stored in the reader is used to collect
+   --  that expression.
    --  ------------------------------
-   procedure Collect_Text (Handler : in out Xhtml_Reader;
-                           Content : in out Tag_Content_Access;
-                           Value   : in String) is
+   procedure Collect_Expression (Handler  : in out Xhtml_Reader;
+                                 Value    : in Unicode.CES.Byte_Sequence;
+                                 Pos      : in out Natural) is
       use Ada.Exceptions;
 
-      Pos   : Natural := Value'First;
-      Last  : Natural := Value'First;
-      N     : Natural;
       Last_Pos : Natural;
    begin
+      Last_Pos := Index (Value, "}", Pos);
+      if Last_Pos = 0 then
+         Append (Handler.Expr_Buffer, Value (Pos .. Value'Last));
+         Pos := Value'Last + 1;
+      else
+         Append (Handler.Expr_Buffer, Value (Pos .. Last_Pos));
+         declare
+            Expr    : constant String := To_String (Handler.Expr_Buffer);
+            Content : constant Tag_Content_Access := Handler.Text.Last;
+         begin
+            Content.Expr := EL.Expressions.Create_Expression (Expr, Handler.ELContext.all);
+
+            Content.Next := new Tag_Content;
+            Handler.Text.Last := Content.Next;
+
+         exception
+            when E : EL.Functions.No_Function | EL.Expressions.Invalid_Expression =>
+               Log.Error ("{0}: Invalid expression: {1}",
+                          To_String (Handler.Locator),
+                          Exception_Message (E));
+               Log.Error ("{0}: {1}",
+                          To_String (Handler.Locator),
+                          Expr);
+
+            when E : others =>
+               Log.Error ("{0}: Internal error: {1}:{2}",
+                          To_String (Handler.Locator),
+                          Exception_Name (E),
+                          Exception_Message (E));
+         end;
+         Set_Unbounded_String (Handler.Expr_Buffer, "");
+         Pos := Last_Pos;
+      end if;
+   end Collect_Expression;
+
+   --  ------------------------------
+   --  Collect the raw-text in a buffer.  The text must be flushed
+   --  when a new element is started or when an exiting element is closed.
+   --  ------------------------------
+   procedure Collect_Text (Handler : in out Xhtml_Reader;
+                           Value   : in Unicode.CES.Byte_Sequence) is
+      Pos      : Natural := Value'First;
+      Last     : Natural := Value'First;
+      N        : Natural;
+      Content  : Tag_Content_Access;
+   begin
+      if Length (Handler.Expr_Buffer) > 0 then
+         Handler.Collect_Expression (Value, Pos);
+      end if;
+      if Handler.Text = null then
+         Handler.Text := new Text_Tag_Node;
+         Initialize (Handler.Text.all'Access, Null_Unbounded_String,
+                     Handler.Line, Handler.Current.Parent, null);
+         Handler.Text.Last := Handler.Text.Content'Access;
+      end if;
+      Content := Handler.Text.Last;
+
       while Pos <= Value'Last loop
          N := Index (Value, "#{", Pos);
          if N = 0 then
@@ -257,34 +314,9 @@ package body ASF.Views.Nodes.Reader is
             Append (Content.Text, Value (Pos .. Last));
          end if;
          if N /= 0 then
-            Last_Pos := Index (Value, "}", N + 2);
-            if Last_Pos = 0 then
-               Last_Pos := Value'Last;
-            end if;
-
-            --  Append (Content.Text, Value (Pos .. N - 1));
-            begin
-               Content.Expr := EL.Expressions.Create_Expression
-                 (Value (N .. Last_Pos), Handler.ELContext.all);
-            exception
-               when E : EL.Functions.No_Function | EL.Expressions.Invalid_Expression =>
-                  Log.Error ("{0}: Invalid expression: {1}",
-                             To_String (Handler.Locator),
-                             Exception_Message (E));
-                  Log.Error ("{0}: {1}",
-                             To_String (Handler.Locator),
-                             Value (N .. Last_Pos));
-
-               when E : others =>
-                  Log.Error ("{0}: Internal error: {1}:{2}",
-                             To_String (Handler.Locator),
-                             Exception_Name (E),
-                             Exception_Message (E));
-            end;
-            Content.Next := new Tag_Content;
-            Content := Content.Next;
-            Handler.Text.Last := Content;
-            Last := Last_Pos;
+            Handler.Collect_Expression (Value, N);
+            Last := N;
+            Content := Handler.Text.Last;
          end if;
          Pos := Last + 1;
       end loop;
@@ -363,47 +395,38 @@ package body ASF.Views.Nodes.Reader is
 
       exception
          when Unknown_Name =>
-
-            if Handler.Text = null then
-               Handler.Text := new Text_Tag_Node;
-               Initialize (Handler.Text.all'Access, Null_Unbounded_String,
-                           Handler.Line, Handler.Current.Parent, null);
-               Handler.Text.Last := Handler.Text.Content'Access;
-            end if;
-            Handler.Current.Text := True;
             declare
-               Content : Tag_Content_Access := Handler.Text.Last;
                Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
             begin
+               Handler.Current.Text := True;
                if Is_Unknown then
                   Log.Error ("{0}: Element '{1}' not found",
                              To_String (Handler.Locator), Qname);
                end if;
                if Handler.Escape_Unknown_Tags and Is_Unknown then
-                  Append (Content.Text, "&lt;");
+                  Handler.Collect_Text ("&lt;");
                else
-                  Append (Content.Text, '<');
+                  Handler.Collect_Text ("<");
                end if;
-               Append (Content.Text, Qname);
+               Handler.Collect_Text (Qname);
                if Attr_Count /= 0 then
                   for I in 0 .. Attr_Count - 1 loop
-                     Append (Content.Text, ' ');
-                     Append (Content.Text, Get_Qname (Atts, I));
-                     Append (Content.Text, '=');
-                     Append (Content.Text, '"');
+                     Handler.Collect_Text (" ");
+                     Handler.Collect_Text (Get_Qname (Atts, I));
+                     Handler.Collect_Text ("=""");
 
                      declare
                         Value : constant String := Get_Value (Atts, I);
                      begin
-                        Collect_Text (Handler, Content, Value);
+                        Handler.Collect_Text (Value);
                      end;
-                     Append (Content.Text, '"');
+                     Handler.Collect_Text ("""");
                   end loop;
                end if;
                if Handler.Escape_Unknown_Tags and Is_Unknown then
-                  Append (Content.Text, "&gt;");
+                  Handler.Collect_Text ("&gt;");
                else
-                  Append (Content.Text, '>');
+                  Handler.Collect_Text (">");
                end if;
             end;
       end;
@@ -417,6 +440,7 @@ package body ASF.Views.Nodes.Reader is
                           Namespace_URI : in Unicode.CES.Byte_Sequence := "";
                           Local_Name    : in Unicode.CES.Byte_Sequence := "";
                           Qname         : in Unicode.CES.Byte_Sequence := "") is
+     pragma Unreferenced (Local_Name);
    begin
       if Handler.Current.Parent = null then
          Handler.Text := null;
@@ -425,30 +449,24 @@ package body ASF.Views.Nodes.Reader is
          Handler.Text := null;
          Handler.Current.Parent.Freeze;
 
-      elsif Handler.Current.Text and Handler.Text = null then
-         Handler.Text := new Text_Tag_Node;
-         Initialize (Handler.Text.all'Access, Null_Unbounded_String,
-                     Handler.Line, Handler.Current.Parent, null);
-         Handler.Text.Last := Handler.Text.Content'Access;
       end if;
-      if Handler.Text /= null then
+      if Handler.Current.Text or Handler.Text /= null then
          declare
-            Content    : constant Tag_Content_Access := Handler.Text.Last;
             Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
          begin
             if Handler.Escape_Unknown_Tags and Is_Unknown then
-               Append (Content.Text, "&lt;/");
-               Append (Content.Text, Qname);
-               Append (Content.Text, "&gt;");
+               Handler.Collect_Text ("&lt;/");
+               Handler.Collect_Text (Qname);
+               Handler.Collect_Text ("&gt;");
             else
-               Append (Content.Text, "</");
-               Append (Content.Text, Qname);
-               Append (Content.Text, '>');
+               Handler.Collect_Text ("</");
+               Handler.Collect_Text (Qname);
+               Handler.Collect_Text (">");
             end if;
          end;
       end if;
 
-      --  Pop the current context to restor the last context.
+      --  Pop the current context to restore the last context.
       Pop (Handler);
    end End_Element;
 
@@ -459,17 +477,7 @@ package body ASF.Views.Nodes.Reader is
    procedure Characters (Handler : in out Xhtml_Reader;
                          Ch      : in Unicode.CES.Byte_Sequence) is
    begin
-      if Handler.Text = null then
-         Handler.Text := new Text_Tag_Node;
-         Initialize (Handler.Text.all'Access, Null_Unbounded_String,
-                     Handler.Line, Handler.Current.Parent, null);
-         Handler.Text.Last := Handler.Text.Content'Access;
-      end if;
-      declare
-         Content : Tag_Content_Access := Handler.Text.Last;
-      begin
-         Collect_Text (Handler, Content, Ch);
-      end;
+      Collect_Text (Handler, Ch);
    end Characters;
 
    --  ------------------------------
@@ -478,10 +486,9 @@ package body ASF.Views.Nodes.Reader is
    overriding
    procedure Ignorable_Whitespace (Handler : in out Xhtml_Reader;
                                    Ch      : in Unicode.CES.Byte_Sequence) is
-      pragma Unmodified (Handler);
    begin
       if not Handler.Ignore_White_Spaces then
-         Characters (Handler, Ch);
+         Collect_Text (Handler, Ch);
       end if;
    end Ignorable_Whitespace;
 

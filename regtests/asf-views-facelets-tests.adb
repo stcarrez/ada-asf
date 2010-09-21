@@ -50,7 +50,7 @@ package body ASF.Views.Facelets.Tests is
       View    : ASF.Views.Facelets.Facelet;
       Ctx       : Facelet_Context;
    begin
-      Initialize (Factory, "regtests/files/views;.", True, True);
+      Initialize (Factory, "regtests/files/views;.", True, True, True);
       Find_Facelet (Factory, "text.xhtml", Ctx, View);
 
       T.Assert (Condition => not Is_Null (View),
@@ -63,7 +63,7 @@ package body ASF.Views.Facelets.Tests is
       View    : ASF.Views.Facelets.Facelet;
       Ctx       : Facelet_Context;
    begin
-      Initialize (Factory, "regtests/files;.", True, True);
+      Initialize (Factory, "regtests/files;.", True, True, True);
       Find_Facelet (Factory, "not-found-file.xhtml", Ctx, View);
 
       T.Assert (Condition => Is_Null (View),

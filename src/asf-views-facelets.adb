@@ -102,17 +102,20 @@ package body ASF.Views.Facelets is
    --  Initialize the facelet factory.
    --  Set the search directories for facelet files.
    --  Set the ignore white space configuration when reading XHTML files.
+   --  Set the ignore empty lines configuration when reading XHTML files.
    --  Set the escape unknown tags configuration when reading XHTML files.
    --  ------------------------------
    procedure Initialize (Factory             : in out Facelet_Factory;
                          Paths               : in String;
                          Ignore_White_Spaces : in Boolean;
+                         Ignore_Empty_Lines  : in Boolean;
                          Escape_Unknown_Tags : in Boolean) is
    begin
       Log.Info ("Set facelet search directory to: '{0}'", Paths);
 
       Factory.Paths := To_Unbounded_String (Paths);
       Factory.Ignore_White_Spaces := Ignore_White_Spaces;
+      Factory.Ignore_Empty_Lines  := Ignore_Empty_Lines;
       Factory.Escape_Unknown_Tags := Escape_Unknown_Tags;
    end Initialize;
 
@@ -227,6 +230,7 @@ package body ASF.Views.Facelets is
 
       Set_Ignore_White_Spaces (Reader, Factory.Ignore_White_Spaces);
       Set_Escape_Unknown_Tags (Reader, Factory.Escape_Unknown_Tags);
+      Set_Ignore_Empty_Lines (Reader, Factory.Ignore_Empty_Lines);
       Parse (Reader, File,
              Read, Factory.Factory'Unchecked_Access, Ctx'Unchecked_Access);
       Close (Read);

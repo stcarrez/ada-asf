@@ -128,6 +128,10 @@ package ASF.Views.Nodes.Reader is
    procedure Set_Escape_Unknown_Tags (Reader : in out Xhtml_Reader;
                                       Value  : in Boolean);
 
+   --  Set the XHTML reader to ignore empty lines.
+   procedure Set_Ignore_Empty_Lines (Reader : in out Xhtml_Reader;
+                                     Value  : in Boolean);
+
    --  Parse an XML stream, and calls the appropriate SAX callbacks for each
    --  event.
    --  This is not re-entrant: you can not call Parse with the same Parser
@@ -206,6 +210,8 @@ private
    type Element_Context_Array is array (Natural range <>) of aliased Element_Context;
    type Element_Context_Array_Access is access all Element_Context_Array;
 
+   type Text_State is (NO_CONTENT, HAS_CONTENT, PARSE_EXPR);
+
    type Xhtml_Reader is new Sax.Readers.Reader with record
       Locator : Sax.Locators.Locator;
       Root       : Tag_Node_Access;
@@ -218,14 +224,23 @@ private
       Stack_Pos  : Natural := 0;
       Line       : Line_Info;
 
+      State         : Text_State := NO_CONTENT;
+      Default_State : Text_State := NO_CONTENT;
+
       --  Current expression buffer (See Collect_Expression)
       Expr_Buffer : Unbounded_String;
+
+      --  Some pending white spaces to append to the current text.
+      Spaces      : Unbounded_String;
 
       --  Whether the unknown tags are escaped using XML escape rules.
       Escape_Unknown_Tags : Boolean := True;
 
       --  Whether white spaces can be ignored.
       Ignore_White_Spaces : Boolean := True;
+
+      --  Whether empty lines should be ignored (when white spaces are kept).
+      Ignore_Empty_Lines : Boolean := True;
    end record;
 
 end ASF.Views.Nodes.Reader;

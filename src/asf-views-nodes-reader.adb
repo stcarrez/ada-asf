@@ -241,41 +241,30 @@ package body ASF.Views.Nodes.Reader is
                                  Pos      : in out Natural) is
       use Ada.Exceptions;
 
-      Last_Pos : Natural;
+      Expr    : constant String := To_String (Handler.Expr_Buffer);
+      Content : constant Tag_Content_Access := Handler.Text.Last;
    begin
-      Last_Pos := Index (Value, "}", Pos);
-      if Last_Pos = 0 then
-         Append (Handler.Expr_Buffer, Value (Pos .. Value'Last));
-         Pos := Value'Last + 1;
-      else
-         Append (Handler.Expr_Buffer, Value (Pos .. Last_Pos));
-         declare
-            Expr    : constant String := To_String (Handler.Expr_Buffer);
-            Content : constant Tag_Content_Access := Handler.Text.Last;
-         begin
-            Content.Expr := EL.Expressions.Create_Expression (Expr, Handler.ELContext.all);
+      Handler.Expr_Buffer := Null_Unbounded_String;
 
-            Content.Next := new Tag_Content;
-            Handler.Text.Last := Content.Next;
+      Content.Expr := EL.Expressions.Create_Expression (Expr, Handler.ELContext.all);
 
-         exception
-            when E : EL.Functions.No_Function | EL.Expressions.Invalid_Expression =>
-               Log.Error ("{0}: Invalid expression: {1}",
-                          To_String (Handler.Locator),
-                          Exception_Message (E));
-               Log.Error ("{0}: {1}",
-                          To_String (Handler.Locator),
-                          Expr);
+      Content.Next := new Tag_Content;
+      Handler.Text.Last := Content.Next;
 
-            when E : others =>
-               Log.Error ("{0}: Internal error: {1}:{2}",
-                          To_String (Handler.Locator),
-                          Exception_Name (E),
-                          Exception_Message (E));
-         end;
-         Set_Unbounded_String (Handler.Expr_Buffer, "");
-         Pos := Last_Pos;
-      end if;
+   exception
+      when E : EL.Functions.No_Function | EL.Expressions.Invalid_Expression =>
+         Log.Error ("{0}: Invalid expression: {1}",
+                    To_String (Handler.Locator),
+                    Exception_Message (E));
+         Log.Error ("{0}: {1}",
+                    To_String (Handler.Locator),
+                    Expr);
+
+      when E : others =>
+         Log.Error ("{0}: Internal error: {1}:{2}",
+                    To_String (Handler.Locator),
+                    Exception_Name (E),
+                    Exception_Message (E));
    end Collect_Expression;
 
    --  ------------------------------
@@ -287,39 +276,104 @@ package body ASF.Views.Nodes.Reader is
       Pos      : Natural := Value'First;
       Last     : Natural := Value'First;
       N        : Natural;
+      C        : Character;
       Content  : Tag_Content_Access;
+      Start_Pos : Natural;
+      Last_Pos  : Natural;
    begin
-      if Length (Handler.Expr_Buffer) > 0 then
-         Handler.Collect_Expression (Value, Pos);
-         Pos := Pos + 1;
-      end if;
-      if Handler.Text = null then
-         Handler.Text := new Text_Tag_Node;
-         Initialize (Handler.Text.all'Access, Null_Unbounded_String,
-                     Handler.Line, Handler.Current.Parent, null);
-         Handler.Text.Last := Handler.Text.Content'Access;
-      end if;
-      Content := Handler.Text.Last;
-
       while Pos <= Value'Last loop
-         N := Index (Value, "#{", Pos);
-         if N = 0 then
-            N := Index (Value, "${", Pos);
-         end if;
-         if N = 0 then
-            Last := Value'Last;
-         else
-            Last := N - 1;
-         end if;
-         if N /= Pos then
-            Append (Content.Text, Value (Pos .. Last));
-         end if;
-         if N /= 0 then
-            Handler.Collect_Expression (Value, N);
-            Last := N;
-            Content := Handler.Text.Last;
-         end if;
-         Pos := Last + 1;
+         case Handler.State is
+
+            --  Collect the white spaces and newlines in the 'Spaces'
+            --  buffer to ignore empty lines but still honor indentation.
+            when NO_CONTENT =>
+               loop
+                  C := Value (Pos);
+                  if C = ASCII.CR or C = ASCII.LF then
+                     Handler.Spaces := Null_Unbounded_String;
+                  elsif C = ' ' or C = ASCII.HT then
+                     Append (Handler.Spaces, C);
+                  else
+                     Handler.State := HAS_CONTENT;
+                     exit;
+                  end if;
+                  Pos := Pos + 1;
+                  exit when Pos > Value'Last;
+               end loop;
+
+               --  Collect an EL expression until the end of that
+               --  expression.  Evaluate the expression.
+            when PARSE_EXPR =>
+               Start_Pos := Pos;
+               loop
+                  C := Value (Pos);
+                  Last_Pos := Pos;
+                  Pos := Pos + 1;
+                  if C = '}' then
+                     Handler.State := HAS_CONTENT;
+                     exit;
+                  end if;
+                  exit when Pos > Value'Last;
+               end loop;
+
+               Append (Handler.Expr_Buffer, Value (Start_Pos .. Last_Pos));
+               if Handler.State /= PARSE_EXPR then
+                  Handler.Collect_Expression (Value, N);
+               end if;
+
+               --  Collect the raw text in the current content buffer
+            when HAS_CONTENT =>
+               if Handler.Text = null then
+                  Handler.Text := new Text_Tag_Node;
+                  Initialize (Handler.Text.all'Access, Null_Unbounded_String,
+                              Handler.Line, Handler.Current.Parent, null);
+                  Handler.Text.Last := Handler.Text.Content'Access;
+
+               elsif Length (Handler.Expr_Buffer) > 0 then
+                  Handler.Collect_Expression (Value, Pos);
+                  Pos := Pos + 1;
+
+               end if;
+               Content := Handler.Text.Last;
+
+               --  Scan until we find the start of an EL expression
+               --  or we have a new line.
+               Start_Pos := Pos;
+               loop
+                  C := Value (Pos);
+                  --  Check for the EL start #{ or ${
+                  if (C = '#' or C = '$')
+                    and then Pos + 1 <= Value'Last
+                    and then Value (Pos + 1) = '{' then
+                     Handler.State := PARSE_EXPR;
+                     Append (Handler.Expr_Buffer, C);
+                     Append (Handler.Expr_Buffer, '{');
+                     Last_Pos := Pos - 1;
+                     Pos := Pos + 2;
+                     exit;
+                  end if;
+
+                  if (C = ASCII.CR or C = ASCII.LF) and Handler.Ignore_Empty_Lines then
+                     Last_Pos := Pos;
+                     Handler.State := NO_CONTENT;
+                     exit;
+                  end if;
+                  Last_Pos := Pos;
+                  Pos := Pos + 1;
+                  exit when Pos > Value'Last;
+               end loop;
+
+               --  If we have some pending spaces, add them in the text stream.
+               if Length (Handler.Spaces) > 0 then
+                  Append (Content.Text, Handler.Spaces);
+                  Handler.Spaces := Null_Unbounded_String;
+               end if;
+
+               --  If we have some text, append to the current content buffer.
+               if Start_Pos <= Last_Pos then
+                  Append (Content.Text, Value (Start_Pos .. Last_Pos));
+               end if;
+         end case;
       end loop;
    end Collect_Text;
 
@@ -393,12 +447,16 @@ package body ASF.Views.Nodes.Reader is
          Handler.Current.Parent := Node;
          Handler.Current.Text   := False;
          Handler.Text   := null;
+         Handler.Spaces := Null_Unbounded_String;
+         Handler.State  := Handler.Default_State;
 
       exception
          when Unknown_Name =>
             declare
                Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
             begin
+               --  Optimization: we know in which state we are.
+               Handler.State := HAS_CONTENT;
                Handler.Current.Text := True;
                if Is_Unknown then
                   Log.Error ("{0}: Element '{1}' not found",
@@ -455,6 +513,8 @@ package body ASF.Views.Nodes.Reader is
          declare
             Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
          begin
+            --  Optimization: we know in which state we are.
+            Handler.State := HAS_CONTENT;
             if Handler.Escape_Unknown_Tags and Is_Unknown then
                Handler.Collect_Text ("&lt;/");
                Handler.Collect_Text (Qname);
@@ -465,6 +525,8 @@ package body ASF.Views.Nodes.Reader is
                Handler.Collect_Text (">");
             end if;
          end;
+      else
+         Handler.Spaces := Null_Unbounded_String;
       end if;
 
       --  Pop the current context to restore the last context.
@@ -606,6 +668,15 @@ package body ASF.Views.Nodes.Reader is
    end Set_Ignore_White_Spaces;
 
    --  ------------------------------
+   --  Set the XHTML reader to ignore empty lines.
+   --  ------------------------------
+   procedure Set_Ignore_Empty_Lines (Reader : in out Xhtml_Reader;
+                                     Value  : in Boolean) is
+   begin
+      Reader.Ignore_Empty_Lines := Value;
+   end Set_Ignore_Empty_Lines;
+
+   --  ------------------------------
    --  Set the XHTML reader to escape or not the unknown tags.
    --  When set to True, the tags which are not recognized will be
    --  emitted as a raw text component and they will be escaped using
@@ -644,6 +715,13 @@ package body ASF.Views.Nodes.Reader is
       Sax.Readers.Reader (Parser).Parse (Input);
       Parser.Functions.Factory := null;
       Parser.ELContext := null;
+
+      if Parser.Ignore_Empty_Lines then
+         Parser.Default_State := NO_CONTENT;
+      else
+         Parser.Default_State := HAS_CONTENT;
+      end if;
+      Parser.State := Parser.Default_State;
       Free (Parser.Stack);
    end Parse;
 

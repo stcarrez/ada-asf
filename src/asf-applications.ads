@@ -46,6 +46,11 @@ package ASF.Applications is
    VIEW_IGNORE_WHITE_SPACES       : aliased constant String := "view.ignore_white_spaces";
    DEF_IGNORE_WHITE_SPACES        : aliased constant String := "false";
 
+   --  Whether empty lines in XHTML files are ignored.
+   VIEW_IGNORE_EMPTY_LINES_PARAM  : constant Config_Param;
+   VIEW_IGNORE_EMPTY_LINES        : aliased constant String := "view.ignore_empty_lines";
+   DEF_IGNORE_EMPTY_LINES         : aliased constant String := "false";
+
    --  Whether the unknown tags are escaped in the output
    VIEW_ESCAPE_UNKNOWN_TAGS_PARAM : constant Config_Param;
    VIEW_ESCAPE_UNKNOWN_TAGS       : aliased constant String := "view.escape_unknown_tags";
@@ -100,6 +105,10 @@ private
    VIEW_IGNORE_WHITE_SPACES_PARAM : constant Config_Param
      := P '(Name    => VIEW_IGNORE_WHITE_SPACES'Access,
             Default => DEF_IGNORE_WHITE_SPACES'Access);
+
+   VIEW_IGNORE_EMPTY_LINES_PARAM : constant Config_Param
+     := P '(Name    => VIEW_IGNORE_EMPTY_LINES'Access,
+            Default => DEF_IGNORE_EMPTY_LINES'Access);
 
    VIEW_ESCAPE_UNKNOWN_TAGS_PARAM : constant Config_Param
      := P '(Name    => VIEW_ESCAPE_UNKNOWN_TAGS'Access,

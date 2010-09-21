@@ -187,6 +187,7 @@ package body ASF.Applications.Views is
       Facelets.Initialize (Factory => Handler.Facelets,
                            Paths   => To_String (Handler.Paths),
                            Ignore_White_Spaces => Conf.Get (VIEW_IGNORE_WHITE_SPACES_PARAM),
+                           Ignore_Empty_Lines  => Conf.Get (VIEW_IGNORE_EMPTY_LINES_PARAM),
                            Escape_Unknown_Tags => Conf.Get (VIEW_ESCAPE_UNKNOWN_TAGS_PARAM));
 
    end Initialize;

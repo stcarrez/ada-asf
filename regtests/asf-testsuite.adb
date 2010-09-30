@@ -45,8 +45,10 @@ package body ASF.Testsuite is
       Runner (Reporter);
    end Run;
 
+   Tests : aliased Test_Suite;
+
    function Suite return Access_Test_Suite is
-      Ret : constant Access_Test_Suite := new Test_Suite;
+      Ret : constant Access_Test_Suite := Tests'Access;
    begin
       ASF.Contexts.Writer.Tests.Add_Tests (Ret);
       ASF.Views.Facelets.Tests.Add_Tests (Ret);

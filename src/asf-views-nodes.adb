@@ -346,6 +346,12 @@ package body ASF.Views.Nodes is
       end if;
    end Delete;
 
+   procedure Destroy (Node : in out Tag_Node_Access) is
+   begin
+      Node.Delete;
+      Free (Node);
+   end Destroy;
+
    --  ------------------------------
    --  Report an error message
    --  ------------------------------

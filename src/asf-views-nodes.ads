@@ -155,6 +155,8 @@ package ASF.Views.Nodes is
    --  Delete the node and its children freeing the memory as necessary
    procedure Delete (Node : access Tag_Node);
 
+   procedure Destroy (Node : in out Tag_Node_Access);
+
    --  Report an error message
    procedure Error (Node    : in Tag_Node'Class;
                     Message : in String;

@@ -25,6 +25,7 @@ with ASF.Contexts.Facelets;
 with ASF.Factory;
 with ASF.Components;
 with Util.Strings;
+with Ada.Finalization;
 
 --  The <b>ASF.Views.Facelets</b> package contains the facelet factory
 --  responsible for getting the facelet tree from a facelet name.
@@ -96,7 +97,7 @@ private
    type Facelet is record
       Root        : ASF.Views.Nodes.Tag_Node_Access;
       Path        : Unbounded_String;
-      File        : Util.Strings.Name_Access;
+      File        : Util.Strings.String_Access;
       Modify_Time : Ada.Calendar.Time;
    end record;
 
@@ -123,7 +124,7 @@ private
       Reader_Count : Natural := 0;
    end RW_Lock;
 
-   type Facelet_Factory is limited record
+   type Facelet_Factory is new Ada.Finalization.Limited_Controlled with record
       Paths   : Unbounded_String := To_Unbounded_String ("");
       Lock    : RW_Lock;
       Map     : Facelet_Maps.Map;
@@ -142,5 +143,9 @@ private
       --  Whether empty lines should be ignored (when white spaces are kept).
       Ignore_Empty_Lines : Boolean := True;
    end record;
+
+   --  Free the storage held by the factory cache.
+   overriding
+   procedure Finalize (Factory : in out Facelet_Factory);
 
 end ASF.Views.Facelets;

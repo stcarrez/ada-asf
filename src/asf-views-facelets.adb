@@ -26,6 +26,7 @@ with Sax.Readers;
 with EL.Contexts.Default;
 with Util.Files;
 with Util.Log.Loggers;
+with Ada.Unchecked_Deallocation;
 package body ASF.Views.Facelets is
 
    use ASF.Views.Nodes;
@@ -33,6 +34,8 @@ package body ASF.Views.Facelets is
 
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Modules");
+
+   procedure Free is new Ada.Unchecked_Deallocation (String, Util.Strings.String_Access);
 
    --  Find in the factory for the facelet with the given name.
    procedure Find (Factory : in out Facelet_Factory;
@@ -211,11 +214,11 @@ package body ASF.Views.Facelets is
       use Ada.Exceptions;
       use Ada.Directories;
 
-      Path   : constant String := Find_Facelet_Path (Factory, Name);
       Reader : Xhtml_Reader;
       Read   : File_Input;
+      Path   : constant String := Find_Facelet_Path (Factory, Name);
       Ctx    : aliased EL.Contexts.Default.Default_Context;
-      File   : constant Util.Strings.Name_Access := new String '(Path);
+      File   : Util.Strings.String_Access := new String '(Path);
       Mtime  : Ada.Calendar.Time;
    begin
       Log.Info ("Loading facelet: '{0}'", Path);
@@ -231,22 +234,29 @@ package body ASF.Views.Facelets is
       Set_Ignore_White_Spaces (Reader, Factory.Ignore_White_Spaces);
       Set_Escape_Unknown_Tags (Reader, Factory.Escape_Unknown_Tags);
       Set_Ignore_Empty_Lines (Reader, Factory.Ignore_Empty_Lines);
-      Parse (Reader, File,
+      Parse (Reader, File.all'Access,
              Read, Factory.Factory'Unchecked_Access, Ctx'Unchecked_Access);
       Close (Read);
 
       Result := Facelet '(Root => Get_Root (Reader),
-                          File => File,
+                          File => File.all'Access,
                           Modify_Time => Mtime,
                           Path => To_Unbounded_String (Containing_Directory (Path) & '/'));
    exception
       when Ada.IO_Exceptions.Name_Error =>
          Close (Read);
+         Result.Root := Get_Root (Reader);
+         if Result.Root /= null then
+            Result.Root.Delete;
+         end if;
+         Free (File);
          Result.Root := null;
          Log.Error ("Cannot read '{0}': file does not exist", Path);
 
       when E : others =>
          Close (Read);
+         Get_Root (Reader).Delete;
+         Free (File);
          Result.Root := null;
          Log.Error ("Error while reading: '{0}': {1}: {2}", Path,
                    Exception_Name (E), Exception_Message (E));
@@ -280,7 +290,8 @@ package body ASF.Views.Facelets is
             exit when not Has_Element (Pos);
             Node := Element (Pos);
             Factory.Map.Delete (Pos);
-            Node.Root.Delete;
+            Free (Node.File);
+            ASF.Views.Nodes.Destroy (Node.Root);
          end;
       end loop;
       Factory.Lock.Release_Write;
@@ -307,5 +318,14 @@ package body ASF.Views.Facelets is
          Reader_Count := Reader_Count - 1;
       end Release_Read;
    end RW_Lock;
+
+   --  ------------------------------
+   --  Free the storage held by the factory cache.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Factory : in out Facelet_Factory) is
+   begin
+      Factory.Clear_Cache;
+   end Finalize;
 
 end ASF.Views.Facelets;

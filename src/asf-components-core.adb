@@ -111,6 +111,8 @@ package body ASF.Components.Core is
       end if;
    end Set_Root;
 
+   --  Free the memory held by the component tree.
+   overriding
    procedure Finalize (Object : in out UIViewRoot) is
    begin
       if Object.Root /= null then

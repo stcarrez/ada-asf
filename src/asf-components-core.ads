@@ -106,6 +106,8 @@ package ASF.Components.Core is
 
 private
 
+   --  Free the memory held by the component tree.
+   overriding
    procedure Finalize (Object : in out UIViewRoot);
    --
    type UIComponentBase is new UIComponent with null record;

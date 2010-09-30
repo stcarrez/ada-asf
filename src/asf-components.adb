@@ -227,6 +227,8 @@ package body ASF.Components is
       Attribute.Definition := Def;
       Attribute.Value := EL.Objects.Null_Object;
       Attribute.Expr  := Value;
+      Attribute.Next_Attr := UI.Attributes;
+      UI.Attributes := Attribute;
    end Set_Attribute;
 
    procedure Encode_Begin (UI      : in UIComponent;
@@ -322,6 +324,10 @@ package body ASF.Components is
      new Ada.Unchecked_Deallocation (Object => UIComponent'Class,
                                      Name   => UIComponent_Access);
 
+   procedure Free_Attribute is
+     new Ada.Unchecked_Deallocation (Object => UIAttribute,
+                                     Name   => UIAttribute_Access);
+
    --  ------------------------------
    --  Delete the component tree recursively.
    --  ------------------------------
@@ -335,6 +341,15 @@ package body ASF.Components is
                UI.First_Child := C.Next;
                Delete (C);
                C := UI.First_Child;
+            end loop;
+         end;
+         declare
+            A : UIAttribute_Access := UI.Attributes;
+         begin
+            while A /= null loop
+               UI.Attributes := A.Next_Attr;
+               Free_Attribute (A);
+               A := UI.Attributes;
             end loop;
          end;
          Free_Component (UI);

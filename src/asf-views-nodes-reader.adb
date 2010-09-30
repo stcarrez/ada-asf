@@ -723,6 +723,11 @@ package body ASF.Views.Nodes.Reader is
       end if;
       Parser.State := Parser.Default_State;
       Free (Parser.Stack);
+
+   exception
+      when others =>
+         Free (Parser.Stack);
+         raise;
    end Parse;
 
 end ASF.Views.Nodes.Reader;

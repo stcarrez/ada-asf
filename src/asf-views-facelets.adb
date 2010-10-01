@@ -33,7 +33,7 @@ package body ASF.Views.Facelets is
    use Util.Log;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Modules");
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Views.Facelets");
 
    procedure Free is new Ada.Unchecked_Deallocation (String, Util.Strings.String_Access);
 

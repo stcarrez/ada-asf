@@ -160,20 +160,26 @@ package body ASF.Components is
    function Get_Attribute (UI      : UIComponent;
                            Context : Faces_Context'Class;
                            Name    : String) return EL.Objects.Object is
-      pragma Unreferenced (Context);
-
       Attribute : UIAttribute_Access := UI.Attributes;
    begin
+      --  Look first in the dynamic attribute list (owned by this UIComponent)
       while Attribute /= null loop
          declare
             Attr_Name : constant String := ASF.Views.Nodes.Get_Name (Attribute.Definition.all);
          begin
             if Attr_Name = Name then
-               return Attribute.Value;
+               --  The attribute value can be a constant or an expression.
+               if not EL.Objects.Is_Null (Attribute.Value) then
+                  return Attribute.Value;
+               else
+                  return Attribute.Expr.Get_Value (Context.Get_ELContext.all);
+               end if;
             end if;
          end;
          Attribute := Attribute.Next_Attr;
       end loop;
+
+      --  Then, look in the static attributes
       declare
          Attr : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
       begin

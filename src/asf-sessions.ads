@@ -111,7 +111,11 @@ package ASF.Sessions is
    --  Invalidates this session then unbinds any objects bound to it.
    procedure Invalidate (Sess : in out Session);
 
+   Null_Session : constant Session;
 private
+
+   type Session_Record;
+   type Session_Record_Access is access all Session_Record'Class;
 
    type Session_Record is new Ada.Finalization.Limited_Controlled with record
       --  Reference counter.
@@ -135,10 +139,12 @@ private
       --  Session identifier.
       Id           : Util.Strings.String_Access;
 
+      --  True if the session is active.
       Is_Active    : Boolean := True;
    end record;
 
-   type Session_Record_Access is access all Session_Record'Class;
+   overriding
+   procedure Finalize (Object : in out Session_Record);
 
    type Session is new Ada.Finalization.Controlled with record
       Impl : Session_Record_Access;
@@ -152,5 +158,7 @@ private
    --  if this was the last session reference.
    overriding
    procedure Finalize (Object : in out Session);
+
+   Null_Session : constant Session := Session' (Ada.Finalization.Controlled with Impl => null);
 
 end ASF.Sessions;

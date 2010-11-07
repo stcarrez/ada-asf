@@ -18,6 +18,7 @@
 with EL.Objects;
 with Ada.Calendar;
 with Ada.Finalization;
+private with Ada.Strings.Unbounded;
 private with Util.Strings;
 private with EL.Objects.Maps;
 private with Util.Concurrent.Locks;
@@ -137,7 +138,7 @@ private
       Max_Inactive : Duration := DEFAULT_INACTIVE_TIMEOUT;
 
       --  Session identifier.
-      Id           : Util.Strings.String_Access;
+      Id           : Ada.Strings.Unbounded.String_Access;
 
       --  True if the session is active.
       Is_Active    : Boolean := True;

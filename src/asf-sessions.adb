@@ -197,10 +197,6 @@ package body ASF.Sessions is
      new Ada.Unchecked_Deallocation (Object => Session_Record'Class,
                                      Name   => Session_Record_Access);
 
-   procedure Free is
-     new Ada.Unchecked_Deallocation (Object => String,
-                                     Name   => Util.Strings.String_Access);
-
    --  ------------------------------
    --  Decrement the session record reference counter and free the session record
    --  if this was the last session reference.

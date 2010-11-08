@@ -46,7 +46,7 @@ package body ASF.Sessions.Tests is
 
          T.Assert (S.Is_Valid, "Session should be valid");
          T.Assert (S.Get_Id'Length = 32, "Session id has an invalid length");
-         Ada.Text_IO.Put_Line ("ID=" & S.Get_Id);
+         --  Ada.Text_IO.Put_Line ("ID=" & S.Get_Id);
 
          declare
             S2 : ASF.Sessions.Session;

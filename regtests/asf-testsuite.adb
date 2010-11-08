@@ -20,6 +20,7 @@ with ASF.Contexts.Writer.Tests;
 with ASF.Views.Facelets.Tests;
 with ASF.Applications.Views.Tests;
 with ASF.Sessions.Tests;
+with ASF.Servlets.Tests;
 
 with AUnit.Reporter.Text;
 with AUnit.Run;
@@ -55,6 +56,7 @@ package body ASF.Testsuite is
       ASF.Views.Facelets.Tests.Add_Tests (Ret);
       ASF.Applications.Views.Tests.Add_Tests (Ret);
       ASF.Sessions.Tests.Add_Tests (Ret);
+      ASF.Servlets.Tests.Add_Tests (Ret);
       return Ret;
    end Suite;
 

@@ -23,6 +23,7 @@ with Util.Encoders.Base64;
 package body ASF.Sessions.Factory is
 
    use Ada.Finalization;
+   use Ada.Strings.Unbounded;
 
    --  ------------------------------
    --  Create a new session

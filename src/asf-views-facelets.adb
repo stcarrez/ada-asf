@@ -26,7 +26,6 @@ with Sax.Readers;
 with EL.Contexts.Default;
 with Util.Files;
 with Util.Log.Loggers;
-with Ada.Unchecked_Deallocation;
 package body ASF.Views.Facelets is
 
    use ASF.Views.Nodes;
@@ -34,8 +33,6 @@ package body ASF.Views.Facelets is
 
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Views.Facelets");
-
-   procedure Free is new Ada.Unchecked_Deallocation (String, Util.Strings.String_Access);
 
    --  Find in the factory for the facelet with the given name.
    procedure Find (Factory : in out Facelet_Factory;
@@ -218,7 +215,7 @@ package body ASF.Views.Facelets is
       Read   : File_Input;
       Path   : constant String := Find_Facelet_Path (Factory, Name);
       Ctx    : aliased EL.Contexts.Default.Default_Context;
-      File   : Util.Strings.String_Access := new String '(Path);
+      File   : String_Access := new String '(Path);
       Mtime  : Ada.Calendar.Time;
    begin
       Log.Info ("Loading facelet: '{0}'", Path);

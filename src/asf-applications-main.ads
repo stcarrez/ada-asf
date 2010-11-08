@@ -28,11 +28,12 @@ with ASF.Beans;
 with ASF.Modules;
 with ASF.Requests;
 with ASF.Contexts.Writer;
+with ASF.Servlets;
 package ASF.Applications.Main is
 
    use ASF.Beans;
 
-   type Application is tagged limited private;
+   type Application is new ASF.Servlets.Servlet_Registry with private;
    type Application_Access is access all Application'Class;
 
    --  Get the application view handler.
@@ -101,7 +102,7 @@ package ASF.Applications.Main is
 
 private
 
-   type Application is tagged limited record
+   type Application is new ASF.Servlets.Servlet_Registry with record
       View    : aliased ASF.Applications.Views.View_Handler;
       Factory : ASF.Beans.Bean_Factory;
       Locales : ASF.Locales.Factory;

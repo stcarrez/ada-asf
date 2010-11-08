@@ -311,7 +311,13 @@ package body ASF.Responses is
    procedure Set_Status (Resp   : in out Response;
                          Status : in Natural) is
    begin
-      null;
+      Resp.Status := Status;
    end Set_Status;
+
+   --  Get the status code that will be returned by this response.
+   function Get_Status (Resp : in Response) return Natural is
+   begin
+      return Resp.Status;
+   end Get_Status;
 
 end ASF.Responses;

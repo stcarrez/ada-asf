@@ -294,8 +294,13 @@ package ASF.Responses is
    procedure Set_Status (Resp   : in out Response;
                          Status : in Natural);
 
+   --  Get the status code that will be returned by this response.
+   function Get_Status (Resp : in Response) return Natural;
+
 private
 
-   type Response is abstract tagged limited null record;
+   type Response is abstract tagged limited record
+      Status : Integer := SC_OK;
+   end record;
 
 end ASF.Responses;

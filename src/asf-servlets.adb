@@ -20,6 +20,9 @@ with Ada.Calendar;
 with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
 
+with EL.Objects;
+with GNAT.Traceback.Symbolic;
+
 with Util.Log.Loggers;
 
 
@@ -796,5 +799,66 @@ package body ASF.Servlets is
       end if;
       return null;
    end Find_Mapping;
+
+   function Hash (N : Integer) return Ada.Containers.Hash_Type is
+   begin
+      return Ada.Containers.Hash_Type (N);
+   end Hash;
+
+   --  ------------------------------
+   --  Send the error page content defined by the response status.
+   --  ------------------------------
+   procedure Send_Error_Page (Server   : in Servlet_Registry;
+                              Request  : in out Requests.Request'Class;
+                              Response : in out Responses.Response'Class) is
+      Status : constant Natural := Response.Get_Status;
+      Pos    : constant Error_Maps.Cursor := Server.Error_Pages.Find (Status);
+   begin
+      Request.Set_Attribute ("servlet.error.status_code", EL.Objects.To_Object (Integer (Status)));
+
+      if Error_Maps.Has_Element (Pos) then
+         declare
+            Page       : constant Unbounded_String := Error_Maps.Element (Pos);
+            Dispatcher : constant Request_Dispatcher
+              := Server.Get_Request_Dispatcher (To_String (Page));
+         begin
+            Forward (Dispatcher, Request, Response);
+            return;
+
+         exception
+            when E : others =>
+               null;
+         end;
+      end if;
+
+      Response.Set_Content_Type ("text/html");
+
+   end Send_Error_Page;
+
+   --  ------------------------------
+   --  Report an error when an exception occurred while processing the request.
+   --  ------------------------------
+   procedure Error (Registry : in Servlet_Registry;
+                    Request  : in out Requests.Request'Class;
+                    Response : in out Responses.Response'Class;
+                    Ex       : in Ada.Exceptions.Exception_Occurrence) is
+      use GNAT.Traceback.Symbolic;
+      use Ada.Exceptions;
+
+      Name          : constant String := Exception_Name (Ex);
+      Message       : constant String := Exception_Message (Ex);
+      Has_Traceback : constant Boolean := True;
+   begin
+      Request.Set_Attribute ("servlet.error.exception",
+                             EL.Objects.To_Object (Name));
+      Request.Set_Attribute ("servlet.error.message",
+                             EL.Objects.To_Object (Message));
+      if Has_Traceback then
+         Request.Set_Attribute ("servlet.error.exception",
+                                EL.Objects.To_Object (Symbolic_Traceback (Ex)));
+      end if;
+      Response.Set_Status (Responses.SC_INTERNAL_SERVER_ERROR);
+      Registry.Send_Error_Page (Request, Response);
+   end Error;
 
 end ASF.Servlets;

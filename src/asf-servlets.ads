@@ -21,10 +21,12 @@ with ASF.Responses;
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
+with Ada.Exceptions;
 
 private with Ada.Containers.Indefinite_Hashed_Maps;
 private with Ada.Strings.Unbounded.Hash;
 private with Util.Properties;
+private with Util.Strings;
 
 --  The <b>ASF.Servlets</b> package implements a subset of the
 --  Java Servlet Specification adapted for the Ada language.
@@ -369,6 +371,17 @@ package ASF.Servlets is
                           Pattern  : in String;
                           Server   : in Servlet_Access);
 
+   --  Send the error page content defined by the response status.
+   procedure Send_Error_Page (Server   : in Servlet_Registry;
+                              Request  : in out Requests.Request'Class;
+                              Response : in out Responses.Response'Class);
+
+   --  Report an error when an exception occurred while processing the request.
+   procedure Error (Registry : in Servlet_Registry;
+                    Request  : in out Requests.Request'Class;
+                    Response : in out Responses.Response'Class;
+                    Ex       : in Ada.Exceptions.Exception_Occurrence);
+
 private
 
    use Ada.Strings.Unbounded;
@@ -451,12 +464,21 @@ private
                                             Hash         => Ada.Strings.Unbounded.Hash,
                                             Equivalent_Keys => "=");
 
+   function Hash (N : Integer) return Ada.Containers.Hash_Type;
+
+   package Error_Maps is new
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type            => Integer,
+                                            Element_Type        => Unbounded_String,
+                                            Hash                => Hash,
+                                            Equivalent_Keys     => "=");
+
    type Servlet_Registry is new Ada.Finalization.Limited_Controlled with record
       Config            : Util.Properties.Manager;
       Servlets          : Servlet_Maps.Map;
       Filters           : Filter_Maps.Map;
       Mappings          : Mapping_Access := null;
       Extension_Mapping : Mapping_Access := null;
+      Error_Pages       : Error_Maps.Map;
    end record;
 
 end ASF.Servlets;

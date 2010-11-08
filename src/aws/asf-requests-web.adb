@@ -22,4 +22,10 @@ package body ASF.Requests.Web is
       return AWS.Status.Parameter (R.Data.all, Name);
    end Get_Parameter;
 
+   procedure Set_Request (R : in out Request;
+                          Data : access AWS.Status.Data) is
+   begin
+      R.Data := Data;
+   end Set_Request;
+
 end ASF.Requests.Web;

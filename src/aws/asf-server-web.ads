@@ -15,19 +15,25 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with AWS.Services;
-with AWS.Status;
-with AWS.Response;
-with ASF.Applications.Main;
+
+private with AWS.Server;
+private with AWS.Config;
 package ASF.Server.Web is
 
    use ASF;
-   use ASF.Applications;
 
-   --  Register the application to serve requests
-   procedure Register_Application (URI    : in String;
-                                   App    : in Main.Application_Access);
+   type AWS_Container is new Container with private;
 
-   function Server_Callback (Request : in AWS.Status.Data) return AWS.Response.Data;
+   procedure Start (Server : in out AWS_Container);
+
+private
+
+   overriding
+   procedure Initialize (Server : in out AWS_Container);
+
+   type AWS_Container is new Container with record
+      WS   : AWS.Server.HTTP;
+      Conf : AWS.Config.Object;
+   end record;
 
 end ASF.Server.Web;

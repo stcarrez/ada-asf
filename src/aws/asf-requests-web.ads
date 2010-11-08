@@ -23,6 +23,9 @@ package ASF.Requests.Web is
 
    function Get_Parameter (R : Request; Name : String) return String;
 
+   procedure Set_Request (R : in out Request;
+                          Data : access AWS.Status.Data);
+
 private
 
    type Request is new ASF.Requests.Request with record

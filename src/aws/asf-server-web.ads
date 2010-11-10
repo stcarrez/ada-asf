@@ -28,8 +28,10 @@ package ASF.Server.Web is
 
 private
 
+   type AWS_Container_Access is access all AWS_Container'Class;
+
    overriding
-   procedure Initialize (Server : in out AWS_Container);
+   procedure Initialize (Instance : in out AWS_Container);
 
    type AWS_Container is new Container with record
       WS   : AWS.Server.HTTP;

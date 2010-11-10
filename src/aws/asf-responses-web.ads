@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with AWS.Status;
 with AWS.Response;
+with Util.Streams.Texts;
 package ASF.Responses.Web is
 
    type Response is new ASF.Responses.Response with private;
@@ -28,8 +29,11 @@ package ASF.Responses.Web is
 
 private
 
+   procedure Initialize (Resp : in out Response);
+
    type Response is new ASF.Responses.Response with record
-      Data : AWS.Response.Data;
+      Data    : AWS.Response.Data;
+      Content : aliased Util.Streams.Texts.Print_Stream;
    end record;
 
 end ASF.Responses.Web;

@@ -32,21 +32,22 @@ package body ASF.Server.Web is
 
    function Server_Callback (Request : in AWS.Status.Data) return AWS.Response.Data;
 
-   procedure Initialize (Server : in out AWS_Container) is
-   begin
-      Server.Conf := AWS.Config.Get_Current;
-      AWS.Config.Set.Reuse_Address (O => Server.Conf, Value => True);
-   end Initialize;
+   Server : AWS_Container_Access;
 
-   Server : AWS_Container;
+   procedure Initialize (Instance : in out AWS_Container) is
+   begin
+      Instance.Conf := AWS.Config.Get_Current;
+      AWS.Config.Set.Reuse_Address (O => Instance.Conf, Value => True);
+      Server := Instance'Unchecked_Access;
+   end Initialize;
 
    procedure Start (Server : in out AWS_Container) is
    begin
       Log.Info ("Starting server...");
 
-      AWS.Server.Start (Server.WS, "Hello World",
-                        Max_Connection => 1,
-                        Callback       => ASF.Server.Web.Server_Callback'Access);
+      AWS.Server.Start (Web_Server => Server.WS,
+                        Config     => Server.Conf,
+                        Callback   => ASF.Server.Web.Server_Callback'Access);
    end Start;
 --
 --     function Application_Dispatch (App     : Main.Application_Access;

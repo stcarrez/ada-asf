@@ -26,6 +26,15 @@ package ASF.Requests.Web is
    procedure Set_Request (R : in out Request;
                           Data : access AWS.Status.Data);
 
+   --  Returns the part of this request's URL from the protocol name up to the query
+   --  string in the first line of the HTTP request. The web container does not decode
+   --  this String. For example:
+   --  First line of HTTP request    Returned Value
+   --  POST /some/path.html HTTP/1.1        /some/path.html
+   --  GET http://foo.bar/a.html HTTP/1.0       /a.html
+   --  HEAD /xyz?a=b HTTP/1.1       /xyz
+   function Get_Request_URI (Req : in Request) return String;
+
 private
 
    type Request is new ASF.Requests.Request with record

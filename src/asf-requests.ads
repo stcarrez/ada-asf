@@ -22,6 +22,8 @@ with Ada.Strings.Unbounded;
 with ASF.Sessions;
 with EL.Objects.Maps;
 
+limited with ASF.Servlets;
+
 --  The <b>ASF.Requests</b> package is an Ada implementation of
 --  the Java servlet request (JSR 315 3. The Request).
 package ASF.Requests is
@@ -211,7 +213,8 @@ package ASF.Requests is
    --  If the request did not include any headers of the specified name, this method
    --  returns an empty Enumeration. The header name is case insensitive. You can use
    --  this method with any request header.
-   function Get_Headers (Req : in Request) return String;
+   function Get_Headers (Req  : in Request;
+                         Name : in String) return String;
 
    --  Returns the value of the specified request header as an int. If the request
    --  does not have a header of the specified name, this method returns -1.
@@ -307,6 +310,8 @@ private
 
    type Request is abstract tagged limited record
       Attributes : EL.Objects.Maps.Map;
+      Path_Info  : Unbounded_String;
+      Servlet    : access ASF.Servlets.Servlet;
    end record;
 
 end ASF.Requests;

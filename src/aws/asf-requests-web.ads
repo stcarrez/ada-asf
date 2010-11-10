@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with AWS.Status;
+with AWS.Headers;
 package ASF.Requests.Web is
 
    type Request is new ASF.Requests.Request with private;
@@ -23,8 +24,19 @@ package ASF.Requests.Web is
 
    function Get_Parameter (R : Request; Name : String) return String;
 
-   procedure Set_Request (R : in out Request;
+   --  Set the AWS data received to initialize the request object.
+   procedure Set_Request (Req  : in out Request;
                           Data : access AWS.Status.Data);
+
+   --  Returns the name of the HTTP method with which this request was made,
+   --  for example, GET, POST, or PUT. Same as the value of the CGI variable
+   --  REQUEST_METHOD.
+   function Get_Method (Req : in Request) return String;
+
+   --  Returns the name and version of the protocol the request uses in the form
+   --  protocol/majorVersion.minorVersion, for example, HTTP/1.1. For HTTP servlets,
+   --  the value returned is the same as the value of the CGI variable SERVER_PROTOCOL.
+   function Get_Protocol (Req : in Request) return String;
 
    --  Returns the part of this request's URL from the protocol name up to the query
    --  string in the first line of the HTTP request. The web container does not decode
@@ -35,10 +47,37 @@ package ASF.Requests.Web is
    --  HEAD /xyz?a=b HTTP/1.1       /xyz
    function Get_Request_URI (Req : in Request) return String;
 
+   --  Returns the value of the specified request header as a String. If the request
+   --  did not include a header of the specified name, this method returns null.
+   --  If there are multiple headers with the same name, this method returns the
+   --  first head in the request. The header name is case insensitive. You can use
+   --  this method with any request header.
+   function Get_Header (Req  : in Request;
+                        Name : in String) return String;
+
+   --  Returns all the values of the specified request header as an Enumeration
+   --  of String objects.
+   --
+   --  Some headers, such as Accept-Language can be sent by clients as several headers
+   --  each with a different value rather than sending the header as a comma
+   --  separated list.
+   --
+   --  If the request did not include any headers of the specified name, this method
+   --  returns an empty Enumeration. The header name is case insensitive. You can use
+   --  this method with any request header.
+   function Get_Headers (Req  : in Request;
+                         Name : in String) return String;
+
+   --  Returns the Internet Protocol (IP) address of the client or last proxy that
+   --  sent the request. For HTTP servlets, same as the value of the CGI variable
+   --  REMOTE_ADDR.
+   function Get_Remote_Addr (Req : in Request) return String;
+
 private
 
    type Request is new ASF.Requests.Request with record
-      Data : access AWS.Status.Data;
+      Data    : access AWS.Status.Data;
+      Headers : AWS.Headers.List;
    end record;
 
 end ASF.Requests.Web;

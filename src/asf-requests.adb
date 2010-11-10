@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with ASF.Servlets;
+
 --  The <b>ASF.Requests</b> package is an Ada implementation of
 --  the Java servlet request (JSR 315 3. The Request).
 package body ASF.Requests is
@@ -92,14 +94,14 @@ package body ASF.Requests is
    --  same as the value of the CGI variable CONTENT_LENGTH.
    function Get_Content_Length (Req : in Request) return Integer is
    begin
-      return -1;
+      return Request'Class (Req).Get_Int_Header ("Content-Length");
    end Get_Content_Length;
 
    --  Returns the MIME type of the body of the request, or null if the type is
    --  not known. For HTTP servlets, same as the value of the CGI variable CONTENT_TYPE.
    function Get_Content_Type (Req : in Request) return String is
    begin
-      return "";
+      return Request'Class (Req).Get_Header ("Content-Type");
    end Get_Content_Type;
 
    --  Returns the value of a request parameter as a String, or null if the
@@ -178,7 +180,7 @@ package body ASF.Requests is
    --  IP address. For HTTP servlets, same as the value of the CGI variable REMOTE_HOST.
    function Get_Remote_Host (Req : in Request) return String is
    begin
-      return "";
+      return Request'Class (Req).Get_Remote_Addr;
    end Get_Remote_Host;
 
    --  Returns the preferred Locale that the client will accept content in, based
@@ -262,6 +264,7 @@ package body ASF.Requests is
    --  an IllegalArgumentException.
    function Get_Date_Header (Req  : in Request;
                              Name : in String) return Ada.Calendar.Time is
+      Header : constant String := Request'Class (Req).Get_Header (Name);
    begin
       return Ada.Calendar.Clock;
    end Get_Date_Header;
@@ -288,7 +291,8 @@ package body ASF.Requests is
    --  If the request did not include any headers of the specified name, this method
    --  returns an empty Enumeration. The header name is case insensitive. You can use
    --  this method with any request header.
-   function Get_Headers (Req : in Request) return String is
+   function Get_Headers (Req  : in Request;
+                         Name : in String) return String is
    begin
       return "";
    end Get_Headers;
@@ -319,7 +323,7 @@ package body ASF.Requests is
    --  precedes the query string and will start with a "/" character.
    function Get_Path_Info (Req : in Request) return String is
    begin
-      return "";
+      return To_String (Req.Path_Info);
    end Get_Path_Info;
 
    --  Returns the portion of the request URI that indicates the context of the
@@ -401,7 +405,7 @@ package body ASF.Requests is
    --  this request was matched using the "/*" pattern.
    function Get_Servlet_Path (Req : in Request) return String is
    begin
-      return "";
+      return Req.Servlet.Get_Name;
    end Get_Servlet_Path;
 
    --  Returns the current HttpSession  associated with this request or, if there

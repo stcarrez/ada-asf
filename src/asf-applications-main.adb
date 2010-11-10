@@ -51,6 +51,7 @@ package body ASF.Applications.Main is
                          Conf : in Config) is
    begin
       App.Conf := Conf;
+      App.Set_Init_Parameters (Params => Conf);
       App.View.Initialize (Conf);
       ASF.Modules.Initialize (App.Modules, Conf);
       ASF.Locales.Initialize (App.Locales, App.Factory, Conf);

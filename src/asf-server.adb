@@ -59,6 +59,13 @@ package body ASF.Server is
       Apps       : constant Binding_Array_Access := Server.Applications;
       Prefix_End : Natural;
    begin
+
+      if Apps = null then
+         Response.Set_Status (Responses.SC_NOT_FOUND);
+         Server.Default.Send_Error_Page (Request, Response);
+         return;
+      end if;
+
       --  Find the module and action to invoke
       if Slash_Pos > 1 then
          Prefix_End := Slash_Pos - 1;

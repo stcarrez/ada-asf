@@ -207,7 +207,7 @@ package body ASF.Responses is
                          Error   : in Integer;
                          Message : in String) is
    begin
-      null;
+      Resp.Status := Error;
    end Send_Error;
 
    --  Sends an error response to the client using the specified status code
@@ -219,7 +219,7 @@ package body ASF.Responses is
    procedure Send_Error (Resp    : in out Response;
                          Error   : in Integer) is
    begin
-      null;
+      Resp.Status := Error;
    end Send_Error;
 
    --  Sends a temporary redirect response to the client using the specified redirect
@@ -314,10 +314,22 @@ package body ASF.Responses is
       Resp.Status := Status;
    end Set_Status;
 
+   --  ------------------------------
    --  Get the status code that will be returned by this response.
+   --  ------------------------------
    function Get_Status (Resp : in Response) return Natural is
    begin
       return Resp.Status;
    end Get_Status;
+
+   --  ------------------------------
+   --  Get the output stream
+   --  ------------------------------
+   function Get_Output_Stream (Resp : in Response) return ASF.Streams.Print_Stream is
+   begin
+      return Result : ASF.Streams.Print_Stream do
+         Result.Initialize (Resp.Stream.all'Access);
+      end return;
+   end Get_Output_Stream;
 
 end ASF.Responses;

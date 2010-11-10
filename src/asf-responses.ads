@@ -17,6 +17,11 @@
 -----------------------------------------------------------------------
 with Util.Locales;
 with Ada.Calendar;
+with Ada.Strings.Unbounded;
+with Ada.Finalization;
+
+with ASF.Streams;
+private with Util.Streams.Texts;
 
 --  The <b>ASF.Responses</b> package is an Ada implementation of
 --  the Java servlet response (JSR 315 5. The Response).
@@ -63,7 +68,6 @@ package ASF.Responses is
    SC_SERVICE_UNAVAILABLE : constant Natural := 503;
    SC_GATEWAY_TIMEOUT : constant Natural := 504;
    SC_HTTP_VERSION_NOT_SUPPORTED : constant Natural := 505;
-
 
    type Response is abstract tagged limited private;
 
@@ -297,10 +301,14 @@ package ASF.Responses is
    --  Get the status code that will be returned by this response.
    function Get_Status (Resp : in Response) return Natural;
 
+   --  Get the output stream
+   function Get_Output_Stream (Resp : in Response) return ASF.Streams.Print_Stream;
+
 private
 
-   type Response is abstract tagged limited record
+   type Response is abstract new Ada.Finalization.Limited_Controlled with record
       Status : Integer := SC_OK;
+      Stream : Util.Streams.Texts.Print_Stream_Access;
    end record;
 
 end ASF.Responses;

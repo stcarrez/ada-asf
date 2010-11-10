@@ -20,6 +20,7 @@ with Ada.Calendar;
 with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
 
+with ASF.Streams;
 with EL.Objects;
 with GNAT.Traceback.Symbolic;
 
@@ -406,13 +407,25 @@ package body ASF.Servlets is
       return Context.Config.Get (Name);
    end Get_Init_Parameter;
 
-   --
+   --  ------------------------------
+   --  Set the init parameter identified by <b>Name</b> to the value <b>Value</b>.
+   --  ------------------------------
    procedure Set_Init_Parameter (Context : in out Servlet_Registry;
                                  Name    : in String;
                                  Value   : in String) is
    begin
       Context.Config.Set (Name, Value);
    end Set_Init_Parameter;
+
+   --  ------------------------------
+   --  Set the init parameters by copying the properties defined in <b>Params</b>.
+   --  Existing parameters will be overriding by the new values.
+   --  ------------------------------
+   procedure Set_Init_Parameters (Context : in out Servlet_Registry;
+                                  Params  : in Util.Properties.Manager'Class) is
+   begin
+      Context.Config.Copy (Params);
+   end Set_Init_Parameters;
 
    --  ------------------------------
    --  Registers the given servlet instance with this ServletContext under
@@ -438,7 +451,7 @@ package body ASF.Servlets is
       Server.Context := Registry'Unchecked_Access;
       Servlet_Maps.Include (Registry.Servlets, Server.Name, Server);
 
-      Server.Initialize;
+      Server.Initialize (Registry);
    end Add_Servlet;
 
    procedure Add_Filter (Registry : in out Servlet_Registry;
@@ -464,7 +477,7 @@ package body ASF.Servlets is
                         Request  : in out Requests.Request'Class;
                         Response : in out Responses.Response'Class) is
    begin
-      if Chain.Filter_Pos <= 0 then
+      if Chain.Filter_Pos = 0 then
          Chain.Servlet.Service (Request, Response);
       else
          Chain.Filter_Pos := Chain.Filter_Pos - 1;
@@ -811,10 +824,12 @@ package body ASF.Servlets is
    procedure Send_Error_Page (Server   : in Servlet_Registry;
                               Request  : in out Requests.Request'Class;
                               Response : in out Responses.Response'Class) is
+      URI    : constant String  := Request.Get_Request_URI;
       Status : constant Natural := Response.Get_Status;
       Pos    : constant Error_Maps.Cursor := Server.Error_Pages.Find (Status);
    begin
       Request.Set_Attribute ("servlet.error.status_code", EL.Objects.To_Object (Integer (Status)));
+      Request.Set_Attribute ("servlet.error.request_uri", EL.Objects.To_Object (URI));
 
       if Error_Maps.Has_Element (Pos) then
          declare
@@ -826,13 +841,48 @@ package body ASF.Servlets is
             return;
 
          exception
-            when E : others =>
+            when others =>
                null;
          end;
       end if;
 
       Response.Set_Content_Type ("text/html");
+      declare
+         Output : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
+         Value  : EL.Objects.Object;
+      begin
+         Output.Write ("<body>"
+                       & "<table>"
+                       & "<tr><th colspan='2'>The server cannot proceed with the request.</th></tr>");
 
+         Output.Write ("<tr><td>Error</td><td>");
+         Output.Write (Status);
+         Output.Write ("</td></tr><tr><td>Page</td><td>");
+         Output.Write (URI);
+         Output.Write ("</td></tr>");
+
+         Value := Request.Get_Attribute ("servlet.error.message");
+         if not EL.Objects.Is_Null (Value) then
+            Output.Write ("<tr><td>Message:</td><td>");
+            Output.Write (Value);
+            Output.Write ("</td></tr>");
+         end if;
+
+         Value := Request.Get_Attribute ("servlet.error.exception_type");
+         if not EL.Objects.Is_Null (Value) then
+            Output.Write ("<tr><td>Exception:</td><td>");
+            Output.Write (Value);
+            Output.Write ("</td></tr>");
+         end if;
+
+         Value := Request.Get_Attribute ("servlet.error.exception");
+         if not EL.Objects.Is_Null (Value) then
+            Output.Write ("<tr><td>Traceback:</td><td><pre>");
+            Output.Write (Value);
+            Output.Write ("</pre></td></tr>");
+         end if;
+         Output.Write ("</table></body>");
+      end;
    end Send_Error_Page;
 
    --  ------------------------------
@@ -849,7 +899,7 @@ package body ASF.Servlets is
       Message       : constant String := Exception_Message (Ex);
       Has_Traceback : constant Boolean := True;
    begin
-      Request.Set_Attribute ("servlet.error.exception",
+      Request.Set_Attribute ("servlet.error.exception_type",
                              EL.Objects.To_Object (Name));
       Request.Set_Attribute ("servlet.error.message",
                              EL.Objects.To_Object (Message));

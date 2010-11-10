@@ -23,10 +23,10 @@ with Ada.Strings.Unbounded;
 with Ada.Calendar;
 with Ada.Exceptions;
 
+with Util.Properties;
+
 private with Ada.Containers.Indefinite_Hashed_Maps;
 private with Ada.Strings.Unbounded.Hash;
-private with Util.Properties;
-private with Util.Strings;
 
 --  The <b>ASF.Servlets</b> package implements a subset of the
 --  Java Servlet Specification adapted for the Ada language.
@@ -333,10 +333,15 @@ package ASF.Servlets is
    function Get_Init_Parameter (Context : in Servlet_Registry;
                                 Name    : in String) return String;
 
-   --
+   --  Set the init parameter identified by <b>Name</b> to the value <b>Value</b>.
    procedure Set_Init_Parameter (Context : in out Servlet_Registry;
                                  Name    : in String;
                                  Value   : in String);
+
+   --  Set the init parameters by copying the properties defined in <b>Params</b>.
+   --  Existing parameters will be overriding by the new values.
+   procedure Set_Init_Parameters (Context : in out Servlet_Registry;
+                                  Params  : in Util.Properties.Manager'Class);
 
    --  Registers the given servlet instance with this ServletContext under
    --  the given servletName.

@@ -68,6 +68,12 @@ package ASF.Requests.Web is
    function Get_Headers (Req  : in Request;
                          Name : in String) return String;
 
+   --  Iterate over the request headers and executes the <b>Process</b> procedure.
+   procedure Iterate_Headers (Req     : in Request;
+                              Process : not null access
+                                procedure (Name  : in String;
+                                           Value : in String));
+
    --  Returns the Internet Protocol (IP) address of the client or last proxy that
    --  sent the request. For HTTP servlets, same as the value of the CGI variable
    --  REMOTE_ADDR.

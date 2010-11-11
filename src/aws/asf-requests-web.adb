@@ -83,6 +83,18 @@ package body ASF.Requests.Web is
    end Get_Header;
 
    --  ------------------------------
+   --  Iterate over the request headers and executes the <b>Process</b> procedure.
+   --  ------------------------------
+   procedure Iterate_Headers (Req     : in Request;
+                              Process : not null access
+                                procedure (Name  : in String;
+                                           Value : in String)) is
+   begin
+      Req.Headers.Iterate_Names (Coupler => ", ",
+                                 Process => Process);
+   end Iterate_Headers;
+
+   --  ------------------------------
    --  Returns all the values of the specified request header as an Enumeration
    --  of String objects.
    --

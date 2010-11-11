@@ -5,7 +5,7 @@ with "asf";
 
 project Samples is
 
-   Mains := ("render.adb", "server.adb");
+   Mains := ("render.adb", "volume_server.adb");
 
    for Main use Mains;
 

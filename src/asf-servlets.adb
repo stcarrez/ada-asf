@@ -22,6 +22,7 @@ with Ada.Unchecked_Deallocation;
 
 with ASF.Filters;
 with ASF.Streams;
+with ASF.Requests.Tools;
 
 with EL.Objects;
 with GNAT.Traceback.Symbolic;
@@ -925,10 +926,25 @@ package body ASF.Servlets is
          Output : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
          Value  : EL.Objects.Object;
       begin
-         Output.Write ("<body>"
-                       & "<table>"
-                       & "<tr><th colspan='2'>The server cannot proceed with the request.</th></tr>");
-
+         Output.Write ("<html><head><title>Server error</title>"
+                       & "<style><!--H1 {font-family:Tahoma,Arial,sans-serif;color:white;"
+                       & "background-color:#525D76;font-size:22px;} "
+                       & "H2 {font-family:Tahoma,Arial,sans-serif;color:white;"
+                       & "background-color:#525D76;font-size:16px;} "
+                       & "H3 {font-family:Tahoma,Arial,sans-serif;color:white;"
+                       &" background-color:#525D76;font-size:14px;} "
+                       & "BODY {font-family:Tahoma,Arial,sans-serif;color:black;"
+                       & "background-color:white;} "
+                       & "B {font-family:Tahoma,Arial,sans-serif;color:white;"
+                       & "background-color:#525D76;} "
+                       & "P {font-family:Tahoma,Arial,sans-serif;background:white;"
+                       & "color:black;font-size:12px;}A {color : black;}"
+                       & "table {width:100%;} table td:first-child {width:20%}"
+                       & "table th {text-align:left;color:white;background-color:#525D76;}"
+                       & "A.name {color : black;}HR {color : #525D76;}--></style><body>"
+                       & "<h1>HTTP error ");
+         Output.Write (Status);
+         Output.Write ("</h1><hr size='1' noshade='noshade'></hr><table>");
          Output.Write ("<tr><td>Error</td><td>");
          Output.Write (Status);
          Output.Write ("</td></tr><tr><td>Page</td><td>");
@@ -955,7 +971,13 @@ package body ASF.Servlets is
             Output.Write (Value);
             Output.Write ("</pre></td></tr>");
          end if;
-         Output.Write ("</table></body>");
+
+         Output.Write ("<tr><td colspan='2'>");
+         Output.Write (ASF.Requests.Tools.To_String (Req              => Request,
+                                                     Html             => True,
+                                                     Print_Headers    => True,
+                                                     Print_Attributes => True));
+         Output.Write ("<td></tr></table></body>");
       end;
    end Send_Error_Page;
 

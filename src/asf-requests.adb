@@ -73,6 +73,26 @@ package body ASF.Requests is
       Req.Set_Attribute (Name => Name, Value => EL.Objects.Null_Object);
    end Remove_Attribute;
 
+   --  ------------------------------
+   --  Iterate over the request attributes and executes the <b>Process</b> procedure.
+   --  ------------------------------
+   procedure Iterate_Attributes (Req     : in Request;
+                                 Process : not null access
+                                   procedure (Name  : in String;
+                                              Value : in EL.Objects.Object)) is
+
+      procedure Process_Wrapper (Position : in EL.Objects.Maps.Cursor);
+
+      procedure Process_Wrapper (Position : in EL.Objects.Maps.Cursor) is
+      begin
+         Process.all (Name  => To_String (EL.Objects.Maps.Key (Position)),
+                      Value => EL.Objects.Maps.Element (Position));
+      end Process_Wrapper;
+
+   begin
+      Req.Attributes.Iterate (Process => Process_Wrapper'Access);
+   end Iterate_Attributes;
+
    --  Returns the name of the character encoding used in the body of this request.
    --  This method returns null if the request does not specify a character encoding
    function Get_Character_Encoding (Req : in Request) return String is

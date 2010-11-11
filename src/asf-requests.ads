@@ -63,6 +63,12 @@ package ASF.Requests is
    procedure Remove_Attribute (Req  : in out Request;
                                Name : in String);
 
+   --  Iterate over the request attributes and executes the <b>Process</b> procedure.
+   procedure Iterate_Attributes (Req     : in Request;
+                                 Process : not null access
+                                   procedure (Name : in String;
+                                              Value : in EL.Objects.Object));
+
    --  Returns the name of the character encoding used in the body of this request.
    --  This method returns null if the request does not specify a character encoding
    function Get_Character_Encoding (Req : in Request) return String;
@@ -224,6 +230,12 @@ package ASF.Requests is
    --  The header name is case insensitive.
    function Get_Int_Header (Req  : in Request;
                             Name : in String) return Integer;
+
+   --  Iterate over the request headers and executes the <b>Process</b> procedure.
+   procedure Iterate_Headers (Req     : in Request;
+                              Process : not null access
+                                procedure (Name  : in String;
+                                           Value : in String)) is abstract;
 
    --  Returns the name of the HTTP method with which this request was made,
    --  for example, GET, POST, or PUT. Same as the value of the CGI variable

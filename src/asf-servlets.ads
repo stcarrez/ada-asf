@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 with ASF.Requests;
 with ASF.Responses;
+with ASF.Sessions;
+limited with ASF.Filters;
 
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
@@ -25,8 +27,9 @@ with Ada.Exceptions;
 
 with Util.Properties;
 
-private with Ada.Containers.Indefinite_Hashed_Maps;
+private with Ada.Containers.Hashed_Maps;
 private with Ada.Strings.Unbounded.Hash;
+private with ASF.Sessions.Factory;
 
 --  The <b>ASF.Servlets</b> package implements a subset of the
 --  Java Servlet Specification adapted for the Ada language.
@@ -52,32 +55,6 @@ package ASF.Servlets is
    procedure Do_Filter (Chain    : in out Filter_Chain;
                         Request  : in out Requests.Request'Class;
                         Response : in out Responses.Response'Class);
-
-   type Filter is limited interface;
-   type Filter_Access is access all Filter'Class;
-
-   --  The Do_Filter method of the Filter is called by the container each time
-   --  a request/response pair is passed through the chain due to a client request
-   --  for a resource at the end of the chain.  The Filter_Chain passed in to this
-   --  method allows the Filter to pass on the request and response to the next
-   --  entity in the chain.
-   --
-   --  A typical implementation of this method would follow the following pattern:
-   --  1. Examine the request
-   --  2. Optionally wrap the request object with a custom implementation to
-   --     filter content or headers for input filtering
-   --  3. Optionally wrap the response object with a custom implementation to
-   --     filter content or headers for output filtering
-   --  4. Either invoke the next entity in the chain using the FilterChain
-   --     object (chain.Do_Filter()),
-   --     or, not pass on the request/response pair to the next entity in the
-   --     filter chain to block the request processing
-   --  5. Directly set headers on the response after invocation of the next
-   --     entity in the filter chain.
-   procedure Do_Filter (F        : in Filter;
-                        Request  : in out Requests.Request'Class;
-                        Response : in out Responses.Response'Class;
-                        Chain    : in out Filter_Chain) is abstract;
 
    --  type Servlet_Registry;
    type Servlet_Registry is tagged limited private;
@@ -354,13 +331,21 @@ package ASF.Servlets is
                           Name     : in String;
                           Server   : in Servlet_Access);
 
+   --  Registers the given filter instance with this Servlet context.
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Name     : in String;
-                         Filt     : in Filter_Access);
+                         Filter   : access ASF.Filters.Filter'Class);
 
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Target   : in String;
                          Name     : in String);
+
+   --  Add a filter mapping with the given pattern
+   --  If the URL pattern is already mapped to a different servlet,
+   --  no updates will be performed.
+   procedure Add_Filter_Mapping (Registry : in out Servlet_Registry;
+                                 Pattern  : in String;
+                                 Name     : in String);
 
    --  Add a servlet mapping with the given pattern
    --  If the URL pattern is already mapped to a different servlet,
@@ -391,6 +376,7 @@ private
 
    use Ada.Strings.Unbounded;
 
+   type Filter_Access is access all ASF.Filters.Filter'Class;
    type Filter_List is array (Natural range <>) of Filter_Access;
    type Filter_List_Access is access all Filter_List;
 
@@ -431,6 +417,10 @@ private
    procedure Dump_Map (Map : in Mapping_Node;
                        Indent : in String := "");
 
+   --  Append the filter to the filter list defined by the mapping node.
+   procedure Append_Filter (Mapping : in out Mapping_Node;
+                            Filter  : in Filter_Access);
+
    --  Find the servlet and filter mapping that must be used for the given URI.
    --  Search the mapping according to Ch 12/SRV 11. Mapping Requests to Servlets:
    --  o look for an exact match,
@@ -448,7 +438,6 @@ private
 
    type Request_Dispatcher is limited record
       Mapping : Mapping_Access := null;
-      Filters : Filter_Chain;
    end record;
 
    type Servlet is new Ada.Finalization.Limited_Controlled with record
@@ -458,29 +447,30 @@ private
    end record;
 
    package Filter_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => Unbounded_String,
-                                            Element_Type => Filter_Access,
-                                            Hash         => Ada.Strings.Unbounded.Hash,
-                                            Equivalent_Keys => "=");
+     Ada.Containers.Hashed_Maps (Key_Type     => Unbounded_String,
+                                 Element_Type => Filter_Access,
+                                 Hash         => Ada.Strings.Unbounded.Hash,
+                                 Equivalent_Keys => "=");
 
    package Servlet_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => Unbounded_String,
-                                            Element_Type => Servlet_Access,
-                                            Hash         => Ada.Strings.Unbounded.Hash,
-                                            Equivalent_Keys => "=");
+     Ada.Containers.Hashed_Maps (Key_Type     => Unbounded_String,
+                                 Element_Type => Servlet_Access,
+                                 Hash         => Ada.Strings.Unbounded.Hash,
+                                 Equivalent_Keys => "=");
 
    function Hash (N : Integer) return Ada.Containers.Hash_Type;
 
    package Error_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type            => Integer,
-                                            Element_Type        => Unbounded_String,
-                                            Hash                => Hash,
-                                            Equivalent_Keys     => "=");
+     Ada.Containers.Hashed_Maps (Key_Type            => Integer,
+                                 Element_Type        => Unbounded_String,
+                                 Hash                => Hash,
+                                 Equivalent_Keys     => "=");
 
    type Servlet_Registry is new Ada.Finalization.Limited_Controlled with record
       Config            : Util.Properties.Manager;
       Servlets          : Servlet_Maps.Map;
       Filters           : Filter_Maps.Map;
+      Sessions          : ASf.Sessions.Factory.Session_Factory;
       Mappings          : Mapping_Access := null;
       Extension_Mapping : Mapping_Access := null;
       Error_Pages       : Error_Maps.Map;

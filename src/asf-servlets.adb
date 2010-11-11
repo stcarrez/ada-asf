@@ -20,7 +20,9 @@ with Ada.Calendar;
 with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
 
+with ASF.Filters;
 with ASF.Streams;
+
 with EL.Objects;
 with GNAT.Traceback.Symbolic;
 
@@ -336,6 +338,21 @@ package body ASF.Servlets is
    begin
       if Dispatcher.Mapping = null or else Dispatcher.Mapping.Servlet = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
+
+         -- If we have some filters, create the filter chain
+         -- and invoke the first filter.
+      elsif Dispatcher.Mapping.Filters /= null then
+         declare
+            Chain : Filter_Chain;
+         begin
+            Chain.Filters := Dispatcher.Mapping.Filters;
+            Chain.Servlet := Dispatcher.Mapping.Servlet;
+            Chain.Filter_Pos := Chain.Filters'Last;
+            Do_Filter (Chain    => Chain,
+                       Request  => Request,
+                       Response => Response);
+         end;
+
       else
          Dispatcher.Mapping.Servlet.Service (Request, Response);
       end if;
@@ -454,11 +471,19 @@ package body ASF.Servlets is
       Server.Initialize (Registry);
    end Add_Servlet;
 
+   --  ------------------------------
+   --  Registers the given filter instance with this Servlet context.
+   --  ------------------------------
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Name     : in String;
-                         Filt     : in Filter_Access) is
+                         Filter   : access ASF.Filters.Filter'Class) is
    begin
-      Filter_Maps.Include (Registry.Filters, To_Unbounded_String (Name), Filt);
+      Log.Info ("Add servlet filter {0}", Name);
+
+      Filter_Maps.Include (Registry.Filters, To_Unbounded_String (Name),
+                           Filter.all'Unchecked_Access);
+
+      Filter.Initialize (Registry);
    end Add_Filter;
 
    procedure Add_Filter (Registry : in out Servlet_Registry;
@@ -481,9 +506,12 @@ package body ASF.Servlets is
          Chain.Servlet.Service (Request, Response);
       else
          Chain.Filter_Pos := Chain.Filter_Pos - 1;
-         Chain.Filters (Chain.Filter_Pos).Do_Filter (Request, Response, Chain);
+         Chain.Filters (Chain.Filter_Pos + 1).Do_Filter (Request, Response, Chain);
       end if;
    end Do_Filter;
+
+   procedure Free is
+     new Ada.Unchecked_Deallocation (Filter_List, Filter_List_Access);
 
    procedure Finalize (Map : in out Mapping_Node) is
 
@@ -501,6 +529,7 @@ package body ASF.Servlets is
          end;
       end loop;
       Free (Map.URI);
+      Free (Map.Filters);
    end Finalize;
 
    procedure Traverse (Map : in out Mapping_Node) is
@@ -545,6 +574,51 @@ package body ASF.Servlets is
          Map.Next_Map.Dump_Map (Indent);
       end if;
    end Dump_Map;
+
+   --  ------------------------------
+   --  Append the filter to the filter list defined by the mapping node.
+   --  ------------------------------
+   procedure Append_Filter (Mapping : in out Mapping_Node;
+                            Filter  : in Filter_Access) is
+      List : Filter_List_Access;
+   begin
+      --  Filters are executed through the <b>Filter_Chain.Do_Filter</b> method
+      --  starting from the last position to the first.  To append a filter,
+      --  it must be inserted as first position of the list.
+      if Mapping.Filters = null then
+         List := new Filter_List (1 .. 1);
+      else
+         List := new Filter_List (1 .. Mapping.Filters'Last + 1);
+         List (2 .. List'Last) := Mapping.Filters.all;
+         Free (Mapping.Filters);
+      end if;
+      List (List'First) := Filter;
+      Mapping.Filters := List;
+   end Append_Filter;
+
+   --  ------------------------------
+   --  Add a filter mapping with the given pattern
+   --  If the URL pattern is already mapped to a different servlet,
+   --  no updates will be performed.
+   --  ------------------------------
+   procedure Add_Filter_Mapping (Registry : in out Servlet_Registry;
+                                 Pattern  : in String;
+                                 Name     : in String) is
+      Key : constant Unbounded_String    := To_Unbounded_String (Name);
+      Pos : constant Filter_Maps.Cursor := Registry.Filters.Find (Key);
+   begin
+      if not Filter_Maps.Has_Element (Pos) then
+         Log.Error ("No servlet filter {0}", Name);
+         raise Servlet_Error with "No servlet filter " & Name;
+      end if;
+      declare
+         Mapping : constant Mapping_Access := Registry.Find_Mapping (URI => Pattern);
+      begin
+         if Mapping /= null then
+            Mapping.Append_Filter (Filter_Maps.Element (Pos));
+         end if;
+      end;
+   end Add_Filter_Mapping;
 
    --  ------------------------------
    --  Add a servlet mapping with the given pattern

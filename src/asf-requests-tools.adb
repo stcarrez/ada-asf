@@ -67,7 +67,6 @@ package body ASF.Requests.Tools is
       end Put;
 
    begin
-
       Append_Html ("<div class='asf-dbg-req'><div class='asf-dbg-uri'>"
                    & "<table class='asf-dbg-uri'><tr><th colspan='2'>Request</th></tr>");
       Append (Info, ASCII.LF);

@@ -71,6 +71,9 @@ package ASF.Servlets is
    --  Get the servlet name.
    function Get_Name (Server : in Servlet) return String;
 
+   --  Get the servlet context associated with this servlet.
+   function Get_Servlet_Context (Server : in Servlet) return Servlet_Registry_Access;
+
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
    procedure Initialize (Server  : in out Servlet;
@@ -438,6 +441,7 @@ private
 
    type Request_Dispatcher is limited record
       Mapping : Mapping_Access := null;
+      Path    : Unbounded_String;
    end record;
 
    type Servlet is new Ada.Finalization.Limited_Controlled with record

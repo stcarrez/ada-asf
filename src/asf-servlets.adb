@@ -64,6 +64,14 @@ package body ASF.Servlets is
    end Get_Name;
 
    --  ------------------------------
+   --  Get the servlet context associated with this servlet.
+   --  ------------------------------
+   function Get_Servlet_Context (Server : in Servlet) return Servlet_Registry_Access is
+   begin
+      return Server.Context;
+   end Get_Servlet_Context;
+
+   --  ------------------------------
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
    --  ------------------------------
@@ -337,6 +345,8 @@ package body ASF.Servlets is
                       Request    : in out Requests.Request'Class;
                       Response   : in out Responses.Response'Class) is
    begin
+      Request.Set_Path_Info (To_String (Dispatcher.Path));
+
       if Dispatcher.Mapping = null or else Dispatcher.Mapping.Servlet = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
 
@@ -394,6 +404,7 @@ package body ASF.Servlets is
    begin
       return R : Request_Dispatcher do
          R.Mapping := Context.Find_Mapping (URI => Path);
+         R.Path    := To_Unbounded_String (Path);
       end return;
    end Get_Request_Dispatcher;
 

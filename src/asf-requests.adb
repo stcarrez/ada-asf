@@ -444,4 +444,13 @@ package body ASF.Requests is
       return N;
    end Get_Session;
 
+   --  ------------------------------
+   --  Set the path info
+   --  ------------------------------
+   procedure Set_Path_Info (Req  : in out Request;
+                            Path : in String) is
+   begin
+      Req.Path_Info := To_Unbounded_String (Path);
+   end Set_Path_Info;
+
 end ASF.Requests;

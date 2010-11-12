@@ -27,7 +27,7 @@ with ASF.Applications.Views;
 with ASF.Beans;
 with ASF.Modules;
 with ASF.Requests;
-with ASF.Contexts.Writer;
+with ASF.Responses;
 with ASF.Servlets;
 package ASF.Applications.Main is
 
@@ -95,10 +95,10 @@ package ASF.Applications.Main is
    procedure Close (App : in out Application);
 
    --  Dispatch the request received on a page.
-   procedure Dispatch (App     : in out Application;
-                       Page    : in String;
-                       Writer  : in ASF.Contexts.Writer.ResponseWriter_Access;
-                       Request : in ASF.Requests.Request_Access);
+   procedure Dispatch (App      : in out Application;
+                       Page     : in String;
+                       Request  : in out ASF.Requests.Request'Class;
+                       Response : in out ASF.Responses.Response'Class);
 
 private
 

@@ -18,7 +18,9 @@
 
 with Util.Log.Loggers;
 
+with ASF.Streams;
 with ASF.Contexts.Faces;
+with ASF.Contexts.Writer;
 with ASF.Components;
 with ASF.Components.Core;
 
@@ -229,10 +231,10 @@ package body ASF.Applications.Main is
    --  ------------------------------
    --  Dispatch the request received on a page.
    --  ------------------------------
-   procedure Dispatch (App     : in out Application;
-                       Page    : String;
-                       Writer  : in ASF.Contexts.Writer.ResponseWriter_Access;
-                       Request : in ASF.Requests.Request_Access) is
+   procedure Dispatch (App      : in out Application;
+                       Page     : in String;
+                       Request  : in out ASF.Requests.Request'Class;
+                       Response : in out ASF.Responses.Response'Class) is
 
       use EL.Contexts.Default;
       use EL.Variables;
@@ -243,6 +245,7 @@ package body ASF.Applications.Main is
       use ASF.Applications.Views;
       use Ada.Exceptions;
 
+      Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
       View           : Components.Core.UIViewRoot;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
@@ -253,6 +256,8 @@ package body ASF.Applications.Main is
       Beans          : aliased Bean_Vectors.Vector;
       --  Get the view handler
       Handler   : constant access View_Handler'Class := App.Get_View_Handler;
+
+      Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
    begin
       Log.Info ("Dispatch {0}", Page);
 
@@ -263,10 +268,11 @@ package body ASF.Applications.Main is
       ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
 
       Context.Set_ELContext (ELContext'Unchecked_Access);
-      Context.Set_Response_Writer (Writer);
---        Writer.Initialize ("text/html", "UTF-8", 8192);
+      Context.Set_Response_Writer (Writer'Unchecked_Access);
+      Writer.Initialize ("text/html", "UTF-8", Output);
 
-      Context.Set_Request (Request);
+      Context.Set_Request (Request'Unchecked_Access);
+      Context.Set_Response (Response'Unchecked_Access);
       Handler.Set_Context (Context'Unchecked_Access);
       begin
          Handler.Restore_View (Page, Context, View);
@@ -303,8 +309,6 @@ package body ASF.Applications.Main is
             Bean_Vectors.Next (C);
          end loop;
       end;
---        return AWS.Response.Build (Content_Type    => Writer.Get_Content_Type,
---                                   UString_Message => Writer.Get_Response);
    end Dispatch;
 
 end ASF.Applications.Main;

@@ -318,6 +318,10 @@ package ASF.Requests is
    --  committed, an IllegalStateException is thrown.
    function Get_Session (Req : in Request) return ASF.Sessions.Session;
 
+   --  Set the path info
+   procedure Set_Path_Info (Req  : in out Request;
+                            Path : in String);
+
 private
 
    type Request is abstract tagged limited record

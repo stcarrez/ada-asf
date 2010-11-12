@@ -43,6 +43,10 @@ package ASF.Components.Html is
    --  on HTML elements (accesskey, tabindex, onXXX).
    procedure Set_Interactive_Attributes (Names : in out Util.Strings.String_Set.Set);
 
+   --  Add in the <b>names</b> set, the size attributes that can be set
+   --  on HTML elements.
+   procedure Set_Input_Attributes (Names : in out Util.Strings.String_Set.Set);
+
 private
 
    type UIHtmlComponent is new ASF.Components.Core.UIComponentBase with record

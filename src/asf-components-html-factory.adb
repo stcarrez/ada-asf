@@ -20,6 +20,7 @@ with ASF.Components.Html.Text;
 with ASF.Components.Html.Lists;
 with ASF.Components.Html.Links;
 with ASF.Components.Html.Panels;
+with ASF.Components.Html.Forms;
 with ASF.Views.Nodes;
 package body ASF.Components.Html.Factory is
 
@@ -29,6 +30,9 @@ package body ASF.Components.Html.Factory is
    function Create_Label return UIComponent_Access;
    function Create_List return UIComponent_Access;
    function Create_PanelGroup return UIComponent_Access;
+   function Create_Form return UIComponent_Access;
+   function Create_Input return UIComponent_Access;
+   function Create_Command return UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIOutput component
@@ -78,33 +82,69 @@ package body ASF.Components.Html.Factory is
       return new ASF.Components.Html.Panels.UIPanelGroup;
    end Create_PanelGroup;
 
+   --  ------------------------------
+   --  Create an UIForm component
+   --  ------------------------------
+   function Create_Form return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Forms.UIForm;
+   end Create_Form;
+
+   --  ------------------------------
+   --  Create an UIInput component
+   --  ------------------------------
+   function Create_Input return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Forms.UIInput;
+   end Create_Input;
+
+   --  ------------------------------
+   --  Create an UICommand component
+   --  ------------------------------
+   function Create_Command return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Forms.UICommand;
+   end Create_Command;
+
    use ASF.Views.Nodes;
 
-   URI               : aliased constant String := "http://java.sun.com/jsf/html";
-   OUTPUT_TEXT_TAG   : aliased constant String := "outputText";
-   OUTPUT_LINK_TAG   : aliased constant String := "outputLink";
-   OUTPUT_FORMAT_TAG : aliased constant String := "outputFormat";
-   LABEL_TAG         : aliased constant String := "label";
-   LIST_TAG          : aliased constant String := "list";
-   PANEL_GROUP_TAG   : aliased constant String := "panelGroup";
+   URI                : aliased constant String := "http://java.sun.com/jsf/html";
+   COMMAND_BUTTON_TAG : aliased constant String := "commandButton";
+   FORM_TAG           : aliased constant String := "form";
+   INPUT_TAG          : aliased constant String := "input";
+   LABEL_TAG          : aliased constant String := "label";
+   LIST_TAG           : aliased constant String := "list";
+   OUTPUT_FORMAT_TAG  : aliased constant String := "outputFormat";
+   OUTPUT_LINK_TAG    : aliased constant String := "outputLink";
+   OUTPUT_TEXT_TAG    : aliased constant String := "outputText";
+   PANEL_GROUP_TAG    : aliased constant String := "panelGroup";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (5 => (Name      => OUTPUT_TEXT_TAG'Access,
-               Component => Create_Output'Access,
+     := (1 => (Name      => COMMAND_BUTTON_TAG'Access,
+               Component => Create_Command'Access,
                Tag       => Create_Component_Node'Access),
-         1 => (Name      => LABEL_TAG'Access,
+         2 => (Name      => FORM_TAG'Access,
+               Component => Create_Form'Access,
+               Tag       => Create_Component_Node'Access),
+         3 => (Name      => INPUT_TAG'Access,
+               Component => Create_Input'Access,
+               Tag       => Create_Component_Node'Access),
+         4 => (Name      => LABEL_TAG'Access,
                Component => Create_Label'Access,
                Tag       => Create_Component_Node'Access),
-         2 => (Name      => LIST_TAG'Access,
+         5 => (Name      => LIST_TAG'Access,
                Component => Create_List'Access,
                Tag       => Create_Component_Node'Access),
-         3 => (Name      => OUTPUT_FORMAT_TAG'Access,
+         6 => (Name      => OUTPUT_FORMAT_TAG'Access,
                Component => Create_Output_Format'Access,
                Tag       => Create_Component_Node'Access),
-         4 => (Name      => OUTPUT_LINK_TAG'Access,
+         7 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => PANEL_GROUP_TAG'Access,
+         8 => (Name      => OUTPUT_TEXT_TAG'Access,
+               Component => Create_Output'Access,
+               Tag       => Create_Component_Node'Access),
+         9 => (Name      => PANEL_GROUP_TAG'Access,
                Component => Create_PanelGroup'Access,
                Tag       => Create_Component_Node'Access)
         );

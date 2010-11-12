@@ -41,6 +41,8 @@ package body ASF.Components.Html is
 
    TABINDEX_ATTR      : aliased constant String := "tabindex";
 
+   SIZE_ATTR          : aliased constant String := "size";
+
    procedure Render_Attributes (UI      : in UIHtmlComponent;
                                 Context : in out Faces_Context'Class;
                                 Writer  : in ResponseWriter_Access) is
@@ -128,5 +130,14 @@ package body ASF.Components.Html is
       Names.Insert (ON_DBLCLICK_ATTR'Access);
       Names.Insert (ON_CLICK_ATTR'Access);
    end Set_Interactive_Attributes;
+
+   --  ------------------------------
+   --  Add in the <b>names</b> set, the size attributes that can be set
+   --  on HTML elements.
+   --  ------------------------------
+   procedure Set_Input_Attributes (Names : in out Util.Strings.String_Set.Set) is
+   begin
+      Names.Insert (SIZE_ATTR'Access);
+   end Set_Input_Attributes;
 
 end ASF.Components.Html;

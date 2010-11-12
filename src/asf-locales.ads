@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Strings;
+with Util.Strings.Maps;
 with Util.Properties.Bundles;
 with ASF.Beans;
 
@@ -46,7 +46,7 @@ private
 
    type Factory is limited record
       Factory : aliased Util.Properties.Bundles.Loader;
-      Bundles : Util.Strings.String_Map.Map;
+      Bundles : Util.Strings.Maps.Map;
    end record;
 
    type Factory_Access is access all Factory;

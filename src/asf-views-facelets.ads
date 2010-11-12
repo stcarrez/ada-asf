@@ -18,13 +18,13 @@
 
 with Ada.Calendar;
 with Ada.Strings.Unbounded;
-with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada.Containers.Hashed_Maps;
 with Ada.Strings.Unbounded.Hash;
 with ASF.Views.Nodes;
 with ASF.Contexts.Facelets;
 with ASF.Factory;
 with ASF.Components;
-with Util.Strings;
+with Util.Strings.Maps;
 with Ada.Finalization;
 
 --  The <b>ASF.Views.Facelets</b> package contains the facelet factory
@@ -103,10 +103,10 @@ private
 
    --  Tag library map indexed on the library namespace.
    package Facelet_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => Unbounded_String,
-                                            Element_Type    => Facelet,
-                                            Hash            => Ada.Strings.Unbounded.Hash,
-                                            Equivalent_Keys => "=");
+     Ada.Containers.Hashed_Maps (Key_Type        => Unbounded_String,
+                                 Element_Type    => Facelet,
+                                 Hash            => Ada.Strings.Unbounded.Hash,
+                                 Equivalent_Keys => "=");
 
    use Facelet_Maps;
 
@@ -129,7 +129,7 @@ private
       Lock    : RW_Lock;
       Map     : Facelet_Maps.Map;
 
-      Path_Map : Util.Strings.String_Map.Map;
+      Path_Map : Util.Strings.Maps.Map;
 
       --  The component factory
       Factory  : aliased ASF.Factory.Component_Factory;

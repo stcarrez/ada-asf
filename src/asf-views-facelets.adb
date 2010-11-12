@@ -133,14 +133,14 @@ package body ASF.Views.Facelets is
          --  Get the module
          declare
             Module   : constant String := Name (Name'First + 1 .. Pos - 1);
-            Path_Pos : constant String_Map.Cursor
-              := Factory.Path_Map.Find (Module'Unrestricted_Access);
+            Path_Pos : constant Maps.Cursor
+              := Factory.Path_Map.Find (Module);
          begin
-            if String_Map.Has_Element (Path_Pos) then
+            if Maps.Has_Element (Path_Pos) then
                Log.Info ("Looking module {0} in {1}", Module,
-                        String_Map.Element (Path_Pos).all);
+                         Maps.Element (Path_Pos));
                return Util.Files.Find_File_Path (Name (Pos + 1 .. Name'Last),
-                                                 String_Map.Element (Path_Pos).all);
+                                                 Maps.Element (Path_Pos));
             end if;
          end;
       end if;
@@ -153,12 +153,10 @@ package body ASF.Views.Facelets is
    procedure Register_Module (Factory : in out Facelet_Factory;
                               Name    : in String;
                               Paths   : in String) is
-      N : constant Util.Strings.Name_Access := new String '(Name);
-      P : constant Util.Strings.Name_Access := new String '(Paths);
    begin
       Log.Info ("Search path for '{0}' is '{1}'", Name, Paths);
 
-      Factory.Path_Map.Include (N, P);
+      Factory.Path_Map.Include (Name, Paths);
    end Register_Module;
 
    --  ------------------------------

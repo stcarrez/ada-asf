@@ -28,10 +28,6 @@ package body ASF.Contexts.Writer is
    --  Close the current XML entity if an entity was started
    procedure Close_Current (Stream : in out ResponseWriter'Class);
 
-   procedure Free_Buffer is
-     new Ada.Unchecked_Deallocation (Object => Stream_Element_Array,
-                                     Name   => Buffer_Access);
-
    --  ------------------------------
    --  Response Writer
    --  ------------------------------
@@ -43,14 +39,11 @@ package body ASF.Contexts.Writer is
    procedure Initialize (Stream       : in out ResponseWriter;
                          Content_Type : in String;
                          Encoding     : in String;
-                         Size         : in Positive) is
+                         Output       : in ASF.Streams.Print_Stream) is
    begin
-      Free_Buffer (Stream.Buffer);
+      Stream.Initialize (Output);
       Stream.Content_Type := To_Unbounded_String (Content_Type);
       Stream.Encoding     := Unicode.Encodings.Get_By_Name (Encoding);
-      Stream.Last         := Stream_Element_Offset (Size);
-      Stream.Buffer := new Stream_Element_Array (1 .. Stream.Last);
-      Stream.Pos    := 1;
    end Initialize;
 
    --  ------------------------------
@@ -58,23 +51,8 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    procedure Finalize (Object : in out ResponseWriter) is
    begin
-      if Object.Buffer /= null then
-         Object.Flush;
-         Free_Buffer (Object.Buffer);
-      end if;
+      Object.Flush;
    end Finalize;
-
-   --  ------------------------------
-   --  Flush the response stream.
-   --  ------------------------------
-   procedure Flush (Stream : in out ResponseWriter) is
-   begin
-      if Stream.Pos <= 1 then
-         return;
-      end if;
-      ResponseWriter'Class (Stream).Write (Stream.Buffer (1 .. Stream.Pos - 1));
-      Stream.Pos := 1;
-   end Flush;
 
    --  ------------------------------
    --  Get the content type.
@@ -371,69 +349,5 @@ package body ASF.Contexts.Writer is
          end;
       end if;
    end Write_Wide_Char;
-
-   --  ------------------------------
-   --  Write a raw character on the response stream.  The character is not
-   --  escaped.
-   --  ------------------------------
-   procedure Write (Stream : in out ResponseWriter;
-                    Char   : in Character) is
-   begin
-      if Stream.Pos > Stream.Last then
-         ResponseWriter'Class (Stream).Write (Stream.Buffer.all);
-         Stream.Pos := 1;
-      end if;
-      Stream.Buffer (Stream.Pos) := Stream_Element (Character'Pos (Char));
-      Stream.Pos := Stream.Pos + 1;
-   end Write;
-
-   --  ------------------------------
-   --  Write a raw string on the response stream.  The string is not
-   --  escaped.
-   --  ------------------------------
-   procedure Write (Stream : in out ResponseWriter;
-                    Item   : in Unbounded_String) is
-      Count : constant Natural := Length (Item);
-   begin
-      if Count > 0 then
-         for I in 1 .. Count loop
-            Stream.Write (Char => Element (Item, I));
-         end loop;
-      end if;
-   end Write;
-
-   --  ------------------------------
-   --  Write a raw string on the response stream.  The string is not
-   --  escaped
-   --  ------------------------------
-   procedure Write (Stream : in out ResponseWriter;
-                    Item   : in String) is
-      Start : Positive := Item'First;
-      Pos   : Stream_Element_Offset := Stream.Pos;
-      Avail : Natural;
-      Size  : Natural;
-      Char  : Character;
-   begin
-      while Start <= Item'Last loop
-         Size := Item'Last - Start + 1;
-         Avail := Natural (Stream.Last - Pos + 1);
-         if Avail = 0 then
-            ResponseWriter'Class (Stream).Write (Stream.Buffer.all);
-            Pos := 1;
-            Avail := Natural (Stream.Last);
-         end if;
-         if Avail < Size then
-            Size := Avail;
-         end if;
-         while Size > 0 loop
-            Char := Item (Start);
-            Stream.Buffer (Pos) := Stream_Element (Character'Pos (Char));
-            Pos := Pos + 1;
-            Start := Start + 1;
-            Size := Size - 1;
-         end loop;
-      end loop;
-      Stream.Pos := Pos;
-   end Write;
 
 end ASF.Contexts.Writer;

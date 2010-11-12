@@ -29,6 +29,7 @@ with Ada.Streams;
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with EL.Objects;
+with ASF.Streams;
 package ASF.Contexts.Writer is
 
    use Ada.Strings.Unbounded;
@@ -43,8 +44,7 @@ package ASF.Contexts.Writer is
    --  ------------------------------
    --  Response Writer
    --  ------------------------------
-   type ResponseWriter is abstract new Ada.Finalization.Limited_Controlled
-                                   and IOWriter with private;
+   type ResponseWriter is new ASF.Streams.Print_Stream with private;
    type ResponseWriter_Access is access all ResponseWriter'Class;
 
    --  Initialize the response stream for the given content type and
@@ -52,7 +52,7 @@ package ASF.Contexts.Writer is
    procedure Initialize (Stream       : in out ResponseWriter;
                          Content_Type : in String;
                          Encoding     : in String;
-                         Size         : in Positive);
+                         Output       : in ASF.Streams.Print_Stream);
 
    --  Get the content type.
    function Get_Content_Type (Stream : in ResponseWriter) return String;
@@ -124,44 +124,17 @@ package ASF.Contexts.Writer is
    procedure Write_Wide_Char (Stream : in out ResponseWriter;
                               Char   : in Wide_Wide_Character);
 
-   --  Write a raw character on the response stream.  The character is not
-   --  escaped.
-   procedure Write (Stream : in out ResponseWriter;
-                    Char   : in Character);
-
-   --  Write a raw string on the response stream.  The string is not
-   --  escaped.
-   procedure Write (Stream : in out ResponseWriter;
-                    Item   : in String);
-
-   --  Write a raw string on the response stream.  The string is not
-   --  escaped.
-   procedure Write (Stream : in out ResponseWriter;
-                    Item   : in Unbounded_String);
-
-   --  Flush the response stream.
-   procedure Flush (Stream : in out ResponseWriter);
-
 private
 
    use Ada.Streams;
 
    --  Flush the response stream and release the buffer.
+   overriding
    procedure Finalize (Object : in out ResponseWriter);
 
    type Buffer_Access is access Ada.Streams.Stream_Element_Array;
 
-   type ResponseWriter is abstract new Ada.Finalization.Limited_Controlled
-     and IOWriter with record
-      --  The buffer where the response is written before being flushed.
-      Buffer      : Buffer_Access := null;
-
-      --  The next write position within the buffer.
-      Pos         : Stream_Element_Offset := 0;
-
-      --  The last valid write position within the buffer.
-      Last        : Stream_Element_Offset := 0;
-
+   type ResponseWriter is new ASF.Streams.Print_Stream with record
       --  Whether an XML element must be closed (that is a '>' is necessary)
       Close_Start : Boolean := False;
 

@@ -74,7 +74,7 @@ package body ASF.Applications.Views.Tests is
             Context.Set_ELContext (ELContext'Unchecked_Access);
             ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
             ELContext.Set_Resolver (Resolver'Unchecked_Access);
-            Writer.Initialize ("text/xml", "UTF-8", 8192);
+            Writer.Initialize ("text/xml", "UTF-8", 16384);
 
             Set_Current (Context'Unchecked_Access);
             H.Restore_View (View_Name, Context, View);

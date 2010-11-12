@@ -18,19 +18,28 @@
 
 with AUnit.Test_Suites; use AUnit.Test_Suites;
 with AUnit.Test_Fixtures;
-
+with Util.Streams.Texts;
 package ASF.Contexts.Writer.Tests is
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
    type Test_Writer is new ResponseWriter with record
       Response : Unbounded_String;
+      Content  : aliased Util.Streams.Texts.Print_Stream;
    end record;
    type Test_Writer_Access is access all Test_Writer'Class;
 
    overriding
    procedure Write (Stream : in out Test_Writer;
                     Buffer : in Ada.Streams.Stream_Element_Array);
+
+   overriding
+   procedure Flush (Stream : in out Test_Writer);
+
+   procedure Initialize (Stream       : in out Test_Writer;
+                         Content_Type : in String;
+                         Encoding     : in String;
+                         Size         : in Natural);
 
    type Test is new AUnit.Test_Fixtures.Test_Fixture with record
       Writer : Test_Writer_Access;

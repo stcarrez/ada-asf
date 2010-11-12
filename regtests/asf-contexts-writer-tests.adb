@@ -31,6 +31,17 @@ package body ASF.Contexts.Writer.Tests is
      new Ada.Unchecked_Deallocation (Object => Test_Writer'Class,
                                      Name   => Test_Writer_Access);
 
+   procedure Initialize (Stream       : in out Test_Writer;
+                         Content_Type : in String;
+                         Encoding     : in String;
+                         Size         : in Natural) is
+      Output : ASF.Streams.Print_Stream;
+   begin
+      Stream.Content.Initialize (Size => Size);
+      Output.Initialize (Stream.Content'Unchecked_Access);
+      Stream.Initialize (Content_Type, Encoding, Output);
+   end Initialize;
+
    overriding
    procedure Write (Stream : in out Test_Writer;
                     Buffer : in Ada.Streams.Stream_Element_Array) is
@@ -40,13 +51,20 @@ package body ASF.Contexts.Writer.Tests is
       end loop;
    end Write;
 
+   overriding
+   procedure Flush (Stream : in out Test_Writer) is
+   begin
+      ResponseWriter (Stream).Flush;
+      Stream.Content.Read (Into => Stream.Response);
+   end Flush;
+
    --  Set up performed before each test case
    overriding
    procedure Set_Up (T : in out Test) is
    begin
       T.Writer := new Test_Writer;
       --  use a small buffer to test the flush
-      T.Writer.Initialize ("text/xml", "UTF-8", 23);
+      T.Writer.Initialize ("text/xml", "UTF-8", 1024);
    end Set_Up;
 
 

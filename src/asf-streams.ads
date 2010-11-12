@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Streams;
 with Ada.Strings.Unbounded;
+with Ada.Finalization;
 
 with Util.Streams;
 with Util.Streams.Texts;
@@ -32,6 +33,10 @@ package ASF.Streams is
 
    procedure Initialize (Stream : in out Print_Stream;
                          To     : in Util.Streams.Texts.Print_Stream_Access);
+
+   --  Initialize the stream
+   procedure Initialize (Stream : in out Print_Stream;
+                         To     : in Print_Stream'Class);
 
    --  Write an integer on the stream.
    procedure Write (Stream : in out Print_Stream;
@@ -63,7 +68,8 @@ package ASF.Streams is
 
 private
 
-   type Print_Stream is limited new Util.Streams.Output_Stream with record
+   type Print_Stream is new Ada.Finalization.Limited_Controlled
+     and Util.Streams.Output_Stream with record
       Target : Util.Streams.Texts.Print_Stream_Access;
    end record;
 

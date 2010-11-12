@@ -25,6 +25,15 @@ package body ASF.Streams is
    end Initialize;
 
    --  ------------------------------
+   --  Initialize the stream
+   --  ------------------------------
+   procedure Initialize (Stream : in out Print_Stream;
+                         To     : in Print_Stream'Class) is
+   begin
+      Stream.Target := To.Target;
+   end Initialize;
+
+   --  ------------------------------
    --  Write an integer on the stream.
    --  ------------------------------
    procedure Write (Stream : in out Print_Stream;

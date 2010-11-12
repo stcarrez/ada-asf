@@ -124,6 +124,10 @@ package ASF.Contexts.Writer is
    procedure Write_Wide_Char (Stream : in out ResponseWriter;
                               Char   : in Wide_Wide_Character);
 
+   --  Write a string on the stream.
+   procedure Write (Stream : in out ResponseWriter;
+                    Item   : in Ada.Strings.Unbounded.Unbounded_String);
+
 private
 
    use Ada.Streams;

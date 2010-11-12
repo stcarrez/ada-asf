@@ -350,4 +350,14 @@ package body ASF.Contexts.Writer is
       end if;
    end Write_Wide_Char;
 
+   --  ------------------------------
+   --  Write a string on the stream.
+   --  ------------------------------
+   procedure Write (Stream : in out ResponseWriter;
+                    Item   : in Ada.Strings.Unbounded.Unbounded_String) is
+   begin
+      Close_Current (Stream);
+      ASF.Streams.Print_Stream (Stream).Write (Item);
+   end Write;
+
 end ASF.Contexts.Writer;

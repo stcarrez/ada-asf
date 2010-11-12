@@ -173,7 +173,7 @@ package body ASF.Servlets is
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
    begin
-      Response.Send_Error (Responses.SC_NOT_FOUND);
+      Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Get;
 
    --  ------------------------------
@@ -233,7 +233,7 @@ package body ASF.Servlets is
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class) is
    begin
-      Response.Send_Error (Responses.SC_BAD_REQUEST);
+      Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Post;
 
    --  ------------------------------
@@ -260,7 +260,7 @@ package body ASF.Servlets is
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
    begin
-      Response.Send_Error (Responses.SC_BAD_REQUEST);
+      Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Put;
 
    --  ------------------------------
@@ -280,7 +280,7 @@ package body ASF.Servlets is
                         Request  : in out Requests.Request'Class;
                         Response : in out Responses.Response'Class) is
    begin
-      Response.Send_Error (Responses.SC_BAD_REQUEST);
+      Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Delete;
 
    --  ------------------------------
@@ -298,7 +298,7 @@ package body ASF.Servlets is
                          Request  : in out Requests.Request'Class;
                          Response : in out Responses.Response'Class) is
    begin
-      Response.Send_Error (Responses.SC_BAD_REQUEST);
+      Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Options;
 
    --  ------------------------------
@@ -311,7 +311,7 @@ package body ASF.Servlets is
                        Request  : in out Requests.Request'Class;
                        Response : in out Responses.Response'Class) is
    begin
-      Response.Send_Error (Responses.SC_BAD_REQUEST);
+      Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Trace;
 
    --  ------------------------------

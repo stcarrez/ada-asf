@@ -109,6 +109,23 @@ package body ASF.Contexts.Faces is
    end Set_Request;
 
    --  ------------------------------
+   --  Get the response
+   --  ------------------------------
+   function Get_Response (Context : Faces_Context) return ASF.Responses.Response_Access is
+   begin
+      return Context.Response;
+   end Get_Response;
+
+   --  ------------------------------
+   --  Set the response
+   --  ------------------------------
+   procedure Set_Response (Context  : in out Faces_Context;
+                           Response : in ASF.Responses.Response_Access) is
+   begin
+      Context.Response := Response;
+   end Set_Response;
+
+   --  ------------------------------
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    --  ------------------------------

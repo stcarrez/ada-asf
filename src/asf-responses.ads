@@ -70,6 +70,7 @@ package ASF.Responses is
    SC_HTTP_VERSION_NOT_SUPPORTED : constant Natural := 505;
 
    type Response is abstract tagged limited private;
+   type Response_Access is access all Response'Class;
 
    --  Returns the name of the character encoding (MIME charset) used for the body
    --  sent in this response. The character encoding may have been specified explicitly

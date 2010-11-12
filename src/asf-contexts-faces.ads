@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with ASF.Requests;
+with ASF.Responses;
 with ASF.Contexts.Writer;
 with EL.Objects;
 with EL.Contexts;
@@ -74,6 +75,13 @@ package ASF.Contexts.Faces is
    procedure Set_Request (Context : in out Faces_Context;
                           Request : in ASF.Requests.Request_Access);
 
+   --  Get the response
+   function Get_Response (Context : Faces_Context) return ASF.Responses.Response_Access;
+
+   --  Set the response
+   procedure Set_Response (Context  : in out Faces_Context;
+                           Response : in ASF.Responses.Response_Access);
+
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    function Current return Faces_Context_Access;
@@ -85,13 +93,16 @@ private
 
    type Faces_Context is tagged record
       --  The response writer.
-      Writer : ASF.Contexts.Writer.ResponseWriter_Access;
+      Writer   : ASF.Contexts.Writer.ResponseWriter_Access;
 
       --  The expression context;
-      Context : EL.Contexts.ELContext_Access;
+      Context  : EL.Contexts.ELContext_Access;
 
       --  The request
-      Request : ASF.Requests.Request_Access;
+      Request  : ASF.Requests.Request_Access;
+
+      --  The response
+      Response : ASF.Responses.Response_Access;
    end record;
 
 end ASF.Contexts.Faces;

@@ -45,6 +45,8 @@ package ASF.Servlets.Tests is
    --  Test add servlet
    procedure Test_Add_Servlet (T : in out Test);
 
+   procedure Test_Request_Dispatcher (T : in out Test);
+
    --  Check that the mapping for the given URI matches the server.
    procedure Check_Mapping (T      : in out Test;
                             Ctx    : in Servlet_Registry;

@@ -23,6 +23,10 @@ with Ada.Calendar;
 with Util.Tests;
 with Util.Measures;
 with EL.Objects;
+
+with ASF.Streams;
+with ASF.Requests.Mockup;
+with ASF.Responses.Mockup;
 package body ASF.Servlets.Tests is
 
    use Util.Tests;
@@ -30,8 +34,10 @@ package body ASF.Servlets.Tests is
    procedure Do_Get (Server   : in Test_Servlet1;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
+      Output : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
    begin
-      null;
+      Output.Write ("URI: " & Request.Get_Request_URI);
+      Response.Set_Status (Responses.SC_OK);
    end Do_Get;
 
    procedure Do_Post (Server   : in Test_Servlet2;
@@ -43,6 +49,45 @@ package body ASF.Servlets.Tests is
 
    S1 : aliased Test_Servlet1;
    S2 : aliased Test_Servlet2;
+
+   --  ------------------------------
+   --  Test request dispatcher and servlet invocation
+   --  ------------------------------
+   procedure Test_Request_Dispatcher (T : in out Test) is
+      Ctx : Servlet_Registry;
+
+      S1  : aliased Test_Servlet1;
+      S2  : aliased Test_Servlet2;
+   begin
+      Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
+
+      Ctx.Add_Mapping (Pattern => "*.jsf", Name => "Faces");
+
+      declare
+         Dispatcher : Request_Dispatcher := Ctx.Get_Request_Dispatcher (Path => "/home/test.jsf");
+         Req        : ASF.Requests.Mockup.Request;
+         Resp       : ASF.Responses.Mockup.Response;
+         Result     : Unbounded_String;
+      begin
+         Assert (T, Dispatcher.Mapping /= null, "No mapping found");
+
+         Req.Set_Request_URI ("test1");
+         Req.Set_Method ("GET");
+         Forward (Dispatcher, Req, Resp);
+
+         --  Check the response after the Test_Servlet1.Do_Get method execution.
+         Resp.Read_Content (Result);
+         Assert_Equals (T, ASF.Responses.SC_OK, Resp.Get_Status, "Invalid status");
+         Assert_Equals (T, "URI: test1", Result, "Invalid content");
+
+         Req.Set_Method ("POST");
+         Forward (Dispatcher, Req, Resp);
+
+         Assert_Equals (T, ASF.Responses.SC_METHOD_NOT_ALLOWED, Resp.Get_Status,
+                        "Invalid status for an operation not implemented");
+
+      end;
+   end Test_Request_Dispatcher;
 
    --  ------------------------------
    --  Test add servlet
@@ -157,6 +202,8 @@ package body ASF.Servlets.Tests is
                                       Test_Create_Servlet'Access));
       Suite.Add_Test (Caller.Create ("Test ASF.Servlets.Add_Servlet",
                                       Test_Add_Servlet'Access));
+      Suite.Add_Test (Caller.Create ("Test ASF.Servlets.Get_Request_Dispatcher",
+                                      Test_Request_Dispatcher'Access));
    end Add_Tests;
 
 end ASF.Servlets.Tests;

@@ -25,6 +25,7 @@ with ASF.Applications.Main;
 with Volume_Servlet;
 with EL.Objects;
 with EL.Beans;
+with Ada.Numerics;
 procedure Asf_Volume_Server is
 
    type Compute_Bean is new EL.Beans.Bean with record
@@ -44,6 +45,7 @@ procedure Asf_Volume_Server is
    --  Get the value identified by the name.
    function Get_Value (From : Compute_Bean;
                        Name : String) return EL.Objects.Object is
+      use Ada.Numerics;
    begin
       if Name = "radius" and From.Radius >= 0.0 then
          return EL.Objects.To_Object (From.Radius);
@@ -51,6 +53,8 @@ procedure Asf_Volume_Server is
       elsif Name = "height" and From.Height >= 0.0 then
          return EL.Objects.To_Object (From.Height);
 
+      elsif Name = "volume" and From.Radius >= 0.0 and From.Height >= 0.0 then
+         return EL.Objects.To_Object (Pi * From.Radius * From.Radius * From.Height);
       else
          return EL.Objects.Null_Object;
       end if;

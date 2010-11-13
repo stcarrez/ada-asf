@@ -77,7 +77,7 @@ package body ASF.Contexts.Facelets is
    --  ------------------------------
    procedure Set_Variable (Context : in out Facelet_Context;
                            Name    : in Unbounded_String;
-                           Value   : in EL.Expressions.ValueExpression) is
+                           Value   : in EL.Expressions.Value_Expression) is
       Mapper : constant access EL.Variables.VariableMapper'Class
         := Context.Context.Get_Variable_Mapper;
    begin

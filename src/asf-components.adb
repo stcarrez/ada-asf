@@ -74,6 +74,22 @@ package body ASF.Components is
       return UI.First_Child;
    end Get_First_Child;
 
+   --  ------------------------------
+   --  Initialize the component when restoring the view.
+   --  The default initialization gets the client ID and allocates it if necessary.
+   --  ------------------------------
+   procedure Initialize (UI      : in out UIComponent;
+                         Context : in out Faces_Context'Class) is
+      --  Then, look in the static attributes
+      Attr : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute ("id");
+   begin
+      if Attr = null then
+         UI.Id := To_Unbounded_String ("d");
+      else
+         UI.Id := EL.Objects.To_Unbounded_String (ASF.Views.Nodes.Get_Value (Attr.all, UI));
+      end if;
+   end Initialize;
+
    function Create_UIComponent (Parent  : UIComponent_Access;
                                 Context : ASF.Contexts.Facelets.Facelet_Context'Class;
                                 Tag     : access ASF.Views.Nodes.Tag_Node'Class)
@@ -301,6 +317,21 @@ package body ASF.Components is
       UI.Decode_Children (Context);
       UIComponent'Class (UI).Decode (Context);
    end Process_Decodes;
+
+   procedure Process_Updates (UI      : in out UIComponent;
+                              Context : in out Faces_Context'Class) is
+      Child : UIComponent_Access;
+   begin
+      --  Do not decode the component nor its children if the component is not rendered.
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+      Child := UI.First_Child;
+      while Child /= null loop
+         Child.Process_Updates (Context);
+         Child := Child.Next;
+      end loop;
+   end Process_Updates;
 
    --  ------------------------------
    --  Iterate over the children of the component and execute

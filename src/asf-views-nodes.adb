@@ -150,22 +150,21 @@ package body ASF.Views.Nodes is
          return EL.Objects.Null_Object;
    end Get_Value;
 
-   function Get_ValueExpression (Attribute : Tag_Attribute;
-                                 Context   : Facelet_Context'Class)
-                                 return EL.Expressions.ValueExpression is
-      V : constant EL.Objects.Object := EL.Objects.To_Object (Attribute.Value);
+   function Get_Value_Expression (Attribute : Tag_Attribute;
+                                  Context   : Facelet_Context'Class)
+                                  return EL.Expressions.Value_Expression is
    begin
       if Attribute.Binding /= null then
-         return EL.Expressions.Create_ValueExpression (V);
+         return EL.Expressions.Create_Expression (Attribute.Binding.all);
       else
-         return EL.Expressions.Create_ValueExpression (V);
+         return EL.Expressions.Create_ValueExpression (EL.Objects.To_Object (Attribute.Value));
       end if;
 
-   exception
-      when E : others =>
-         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
-         return EL.Expressions.Create_ValueExpression (V);
-   end Get_ValueExpression;
+--     exception
+--        when E : others =>
+--           Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+--           return EL.Expressions.Create_ValueExpression (V);
+   end Get_Value_Expression;
 
    --  ------------------------------
    --  Reduce the expression by eliminating known variables and computing
@@ -394,6 +393,7 @@ package body ASF.Views.Nodes is
    begin
       Append (Parent, UI, Node);
       Iterate_Attributes (Node.all);
+      UI.Initialize (UI.Get_Context.all);
       Node.Build_Children (UI, Context);
    end Build_Components;
 

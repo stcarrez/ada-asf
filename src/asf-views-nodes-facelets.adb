@@ -407,8 +407,8 @@ package body ASF.Views.Nodes.Facelets is
                                Context : in out Facelet_Context'Class) is
       pragma Unreferenced (Parent);
 
-      Value  : constant EL.Expressions.ValueExpression
-              := Get_ValueExpression (Node.Value.all, Context);
+      Value  : constant EL.Expressions.Value_Expression
+              := Get_Value_Expression (Node.Value.all, Context);
    begin
       Context.Set_Variable (Node.Var.Value, Value);
    end Build_Components;

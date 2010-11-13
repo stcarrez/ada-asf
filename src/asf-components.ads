@@ -63,6 +63,11 @@ package ASF.Components is
    --  Returns null if the component has no children.
    function Get_First_Child (UI : UIComponent) return UIComponent_Access;
 
+   --  Initialize the component when restoring the view.
+   --  The default initialization gets the client ID and allocates it if necessary.
+   procedure Initialize (UI      : in out UIComponent;
+                         Context : in out Faces_Context'Class);
+
    procedure Append (UI    : in UIComponent_Access;
                      Child : in UIComponent_Access;
                      Tag   : access ASF.Views.Nodes.Tag_Node'Class);
@@ -117,6 +122,9 @@ package ASF.Components is
                               Context : in out Faces_Context'Class);
 
    procedure Process_Decodes (UI      : in out UIComponent;
+                              Context : in out Faces_Context'Class);
+
+   procedure Process_Updates (UI      : in out UIComponent;
                               Context : in out Faces_Context'Class);
 
    type UIComponent_Array is array (Natural range <>) of UIComponent_Access;

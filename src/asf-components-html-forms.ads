@@ -28,6 +28,14 @@ package ASF.Components.Html.Forms is
    procedure Encode_Begin (UI      : in UIInput;
                            Context : in out Faces_Context'Class);
 
+   overriding
+   procedure Process_Decodes (UI      : in out UIInput;
+                              Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Process_Updates (UI      : in out UIInput;
+                              Context : in out Faces_Context'Class);
+
    --  ------------------------------
    --  Button Component
    --  ------------------------------

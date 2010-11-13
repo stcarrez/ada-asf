@@ -410,14 +410,14 @@ package body ASF.Views.Nodes.Reader is
             declare
                Attr  : constant Tag_Attribute_Access := Attributes (I + 1)'Access;
                Value : constant String := Get_Value (Atts, I);
-               Expr  : EL.Expressions.ValueExpression_Access;
+               Expr  : EL.Expressions.Expression_Access;
             begin
                Attr.Name  := To_Unbounded_String (Get_Qname (Atts, I));
                if Index (Value, "#{") > 0 or Index (Value, "${") > 0 then
                   begin
-                     Expr := new EL.Expressions.ValueExpression;
+                     Expr := new EL.Expressions.Expression;
                      Attr.Binding := Expr.all'Access;
-                     Expr.all := EL.Expressions.Create_Expression
+                     EL.Expressions.Expression (Expr.all) := EL.Expressions.Create_Expression
                        (Value, Handler.ELContext.all);
                   exception
                      when E : EL.Functions.No_Function =>

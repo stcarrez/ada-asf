@@ -15,8 +15,14 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Util.Log.Loggers;
 with ASF.Components.Html.Text;
 package body ASF.Components.Html.Forms is
+
+   use Util.Log;
+
+   --  The logger
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Components.Html.Forms");
 
    FORM_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 
@@ -47,6 +53,30 @@ package body ASF.Components.Html.Forms is
          Writer.End_Element ("input");
       end;
    end Encode_Begin;
+
+   overriding
+   procedure Process_Decodes (UI      : in out UIInput;
+                              Context : in out Faces_Context'Class) is
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+      declare
+         Id  : constant Unbounded_String := UI.Get_Client_Id;
+         Val : constant String := Context.Get_Parameter (To_String (Id));
+      begin
+         Log.Info ("Set input parameter {0} -> {1}", Id, Val);
+         UI.Set_Value (Value => EL.Objects.To_Object (Val));
+      end;
+   end Process_Decodes;
+
+   overriding
+   procedure Process_Updates (UI      : in out UIInput;
+                              Context : in out Faces_Context'Class) is
+      Value : access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute ("value");
+   begin
+      null;
+   end Process_Updates;
 
    --  ------------------------------
    --  Button Component
@@ -111,13 +141,19 @@ package body ASF.Components.Html.Forms is
       end if;
       declare
          Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+         Id     : constant Unbounded_String := UI.Get_Client_Id;
       begin
          Writer.Start_Element ("form");
          Writer.Write_Attribute (Name => "method", Value => "post");
-         Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
+         Writer.Write_Attribute (Name => "name", Value => Id);
          Writer.Write_Attribute (Name => "action", Value => UI.Get_Action (Context));
          UI.Render_Attributes (Context, FORM_ATTRIBUTE_NAMES, Writer);
 
+         Writer.Start_Element ("input");
+         Writer.Write_Attribute (Name => "type", Value => "hidden");
+         Writer.Write_Attribute (Name => "name", Value => Id);
+         Writer.Write_Attribute (Name => "value", Value => "1");
+         Writer.End_Element ("input");
       end;
    end Encode_Begin;
 
@@ -159,6 +195,8 @@ package body ASF.Components.Html.Forms is
       --  If the form is submitted, process the children.
       --  Otherwise, none of the parameters are for this form.
       if UI.Is_Submitted then
+         Log.Info ("Decoding form {0}", UI.Get_Client_Id);
+
          UI.Decode_Children (Context);
       end if;
    end Process_Decodes;

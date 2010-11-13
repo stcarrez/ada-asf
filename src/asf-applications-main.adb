@@ -93,7 +93,7 @@ package body ASF.Applications.Main is
                         Name : in Ada.Strings.Unbounded.Unbounded_String;
                         Context : in EL.Contexts.ELContext'Class)
                         return EL.Objects.Object is
-      Value : constant EL.Expressions.ValueExpression := App.Globals.Get_Variable (Name);
+      Value : constant EL.Expressions.Value_Expression := App.Globals.Get_Variable (Name);
    begin
       return Value.Get_Value (Context);
    end Get_Global;
@@ -362,6 +362,26 @@ package body ASF.Applications.Main is
 
       exception
          when E : others =>
+            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            raise;
+      end;
+
+      begin
+         View.Get_Root.Process_Decodes (Context);
+
+      exception
+         when E: others =>
+            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            raise;
+      end;
+
+      begin
+         View.Get_Root.Process_Updates (Context);
+
+      exception
+         when E: others =>
             Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
                        Exception_Name (E), Exception_Message (E));
             raise;

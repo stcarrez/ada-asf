@@ -16,8 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ASF.Components.Html.Text;
-with ASF.Components.Html.Lists;
 with ASF.Views.Nodes;
 package body ASF.Components.Core.Factory is
 

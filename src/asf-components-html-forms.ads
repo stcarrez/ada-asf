@@ -61,6 +61,14 @@ package ASF.Components.Html.Forms is
    procedure Encode_End (UI      : in UIForm;
                          Context : in out Faces_Context'Class);
 
+   overriding
+   procedure Decode (UI      : in out UIForm;
+                     Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Process_Decodes (UI      : in out UIForm;
+                              Context : in out Faces_Context'Class);
+
 private
 
    type UIInput is new Text.UIOutput with record
@@ -71,6 +79,8 @@ private
       Value : EL.Objects.Object;
    end record;
 
-   type UIForm is new UIHtmlComponent with null record;
+   type UIForm is new UIHtmlComponent with record
+      Is_Submitted : Boolean := False;
+   end record;
 
 end ASF.Components.Html.Forms;

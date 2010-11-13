@@ -111,8 +111,11 @@ package body ASF.Servlets.Faces is
    procedure Do_Post (Server   : in Faces_Servlet;
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class) is
+      URI    : constant String := Request.Get_Path_Info;
    begin
-      Response.Send_Error (Error => Responses.SC_NOT_IMPLEMENTED);
+      Server.App.Postback (Page     => URI,
+                           Request  => Request,
+                           Response => Response);
    end Do_Post;
 
 end ASF.Servlets.Faces;

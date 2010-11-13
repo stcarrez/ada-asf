@@ -110,6 +110,15 @@ package ASF.Components is
    procedure Encode_All (UI      : in UIComponent'Class;
                          Context : in out Faces_Context'Class);
 
+   procedure Decode (UI      : in out UIComponent;
+                     Context : in out Faces_Context'Class);
+
+   procedure Decode_Children (UI      : in UIComponent'Class;
+                              Context : in out Faces_Context'Class);
+
+   procedure Process_Decodes (UI      : in out UIComponent;
+                              Context : in out Faces_Context'Class);
+
    type UIComponent_Array is array (Natural range <>) of UIComponent_Access;
 
    type UIComponent_Array_Access is access UIComponent_Array;

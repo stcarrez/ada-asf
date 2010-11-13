@@ -311,4 +311,87 @@ package body ASF.Applications.Main is
       end;
    end Dispatch;
 
+   --  ------------------------------
+   --  Dispatch the request received on a page.
+   --  ------------------------------
+   procedure Postback (App      : in out Application;
+                       Page     : in String;
+                       Request  : in out ASF.Requests.Request'Class;
+                       Response : in out ASF.Responses.Response'Class) is
+
+      use EL.Contexts.Default;
+      use EL.Variables;
+      use EL.Variables.Default;
+      use EL.Contexts;
+      use EL.Objects;
+      use EL.Beans;
+      use ASF.Applications.Views;
+      use Ada.Exceptions;
+
+      Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
+      Context        : aliased ASF.Contexts.Faces.Faces_Context;
+      View           : Components.Core.UIViewRoot;
+      ELContext      : aliased EL.Contexts.Default.Default_Context;
+      Variables      : aliased Default_Variable_Mapper;
+      Req_Resolver   : aliased Default_ELResolver;
+      Root_Resolver  : aliased Web_ELResolver;
+
+      Beans          : aliased Bean_Vectors.Vector;
+      --  Get the view handler
+      Handler   : constant access View_Handler'Class := App.Get_View_Handler;
+
+      Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
+   begin
+      Log.Info ("Dispatch {0}", Page);
+
+      Root_Resolver.Application := App'Unchecked_Access;
+      Root_Resolver.Request := Req_Resolver'Unchecked_Access;
+      Root_Resolver.Beans := Beans'Unchecked_Access;
+      ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
+      ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
+
+      Context.Set_ELContext (ELContext'Unchecked_Access);
+      Context.Set_Response_Writer (Writer'Unchecked_Access);
+      Writer.Initialize ("text/html", "UTF-8", Output);
+
+      Context.Set_Request (Request'Unchecked_Access);
+      Context.Set_Response (Response'Unchecked_Access);
+      Handler.Set_Context (Context'Unchecked_Access);
+      begin
+         Handler.Restore_View (Page, Context, View);
+
+      exception
+         when E : others =>
+            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            raise;
+      end;
+
+      begin
+         Handler.Render_View (Context, View);
+
+      exception
+         when E: others =>
+            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            raise;
+      end;
+      Writer.Flush;
+
+      declare
+         C : Bean_Vectors.Cursor := Beans.First;
+      begin
+         while Bean_Vectors.Has_Element (C) loop
+            declare
+               Bean : Bean_Object := Bean_Vectors.Element (C);
+            begin
+               if Bean.Bean /= null and then Bean.Free /= null then
+                  Bean.Free (Bean.Bean);
+               end if;
+            end;
+            Bean_Vectors.Next (C);
+         end loop;
+      end;
+   end Postback;
+
 end ASF.Applications.Main;

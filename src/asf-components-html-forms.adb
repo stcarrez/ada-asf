@@ -135,6 +135,34 @@ package body ASF.Components.Html.Forms is
       end;
    end Encode_End;
 
+   overriding
+   procedure Decode (UI      : in out UIForm;
+                     Context : in out Faces_Context'Class) is
+      Id  : constant Unbounded_String := UI.Get_Client_Id;
+      Val : constant String := Context.Get_Parameter (To_String (Id));
+   begin
+      UI.Is_Submitted := Val /= "";
+   end Decode;
+
+   overriding
+   procedure Process_Decodes (UI      : in out UIForm;
+                              Context : in out Faces_Context'Class) is
+      Child : UIComponent_Access;
+   begin
+      --  Do not decode the component nor its children if the component is not rendered.
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+
+      UIComponent'Class (UI).Decode (Context);
+
+      --  If the form is submitted, process the children.
+      --  Otherwise, none of the parameters are for this form.
+      if UI.Is_Submitted then
+         UI.Decode_Children (Context);
+      end if;
+   end Process_Decodes;
+
 begin
    Set_Text_Attributes (FORM_ATTRIBUTE_NAMES);
    Set_Text_Attributes (INPUT_ATTRIBUTE_NAMES);

@@ -100,6 +100,12 @@ package ASF.Applications.Main is
                        Request  : in out ASF.Requests.Request'Class;
                        Response : in out ASF.Responses.Response'Class);
 
+   --  Dispatch the request received on a page.
+   procedure Postback (App      : in out Application;
+                       Page     : in String;
+                       Request  : in out ASF.Requests.Request'Class;
+                       Response : in out ASF.Responses.Response'Class);
+
 private
 
    type Application is new ASF.Servlets.Servlet_Registry with record

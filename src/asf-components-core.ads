@@ -19,7 +19,7 @@ with Ada.Finalization;
 with ASF.Views.Nodes;
 package ASF.Components.Core is
 
-   type UIComponentBase is new UIComponent with private;
+   type UIComponentBase is new UIComponent with null record;
 
    --  Return a client-side identifier for this component, generating
    --  one if necessary.
@@ -110,7 +110,7 @@ private
    overriding
    procedure Finalize (Object : in out UIViewRoot);
    --
-   type UIComponentBase is new UIComponent with null record;
+--     type UIComponentBase is new UIComponent with null record;
 
    type UIViewRoot is new Ada.Finalization.Limited_Controlled with record
       Root : UIComponent_Access;

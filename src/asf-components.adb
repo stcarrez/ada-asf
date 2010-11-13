@@ -273,6 +273,35 @@ package body ASF.Components is
       UI.Encode_End (Context);
    end Encode_All;
 
+   procedure Decode (UI      : in out UIComponent;
+                     Context : in out Faces_Context'Class) is
+   begin
+      null;
+   end Decode;
+
+   procedure Decode_Children (UI      : in UIComponent'Class;
+                              Context : in out Faces_Context'Class) is
+      Child : UIComponent_Access;
+   begin
+      Child := UI.First_Child;
+      while Child /= null loop
+         Child.Process_Decodes (Context);
+         Child := Child.Next;
+      end loop;
+   end Decode_Children;
+
+   procedure Process_Decodes (UI      : in out UIComponent;
+                              Context : in out Faces_Context'Class) is
+   begin
+      --  Do not decode the component nor its children if the component is not rendered.
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+
+      UI.Decode_Children (Context);
+      UIComponent'Class (UI).Decode (Context);
+   end Process_Decodes;
+
    --  ------------------------------
    --  Iterate over the children of the component and execute
    --  the <b>Process</b> procedure.

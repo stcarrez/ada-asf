@@ -103,6 +103,10 @@ package ASF.Components is
                             Def   : access ASF.Views.Nodes.Tag_Attribute;
                             Value : in EL.Expressions.Expression);
 
+   --  Get the value expression
+   function Get_Value_Expression (UI   : in UIComponent;
+                                  Name : in String) return EL.Expressions.Value_Expression;
+
    procedure Encode_Begin (UI      : in UIComponent;
                            Context : in out Faces_Context'Class);
 

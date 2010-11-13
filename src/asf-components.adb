@@ -253,6 +253,18 @@ package body ASF.Components is
       UI.Attributes := Attribute;
    end Set_Attribute;
 
+   --  Get the value expression
+   function Get_Value_Expression (UI   : in UIComponent;
+                                  Name : in String) return EL.Expressions.Value_Expression is
+      Value : access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (name);
+   begin
+      if Value = null then
+         raise EL.Expressions.Invalid_Expression with "No value expression for: " & Name;
+      end if;
+
+      return ASF.Views.Nodes.Get_Value_Expression (Value.all);
+   end Get_Value_Expression;
+
    procedure Encode_Begin (UI      : in UIComponent;
                            Context : in out Faces_Context'Class) is
    begin

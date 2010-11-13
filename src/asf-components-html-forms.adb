@@ -66,16 +66,16 @@ package body ASF.Components.Html.Forms is
          Val : constant String := Context.Get_Parameter (To_String (Id));
       begin
          Log.Info ("Set input parameter {0} -> {1}", Id, Val);
-         UI.Set_Value (Value => EL.Objects.To_Object (Val));
+         UI.Submitted_Value := EL.Objects.To_Object (Val);
       end;
    end Process_Decodes;
 
    overriding
    procedure Process_Updates (UI      : in out UIInput;
                               Context : in out Faces_Context'Class) is
-      Value : access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute ("value");
+      VE    : constant EL.Expressions.Value_Expression := UI.Get_Value_Expression ("value");
    begin
-      null;
+      VE.Set_Value (Value => UI.Submitted_Value, Context => Context.Get_ELContext.all);
    end Process_Updates;
 
    --  ------------------------------

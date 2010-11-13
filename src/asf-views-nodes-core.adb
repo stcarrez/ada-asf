@@ -56,7 +56,7 @@ package body ASF.Views.Nodes.Core is
       pragma Unreferenced (Parent);
 
       Value  : constant EL.Expressions.Value_Expression
-        := Get_Value_Expression (Node.Value.all, Context);
+        := Get_Value_Expression (Node.Value.all);
    begin
       Context.Set_Variable (Node.Var.Value, Value);
    end Build_Components;

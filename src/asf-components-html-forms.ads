@@ -80,7 +80,7 @@ package ASF.Components.Html.Forms is
 private
 
    type UIInput is new Text.UIOutput with record
-      Value : EL.Objects.Object;
+      Submitted_Value : EL.Objects.Object;
    end record;
 
    type UICommand is new UIHtmlComponent with record

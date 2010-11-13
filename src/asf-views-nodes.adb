@@ -150,8 +150,7 @@ package body ASF.Views.Nodes is
          return EL.Objects.Null_Object;
    end Get_Value;
 
-   function Get_Value_Expression (Attribute : Tag_Attribute;
-                                  Context   : Facelet_Context'Class)
+   function Get_Value_Expression (Attribute : Tag_Attribute)
                                   return EL.Expressions.Value_Expression is
    begin
       if Attribute.Binding /= null then

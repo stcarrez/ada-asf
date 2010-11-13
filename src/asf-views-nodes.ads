@@ -71,8 +71,7 @@ package ASF.Views.Nodes is
    function Get_Value (Attribute : Tag_Attribute;
                        Context   : Facelet_Context'Class) return EL.Objects.Object;
 
-   function Get_Value_Expression (Attribute : Tag_Attribute;
-                                  Context   : Facelet_Context'Class)
+   function Get_Value_Expression (Attribute : Tag_Attribute)
                                   return EL.Expressions.Value_Expression;
 
    --  Reduce the expression by eliminating known variables and computing

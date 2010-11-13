@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view contentType="text/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/themes/main.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/themes/list.css"/>
+    <title>Volume Cylinder</title>
+</head>
+<body>
+  <div>
+     <h1>Compute the volume of a cylinder</h1>
+
+     <h:form>
+         <table>
+             <tr><td>Height</td><td><h:input id='height' size='10' value='#{compute.height}'/></td></tr>
+             <tr><td>Radius</td><td><h:input id='radius' size='10' value='#{compute.radius}'/></td></tr>
+             <tr><td></td><td><h:commandButton id='compute' value='Compute'/></td></tr>
+         </table>
+     </h:form>
+  </div>
+</body>
+</html>
+</f:view>

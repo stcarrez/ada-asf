@@ -33,7 +33,7 @@ with EL.Contexts;
 with EL.Contexts.Default;
 with EL.Variables;
 with EL.Variables.Default;
-
+with ASF.Streams;
 --  This example reads an XHTML file and renders the result.
 procedure Render is
 
@@ -57,7 +57,7 @@ procedure Render is
    Variables : aliased Default_Variable_Mapper;
    Resolver  : aliased Default_ELResolver;
    Conf      : Applications.Config;
-
+   Output    : ASF.Streams.Print_Stream;
 begin
    loop
       case Getopt ("D:") is
@@ -92,7 +92,7 @@ begin
       Context.Set_ELContext (ELContext'Unchecked_Access);
       ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
       ELContext.Set_Resolver (Resolver'Unchecked_Access);
-      Writer.Initialize ("text/xml", "UTF-8", 8192);
+      Writer.Initialize ("text/xml", "UTF-8", Output);
 
       Set_Current (Context'Unchecked_Access);
       H.Restore_View (View_Name, Context, View);

@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  asf-contexts -- ASF Contexts
+--  html -- ASF HTML Components
 --  Copyright (C) 2009, 2010 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -16,13 +16,19 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
---  The <b>ASF.Contexts</b> defines the context types that allows to access
---  and retrieve information from the request and response.
---
---  The <b>Faces_Context</b> is the main context seen by application.
---
-package ASF.Contexts is
+with Util.Strings;
+package ASF.Utils is
 
-   pragma Pure;
+   --  Add in the <b>names</b> set, the basic text attributes that can be set
+   --  on HTML elements (dir, lang, style, title).
+   procedure Set_Text_Attributes (Names : in out Util.Strings.String_Set.Set);
 
-end ASF.Contexts;
+   --  Add in the <b>names</b> set, the onXXX attributes that can be set
+   --  on HTML elements (accesskey, tabindex, onXXX).
+   procedure Set_Interactive_Attributes (Names : in out Util.Strings.String_Set.Set);
+
+   --  Add in the <b>names</b> set, the size attributes that can be set
+   --  on HTML elements.
+   procedure Set_Input_Attributes (Names : in out Util.Strings.String_Set.Set);
+
+end ASF.Utils;

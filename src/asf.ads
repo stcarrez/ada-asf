@@ -20,4 +20,6 @@
 --  the Java Server Faces for Ada 2005.
 package ASF is
 
+   pragma Pure;
+
 end ASF;

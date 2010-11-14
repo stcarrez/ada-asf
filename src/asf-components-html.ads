@@ -35,18 +35,6 @@ package ASF.Components.Html is
                                 Names   : in Util.Strings.String_Set.Set;
                                 Writer  : in ResponseWriter_Access);
 
-   --  Add in the <b>names</b> set, the basic text attributes that can be set
-   --  on HTML elements (dir, lang, style, title).
-   procedure Set_Text_Attributes (Names : in out Util.Strings.String_Set.Set);
-
-   --  Add in the <b>names</b> set, the onXXX attributes that can be set
-   --  on HTML elements (accesskey, tabindex, onXXX).
-   procedure Set_Interactive_Attributes (Names : in out Util.Strings.String_Set.Set);
-
-   --  Add in the <b>names</b> set, the size attributes that can be set
-   --  on HTML elements.
-   procedure Set_Input_Attributes (Names : in out Util.Strings.String_Set.Set);
-
 private
 
    type UIHtmlComponent is new ASF.Components.Core.UIComponentBase with record

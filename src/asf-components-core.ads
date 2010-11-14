@@ -19,6 +19,8 @@ with Ada.Finalization;
 with ASF.Views.Nodes;
 package ASF.Components.Core is
 
+--     pragma Elaborate_Body;
+
    type UIComponentBase is new UIComponent with null record;
 
    --  Return a client-side identifier for this component, generating

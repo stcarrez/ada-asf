@@ -18,6 +18,7 @@
 with EL.Objects;
 with ASF.Components.Core;
 with Util.Texts.Formats;
+with ASF.Utils;
 package body ASF.Components.Html.Text is
 
    use EL.Objects;
@@ -126,7 +127,7 @@ package body ASF.Components.Html.Text is
    end Encode_Begin;
 
 begin
-   Set_Text_Attributes (TEXT_ATTRIBUTE_NAMES);
-   Set_Text_Attributes (LABEL_ATTRIBUTE_NAMES);
-   Set_Interactive_Attributes (LABEL_ATTRIBUTE_NAMES);
+   Utils.Set_Text_Attributes (TEXT_ATTRIBUTE_NAMES);
+   Utils.Set_Text_Attributes (LABEL_ATTRIBUTE_NAMES);
+   Utils.Set_Interactive_Attributes (LABEL_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Text;

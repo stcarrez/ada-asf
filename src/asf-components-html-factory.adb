@@ -160,6 +160,4 @@ package body ASF.Components.Html.Factory is
       return Html_Factory'Access;
    end Definition;
 
-begin
-   ASF.Factory.Check (Html_Factory);
 end ASF.Components.Html.Factory;

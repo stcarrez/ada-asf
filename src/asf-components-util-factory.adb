@@ -103,6 +103,4 @@ package body ASF.Components.Util.Factory is
       return EL.Objects.To_Object (Result);
    end Escape_Xml;
 
-begin
-   ASF.Factory.Check (Core_Factory);
 end ASF.Components.Util.Factory;

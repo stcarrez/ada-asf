@@ -65,6 +65,4 @@ package body ASF.Components.Core.Factory is
       return Core_Factory'Access;
    end Definition;
 
-begin
-   ASF.Factory.Check (Core_Factory);
 end ASF.Components.Core.Factory;

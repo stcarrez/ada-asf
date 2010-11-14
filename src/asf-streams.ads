@@ -24,6 +24,8 @@ with Util.Streams.Texts;
 with EL.Objects;
 package ASF.Streams is
 
+   pragma Preelaborate;
+
    --  -----------------------
    --  Print stream
    --  -----------------------

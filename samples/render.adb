@@ -23,10 +23,10 @@ with Ada.Strings.Fixed;
 
 with GNAT.Command_Line;
 
-with ASF.Applications.Views;
-with ASF.Components.Core;
+with ASF.Applications.Main;
+with ASF.Requests.Mockup;
+with ASF.Responses.Mockup;
 with ASF.Contexts.Faces;
-with ASF.Contexts.Writer.String;
 
 with EL.Objects;
 with EL.Contexts;
@@ -49,15 +49,8 @@ procedure Render is
    use EL.Contexts;
    use EL.Objects;
 
-   H        : Applications.Views.View_Handler;
-   Writer   : aliased Contexts.Writer.String.String_Writer;
-   Context  : aliased Faces_Context;
-   View     : Components.Core.UIViewRoot;
-   ELContext : aliased EL.Contexts.Default.Default_Context;
-   Variables : aliased Default_Variable_Mapper;
-   Resolver  : aliased Default_ELResolver;
+   App      : Applications.Main.Application;
    Conf      : Applications.Config;
-   Output    : ASF.Streams.Print_Stream;
 begin
    loop
       case Getopt ("D:") is
@@ -85,23 +78,18 @@ begin
    Conf.Set ("view.ignore_empty_lines", "true");
    declare
       View_Name : constant String := Get_Argument;
+      Req       : ASF.Requests.Mockup.Request;
+      Reply     : ASF.Responses.Mockup.Response;
+      Content   : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      H.Initialize (Conf);
+      App.Initialize (Conf);
 
-      Context.Set_Response_Writer (Writer'Unchecked_Access);
-      Context.Set_ELContext (ELContext'Unchecked_Access);
-      ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
-      ELContext.Set_Resolver (Resolver'Unchecked_Access);
-      Writer.Initialize ("text/xml", "UTF-8", Output);
+      App.Dispatch (Page     => View_Name,
+                    Request  => Req,
+                    Response => Reply);
 
-      Set_Current (Context'Unchecked_Access);
-      H.Restore_View (View_Name, Context, View);
-
-      H.Render_View (Context, View);
-      Writer.Flush;
-
-      Ada.Text_IO.Put_Line (Ada.Strings.Unbounded.To_String (Writer.Get_Response));
-      H.Close;
+      Reply.Read_Content (Content);
+      Ada.Text_IO.Put_Line (Ada.Strings.Unbounded.To_String (Content));
 
    exception
       when Ada.IO_Exceptions.Name_Error =>

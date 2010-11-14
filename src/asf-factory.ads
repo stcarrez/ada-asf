@@ -19,8 +19,9 @@
 with Util.Strings;
 with ASF.Views.Nodes;
 with ASF.Converters;
+with EL.Objects;
 
-private with Ada.Strings.Hash;
+private with EL.Objects.Hash;
 private with Ada.Containers;
 private with Ada.Containers.Hashed_Maps;
 private with Ada.Containers.Indefinite_Hashed_Maps;
@@ -107,13 +108,12 @@ package ASF.Factory is
    --  Find the converter instance that was registered under the given name.
    --  Returns null if no such converter exist.
    function Find (Factory : in Component_Factory;
-                  Name    : in String) return ASF.Converters.Converter_Access;
+                  Name    : in EL.Objects.Object) return ASF.Converters.Converter_Access;
 
 private
 
    use Util.Strings;
    use ASF.Converters;
-   use Ada.Strings;
 
    --  Tag library map indexed on the library namespace.
    package Factory_Maps is new
@@ -123,11 +123,13 @@ private
                                  Equivalent_Keys => Equivalent_Keys);
 
    --  Converter map indexed on the converter name.
+   --  The key is an EL.Objects.Object to minimize the conversions when searching
+   --  for a converter.
    package Converter_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => String,
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => EL.Objects.Object,
                                             Element_Type    => Converter_Access,
-                                            Hash            => Hash,
-                                            Equivalent_Keys => "=");
+                                            Hash            => EL.Objects.Hash,
+                                            Equivalent_Keys => EL.Objects."=");
 
    type Component_Factory is limited record
       Map        : Factory_Maps.Map;

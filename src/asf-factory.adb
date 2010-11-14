@@ -120,7 +120,7 @@ package body ASF.Factory is
    begin
       Log.Info ("Register converter: {0}", Name);
 
-      Factory.Converters.Include (Name, Converter);
+      Factory.Converters.Include (EL.Objects.To_Object (Name), Converter);
    end Register;
 
    --  ------------------------------
@@ -128,7 +128,7 @@ package body ASF.Factory is
    --  Returns null if no such converter exist.
    --  ------------------------------
    function Find (Factory : in Component_Factory;
-                  Name    : in String) return ASF.Converters.Converter_Access is
+                  Name    : in EL.Objects.Object) return ASF.Converters.Converter_Access is
       Pos : constant Converter_Maps.Cursor := Factory.Converters.Find (Name);
    begin
       if Converter_Maps.Has_Element (Pos) then

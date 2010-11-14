@@ -30,6 +30,7 @@ with EL.Expressions;
 with ASF.Contexts.Faces;
 --  limited with ASF.Contexts.Facelets;
 limited with ASF.Views.Nodes;
+limited with ASF.Converters;
 package ASF.Components is
 
    use Ada.Strings.Unbounded;
@@ -102,6 +103,17 @@ package ASF.Components is
    procedure Set_Attribute (UI    : in out UIComponent;
                             Def   : access ASF.Views.Nodes.Tag_Attribute;
                             Value : in EL.Expressions.Expression);
+
+   --  Get the converter associated with the component
+   function Get_Converter (UI      : in UIComponent;
+                           Context : in Faces_Context'Class)
+                           return access ASF.Converters.Converter'Class;
+
+   --  Convert the string into a value.  If a converter is specified on the component,
+   --  use it to convert the value.
+   function Convert_Value (UI      : in UIComponent;
+                           Value   : in String;
+                           Context : in Faces_Context'Class) return EL.Objects.Object;
 
    --  Get the value expression
    function Get_Value_Expression (UI   : in UIComponent;

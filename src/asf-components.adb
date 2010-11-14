@@ -21,6 +21,7 @@ with ASF.Views.Nodes;
 with EL.Expressions;
 with EL.Contexts;
 with ASF.Contexts.Facelets;
+with ASF.Converters;
 package body ASF.Components is
 
    --  ------------------------------
@@ -264,6 +265,38 @@ package body ASF.Components is
 
       return ASF.Views.Nodes.Get_Value_Expression (Value.all);
    end Get_Value_Expression;
+
+   --  ------------------------------
+   --  Get the converter associated with the component
+   --  ------------------------------
+   function Get_Converter (UI      : in UIComponent;
+                           Context : in Faces_Context'Class)
+                           return access ASF.Converters.Converter'Class is
+      Name : constant EL.Objects.Object
+        := UIComponent'Class (UI).Get_Attribute (Name    => "converter",
+                                                 Context => Context);
+   begin
+      return Context.Get_Converter (Name);
+   end Get_Converter;
+
+   --  ------------------------------
+   --  Convert the string into a value.  If a converter is specified on the component,
+   --  use it to convert the value.
+   --  ------------------------------
+   function Convert_Value (UI      : in UIComponent;
+                           Value   : in String;
+                           Context : in Faces_Context'Class) return EL.Objects.Object is
+      Convert : constant access ASF.Converters.Converter'Class
+        := UIComponent'Class (UI).Get_Converter (Context);
+   begin
+      if Convert = null then
+         return EL.Objects.To_Object (Value);
+      else
+         return Convert.To_Object (Context   => Context,
+                                   Component => UI,
+                                   Value     => Value);
+      end if;
+   end Convert_Value;
 
    procedure Encode_Begin (UI      : in UIComponent;
                            Context : in out Faces_Context'Class) is

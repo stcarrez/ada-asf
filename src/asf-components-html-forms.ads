@@ -81,6 +81,7 @@ private
 
    type UIInput is new Text.UIOutput with record
       Submitted_Value : EL.Objects.Object;
+      Is_Valid        : Boolean;
    end record;
 
    type UICommand is new UIHtmlComponent with record

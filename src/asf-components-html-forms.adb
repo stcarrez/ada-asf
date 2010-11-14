@@ -16,7 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Log.Loggers;
-with ASF.Components.Html.Text;
+with Ada.Exceptions;
+with ASF.Utils;
 package body ASF.Components.Html.Forms is
 
    use Util.Log;
@@ -24,7 +25,7 @@ package body ASF.Components.Html.Forms is
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Components.Html.Forms");
 
-   FORM_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
+   FORM_ATTRIBUTE_NAMES   : Util.Strings.String_Set.Set;
 
    INPUT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 
@@ -66,7 +67,14 @@ package body ASF.Components.Html.Forms is
          Val : constant String := Context.Get_Parameter (To_String (Id));
       begin
          Log.Info ("Set input parameter {0} -> {1}", Id, Val);
-         UI.Submitted_Value := EL.Objects.To_Object (Val);
+         UI.Submitted_Value := UI.Convert_Value (Val, Context);
+         UI.Is_Valid := True;
+
+      exception
+         when E : others =>
+            UI.Is_Valid := False;
+            Log.Info ("Exception raised when converting value {0} for component {1}: {2}",
+                      Val, To_String (Id), Ada.Exceptions.Exception_Name (E));
       end;
    end Process_Decodes;
 
@@ -75,7 +83,16 @@ package body ASF.Components.Html.Forms is
                               Context : in out Faces_Context'Class) is
       VE    : constant EL.Expressions.Value_Expression := UI.Get_Value_Expression ("value");
    begin
-      VE.Set_Value (Value => UI.Submitted_Value, Context => Context.Get_ELContext.all);
+      if UI.Is_Valid then
+         VE.Set_Value (Value => UI.Submitted_Value, Context => Context.Get_ELContext.all);
+      end if;
+
+   exception
+      when E : others =>
+         UI.Is_Valid := False;
+         Log.Info ("Exception raised when updating value {0} for component {1}: {2}",
+                   EL.Objects.To_String (UI.Submitted_Value),
+                   To_String (UI.Get_Client_Id), Ada.Exceptions.Exception_Name (E));
    end Process_Updates;
 
    --  ------------------------------
@@ -202,9 +219,9 @@ package body ASF.Components.Html.Forms is
    end Process_Decodes;
 
 begin
-   Set_Text_Attributes (FORM_ATTRIBUTE_NAMES);
-   Set_Text_Attributes (INPUT_ATTRIBUTE_NAMES);
-   Set_Interactive_Attributes (INPUT_ATTRIBUTE_NAMES);
-   Set_Interactive_Attributes (FORM_ATTRIBUTE_NAMES);
-   Set_Input_Attributes (INPUT_ATTRIBUTE_NAMES);
+   Utils.Set_Text_Attributes (FORM_ATTRIBUTE_NAMES);
+   Utils.Set_Text_Attributes (INPUT_ATTRIBUTE_NAMES);
+   Utils.Set_Interactive_Attributes (INPUT_ATTRIBUTE_NAMES);
+   Utils.Set_Interactive_Attributes (FORM_ATTRIBUTE_NAMES);
+   Utils.Set_Input_Attributes (INPUT_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Forms;

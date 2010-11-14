@@ -111,4 +111,31 @@ package body ASF.Factory is
       Factory.Map.Include (Bindings.URI, Bindings);
    end Register;
 
+   --  ------------------------------
+   --  Register the converter instance under the given name.
+   --  ------------------------------
+   procedure Register (Factory   : in out Component_Factory;
+                       Name      : in String;
+                       Converter : in ASF.Converters.Converter_Access) is
+   begin
+      Log.Info ("Register converter: {0}", Name);
+
+      Factory.Converters.Include (Name, Converter);
+   end Register;
+
+   --  ------------------------------
+   --  Find the converter instance that was registered under the given name.
+   --  Returns null if no such converter exist.
+   --  ------------------------------
+   function Find (Factory : in Component_Factory;
+                  Name    : in String) return ASF.Converters.Converter_Access is
+      Pos : constant Converter_Maps.Cursor := Factory.Converters.Find (Name);
+   begin
+      if Converter_Maps.Has_Element (Pos) then
+         return Converter_Maps.Element (Pos);
+      else
+         return null;
+      end if;
+   end Find;
+
 end ASF.Factory;

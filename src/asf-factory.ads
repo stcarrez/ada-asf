@@ -18,9 +18,12 @@
 
 with Util.Strings;
 with ASF.Views.Nodes;
+with ASF.Converters;
 
-private with Ada.Containers.Indefinite_Hashed_Maps;
+private with Ada.Strings.Hash;
 private with Ada.Containers;
+private with Ada.Containers.Hashed_Maps;
+private with Ada.Containers.Indefinite_Hashed_Maps;
 
 --  The <b>ASF.Factory</b> is the main factory for building the facelet
 --  node tree and defining associated component factory.  A binding library
@@ -90,19 +93,45 @@ package ASF.Factory is
                   URI     : String;
                   Name    : String) return Binding;
 
+   --  ------------------------------
+   --  Converter Factory
+   --  ------------------------------
+   --  The <b>Converter_Factory</b> registers the converters which can be used
+   --  to convert a value into a string or the opposite.
+
+   --  Register the converter instance under the given name.
+   procedure Register (Factory   : in out Component_Factory;
+                       Name      : in String;
+                       Converter : in ASF.Converters.Converter_Access);
+
+   --  Find the converter instance that was registered under the given name.
+   --  Returns null if no such converter exist.
+   function Find (Factory : in Component_Factory;
+                  Name    : in String) return ASF.Converters.Converter_Access;
+
 private
 
    use Util.Strings;
+   use ASF.Converters;
+   use Ada.Strings;
 
    --  Tag library map indexed on the library namespace.
    package Factory_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => Name_Access,
-                                            Element_Type    => Factory_Bindings_Access,
+     Ada.Containers.Hashed_Maps (Key_Type        => Name_Access,
+                                 Element_Type    => Factory_Bindings_Access,
+                                 Hash            => Hash,
+                                 Equivalent_Keys => Equivalent_Keys);
+
+   --  Converter map indexed on the converter name.
+   package Converter_Maps is new
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => String,
+                                            Element_Type    => Converter_Access,
                                             Hash            => Hash,
-                                            Equivalent_Keys => Equivalent_Keys);
+                                            Equivalent_Keys => "=");
 
    type Component_Factory is limited record
-      Map : Factory_Maps.Map;
+      Map        : Factory_Maps.Map;
+      Converters : Converter_Maps.Map;
    end record;
 
 end ASF.Factory;

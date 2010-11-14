@@ -46,11 +46,12 @@ package body ASF.Views.Facelets.Tests is
 
    --  Test loading of facelet file
    procedure Test_Load_Facelet (T : in out Test) is
-      Factory : ASF.Views.Facelets.Facelet_Factory;
-      View    : ASF.Views.Facelets.Facelet;
-      Ctx       : Facelet_Context;
+      Factory    : ASF.Views.Facelets.Facelet_Factory;
+      Components : aliased ASF.Factory.Component_Factory;
+      View       : ASF.Views.Facelets.Facelet;
+      Ctx        : Facelet_Context;
    begin
-      Initialize (Factory, "regtests/files/views;.", True, True, True);
+      Initialize (Factory, Components'Unchecked_Access, "regtests/files/views;.", True, True, True);
       Find_Facelet (Factory, "text.xhtml", Ctx, View);
 
       T.Assert (Condition => not Is_Null (View),
@@ -59,11 +60,12 @@ package body ASF.Views.Facelets.Tests is
 
    --  Test loading of an unknown file
    procedure Test_Load_Unknown_Facelet (T : in out Test) is
-      Factory : ASF.Views.Facelets.Facelet_Factory;
-      View    : ASF.Views.Facelets.Facelet;
-      Ctx       : Facelet_Context;
+      Factory    : ASF.Views.Facelets.Facelet_Factory;
+      Components : aliased ASF.Factory.Component_Factory;
+      View       : ASF.Views.Facelets.Facelet;
+      Ctx        : Facelet_Context;
    begin
-      Initialize (Factory, "regtests/files;.", True, True, True);
+      Initialize (Factory, Components'Unchecked_Access, "regtests/files;.", True, True, True);
       Find_Facelet (Factory, "not-found-file.xhtml", Ctx, View);
 
       T.Assert (Condition => Is_Null (View),

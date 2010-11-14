@@ -17,8 +17,11 @@
 -----------------------------------------------------------------------
 
 with Ada.Text_IO;
+with ASF.Applications.Main;
 with ASF.Applications.Views;
 with ASF.Components.Core;
+with ASF.Requests.Mockup;
+with ASF.Responses.Mockup;
 with EL.Contexts;
 with EL.Contexts.Default;
 with EL.Variables.Default;
@@ -51,40 +54,49 @@ package body ASF.Applications.Views.Tests is
       use EL.Variables.Default;
       use EL.Contexts;
 
-      H        : Applications.Views.View_Handler;
+      App      : Applications.Main.Application;
+--        H        : Applications.Views.View_Handler;
 
       View_Name   : constant String := To_String (T.File);
       Result_File : constant String := To_String (T.Result);
       Conf        : Applications.Config;
    begin
       Conf.Load_Properties ("regtests/view.properties");
-      H.Initialize (Conf);
+      App.Initialize (Conf);
 
       for I in 1 .. 2 loop
          declare
             S : Util.Measures.Stamp;
-            Writer    : aliased Test_Writer;
-            Context   : aliased Faces_Context;
-            View      : Components.Core.UIViewRoot;
-            ELContext : aliased EL.Contexts.Default.Default_Context;
-            Variables : aliased Default_Variable_Mapper;
-            Resolver  : aliased Default_ELResolver;
+            Req       : ASF.Requests.Mockup.Request;
+            Rep       : ASF.Responses.Mockup.Response;
+            Content   : Unbounded_String;
+--              Writer    : aliased Test_Writer;
+--              Context   : aliased Faces_Context;
+--              View      : Components.Core.UIViewRoot;
+--              ELContext : aliased EL.Contexts.Default.Default_Context;
+--              Variables : aliased Default_Variable_Mapper;
+--              Resolver  : aliased Default_ELResolver;
          begin
-            Context.Set_Response_Writer (Writer'Unchecked_Access);
-            Context.Set_ELContext (ELContext'Unchecked_Access);
-            ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
-            ELContext.Set_Resolver (Resolver'Unchecked_Access);
-            Writer.Initialize ("text/xml", "UTF-8", 16384);
+--              Context.Set_Response_Writer (Writer'Unchecked_Access);
+--              Context.Set_ELContext (ELContext'Unchecked_Access);
+--              ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
+--              ELContext.Set_Resolver (Resolver'Unchecked_Access);
+--              Writer.Initialize ("text/xml", "UTF-8", 16384);
 
-            Set_Current (Context'Unchecked_Access);
-            H.Restore_View (View_Name, Context, View);
+--              Set_Current (Context'Unchecked_Access);
+--              H.Restore_View (View_Name, Context, View);
+--
+--              H.Render_View (Context, View);
+--              Writer.Flush;
 
-            H.Render_View (Context, View);
-            Writer.Flush;
+            App.Dispatch (Page     => View_Name,
+                          Request  => Req,
+                          Response => Rep);
             Util.Measures.Report (S, "Pass" & Integer'Image (I) & ": Render view "
                                   & View_Name);
 
-            Util.Files.Write_File (Result_File, Writer.Response);
+            Rep.Read_Content (Content);
+            Util.Files.Write_File (Result_File, Content);
             Util.Tests.Assert_Equal_Files (T       => T,
                                            Expect  => To_String (T.Expect),
                                            Test    => Result_File,

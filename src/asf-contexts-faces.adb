@@ -17,7 +17,9 @@
 -----------------------------------------------------------------------
 
 with EL.Variables;
+with ASF.Converters;
 with Ada.Task_Attributes;
+with ASF.Applications.Main;
 package body ASF.Contexts.Faces is
 
    package Task_Context is new Ada.Task_Attributes
@@ -126,6 +128,26 @@ package body ASF.Contexts.Faces is
    end Set_Response;
 
    --  ------------------------------
+   --  Get a converter from a name.
+   --  Returns the converter object or null if there is no converter.
+   --  ------------------------------
+   function Get_Converter (Context : in Faces_Context;
+                           Name    : in EL.Objects.Object)
+                           return access ASF.Converters.Converter'Class is
+   begin
+      return Context.Application.Find (Name);
+   end Get_Converter;
+
+   --  ------------------------------
+   --  Get the application associated with this faces context.
+   --  ------------------------------
+   function Get_Application (Context : in Faces_Context)
+                             return access ASF.Applications.Main.Application'Class is
+   begin
+      return Context.Application;
+   end Get_Application;
+
+   --  ------------------------------
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    --  ------------------------------
@@ -137,8 +159,10 @@ package body ASF.Contexts.Faces is
    --  ------------------------------
    --  Set the current faces context in the per-thread/task attribute.
    --  ------------------------------
-   procedure Set_Current (Context : Faces_Context_Access) is
+   procedure Set_Current (Context     : Faces_Context_Access;
+                          Application : access ASF.Applications.Main.Application'Class) is
    begin
+      Context.Application := Application;
       Task_Context.Set_Value (Context);
    end Set_Current;
 

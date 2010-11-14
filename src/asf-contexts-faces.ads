@@ -18,6 +18,8 @@
 
 with ASF.Requests;
 with ASF.Responses;
+limited with ASF.Converters;
+limited with ASF.Applications.Main;
 with ASF.Contexts.Writer;
 with EL.Objects;
 with EL.Contexts;
@@ -82,12 +84,23 @@ package ASF.Contexts.Faces is
    procedure Set_Response (Context  : in out Faces_Context;
                            Response : in ASF.Responses.Response_Access);
 
+   --  Get a converter from a name.
+   --  Returns the converter object or null if there is no converter.
+   function Get_Converter (Context : in Faces_Context;
+                           Name    : in EL.Objects.Object)
+                           return access ASF.Converters.Converter'Class;
+
+   --  Get the application associated with this faces context.
+   function Get_Application (Context : in Faces_Context)
+                             return access ASF.Applications.Main.Application'Class;
+
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    function Current return Faces_Context_Access;
 
    --  Set the current faces context in the per-thread/task attribute.
-   procedure Set_Current (Context : Faces_Context_Access);
+   procedure Set_Current (Context     : Faces_Context_Access;
+                          Application : access ASF.Applications.Main.Application'Class);
 
 private
 
@@ -103,6 +116,9 @@ private
 
       --  The response
       Response : ASF.Responses.Response_Access;
+
+      --  The application
+      Application : access ASF.Applications.Main.Application'Class;
    end record;
 
 end ASF.Contexts.Faces;

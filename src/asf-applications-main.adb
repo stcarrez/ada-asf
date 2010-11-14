@@ -21,14 +21,19 @@ with Util.Log.Loggers;
 with ASF.Streams;
 with ASF.Contexts.Faces;
 with ASF.Contexts.Writer;
-with ASF.Components;
 with ASF.Components.Core;
+with ASF.Components.Core.Factory;
+with ASF.Components.Html.Factory;
+with ASF.Components.Util.Factory;
+with ASF.Views.Nodes.Core;
+with ASF.Views.Nodes.Facelets;
 
 with EL.Expressions;
 with EL.Contexts.Default;
 
 with Ada.Exceptions;
 with Ada.Containers.Vectors;
+
 package body ASF.Applications.Main is
 
    use Util.Log;
@@ -51,10 +56,25 @@ package body ASF.Applications.Main is
    --  ------------------------------
    procedure Initialize (App  : in out Application;
                          Conf : in Config) is
+      use ASF.Components;
+      use ASF.Views;
    begin
       App.Conf := Conf;
       App.Set_Init_Parameters (Params => Conf);
-      App.View.Initialize (Conf);
+
+      ASF.Factory.Register (Factory  => App.Components,
+                            Bindings => Core.Factory.Definition);
+      ASF.Factory.Register (Factory  => App.Components,
+                            Bindings => Html.Factory.Definition);
+      ASF.Factory.Register (Factory  => App.Components,
+                            Bindings => Nodes.Core.Definition);
+      ASF.Factory.Register (Factory  => App.Components,
+                            Bindings => Nodes.Facelets.Definition);
+
+      ASF.Components.Util.Factory.Set_Functions (App.Functions);
+      ASF.Views.Nodes.Core.Set_Functions (App.Functions);
+
+      App.View.Initialize (App.Components'Unchecked_Access, Conf);
       ASF.Modules.Initialize (App.Modules, Conf);
       ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
    end Initialize;
@@ -229,6 +249,16 @@ package body ASF.Applications.Main is
    end Set_Value;
 
    --  ------------------------------
+   --  Set the current faces context before processing a view.
+   --  ------------------------------
+   procedure Set_Context (App : in out Application;
+                          Context : in ASF.Contexts.Faces.Faces_Context_Access) is
+   begin
+      Context.Get_ELContext.Set_Function_Mapper (App.Functions'Unchecked_Access);
+      ASF.Contexts.Faces.Set_Current (Context, App'Unchecked_Access);
+   end Set_Context;
+
+   --  ------------------------------
    --  Dispatch the request received on a page.
    --  ------------------------------
    procedure Dispatch (App      : in out Application;
@@ -273,7 +303,7 @@ package body ASF.Applications.Main is
 
       Context.Set_Request (Request'Unchecked_Access);
       Context.Set_Response (Response'Unchecked_Access);
-      Handler.Set_Context (Context'Unchecked_Access);
+      App.Set_Context (Context'Unchecked_Access);
       begin
          Handler.Restore_View (Page, Context, View);
 
@@ -356,7 +386,7 @@ package body ASF.Applications.Main is
 
       Context.Set_Request (Request'Unchecked_Access);
       Context.Set_Response (Response'Unchecked_Access);
-      Handler.Set_Context (Context'Unchecked_Access);
+      App.Set_Context (Context'Unchecked_Access);
       begin
          Handler.Restore_View (Page, Context, View);
 
@@ -413,5 +443,23 @@ package body ASF.Applications.Main is
          end loop;
       end;
    end Postback;
+
+   --  ------------------------------
+   --  Find the converter instance that was registered under the given name.
+   --  Returns null if no such converter exist.
+   --  ------------------------------
+   function Find (App  : in Application;
+                  Name : in EL.Objects.Object) return access ASF.Converters.Converter'Class is
+   begin
+      return ASF.Factory.Find (App.Components, Name);
+   end Find;
+
+   --  ------------------------------
+   --  Register some functions
+   --  ------------------------------
+   procedure Register_Functions (App : in out Application'Class) is
+   begin
+      Set_Functions (App.Functions);
+   end Register_Functions;
 
 end ASF.Applications.Main;

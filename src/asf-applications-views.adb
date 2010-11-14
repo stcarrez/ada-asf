@@ -16,9 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Strings.Fixed;
-with ASF.Components.Core.Factory;
-with ASF.Components.Html.Factory;
-with ASF.Components.Util.Factory;
+
 with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
 with ASF.Contexts.Facelets;
@@ -103,16 +101,6 @@ package body ASF.Applications.Views is
    end Get_Facelet_Name;
 
    --  ------------------------------
-   --  Set the current faces context before processing a view.
-   --  ------------------------------
-   procedure Set_Context (Handler : in out View_Handler;
-                          Context : in ASF.Contexts.Faces.Faces_Context_Access) is
-   begin
-      Context.Get_ELContext.Set_Function_Mapper (Handler.Functions'Unchecked_Access);
-      ASF.Contexts.Faces.Set_Current (Context);
-   end Set_Context;
-
-   --  ------------------------------
    --  Restore the view identified by the given name in the faces context
    --  and create the component tree representing that view.
    --  ------------------------------
@@ -163,28 +151,18 @@ package body ASF.Applications.Views is
    --  ------------------------------
    --  Initialize the view handler.
    --  ------------------------------
-   procedure Initialize (Handler : out View_Handler;
-                         Conf    : in Config) is
+   procedure Initialize (Handler    : out View_Handler;
+                         Components : access ASF.Factory.Component_Factory;
+                         Conf       : in Config) is
       use ASF.Views;
       use Ada.Strings.Unbounded;
    begin
-      Facelets.Register (Factory  => Handler.Facelets,
-                         Bindings => Core.Factory.Definition);
-      Facelets.Register (Factory  => Handler.Facelets,
-                         Bindings => Html.Factory.Definition);
-      Facelets.Register (Factory  => Handler.Facelets,
-                         Bindings => Nodes.Core.Definition);
-      Facelets.Register (Factory  => Handler.Facelets,
-                         Bindings => Nodes.Facelets.Definition);
-
-      ASF.Components.Util.Factory.Set_Functions (Handler.Functions);
-      ASF.Views.Nodes.Core.Set_Functions (Handler.Functions);
-
       Handler.Paths    := To_Unbounded_String (Conf.Get (VIEW_DIR_PARAM));
       Handler.View_Ext := To_Unbounded_String (Conf.Get (VIEW_EXT_PARAM));
       Handler.File_Ext := To_Unbounded_String (Conf.Get (VIEW_FILE_EXT_PARAM));
 
       Facelets.Initialize (Factory => Handler.Facelets,
+                           Components => Components,
                            Paths   => To_String (Handler.Paths),
                            Ignore_White_Spaces => Conf.Get (VIEW_IGNORE_WHITE_SPACES_PARAM),
                            Ignore_Empty_Lines  => Conf.Get (VIEW_IGNORE_EMPTY_LINES_PARAM),
@@ -228,13 +206,5 @@ package body ASF.Applications.Views is
    begin
       ASF.Views.Facelets.Register_Module (Handler.Facelets, URI, Dir);
    end Register_Module;
-
-   --  ------------------------------
-   --  Register some functions
-   --  ------------------------------
-   procedure Register_Functions (Handler : in out View_Handler'Class) is
-   begin
-      Set_Functions (Handler.Functions);
-   end Register_Functions;
 
 end ASF.Applications.Views;

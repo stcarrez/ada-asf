@@ -19,10 +19,15 @@
 with EL.Beans;
 with EL.Objects;
 with EL.Contexts;
+with EL.Functions;
+with EL.Functions.Default;
 with EL.Variables.Default;
 with Ada.Strings.Unbounded;
 
 with ASF.Locales;
+with ASF.Factory;
+with ASF.Converters;
+with ASF.Contexts.Faces;
 with ASF.Applications.Views;
 with ASF.Beans;
 with ASF.Modules;
@@ -94,6 +99,10 @@ package ASF.Applications.Main is
    --  Closes the application
    procedure Close (App : in out Application);
 
+   --  Set the current faces context before processing a view.
+   procedure Set_Context (App     : in out Application;
+                          Context : in ASF.Contexts.Faces.Faces_Context_Access);
+
    --  Dispatch the request received on a page.
    procedure Dispatch (App      : in out Application;
                        Page     : in String;
@@ -106,6 +115,16 @@ package ASF.Applications.Main is
                        Request  : in out ASF.Requests.Request'Class;
                        Response : in out ASF.Responses.Response'Class);
 
+   --  Find the converter instance that was registered under the given name.
+   --  Returns null if no such converter exist.
+   function Find (App  : in Application;
+                  Name : in EL.Objects.Object) return access ASF.Converters.Converter'Class;
+
+   --  Register some functions
+   generic
+      with procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
+   procedure Register_Functions (App : in out Application'Class);
+
 private
 
    type Application is new ASF.Servlets.Servlet_Registry with record
@@ -115,6 +134,11 @@ private
       Modules : aliased ASF.Modules.Module_Registry;
       Globals : aliased EL.Variables.Default.Default_Variable_Mapper;
       Conf    : Config;
+
+      Functions : aliased EL.Functions.Default.Default_Function_Mapper;
+
+      --  The component factory
+      Components : aliased ASF.Factory.Component_Factory;
    end record;
 
 end ASF.Applications.Main;

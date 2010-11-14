@@ -21,6 +21,7 @@ with ASF.Modules;
 with ASF.Components.Core;
 with ASF.Contexts.Faces;
 with ASF.Views.Facelets;
+with ASF.Factory;
 with Ada.Strings.Unbounded;
 package ASF.Applications.Views is
 
@@ -35,12 +36,9 @@ package ASF.Applications.Views is
    type View_Handler_Access is access all View_Handler'Class;
 
    --  Initialize the view handler.
-   procedure Initialize (Handler : out View_Handler;
-                         Conf    : in Config);
-
-   --  Set the current faces context before processing a view.
-   procedure Set_Context (Handler : in out View_Handler;
-                          Context : in ASF.Contexts.Faces.Faces_Context_Access);
+   procedure Initialize (Handler    : out View_Handler;
+                         Components : access ASF.Factory.Component_Factory;
+                         Conf       : in Config);
 
    --  Restore the view identified by the given name in the faces context
    --  and create the component tree representing that view.
@@ -72,16 +70,10 @@ package ASF.Applications.Views is
    procedure Register_Module (Handler : in out View_Handler;
                               Module  : in ASF.Modules.Module_Access);
 
-   --  Register some functions
-   generic
-      with procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
-   procedure Register_Functions (Handler : in out View_Handler'Class);
-
 private
 
    type View_Handler is tagged limited record
       Facelets  : aliased ASF.Views.Facelets.Facelet_Factory;
-      Functions : aliased EL.Functions.Default.Default_Function_Mapper;
       Paths     : Ada.Strings.Unbounded.Unbounded_String;
       View_Ext  : Ada.Strings.Unbounded.Unbounded_String;
       File_Ext  : Ada.Strings.Unbounded.Unbounded_String;

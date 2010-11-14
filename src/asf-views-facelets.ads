@@ -68,6 +68,7 @@ package ASF.Views.Facelets is
    --  Set the ignore empty lines configuration when reading XHTML files.
    --  Set the escape unknown tags configuration when reading XHTML files.
    procedure Initialize (Factory             : in out Facelet_Factory;
+                         Components          : access ASF.Factory.Component_Factory;
                          Paths               : in String;
                          Ignore_White_Spaces : in Boolean;
                          Ignore_Empty_Lines  : in Boolean;
@@ -77,10 +78,6 @@ package ASF.Views.Facelets is
    --  Returns the path to be used for reading the facelet file.
    function Find_Facelet_Path (Factory : Facelet_Factory;
                                Name    : String) return String;
-
-   --  Register the component factory bindings in the facelet factory.
-   procedure Register (Factory  : in out Facelet_Factory;
-                       Bindings : in ASF.Factory.Factory_Bindings_Access);
 
    --  Register a module and directory where the module files are stored.
    procedure Register_Module (Factory : in out Facelet_Factory;
@@ -132,7 +129,7 @@ private
       Path_Map : Util.Strings.Maps.Map;
 
       --  The component factory
-      Factory  : aliased ASF.Factory.Component_Factory;
+      Factory  : access ASF.Factory.Component_Factory;
 
       --  Whether the unknown tags are escaped using XML escape rules.
       Escape_Unknown_Tags : Boolean := True;

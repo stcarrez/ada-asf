@@ -106,6 +106,7 @@ package body ASF.Views.Facelets is
    --  Set the escape unknown tags configuration when reading XHTML files.
    --  ------------------------------
    procedure Initialize (Factory             : in out Facelet_Factory;
+                         Components          : access ASF.Factory.Component_Factory;
                          Paths               : in String;
                          Ignore_White_Spaces : in Boolean;
                          Ignore_Empty_Lines  : in Boolean;
@@ -113,6 +114,7 @@ package body ASF.Views.Facelets is
    begin
       Log.Info ("Set facelet search directory to: '{0}'", Paths);
 
+      Factory.Factory := Components;
       Factory.Paths := To_Unbounded_String (Paths);
       Factory.Ignore_White_Spaces := Ignore_White_Spaces;
       Factory.Ignore_Empty_Lines  := Ignore_Empty_Lines;
@@ -186,17 +188,6 @@ package body ASF.Views.Facelets is
    end Find;
 
    --  ------------------------------
-   --  Register the component factory bindings in the facelet factory.
-   --  ------------------------------
-   procedure Register (Factory  : in out Facelet_Factory;
-                       Bindings : in ASF.Factory.Factory_Bindings_Access) is
-      use ASF;
-   begin
-      ASF.Factory.Register (Factory  => Factory.Factory,
-                            Bindings => Bindings);
-   end Register;
-
-   --  ------------------------------
    --  Load the facelet node tree by reading the facelet XHTML file.
    --  ------------------------------
    procedure Load (Factory : in out Facelet_Factory;
@@ -230,7 +221,7 @@ package body ASF.Views.Facelets is
       Set_Escape_Unknown_Tags (Reader, Factory.Escape_Unknown_Tags);
       Set_Ignore_Empty_Lines (Reader, Factory.Ignore_Empty_Lines);
       Parse (Reader, File.all'Access,
-             Read, Factory.Factory'Unchecked_Access, Ctx'Unchecked_Access);
+             Read, Factory.Factory, Ctx'Unchecked_Access);
       Close (Read);
 
       Result := Facelet '(Root => Get_Root (Reader),

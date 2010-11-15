@@ -84,6 +84,24 @@ package ASF.Contexts.Faces is
    procedure Set_Response (Context  : in out Faces_Context;
                            Response : in ASF.Responses.Response_Access);
 
+   --  Signal the JavaServer faces implementation that, as soon as the
+   --  current phase of the request processing lifecycle has been completed,
+   --  control should be passed to the <b>Render Response</b> phase,
+   --  bypassing any phases that have not been executed yet.
+   procedure Render_Response (Context : in out Faces_Context);
+
+   --  Check whether the <b>Render_Response</b> phase must be processed immediately.
+   function Get_Render_Response (Context : in Faces_Context) return Boolean;
+
+   --  Signal the JavaServer Faces implementation that the HTTP response
+   --  for this request has already been generated (such as an HTTP redirect),
+   --  and that the request processing lifecycle should be terminated as soon
+   --  as the current phase is completed.
+   procedure Response_Completed (Context : in out Faces_Context);
+
+   --  Check whether the response has been completed.
+   function Get_Response_Completed (Context : in Faces_Context) return Boolean;
+
    --  Get a converter from a name.
    --  Returns the converter object or null if there is no converter.
    function Get_Converter (Context : in Faces_Context;
@@ -119,6 +137,9 @@ private
 
       --  The application
       Application : access ASF.Applications.Main.Application'Class;
+
+      Render_Response    : Boolean := False;
+      Response_Completed : Boolean := False;
    end record;
 
 end ASF.Contexts.Faces;

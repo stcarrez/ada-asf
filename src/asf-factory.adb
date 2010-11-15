@@ -138,4 +138,31 @@ package body ASF.Factory is
       end if;
    end Find;
 
+   --  ------------------------------
+   --  Register the validator instance under the given name.
+   --  ------------------------------
+   procedure Register (Factory   : in out Component_Factory;
+                       Name      : in String;
+                       Validator : in ASF.Validators.Validator_Access) is
+   begin
+      Log.Info ("Register validator: {0}", Name);
+
+      Factory.Validators.Include (EL.Objects.To_Object (Name), Validator);
+   end Register;
+
+   --  ------------------------------
+   --  Find the validator instance that was registered under the given name.
+   --  Returns null if no such validator exist.
+   --  ------------------------------
+   function Find (Factory : in Component_Factory;
+                  Name    : in EL.Objects.Object) return ASF.Validators.Validator_Access is
+      Pos : constant Validator_Maps.Cursor := Factory.Validators.Find (Name);
+   begin
+      if Validator_Maps.Has_Element (Pos) then
+         return Validator_Maps.Element (Pos);
+      else
+         return null;
+      end if;
+   end Find;
+
 end ASF.Factory;

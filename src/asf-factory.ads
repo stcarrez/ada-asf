@@ -19,12 +19,12 @@
 with Util.Strings;
 with ASF.Views.Nodes;
 with ASF.Converters;
+with ASF.Validators;
 with EL.Objects;
 
 private with EL.Objects.Hash;
 private with Ada.Containers;
 private with Ada.Containers.Hashed_Maps;
-private with Ada.Containers.Indefinite_Hashed_Maps;
 
 --  The <b>ASF.Factory</b> is the main factory for building the facelet
 --  node tree and defining associated component factory.  A binding library
@@ -110,10 +110,25 @@ package ASF.Factory is
    function Find (Factory : in Component_Factory;
                   Name    : in EL.Objects.Object) return ASF.Converters.Converter_Access;
 
+   --  ------------------------------
+   --  Validator Factory
+   --  ------------------------------
+
+   --  Register the validator instance under the given name.
+   procedure Register (Factory   : in out Component_Factory;
+                       Name      : in String;
+                       Validator : in ASF.Validators.Validator_Access);
+
+   --  Find the validator instance that was registered under the given name.
+   --  Returns null if no such validator exist.
+   function Find (Factory : in Component_Factory;
+                  Name    : in EL.Objects.Object) return ASF.Validators.Validator_Access;
+
 private
 
    use Util.Strings;
    use ASF.Converters;
+   use ASF.Validators;
 
    --  Tag library map indexed on the library namespace.
    package Factory_Maps is new
@@ -126,14 +141,24 @@ private
    --  The key is an EL.Objects.Object to minimize the conversions when searching
    --  for a converter.
    package Converter_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => EL.Objects.Object,
-                                            Element_Type    => Converter_Access,
-                                            Hash            => EL.Objects.Hash,
-                                            Equivalent_Keys => EL.Objects."=");
+     Ada.Containers.Hashed_Maps (Key_Type        => EL.Objects.Object,
+                                 Element_Type    => Converter_Access,
+                                 Hash            => EL.Objects.Hash,
+                                 Equivalent_Keys => EL.Objects."=");
+
+   --  Validator map indexed on the validator name.
+   --  The key is an EL.Objects.Object to minimize the conversions when searching
+   --  for a validator.
+   package Validator_Maps is new
+     Ada.Containers.Hashed_Maps (Key_Type        => EL.Objects.Object,
+                                 Element_Type    => Validator_Access,
+                                 Hash            => EL.Objects.Hash,
+                                 Equivalent_Keys => EL.Objects."=");
 
    type Component_Factory is limited record
       Map        : Factory_Maps.Map;
       Converters : Converter_Maps.Map;
+      Validators : Validator_Maps.Map;
    end record;
 
 end ASF.Factory;

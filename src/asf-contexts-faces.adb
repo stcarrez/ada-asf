@@ -166,6 +166,107 @@ package body ASF.Contexts.Faces is
    end Get_Response_Completed;
 
    --  ------------------------------
+   --  Append the message to the list of messages associated with the specified
+   --  client identifier.  If <b>Client_Id</b> is empty, the message is global
+   --  (or not associated with a component)
+   --  ------------------------------
+   procedure Add_Message (Context   : in out Faces_Context;
+                          Client_Id : in String;
+                          Message   : in ASF.Applications.Messages.Message) is
+
+      procedure Append_Message (Key  : in Unbounded_String;
+                                List : in out Vectors.Vector);
+
+      --  ------------------------------
+      --  Append the message to the list.
+      --  ------------------------------
+      procedure Append_Message (Key  : in Unbounded_String;
+                                List : in out Vectors.Vector) is
+         pragma Unreferenced (Key);
+      begin
+         List.Append (Message);
+      end Append_Message;
+
+      Id       : constant Unbounded_String := To_Unbounded_String (Client_Id);
+      Severity : constant ASF.Applications.Messages.Severity := Get_Severity (Message);
+      Pos      : Message_Maps.Cursor;
+      Inserted : Boolean;
+   begin
+      --  Insert or get the messages associated with the client identifier.
+      Context.Messages.Insert (Key      => Id,
+                               Position => Pos,
+                               Inserted => Inserted);
+
+      --  Append the message in that list.
+      Context.Messages.Update_Element (Position => Pos,
+                                       Process  => Append_Message'Access);
+
+      if Context.Max_Severity < Severity then
+         Context.Max_Severity := Severity;
+      end if;
+   end Add_Message;
+
+   --  ------------------------------
+   --  Append the message to the list of messages associated with the specified
+   --  client identifier.  If <b>Client_Id</b> is empty, the message is global
+   --  (or not associated with a component)
+   --  ------------------------------
+   procedure Add_Message (Context   : in out Faces_Context;
+                          Client_Id : in String;
+                          Message   : in String;
+                          Severity  : in Applications.Messages.Severity := Applications.Messages.ERROR) is
+      Msg : ASF.Applications.Messages.Message;
+   begin
+      ASF.Applications.Messages.Set_Severity (Msg, Severity);
+      ASF.Applications.Messages.Set_Summary (Msg, Message);
+      Context.Add_Message (Client_Id, Msg);
+   end Add_Message;
+
+   --  ------------------------------
+   --  Get an iterator for the messages associated with the specified client
+   --  identifier.  If the <b>Client_Id</b> ie empty, an iterator for the
+   --  global messages is returned.
+   --  ------------------------------
+   function Get_Messages (Context   : in Faces_Context;
+                          Client_Id : in String)
+                          return ASF.Applications.Messages.Vectors.Cursor is
+
+      Iter : Vectors.Cursor;
+
+      procedure Get_Iterator (Key  : in Unbounded_String;
+                              List : in Vectors.Vector);
+
+      --  ------------------------------
+      --  Get an iterator for the messages
+      --  ------------------------------
+      procedure Get_Iterator (Key  : in Unbounded_String;
+                              List : in Vectors.Vector) is
+         pragma Unreferenced (Key);
+      begin
+         Iter := List.First;
+      end Get_Iterator;
+
+      Id  : constant Unbounded_String := To_Unbounded_String (Client_Id);
+      Pos : constant Message_Maps.Cursor := Context.Messages.Find (Id);
+   begin
+      if Message_Maps.Has_Element (Pos) then
+         Message_Maps.Query_Element (Position => Pos,
+                                     Process  => Get_Iterator'Access);
+      end if;
+      return Iter;
+   end Get_Messages;
+
+   --  ------------------------------
+   --  Returns the maximum severity level recorded for any message that has been queued.
+   --  Returns NONE if no message has been queued.
+   --  ------------------------------
+   function Get_Maximum_Severity (Context : in Faces_Context)
+                                  return ASF.Applications.Messages.Severity is
+   begin
+      return Context.Max_Severity;
+   end Get_Maximum_Severity;
+
+   --  ------------------------------
    --  Get a converter from a name.
    --  Returns the converter object or null if there is no converter.
    --  ------------------------------

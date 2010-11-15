@@ -20,10 +20,15 @@ with ASF.Requests;
 with ASF.Responses;
 limited with ASF.Converters;
 limited with ASF.Applications.Main;
+with ASF.Applications.Messages;
+with ASF.Applications.Messages.Vectors;
 with ASF.Contexts.Writer;
 with EL.Objects;
 with EL.Contexts;
 with Ada.Strings.Unbounded;
+
+private with Ada.Strings.Unbounded.Hash;
+private with Ada.Containers.Hashed_Maps;
 
 --  The <b>Faces_Context</b> is an object passed to the component tree and
 --  bean actions to provide the full context in which the view is rendered
@@ -102,6 +107,32 @@ package ASF.Contexts.Faces is
    --  Check whether the response has been completed.
    function Get_Response_Completed (Context : in Faces_Context) return Boolean;
 
+   --  Append the message to the list of messages associated with the specified
+   --  client identifier.  If <b>Client_Id</b> is empty, the message is global
+   --  (or not associated with a component)
+   procedure Add_Message (Context   : in out Faces_Context;
+                          Client_Id : in String;
+                          Message   : in ASF.Applications.Messages.Message);
+
+   --  Append the message to the list of messages associated with the specified
+   --  client identifier.  If <b>Client_Id</b> is empty, the message is global
+   --  (or not associated with a component)
+   procedure Add_Message (Context   : in out Faces_Context;
+                          Client_Id : in String;
+                          Message   : in String;
+                          Severity  : in Applications.Messages.Severity := Applications.Messages.ERROR);
+
+   --  Get an iterator for the messages associated with the specified client
+   --  identifier.  If the <b>Client_Id</b> ie empty, an iterator for the
+   --  global messages is returned.
+   function Get_Messages (Context   : in Faces_Context;
+                          Client_Id : in String) return ASF.Applications.Messages.Vectors.Cursor;
+
+   --  Returns the maximum severity level recorded for any message that has been queued.
+   --  Returns NONE if no message has been queued.
+   function Get_Maximum_Severity (Context : in Faces_Context)
+                                  return ASF.Applications.Messages.Severity;
+
    --  Get a converter from a name.
    --  Returns the converter object or null if there is no converter.
    function Get_Converter (Context : in Faces_Context;
@@ -122,6 +153,16 @@ package ASF.Contexts.Faces is
 
 private
 
+   use ASF.Applications.Messages;
+
+   --  Map of messages associated with a component
+   package Message_Maps is new
+     Ada.Containers.Hashed_Maps (Key_Type        => Unbounded_String,
+                                 Element_Type    => Vectors.Vector,
+                                 Hash            => Hash,
+                                 Equivalent_Keys => "=",
+                                 "="             => Vectors."=");
+
    type Faces_Context is tagged record
       --  The response writer.
       Writer   : ASF.Contexts.Writer.ResponseWriter_Access;
@@ -140,6 +181,12 @@ private
 
       Render_Response    : Boolean := False;
       Response_Completed : Boolean := False;
+
+      --  List of messages added indexed by the client identifier.
+      Messages           : Message_Maps.Map;
+
+      --  The maximum severity for the messages that were collected.
+      Max_Severity       : Severity := NONE;
    end record;
 
 end ASF.Contexts.Faces;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ASF testsuite - Ada Server Faces Test suite
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Faces Context Tests - Unit tests for ASF.Contexts.Faces
+--  Copyright (C) 2010 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,11 +17,17 @@
 -----------------------------------------------------------------------
 
 with AUnit.Test_Suites;
+with AUnit.Test_Fixtures;
 
-package ASF.Testsuite is
+package ASF.Contexts.Faces.Tests is
 
-   use AUnit.Test_Suites;
+   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
-   function Suite return Access_Test_Suite;
+   type Test is new AUnit.Test_Fixtures.Test_Fixture with null record;
 
-end ASF.Testsuite;
+   --  Test the faces message queue.
+   procedure Test_Add_Message (T : in out Test);
+   procedure Test_Max_Severity (T : in out Test);
+   procedure Test_Get_Messages (T : in out Test);
+
+end ASF.Contexts.Faces.Tests;

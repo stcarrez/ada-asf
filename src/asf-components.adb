@@ -363,6 +363,31 @@ package body ASF.Components is
       UIComponent'Class (UI).Decode (Context);
    end Process_Decodes;
 
+   --  ------------------------------
+   --  Perform the component tree processing required by the <b>Process Validations</b>
+   --  phase of the request processing lifecycle for all facets of this component,
+   --  all children of this component, and this component itself, as follows:
+   --  <ul>
+   --    <li>If this component <b>rendered</b> property is false, skip further processing.
+   --    <li>Call the <b>Process_Validators</b> of all facets and children.
+   --  <ul>
+   --  ------------------------------
+   procedure Process_Validators (UI      : in out UIComponent;
+                                 Context : in out Faces_Context'Class) is
+      Child : UIComponent_Access;
+   begin
+      --  Do not process validation of the component nor its children
+      --  if this component is not rendered.
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+      Child := UI.First_Child;
+      while Child /= null loop
+         Child.Process_Validators (Context);
+         Child := Child.Next;
+      end loop;
+   end Process_Validators;
+
    procedure Process_Updates (UI      : in out UIComponent;
                               Context : in out Faces_Context'Class) is
       Child : UIComponent_Access;

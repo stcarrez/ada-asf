@@ -140,6 +140,16 @@ package ASF.Components is
    procedure Process_Decodes (UI      : in out UIComponent;
                               Context : in out Faces_Context'Class);
 
+   --  Perform the component tree processing required by the <b>Process Validations</b>
+   --  phase of the request processing lifecycle for all facets of this component,
+   --  all children of this component, and this component itself, as follows:
+   --  <ul>
+   --    <li>If this component <b>rendered</b> property is false, skip further processing.
+   --    <li>Call the <b>Process_Validators</b> of all facets and children.
+   --  <ul>
+   procedure Process_Validators (UI      : in out UIComponent;
+                                 Context : in out Faces_Context'Class);
+
    procedure Process_Updates (UI      : in out UIComponent;
                               Context : in out Faces_Context'Class);
 

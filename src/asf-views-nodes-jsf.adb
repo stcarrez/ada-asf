@@ -80,4 +80,66 @@ package body ASF.Views.Nodes.Jsf is
       end;
    end Build_Components;
 
+   --  ------------------------------
+   --  Attribute Tag
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the Attribute Tag
+   --  ------------------------------
+   function Create_Attribute_Tag_Node (Name       : Unbounded_String;
+                                       Line       : Views.Nodes.Line_Info;
+                                       Parent     : Views.Nodes.Tag_Node_Access;
+                                       Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                       return Views.Nodes.Tag_Node_Access is
+
+      use ASF.Views.Nodes;
+
+      Node : constant Attribute_Tag_Node_Access := new Attribute_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Node.Attr_Name := Find_Attribute (Attributes, "name");
+      Node.Value     := Find_Attribute (Attributes, "value");
+      if Node.Attr_Name = null then
+         Node.Error ("Missing 'name' attribute");
+      end if;
+      if Node.Value = null then
+         Node.Error ("Missing 'value' attribute");
+      end if;
+      return Node.all'Access;
+   end Create_Attribute_Tag_Node;
+
+   --  ------------------------------
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   --  Adds the attribute to the component node.
+   --  This operation does not create any new UIComponent.
+   --  ------------------------------
+   overriding
+   procedure Build_Components (Node    : access Attribute_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class) is
+      use EL.Expressions;
+   begin
+      if Node.Attr_Name /= null and Node.Value /= null then
+         declare
+            Name  : constant EL.Objects.Object := Get_Value (Node.Attr_Name.all, Context);
+         begin
+            Node.Attr.Name := EL.Objects.To_Unbounded_String (Name);
+            if Node.Value.Binding /= null then
+               declare
+                  Expr : constant EL.Expressions.Expression
+                    := ASF.Views.Nodes.Reduce_Expression (Node.Value.all, Context);
+               begin
+                  Parent.Set_Attribute (Def => Node.Attr'Access, Value => Expr);
+               end;
+            else
+               Parent.Set_Attribute (Def   => Node.Attr'Access,
+                                     Value => Get_Value (Node.Value.all, Context));
+            end if;
+         end;
+      end if;
+   end Build_Components;
+
 end ASF.Views.Nodes.Jsf;

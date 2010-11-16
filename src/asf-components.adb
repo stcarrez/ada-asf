@@ -254,6 +254,30 @@ package body ASF.Components is
       UI.Attributes := Attribute;
    end Set_Attribute;
 
+   procedure Set_Attribute (UI    : in out UIComponent;
+                            Def   : access ASF.Views.Nodes.Tag_Attribute;
+                            Value : in EL.Objects.Object) is
+      Attribute : UIAttribute_Access := UI.Attributes;
+      Name      : constant String := ASF.Views.Nodes.Get_Name (Def.all);
+   begin
+      while Attribute /= null loop
+         declare
+            Attr_Name : constant String := ASF.Views.Nodes.Get_Name (Attribute.Definition.all);
+         begin
+            if Attr_Name = Name then
+               Attribute.Value := Value;
+               return;
+            end if;
+         end;
+         Attribute := Attribute.Next_Attr;
+      end loop;
+      Attribute := new UIAttribute;
+      Attribute.Definition := Def;
+      Attribute.Value := Value;
+      Attribute.Next_Attr := UI.Attributes;
+      UI.Attributes := Attribute;
+   end Set_Attribute;
+
    --  Get the value expression
    function Get_Value_Expression (UI   : in UIComponent;
                                   Name : in String) return EL.Expressions.Value_Expression is

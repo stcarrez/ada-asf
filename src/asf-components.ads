@@ -104,6 +104,10 @@ package ASF.Components is
                             Def   : access ASF.Views.Nodes.Tag_Attribute;
                             Value : in EL.Expressions.Expression);
 
+   procedure Set_Attribute (UI    : in out UIComponent;
+                            Def   : access ASF.Views.Nodes.Tag_Attribute;
+                            Value : in EL.Objects.Object);
+
    --  Get the converter associated with the component
    function Get_Converter (UI      : in UIComponent;
                            Context : in Faces_Context'Class)

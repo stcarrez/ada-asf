@@ -42,20 +42,25 @@ package body ASF.Components.Core.Factory is
    use ASF.Views.Nodes;
 
    URI           : aliased constant String := "http://java.sun.com/jsf/core";
+   ATTRIBUTE_TAG : aliased constant String := "attribute";
    CONVERTER_TAG : aliased constant String := "converter";
    PARAM_TAG     : aliased constant String := "param";
    VIEW_TAG      : aliased constant String := "view";
 
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => CONVERTER_TAG'Access,
+     := (1 => (Name      => ATTRIBUTE_TAG'Access,
+               Component => null,
+               Tag       => Views.Nodes.Jsf.Create_Attribute_Tag_Node'Access),
+
+         2 => (Name      => CONVERTER_TAG'Access,
                Component => null,
                Tag       => Views.Nodes.Jsf.Create_Converter_Tag_Node'Access),
 
-         2 => (Name      => PARAM_TAG'Access,
+         3 => (Name      => PARAM_TAG'Access,
                Component => Create_Parameter'Access,
                Tag       => Create_Component_Node'Access),
 
-         3 => (Name      => VIEW_TAG'Access,
+         4 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access)
         );

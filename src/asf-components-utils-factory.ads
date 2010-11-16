@@ -19,7 +19,7 @@
 with EL.Functions;
 with ASF.Factory;
 
-package ASF.Components.Util.Factory is
+package ASF.Components.Utils.Factory is
 
    use ASF;
 
@@ -28,4 +28,4 @@ package ASF.Components.Util.Factory is
 
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
 
-end ASF.Components.Util.Factory;
+end ASF.Components.Utils.Factory;

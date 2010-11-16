@@ -15,7 +15,12 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+package ASF.Components.Utils is
 
-package ASF.Components.Util is
+   --  Get the line information where the component is defined.
+--     function Get_Line_Info (UI : in UIComponent'Class) return Views.Nodes.Line_Info;
 
-end ASF.Components.Util;
+   --  Get the line information where the component is defined.
+   function Get_Line_Info (UI : in UIComponent'Class) return String;
+
+end ASF.Components.Utils;

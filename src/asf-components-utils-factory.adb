@@ -20,7 +20,7 @@ with ASF.Components.Core;
 with ASF.Views.Nodes;
 with Util.Strings.Transforms; use Util.Strings;
 with EL.Functions.Default;
-package body ASF.Components.Util.Factory is
+package body ASF.Components.Utils.Factory is
 
    function Create_View return UIComponent_Access;
    function Create_Parameter return UIComponent_Access;
@@ -103,4 +103,4 @@ package body ASF.Components.Util.Factory is
       return EL.Objects.To_Object (Result);
    end Escape_Xml;
 
-end ASF.Components.Util.Factory;
+end ASF.Components.Utils.Factory;

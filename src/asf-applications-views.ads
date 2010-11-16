@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with EL.Functions.Default;
 with ASF.Modules;
 with ASF.Components.Core;
 with ASF.Contexts.Faces;

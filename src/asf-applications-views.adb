@@ -17,15 +17,15 @@
 -----------------------------------------------------------------------
 with Ada.Strings.Fixed;
 
-with ASF.Views.Nodes.Core;
-with ASF.Views.Nodes.Facelets;
 with ASF.Contexts.Facelets;
+with ASF.Applications.Main;
 package body ASF.Applications.Views is
 
    use ASF.Components;
 
    type Facelet_Context is new ASF.Contexts.Facelets.Facelet_Context with record
-      Facelets : access ASF.Views.Facelets.Facelet_Factory;
+      Facelets    : access ASF.Views.Facelets.Facelet_Factory;
+      Application : access ASF.Applications.Main.Application'Class;
    end record;
 
    --  Include the definition having the given name.
@@ -39,6 +39,11 @@ package body ASF.Applications.Views is
    procedure Include_Facelet (Context : in out Facelet_Context;
                               Source  : in String;
                               Parent  : in UIComponent_Access);
+
+   --  Get the application associated with this facelet context.
+   overriding
+   function Get_Application (Context : in Facelet_Context)
+                             return access ASF.Applications.Main.Application'Class;
 
    --  ------------------------------
    --  Include the definition having the given name.
@@ -85,6 +90,16 @@ package body ASF.Applications.Views is
    end Include_Facelet;
 
    --  ------------------------------
+   --  Get the application associated with this facelet context.
+   --  ------------------------------
+   overriding
+   function Get_Application (Context : in Facelet_Context)
+                             return access ASF.Applications.Main.Application'Class is
+   begin
+      return Context.Application;
+   end Get_Application;
+
+   --  ------------------------------
    --  Get the facelet name from the view name.
    --  ------------------------------
    function Get_Facelet_Name (Handler : in View_Handler;
@@ -115,7 +130,8 @@ package body ASF.Applications.Views is
       Tree      : Facelets.Facelet;
       View_Name : constant String := Handler.Get_Facelet_Name (Name);
    begin
-      Ctx.Facelets := Handler.Facelets'Unchecked_Access;
+      Ctx.Facelets    := Handler.Facelets'Unchecked_Access;
+      Ctx.Application := Context.Get_Application;
       Ctx.Set_ELContext (Context.Get_ELContext);
       Facelets.Find_Facelet (Factory => Handler.Facelets,
                              Name    => View_Name,

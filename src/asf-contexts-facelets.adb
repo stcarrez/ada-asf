@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with EL.Variables;
+with ASF.Applications.Main;
 with ASF.Views.Nodes.Facelets;
 package body ASF.Contexts.Facelets is
 
@@ -181,5 +182,16 @@ package body ASF.Contexts.Facelets is
          return To_String (Context.Path) & Path;
       end if;
    end Resolve_Path;
+
+   --  ------------------------------
+   --  Get a converter from a name.
+   --  Returns the converter object or null if there is no converter.
+   --  ------------------------------
+   function Get_Converter (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return access ASF.Converters.Converter'Class is
+   begin
+      return Facelet_Context'Class (Context).Get_Application.Find (Name);
+   end Get_Converter;
 
 end ASF.Contexts.Facelets;

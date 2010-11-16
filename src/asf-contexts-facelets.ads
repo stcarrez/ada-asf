@@ -22,8 +22,11 @@ with EL.Contexts;
 with EL.Expressions;
 with EL.Functions;
 with ASF.Components;
+with ASF.Converters;
+with ASF.Validators;
 with Ada.Strings.Unbounded;
-with Ada.Containers.Indefinite_Vectors;
+with Ada.Containers.Vectors;
+limited with ASF.Applications.Main;
 limited with ASF.Views.Nodes.Facelets;
 package ASF.Contexts.Facelets is
 
@@ -36,7 +39,7 @@ package ASF.Contexts.Facelets is
    --  The <b>Facelet_Context</b> defines a context used exclusively when
    --  building the component tree from the facelet nodes.  It allows to
    --  compose the component tree by using other facelet fragments.
-   type Facelet_Context is tagged private;
+   type Facelet_Context is abstract tagged private;
 
    type Facelet_Context_Access is access all Facelet_Context'Class;
 
@@ -100,20 +103,33 @@ package ASF.Contexts.Facelets is
    function Resolve_Path (Context : Facelet_Context;
                           Path    : String) return String;
 
+   --  Get a converter from a name.
+   --  Returns the converter object or null if there is no converter.
+   function Get_Converter (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return access ASF.Converters.Converter'Class;
+
+   --  Get the application associated with this facelet context.
+   function Get_Application (Context : in Facelet_Context)
+                             return access ASF.Applications.Main.Application'Class is abstract;
+
 private
 
    type Composition_Tag_Node is access all ASF.Views.Nodes.Facelets.Composition_Tag_Node'Class;
 
    package Defines_Vector is
-     new Ada.Containers.Indefinite_Vectors (Index_Type => Natural,
-                                            Element_Type => Composition_Tag_Node);
+     new Ada.Containers.Vectors (Index_Type   => Natural,
+                                 Element_Type => Composition_Tag_Node);
 
-   type Facelet_Context is tagged record
+   type Facelet_Context is abstract tagged record
       --  The expression context;
       Context : EL.Contexts.ELContext_Access := null;
       Defines : Defines_Vector.Vector;
       Path    : Unbounded_String;
       Inserts : Util.Strings.String_Set.Set;
+
+      --  The application
+        Application : access ASF.Applications.Main.Application'Class;
    end record;
 
 end ASF.Contexts.Facelets;

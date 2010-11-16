@@ -202,7 +202,7 @@ package body ASF.Applications.Main is
    --  Default Resolver
    --  ------------------------------
    type Web_ELResolver is new EL.Contexts.ELResolver with record
-      Request     : EL.Contexts.Default.Default_ELResolver_Access;
+      Request     : ASF.Requests.Request_Access;
       Application : Main.Application_Access;
       Beans       : Bean_Vector_Access;
    end record;
@@ -229,11 +229,17 @@ package body ASF.Applications.Main is
       use EL.Beans;
       use EL.Variables;
 
-      Result : Object := Resolver.Request.Get_Value (Context, Base, Name);
+      Result : Object;
       Bean   : EL.Beans.Readonly_Bean_Access;
       Free   : ASF.Beans.Free_Bean_Access := null;
       Scope  : Scope_Type;
+      Key    : constant String := To_String (Name);
    begin
+      if Base /= null then
+         return Base.Get_Value (Key);
+      end if;
+
+      Result := Resolver.Request.Get_Attribute (Key);
       if not EL.Objects.Is_Null (Result) then
          return Result;
       end if;
@@ -245,7 +251,7 @@ package body ASF.Applications.Main is
       end if;
       Resolver.Beans.Append (Bean_Object '(Bean, Free));
       Result := To_Object (Bean);
-      Resolver.Request.Register (Name, Result);
+      Resolver.Request.Set_Attribute (Key, Result);
       return Result;
    end Get_Value;
 
@@ -256,8 +262,15 @@ package body ASF.Applications.Main is
                         Base     : access EL.Beans.Bean'Class;
                         Name     : in Unbounded_String;
                         Value    : in EL.Objects.Object) is
+      pragma Unreferenced (Context);
+
+      Key : constant String := To_String (Name);
    begin
-      Resolver.Request.Set_Value (Context, Base, Name, Value);
+      if Base /= null then
+         Base.Set_Value (Name => Key, Value => Value);
+      else
+         Resolver.Request.Set_Attribute (Name => Key, Value => Value);
+      end if;
    end Set_Value;
 
    --  ------------------------------
@@ -292,7 +305,6 @@ package body ASF.Applications.Main is
       View           : Components.Core.UIViewRoot;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
-      Req_Resolver   : aliased Default_ELResolver;
       Root_Resolver  : aliased Web_ELResolver;
 
       Beans          : aliased Bean_Vectors.Vector;
@@ -304,7 +316,7 @@ package body ASF.Applications.Main is
       Log.Info ("Dispatch {0}", Page);
 
       Root_Resolver.Application := App'Unchecked_Access;
-      Root_Resolver.Request := Req_Resolver'Unchecked_Access;
+      Root_Resolver.Request := Request'Unchecked_Access;
       Root_Resolver.Beans := Beans'Unchecked_Access;
       ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
       ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
@@ -375,7 +387,6 @@ package body ASF.Applications.Main is
       View           : Components.Core.UIViewRoot;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
-      Req_Resolver   : aliased Default_ELResolver;
       Root_Resolver  : aliased Web_ELResolver;
 
       Beans          : aliased Bean_Vectors.Vector;
@@ -387,7 +398,7 @@ package body ASF.Applications.Main is
       Log.Info ("Dispatch {0}", Page);
 
       Root_Resolver.Application := App'Unchecked_Access;
-      Root_Resolver.Request := Req_Resolver'Unchecked_Access;
+      Root_Resolver.Request := Request'Unchecked_Access;
       Root_Resolver.Beans := Beans'Unchecked_Access;
       ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
       ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);

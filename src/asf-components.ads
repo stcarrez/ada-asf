@@ -184,6 +184,32 @@ package ASF.Components is
                               Attr : in UIAttribute);
    procedure Iterate_Attributes (UI : in UIComponent'Class);
 
+   --  ------------------------------
+   --  Value Holder
+   --  ------------------------------
+   type Value_Holder is limited interface;
+
+   --  Get the local value of the component without evaluating
+   --  the associated Value_Expression.
+   function Get_Local_Value (Holder : in Value_Holder) return EL.Objects.Object is abstract;
+
+   --  Get the value of the component.  If the component has a local
+   --  value which is not null, returns it.  Otherwise, if we have a Value_Expression
+   --  evaluate and returns the value.
+   function Get_Value (Holder : in Value_Holder) return EL.Objects.Object is abstract;
+
+   --  Set the value of the component.
+   procedure Set_Value (Holder : in out Value_Holder;
+                        Value  : in EL.Objects.Object) is abstract;
+
+   --  Get the converter that is registered on the component.
+   function Get_Converter (Holder : in Value_Holder)
+                           return access ASF.Converters.Converter'Class is abstract;
+
+   --  Set the converter to be used on the component.
+   procedure Set_Converter (Holder    : in out Value_Holder;
+                            Converter : access ASF.Converters.Converter'Class) is abstract;
+
 private
 
    --  Delete the component tree recursively.

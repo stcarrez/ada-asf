@@ -96,6 +96,12 @@ package ASF.Applications.Main is
                      Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type);
 
+   --  Add a converter in the application.  The converter is referenced by
+   --  the specified name in the XHTML files.
+   procedure Add_Converter (App       : in out Application;
+                            Name      : in String;
+                            Converter : access ASF.Converters.Converter'Class);
+
    --  Closes the application
    procedure Close (App : in out Application);
 

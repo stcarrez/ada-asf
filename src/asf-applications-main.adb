@@ -19,12 +19,11 @@
 with Util.Log.Loggers;
 
 with ASF.Streams;
-with ASF.Contexts.Faces;
 with ASF.Contexts.Writer;
 with ASF.Components.Core;
 with ASF.Components.Core.Factory;
 with ASF.Components.Html.Factory;
-with ASF.Components.Util.Factory;
+with ASF.Components.Utils.Factory;
 with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
 
@@ -71,7 +70,7 @@ package body ASF.Applications.Main is
       ASF.Factory.Register (Factory  => App.Components,
                             Bindings => Nodes.Facelets.Definition);
 
-      ASF.Components.Util.Factory.Set_Functions (App.Functions);
+      ASF.Components.Utils.Factory.Set_Functions (App.Functions);
       ASF.Views.Nodes.Core.Set_Functions (App.Functions);
 
       App.View.Initialize (App.Components'Unchecked_Access, Conf);
@@ -167,6 +166,19 @@ package body ASF.Applications.Main is
    begin
       ASF.Locales.Register (App.Locales, App.Factory, Name, Bundle);
    end Register;
+
+   --  ------------------------------
+   --  Add a converter in the application.  The converter is referenced by
+   --  the specified name in the XHTML files.
+   --  ------------------------------
+   procedure Add_Converter (App       : in out Application;
+                            Name      : in String;
+                            Converter : access ASF.Converters.Converter'Class) is
+   begin
+      ASF.Factory.Register (Factory   => App.Components,
+                            Name      => Name,
+                            Converter => Converter.all'Unchecked_Access);
+   end Add_Converter;
 
    --  ------------------------------
    --  Closes the application

@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with ASF.Views.Nodes;
+with ASF.Views.Nodes.Jsf;
 package body ASF.Components.Core.Factory is
 
    function Create_View return UIComponent_Access;
@@ -40,16 +41,21 @@ package body ASF.Components.Core.Factory is
 
    use ASF.Views.Nodes;
 
-   URI        : aliased constant String := "http://java.sun.com/jsf/core";
-   VIEW_TAG   : aliased constant String := "view";
-   PARAM_TAG  : aliased constant String := "param";
-   LIST_TAG   : aliased constant String := "list";
+   URI           : aliased constant String := "http://java.sun.com/jsf/core";
+   CONVERTER_TAG : aliased constant String := "converter";
+   PARAM_TAG     : aliased constant String := "param";
+   VIEW_TAG      : aliased constant String := "view";
 
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => PARAM_TAG'Access,
+     := (1 => (Name      => CONVERTER_TAG'Access,
+               Component => null,
+               Tag       => Views.Nodes.Jsf.Create_Converter_Tag_Node'Access),
+
+         2 => (Name      => PARAM_TAG'Access,
                Component => Create_Parameter'Access,
                Tag       => Create_Component_Node'Access),
-         2 => (Name      => VIEW_TAG'Access,
+
+         3 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access)
         );

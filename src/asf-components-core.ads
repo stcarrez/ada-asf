@@ -28,16 +28,6 @@ package ASF.Components.Core is
    overriding
    function Get_Client_Id (UI : UIComponentBase) return Unbounded_String;
 
-   overriding
-   function Get_Attribute (UI      : UIComponentBase;
-                           Context : Faces_Context'Class;
-                           Name    : String) return EL.Objects.Object;
-
-   --  Get the attribute tag
-   overriding
-   function Get_Attribute (UI      : UIComponentBase;
-                           Name    : String) return access ASF.Views.Nodes.Tag_Attribute;
-
    type UIViewRoot is new Ada.Finalization.Limited_Controlled with private;
    type UIViewRoot_Access is access all UIViewRoot'Class;
 

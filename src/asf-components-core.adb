@@ -34,37 +34,6 @@ package body ASF.Components.Core is
       return UI.Id;
    end Get_Client_Id;
 
-   --  ------------------------------
-   --  Get the attribute tag
-   --  ------------------------------
-   overriding
-   function Get_Attribute (UI      : UIComponentBase;
-                           Name    : String)
-                           return access ASF.Views.Nodes.Tag_Attribute is
-   begin
-      if UI.Tag = null then
-         return null;
-      else
-         return UI.Tag.Get_Attribute (Name);
-      end if;
-   end Get_Attribute;
-
-   overriding
-   function Get_Attribute (UI      : UIComponentBase;
-                           Context : Faces_Context'Class;
-                           Name    : String) return EL.Objects.Object is
-      Attr : access ASF.Views.Nodes.Tag_Attribute;
-   begin
-      if UI.Tag = null then
-         return EL.Objects.Null_Object;
-      end if;
-      Attr := UI.Tag.Get_Attribute (Name);
-      if Attr = null then
-         return EL.Objects.Null_Object;
-      end if;
-      return ASF.Views.Nodes.Get_Value (Attr.all, Context);
-   end Get_Attribute;
-
    procedure Encode_Begin (UI      : in UIText;
                            Context : in out Faces_Context'Class) is
    begin

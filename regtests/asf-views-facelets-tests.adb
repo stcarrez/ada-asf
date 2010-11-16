@@ -22,12 +22,29 @@ with Ada.Text_IO;
 with ASF.Testsuite;
 with AUnit.Assertions;
 with ASF.Contexts.Facelets;
-with ASF.Components.Util.Factory;
+with ASF.Components.Utils.Factory;
+with ASF.Applications.Main;
 package body ASF.Views.Facelets.Tests is
 
    use AUnit.Assertions;
    use ASF.Testsuite;
    use ASF.Contexts.Facelets;
+
+   type Facelet_Context is new ASF.Contexts.Facelets.Facelet_Context with null record;
+
+   --  Get the application associated with this facelet context.
+   overriding
+   function Get_Application (Context : in Facelet_Context)
+                             return access ASF.Applications.Main.Application'Class;
+
+
+   --  Get the application associated with this facelet context.
+   overriding
+   function Get_Application (Context : in Facelet_Context)
+                             return access ASF.Applications.Main.Application'Class is
+   begin
+      return null;
+   end Get_Application;
 
    --  Set up performed before each test case
    overriding

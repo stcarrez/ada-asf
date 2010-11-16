@@ -16,8 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with EL.Functions.Default;
-with AUnit.Test_Suites; use AUnit.Test_Suites;
+with AUnit.Test_Suites;
 with AUnit.Test_Fixtures;
 
 package ASF.Views.Facelets.Tests is

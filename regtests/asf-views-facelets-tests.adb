@@ -17,17 +17,10 @@
 -----------------------------------------------------------------------
 
 with AUnit.Test_Caller;
-with AUnit.Assertions;
-with Ada.Text_IO;
-with ASF.Testsuite;
-with AUnit.Assertions;
 with ASF.Contexts.Facelets;
-with ASF.Components.Utils.Factory;
 with ASF.Applications.Main;
 package body ASF.Views.Facelets.Tests is
 
-   use AUnit.Assertions;
-   use ASF.Testsuite;
    use ASF.Contexts.Facelets;
 
    type Facelet_Context is new ASF.Contexts.Facelets.Facelet_Context with null record;
@@ -42,6 +35,7 @@ package body ASF.Views.Facelets.Tests is
    overriding
    function Get_Application (Context : in Facelet_Context)
                              return access ASF.Applications.Main.Application'Class is
+      pragma Unreferenced (Context);
    begin
       return null;
    end Get_Application;

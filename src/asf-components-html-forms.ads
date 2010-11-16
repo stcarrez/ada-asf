@@ -24,6 +24,10 @@ package ASF.Components.Html.Forms is
    --  ------------------------------
    type UIInput is new Text.UIOutput with private;
 
+   --  Check if this component has the required attribute set.
+   function Is_Required (UI      : in UIInput;
+                         Context : in Faces_Context'Class) return Boolean;
+
    overriding
    procedure Encode_Begin (UI      : in UIInput;
                            Context : in out Faces_Context'Class);
@@ -35,6 +39,27 @@ package ASF.Components.Html.Forms is
    overriding
    procedure Process_Updates (UI      : in out UIInput;
                               Context : in out Faces_Context'Class);
+
+   --  Validate the submitted value.
+   --  <ul>
+   --     <li>Retreive the submitted value
+   --     <li>If the value is null, exit without further processing.
+   --     <li>Validate the value by calling <b>Validate_Value</b>
+   --  </ul>
+   procedure Validate (UI      : in out UIInput;
+                       Context : in out Faces_Context'Class);
+
+   --  Set the <b>valid</b> property:
+   --  <ul>
+   --     <li>If the <b>required</b> property is true, ensure the
+   --         value is not empty
+   --     <li>Call the <b>Validate</b> procedure on each validator
+   --         registered on this component.
+   --     <li>Set the <b>valid</b> property if all validator passed.
+   --  </ul>
+   procedure Validate_Value (UI      : in out UIInput;
+                             Value   : in EL.Objects.Object;
+                             Context : in out Faces_Context'Class);
 
    --  ------------------------------
    --  Button Component
@@ -56,6 +81,13 @@ package ASF.Components.Html.Forms is
    --  Label Component
    --  ------------------------------
    type UIForm is new UIHtmlComponent with private;
+
+   --  Check whether the form is submitted.
+   function Is_Submitted (UI : in UIForm) return Boolean;
+
+   --  Called during the <b>Apply Request</b> phase to indicate that this
+   --  form is submitted.
+   procedure Set_Submitted (UI : in out UIForm);
 
    --  Get the action URL to set on the HTML form
    function Get_Action (UI      : in UIForm;

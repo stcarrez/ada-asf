@@ -20,18 +20,41 @@ package ASF.Components.Html.Text is
    --  ------------------------------
    --  Output Component
    --  ------------------------------
-   type UIOutput is new UIHtmlComponent with private;
+   type UIOutput is new UIHtmlComponent and Value_Holder with private;
 
-   --  Get the value to write on the output.
+   --  Get the local value of the component without evaluating
+   --  the associated Value_Expression.
+   overriding
+   function Get_Local_Value (UI : in UIOutput) return EL.Objects.Object;
+
+   --  Get the value of the component.  If the component has a local
+   --  value which is not null, returns it.  Otherwise, if we have a Value_Expression
+   --  evaluate and returns the value.
+   overriding
    function Get_Value (UI    : in UIOutput) return EL.Objects.Object;
 
    --  Set the value to write on the output.
+   overriding
    procedure Set_Value (UI    : in out UIOutput;
                         Value : in EL.Objects.Object);
 
+   --  Get the converter that is registered on the component.
+   overriding
+   function Get_Converter (UI : in UIOutput)
+                           return access ASF.Converters.Converter'Class;
+
+   --  Set the converter to be used on the component.
+   overriding
+   procedure Set_Converter (UI        : in out UIOutput;
+                            Converter : access ASF.Converters.Converter'Class);
+
+   --  Get the value of the component and apply the To_String converter on it if there is one.
+   function Get_Formatted_Value (UI      : in UIOutput;
+                                 Context : in Faces_Context'Class) return String;
+
    procedure Write_Output (UI      : in UIOutput;
                            Context : in out Faces_Context'Class;
-                           Value   : in EL.Objects.Object);
+                           Value   : in String);
 
    procedure Encode_Begin (UI      : in UIOutput;
                            Context : in out Faces_Context'Class);
@@ -58,8 +81,9 @@ package ASF.Components.Html.Text is
 
 private
 
-   type UIOutput is new UIHtmlComponent with record
-      Value : EL.Objects.Object;
+   type UIOutput is new UIHtmlComponent and Value_Holder with record
+      Value     : EL.Objects.Object;
+      Converter : access ASF.Converters.Converter'Class;
    end record;
 
    type UILabel is new UIOutput with null record;

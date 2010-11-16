@@ -505,6 +505,7 @@ package body ASF.Views.Nodes is
       Position.Node := Position.Node.Next;
    end Next;
 
+   --  Create a tag node
    --  Create the text Tag
    function Create_Component_Node (Name       : Unbounded_String;
                                    Line       : Line_Info;

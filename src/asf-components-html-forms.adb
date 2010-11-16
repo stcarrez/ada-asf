@@ -18,6 +18,7 @@
 with Util.Log.Loggers;
 with Ada.Exceptions;
 with ASF.Utils;
+with ASF.Components.Utils;
 package body ASF.Components.Html.Forms is
 
    use Util.Log;
@@ -33,6 +34,20 @@ package body ASF.Components.Html.Forms is
    --  Input Component
    --  ------------------------------
 
+   --  ------------------------------
+   --  Check if this component has the required attribute set.
+   --  ------------------------------
+   function Is_Required (UI      : in UIInput;
+                         Context : in Faces_Context'Class) return Boolean is
+      Attr : constant EL.Objects.Object := UI.Get_Attribute (Name    => "required",
+                                                             Context => Context);
+   begin
+      if EL.Objects.Is_Null (Attr) then
+         return True;
+      end if;
+      return EL.Objects.To_Boolean (Attr);
+   end Is_Required;
+
    overriding
    procedure Encode_Begin (UI      : in UIInput;
                            Context : in out Faces_Context'Class) is
@@ -42,13 +57,25 @@ package body ASF.Components.Html.Forms is
       end if;
       declare
          Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
-         Value  : constant EL.Objects.Object := UI.Get_Value;
+         Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
       begin
          Writer.Start_Element ("input");
          Writer.Write_Attribute (Name => "type", Value => "text");
          Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
          if not EL.Objects.Is_Null (Value) then
-            Writer.Write_Attribute (Name => "value", Value => Value);
+            declare
+               Convert : constant access Converters.Converter'Class
+                 := UIInput'Class (UI).Get_Converter;
+            begin
+               if Convert /= null then
+                  Writer.Write_Attribute (Name  => "value",
+                                          Value => Convert.To_String (Value => Value,
+                                                                      Component => UI,
+                                                                      Context => Context));
+               else
+                  Writer.Write_Attribute (Name => "value", Value => Value);
+               end if;
+            end;
          end if;
          UI.Render_Attributes (Context, INPUT_ATTRIBUTE_NAMES, Writer);
          Writer.End_Element ("input");
@@ -73,10 +100,70 @@ package body ASF.Components.Html.Forms is
       exception
          when E : others =>
             UI.Is_Valid := False;
-            Log.Info ("Exception raised when converting value {0} for component {1}: {2}",
+            Log.Info (Utils.Get_Line_Info (UI)
+                      & ": Exception raised when converting value {0} for component {1}: {2}",
                       Val, To_String (Id), Ada.Exceptions.Exception_Name (E));
       end;
    end Process_Decodes;
+
+   procedure Add_Message (UI : in UIComponent'Class;
+                          Name : in String;
+                          Default : in String;
+                          Context : in out Faces_Context'Class) is
+      Id  : constant String := To_String (UI.Get_Client_Id);
+      Msg : constant EL.Objects.Object := UI.Get_Attribute (Name => Name, Context => Context);
+   begin
+      if EL.Objects.Is_Null (Msg) then
+         Context.Add_Message (Client_Id => Id, Message => Default);
+      else
+         Context.Add_Message (Client_Id => Id, Message => EL.Objects.To_String (Msg));
+      end if;
+   end Add_Message;
+
+   --  ------------------------------
+   --  Validate the submitted value.
+   --  <ul>
+   --     <li>Retreive the submitted value
+   --     <li>If the value is null, exit without further processing.
+   --     <li>Validate the value by calling <b>Validate_Value</b>
+   --  </ul>
+   --  ------------------------------
+   procedure Validate (UI      : in out UIInput;
+                       Context : in out Faces_Context'Class) is
+   begin
+      if not EL.Objects.Is_Null(UI.Submitted_Value) then
+         UIInput'Class (UI).Validate_Value (UI.Submitted_Value, Context);
+
+         --  Render the response after the current phase if something is wrong.
+         if not UI.Is_Valid then
+            Context.Render_Response;
+         end if;
+      end if;
+   end Validate;
+
+   --  ------------------------------
+   --  Set the <b>valid</b> property:
+   --  <ul>
+   --     <li>If the <b>required</b> property is true, ensure the
+   --         value is not empty
+   --     <li>Call the <b>Validate</b> procedure on each validator
+   --         registered on this component.
+   --     <li>Set the <b>valid</b> property if all validator passed.
+   --  </ul>
+   --  ------------------------------
+   procedure Validate_Value (UI      : in out UIInput;
+                             Value   : in EL.Objects.Object;
+                             Context : in out Faces_Context'Class) is
+   begin
+      if EL.Objects.Is_Empty (Value) and UI.Is_Required (Context) and UI.Is_Valid then
+         Add_Message (UI, "requiredMessage", "req", Context);
+         UI.Is_Valid := False;
+      end if;
+
+      if UI.Is_Valid and not EL.Objects.Is_Empty (Value) then
+         null;
+      end if;
+   end Validate_Value;
 
    overriding
    procedure Process_Updates (UI      : in out UIInput;
@@ -90,7 +177,8 @@ package body ASF.Components.Html.Forms is
    exception
       when E : others =>
          UI.Is_Valid := False;
-         Log.Info ("Exception raised when updating value {0} for component {1}: {2}",
+         Log.Info (Utils.Get_Line_Info (UI)
+                   & ": Exception raised when updating value {0} for component {1}: {2}",
                    EL.Objects.To_String (UI.Submitted_Value),
                    To_String (UI.Get_Client_Id), Ada.Exceptions.Exception_Name (E));
    end Process_Updates;
@@ -141,6 +229,23 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    --  Form Component
    --  ------------------------------
+
+   --  ------------------------------
+   --  Check whether the form is submitted.
+   --  ------------------------------
+   function Is_Submitted (UI : in UIForm) return Boolean is
+   begin
+      return UI.Is_Submitted;
+   end Is_Submitted;
+
+   --  ------------------------------
+   --  Called during the <b>Apply Request</b> phase to indicate that this
+   --  form is submitted.
+   --  ------------------------------
+   procedure Set_Submitted (UI : in out UIForm) is
+   begin
+      UI.Is_Submitted := True;
+   end Set_Submitted;
 
    --  Get the action URL to set on the HTML form
    function Get_Action (UI      : in UIForm;
@@ -194,7 +299,9 @@ package body ASF.Components.Html.Forms is
       Id  : constant Unbounded_String := UI.Get_Client_Id;
       Val : constant String := Context.Get_Parameter (To_String (Id));
    begin
-      UI.Is_Submitted := Val /= "";
+      if Val /= "" then
+         UIForm'Class (UI).Set_Submitted;
+      end if;
    end Decode;
 
    overriding
@@ -219,9 +326,9 @@ package body ASF.Components.Html.Forms is
    end Process_Decodes;
 
 begin
-   Utils.Set_Text_Attributes (FORM_ATTRIBUTE_NAMES);
-   Utils.Set_Text_Attributes (INPUT_ATTRIBUTE_NAMES);
-   Utils.Set_Interactive_Attributes (INPUT_ATTRIBUTE_NAMES);
-   Utils.Set_Interactive_Attributes (FORM_ATTRIBUTE_NAMES);
-   Utils.Set_Input_Attributes (INPUT_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Text_Attributes (FORM_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Text_Attributes (INPUT_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Interactive_Attributes (INPUT_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Interactive_Attributes (FORM_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Input_Attributes (INPUT_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Forms;

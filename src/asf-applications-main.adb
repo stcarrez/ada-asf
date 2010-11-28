@@ -20,7 +20,9 @@ with Util.Log.Loggers;
 
 with ASF.Streams;
 with ASF.Contexts.Writer;
+with ASF.Components.Root;
 with ASF.Components.Core;
+with ASF.Components.Base;
 with ASF.Components.Core.Factory;
 with ASF.Components.Html.Factory;
 with ASF.Components.Utils.Factory;
@@ -302,7 +304,7 @@ package body ASF.Applications.Main is
 
       Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
-      View           : Components.Core.UIViewRoot;
+      View           : Components.Root.UIViewRoot;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
       Root_Resolver  : aliased Web_ELResolver;
@@ -384,7 +386,7 @@ package body ASF.Applications.Main is
 
       Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
-      View           : Components.Core.UIViewRoot;
+      View           : Components.Root.UIViewRoot;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
       Root_Resolver  : aliased Web_ELResolver;
@@ -394,6 +396,8 @@ package body ASF.Applications.Main is
       Handler   : constant access View_Handler'Class := App.Get_View_Handler;
 
       Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
+
+      Root : access ASF.Components.Base.UIComponent'Class;
    begin
       Log.Info ("Dispatch {0}", Page);
 
@@ -420,8 +424,9 @@ package body ASF.Applications.Main is
             raise;
       end;
 
+      Root := ASF.Components.Root.Get_Root (View);
       begin
-         View.Get_Root.Process_Decodes (Context);
+         Root.Process_Decodes (Context);
 
       exception
          when E: others =>
@@ -431,7 +436,7 @@ package body ASF.Applications.Main is
       end;
 
       begin
-         View.Get_Root.Process_Updates (Context);
+         Root.Process_Updates (Context);
 
       exception
          when E: others =>

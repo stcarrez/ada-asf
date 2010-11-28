@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with EL.Objects;
-with ASF.Components;
+with ASF.Components.Base;
 with ASF.Contexts.Faces;
 
 --  The <b>ASF.Validators</b> defines an interface used by the validation model
@@ -48,7 +48,7 @@ package ASF.Validators is
    --  It must raise the <b>Invalid_Value</b> exception if the value is not valid.
    procedure Validate (Valid     : in Validator;
                        Context   : in out ASF.Contexts.Faces.Faces_Context'Class;
-                       Component : in out ASF.Components.UIComponent'Class;
+                       Component : in out ASF.Components.Base.UIComponent'Class;
                        Value     : in EL.Objects.Object) is abstract;
 
 end ASF.Validators;

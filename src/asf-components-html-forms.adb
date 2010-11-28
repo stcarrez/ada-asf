@@ -18,6 +18,7 @@
 with Util.Log.Loggers;
 with Ada.Exceptions;
 with ASF.Utils;
+with ASF.Components.Base;
 with ASF.Components.Utils;
 package body ASF.Components.Html.Forms is
 
@@ -106,7 +107,7 @@ package body ASF.Components.Html.Forms is
       end;
    end Process_Decodes;
 
-   procedure Add_Message (UI : in UIComponent'Class;
+   procedure Add_Message (UI : in Base.UIComponent'Class;
                           Name : in String;
                           Default : in String;
                           Context : in out Faces_Context'Class) is
@@ -307,14 +308,13 @@ package body ASF.Components.Html.Forms is
    overriding
    procedure Process_Decodes (UI      : in out UIForm;
                               Context : in out Faces_Context'Class) is
-      Child : UIComponent_Access;
    begin
       --  Do not decode the component nor its children if the component is not rendered.
       if not UI.Is_Rendered (Context) then
          return;
       end if;
 
-      UIComponent'Class (UI).Decode (Context);
+      Base.UIComponent'Class (UI).Decode (Context);
 
       --  If the form is submitted, process the children.
       --  Otherwise, none of the parameters are for this form.

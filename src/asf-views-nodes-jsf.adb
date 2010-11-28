@@ -61,6 +61,8 @@ package body ASF.Views.Nodes.Jsf is
    procedure Build_Components (Node    : access Converter_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class) is
+      use ASF.Components;
+
       Cvt : constant access Converters.Converter'Class := Context.Get_Converter (Node.Converter);
    begin
       if not (Parent.all in Value_Holder'Class) then

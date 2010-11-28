@@ -93,7 +93,7 @@ package body ASF.Contexts.Facelets is
    --  ------------------------------
    procedure Include_Facelet (Context : in out Facelet_Context;
                               Source  : in String;
-                              Parent  : in UIComponent_Access) is
+                              Parent  : in Base.UIComponent_Access) is
    begin
       null;
    end Include_Facelet;
@@ -103,7 +103,7 @@ package body ASF.Contexts.Facelets is
    --  ------------------------------
    procedure Include_Definition (Context : in out Facelet_Context;
                                  Name    : in Unbounded_String;
-                                 Parent  : in UIComponent_Access;
+                                 Parent  : in Base.UIComponent_Access;
                                  Found   : out Boolean) is
       Node      : Composition_Tag_Node;
       Iter      : Defines_Vector.Cursor := Context.Defines.Last;

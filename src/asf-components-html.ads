@@ -16,11 +16,13 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ASF.Contexts.Writer;
+with ASF.Contexts.Faces;
 with ASF.Components.Core;
 with Util.Strings;
 package ASF.Components.Html is
 
    use ASF.Contexts.Writer;
+   use ASF.Contexts.Faces;
 
    type UIHtmlComponent is new ASF.Components.Core.UIComponentBase with private;
 

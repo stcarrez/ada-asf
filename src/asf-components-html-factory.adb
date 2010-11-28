@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with ASF.Components.Base;
 with ASF.Components.Html.Text;
 with ASF.Components.Html.Lists;
 with ASF.Components.Html.Links;
@@ -23,6 +24,8 @@ with ASF.Components.Html.Panels;
 with ASF.Components.Html.Forms;
 with ASF.Views.Nodes;
 package body ASF.Components.Html.Factory is
+
+   use ASF.Components.Base;
 
    function Create_Output return UIComponent_Access;
    function Create_Output_Link return UIComponent_Access;

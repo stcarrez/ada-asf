@@ -16,17 +16,18 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with ASF.Components.Base;
 with ASF.Views.Nodes;
 with ASF.Views.Nodes.Jsf;
 package body ASF.Components.Core.Factory is
 
-   function Create_View return UIComponent_Access;
-   function Create_Parameter return UIComponent_Access;
+   function Create_View return Base.UIComponent_Access;
+   function Create_Parameter return Base.UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIView component
    --  ------------------------------
-   function Create_View return UIComponent_Access is
+   function Create_View return Base.UIComponent_Access is
    begin
       return new ASF.Components.Core.UIView;
    end Create_View;
@@ -34,7 +35,7 @@ package body ASF.Components.Core.Factory is
    --  ------------------------------
    --  Create an UIParameter component
    --  ------------------------------
-   function Create_Parameter return UIComponent_Access is
+   function Create_Parameter return Base.UIComponent_Access is
    begin
       return new ASF.Components.Core.UIParameter;
    end Create_Parameter;

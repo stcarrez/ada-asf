@@ -287,6 +287,24 @@ package body ASF.Contexts.Faces is
    end Get_Application;
 
    --  ------------------------------
+   --  Get the component view root.
+   --  ------------------------------
+   function Get_View_Root (Context : in Faces_Context)
+                           return ASF.Components.Root.UIViewRoot is
+   begin
+      return Context.Root;
+   end Get_View_Root;
+
+   --  ------------------------------
+   --  Get the component view root.
+   --  ------------------------------
+   procedure Set_View_Root (Context : in out Faces_Context;
+                            View    : in ASF.Components.Root.UIViewRoot) is
+   begin
+      Context.Root := View;
+   end Set_View_Root;
+
+   --  ------------------------------
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    --  ------------------------------

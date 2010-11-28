@@ -23,7 +23,7 @@ with Ada.Strings.Unbounded.Hash;
 with ASF.Views.Nodes;
 with ASF.Contexts.Facelets;
 with ASF.Factory;
-with ASF.Components;
+with ASF.Components.Base;
 with Util.Strings.Maps;
 with Ada.Finalization;
 
@@ -60,7 +60,7 @@ package ASF.Views.Facelets is
    --  Create the component tree from the facelet view.
    procedure Build_View (View    : in Facelet;
                          Context : in out ASF.Contexts.Facelets.Facelet_Context'Class;
-                         Root    : in ASF.Components.UIComponent_Access);
+                         Root    : in ASF.Components.Base.UIComponent_Access);
 
    --  Initialize the facelet factory.
    --  Set the search directories for facelet files.

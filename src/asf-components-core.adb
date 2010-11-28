@@ -31,7 +31,8 @@ package body ASF.Components.Core is
       if Id /= null then
          return To_Unbounded_String (Views.Nodes.Get_Value (Id.all, UI.Get_Context.all));
       end if;
-      return UI.Id;
+      --        return UI.Id;
+      return Base.UIComponent (UI).Get_Client_Id;
    end Get_Client_Id;
 
    procedure Encode_Begin (UI      : in UIText;
@@ -41,53 +42,12 @@ package body ASF.Components.Core is
    end Encode_Begin;
 
    function Create_UIText (Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
-                           return UIComponent_Access is
+                           return Base.UIComponent_Access is
       Result : constant UIText_Access := new UIText;
    begin
       Result.Text := Tag;
       return Result.all'Access;
    end Create_UIText;
-
-   --  ------------------------------
-   --  Get the root node of the view.
-   --  ------------------------------
-   function Get_Root (UI : UIViewRoot) return UIComponent_Access is
-   begin
-      return UI.Root;
-   end Get_Root;
-
-   --  ------------------------------
-   --  Set the root node of the view.
-   --  ------------------------------
-   procedure Set_Root (UI   : in out UIViewRoot;
-                       Root : in out UIComponent'Class) is
-   begin
-      if UI.Root /= null then
-         Delete (UI.Root);
-      end if;
-      if Root.First_Child = null then
-         UI.Root := null;
-      elsif Root.First_Child.Next = null then
-         UI.Root := Root.First_Child;
-         Root.First_Child := null;
-         Root.Last_Child  := null;
-      else
-         UI.Root := new UIComponentBase;
-         UI.Root.First_Child := Root.First_Child;
-         UI.Root.Last_Child  := Root.Last_Child;
-         Root.First_Child := null;
-         Root.Last_Child  := null;
-      end if;
-   end Set_Root;
-
-   --  Free the memory held by the component tree.
-   overriding
-   procedure Finalize (Object : in out UIViewRoot) is
-   begin
-      if Object.Root /= null then
-         Delete (Object.Root);
-      end if;
-   end Finalize;
 
    overriding
    procedure Encode_Begin (UI      : in UIView;
@@ -147,15 +107,15 @@ package body ASF.Components.Core is
    --  ------------------------------
    --  Get the list of parameters associated with a component.
    --  ------------------------------
-   function Get_Parameters (UI : UIComponent'Class) return UIParameter_Access_Array is
+   function Get_Parameters (UI : Base.UIComponent'Class) return UIParameter_Access_Array is
 
       Result : UIParameter_Access_Array (1 .. UI.Get_Children_Count);
       Last   : Natural := 0;
 
-      procedure Collect (Child : in UIComponent_Access);
+      procedure Collect (Child : in Base.UIComponent_Access);
       pragma Inline (Collect);
 
-      procedure Collect (Child : in UIComponent_Access) is
+      procedure Collect (Child : in Base.UIComponent_Access) is
       begin
          if Child.all in UIParameter'Class then
             Last := Last + 1;
@@ -163,7 +123,7 @@ package body ASF.Components.Core is
          end if;
       end Collect;
 
-      procedure Iter is new ASF.Components.Iterate (Process => Collect);
+      procedure Iter is new ASF.Components.Base.Iterate (Process => Collect);
       pragma Inline (Iter);
 
    begin

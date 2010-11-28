@@ -26,13 +26,13 @@ with Ada.Strings.Unbounded;
 with EL.Expressions;
 with EL.Objects;
 with Util.Strings;
-with ASF.Components;
+with ASF.Components.Base;
 with ASF.Contexts.Faces;
 with ASF.Contexts.Facelets;
 package ASF.Views.Nodes is
 
    use Ada.Strings.Unbounded;
-   use ASF.Components;
+   use ASF.Components.Base;
    use ASF.Contexts.Faces;
    use ASF.Contexts.Facelets;
 
@@ -202,7 +202,7 @@ package ASF.Views.Nodes is
    procedure Next (Position : in out Cursor);
 
    --  Create function to build a UIComponent
-   type Create_Access is access function return ASF.Components.UIComponent_Access;
+   type Create_Access is access function return ASF.Components.Base.UIComponent_Access;
 
    --  Create function to build a tag node
    type Tag_Node_Create_Access is access

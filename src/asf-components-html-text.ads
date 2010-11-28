@@ -50,14 +50,14 @@ package ASF.Components.Html.Text is
 
    --  Get the value of the component and apply the To_String converter on it if there is one.
    function Get_Formatted_Value (UI      : in UIOutput;
-                                 Context : in Faces_Context'Class) return String;
+                                 Context : in Contexts.Faces.Faces_Context'Class) return String;
 
    procedure Write_Output (UI      : in UIOutput;
-                           Context : in out Faces_Context'Class;
+                           Context : in out Contexts.Faces.Faces_Context'Class;
                            Value   : in String);
 
    procedure Encode_Begin (UI      : in UIOutput;
-                           Context : in out Faces_Context'Class);
+                           Context : in out Contexts.Faces.Faces_Context'Class);
 
    --  ------------------------------
    --  Label Component
@@ -65,10 +65,10 @@ package ASF.Components.Html.Text is
    type UILabel is new UIOutput with private;
 
    procedure Encode_Begin (UI      : in UILabel;
-                           Context : in out Faces_Context'Class);
+                           Context : in out Contexts.Faces.Faces_Context'Class);
 
    procedure Encode_End (UI      : in UILabel;
-                         Context : in out Faces_Context'Class);
+                         Context : in out Contexts.Faces.Faces_Context'Class);
 
    --  ------------------------------
    --  OutputFormat Component
@@ -77,7 +77,7 @@ package ASF.Components.Html.Text is
    type UIOutputFormat is new UIOutput with private;
 
    procedure Encode_Begin (UI      : in UIOutputFormat;
-                           Context : in out Faces_Context'Class);
+                           Context : in out Contexts.Faces.Faces_Context'Class);
 
 private
 

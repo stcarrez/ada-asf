@@ -19,6 +19,8 @@ with Ada.Strings.Fixed;
 
 with ASF.Contexts.Facelets;
 with ASF.Applications.Main;
+with ASF.Components.Base;
+with ASF.Components.Core;
 package body ASF.Applications.Views is
 
    use ASF.Components;
@@ -38,7 +40,7 @@ package body ASF.Applications.Views is
    overriding
    procedure Include_Facelet (Context : in out Facelet_Context;
                               Source  : in String;
-                              Parent  : in UIComponent_Access);
+                              Parent  : in Base.UIComponent_Access);
 
    --  Get the application associated with this facelet context.
    overriding
@@ -71,8 +73,8 @@ package body ASF.Applications.Views is
    --  ------------------------------
    overriding
    procedure Include_Facelet (Context : in out Facelet_Context;
-                              Source    : in String;
-                              Parent  : in UIComponent_Access) is
+                              Source  : in String;
+                              Parent  : in Base.UIComponent_Access) is
 
       use ASF.Views;
 
@@ -122,7 +124,7 @@ package body ASF.Applications.Views is
    procedure Restore_View (Handler : in out View_Handler;
                            Name    : in String;
                            Context : in out ASF.Contexts.Faces.Faces_Context;
-                           View    : out ASF.Components.Core.UIViewRoot) is
+                           View    : out ASF.Components.Root.UIViewRoot) is
 
       use ASF.Views;
 
@@ -144,11 +146,13 @@ package body ASF.Applications.Views is
       --  Build the component tree for this request.
       declare
          Root : aliased Core.UIComponentBase;
+         Node : Base.UIComponent_Access;
       begin
          Facelets.Build_View (View    => Tree,
                               Context => Ctx,
                               Root    => Root'Unchecked_Access);
-         View.Set_Root (Root);
+         ASF.Components.Base.Steal_Root_Component (Root, Node);
+         ASF.Components.Root.Set_Root (View, Node);
       end;
    end Restore_View;
 
@@ -158,10 +162,15 @@ package body ASF.Applications.Views is
    --  ------------------------------
    procedure Render_View (Handler : in out View_Handler;
                           Context : in out ASF.Contexts.Faces.Faces_Context;
-                          View    : in ASF.Components.Core.UIViewRoot) is
+                          View    : in ASF.Components.Root.UIViewRoot) is
       pragma Unreferenced (Handler);
+
+      Root : constant access ASF.Components.Base.UIComponent'Class
+        := ASF.Components.Root.Get_Root (View);
    begin
-      View.Get_Root.Encode_All (Context);
+      if Root /= null then
+         Root.Encode_All (Context);
+      end if;
    end Render_View;
 
    --  ------------------------------

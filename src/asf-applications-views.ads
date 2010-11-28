@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 
 with ASF.Modules;
-with ASF.Components.Core;
+with ASF.Components.Root;
 with ASF.Contexts.Faces;
 with ASF.Views.Facelets;
 with ASF.Factory;
@@ -44,13 +44,13 @@ package ASF.Applications.Views is
    procedure Restore_View (Handler : in out View_Handler;
                            Name    : in String;
                            Context : in out ASF.Contexts.Faces.Faces_Context;
-                           View    : out ASF.Components.Core.UIViewRoot);
+                           View    : out ASF.Components.Root.UIViewRoot);
 
    --  Render the view represented by the component tree.  The view is
    --  rendered using the context.
    procedure Render_View (Handler : in out View_Handler;
                           Context : in out ASF.Contexts.Faces.Faces_Context;
-                          View    : in ASF.Components.Core.UIViewRoot);
+                          View    : in ASF.Components.Root.UIViewRoot);
 
    --  Closes the view handler
    procedure Close (Handler : in out View_Handler);

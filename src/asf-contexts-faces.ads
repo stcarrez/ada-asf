@@ -19,6 +19,7 @@
 with ASF.Requests;
 with ASF.Responses;
 limited with ASF.Converters;
+with ASF.Components.Root;
 limited with ASF.Applications.Main;
 with ASF.Applications.Messages;
 with ASF.Applications.Messages.Vectors;
@@ -27,6 +28,7 @@ with EL.Objects;
 with EL.Contexts;
 with Ada.Strings.Unbounded;
 
+private with Ada.Finalization;
 private with Ada.Strings.Unbounded.Hash;
 private with Ada.Containers.Hashed_Maps;
 
@@ -41,7 +43,7 @@ package ASF.Contexts.Faces is
 
    use Ada.Strings.Unbounded;
 
-   type Faces_Context is tagged private;
+   type Faces_Context is tagged limited private;
 
    type Faces_Context_Access is access all Faces_Context'Class;
 
@@ -143,6 +145,14 @@ package ASF.Contexts.Faces is
    function Get_Application (Context : in Faces_Context)
                              return access ASF.Applications.Main.Application'Class;
 
+   --  Get the component view root.
+   function Get_View_Root (Context : in Faces_Context)
+                           return ASF.Components.Root.UIViewRoot;
+
+   --  Get the component view root.
+   procedure Set_View_Root (Context : in out Faces_Context;
+                            View    : in ASF.Components.Root.UIViewRoot);
+
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    function Current return Faces_Context_Access;
@@ -163,7 +173,7 @@ private
                                  Equivalent_Keys => "=",
                                  "="             => Vectors."=");
 
-   type Faces_Context is tagged record
+   type Faces_Context is new Ada.Finalization.Limited_Controlled with record
       --  The response writer.
       Writer   : ASF.Contexts.Writer.ResponseWriter_Access;
 
@@ -187,6 +197,8 @@ private
 
       --  The maximum severity for the messages that were collected.
       Max_Severity       : Severity := NONE;
+
+      Root               : ASF.Components.Root.UIViewRoot;
    end record;
 
 end ASF.Contexts.Faces;

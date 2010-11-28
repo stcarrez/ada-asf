@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Util.Log.Loggers;
 with EL.Beans;
+with ASF.Components.Base;
 package body ASF.Components.Html.Lists is
 
    use Util.Log;
@@ -81,7 +82,7 @@ package body ASF.Components.Html.Lists is
 
          Context.Set_Attribute (Name, Value);
          Log.Debug ("Set variable {0}", Name);
-         UIComponent (UI).Encode_Children (Context);
+         Base.UIComponent (UI).Encode_Children (Context);
       end loop;
    end Encode_Children;
 

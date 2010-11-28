@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with EL.Objects;
-with ASF.Components;
+with ASF.Components.Base;
 with ASF.Contexts.Faces;
 
 --  The <b>ASF.Converters</b> defines an interface used by the conversion model
@@ -45,14 +45,14 @@ package ASF.Converters is
    --  If the string cannot be converted, the Invalid_Conversion exception should be raised.
    function To_String (Convert   : in Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
-                       Component : in ASF.Components.UIComponent'Class;
+                       Component : in ASF.Components.Base.UIComponent'Class;
                        Value     : in EL.Objects.Object) return String is abstract;
 
    --  Convert the string into an object for the specified component.
    --  If the string cannot be converted, the Invalid_Conversion exception should be raised.
    function To_Object (Convert   : in Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
-                       Component : in ASF.Components.UIComponent'Class;
+                       Component : in ASF.Components.Base.UIComponent'Class;
                        Value     : in String) return EL.Objects.Object is abstract;
 
 end ASF.Converters;

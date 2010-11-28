@@ -15,28 +15,21 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Ada.Finalization;
 with ASF.Views.Nodes;
+with ASF.Components.Base;
+with ASF.Contexts.Faces;
 package ASF.Components.Core is
 
---     pragma Elaborate_Body;
+   use ASF.Contexts.Faces;
 
-   type UIComponentBase is new UIComponent with null record;
+   --     pragma Elaborate_Body;
+
+   type UIComponentBase is new Base.UIComponent with null record;
 
    --  Return a client-side identifier for this component, generating
    --  one if necessary.
    overriding
    function Get_Client_Id (UI : UIComponentBase) return Unbounded_String;
-
-   type UIViewRoot is new Ada.Finalization.Limited_Controlled with private;
-   type UIViewRoot_Access is access all UIViewRoot'Class;
-
-   --  Get the root node of the view.
-   function Get_Root (UI : UIViewRoot) return UIComponent_Access;
-
-   --  Set the root node of the view.
-   procedure Set_Root (UI   : in out UIViewRoot;
-                       Root : in out UIComponent'Class);
 
    --  ------------------------------
    --  View component
@@ -48,14 +41,14 @@ package ASF.Components.Core is
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class);
 
-   type UIText is new UIComponent with private;
+   type UIText is new Base.UIComponent with private;
    type UIText_Access is access all UIText'Class;
 
    procedure Encode_Begin (UI      : in UIText;
                            Context : in out Faces_Context'Class);
 
    function Create_UIText (Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
-                           return UIComponent_Access;
+                           return Base.UIComponent_Access;
 
 
    --  ------------------------------
@@ -94,25 +87,15 @@ package ASF.Components.Core is
                        Context : Faces_Context'Class) return EL.Objects.Object;
 
    --  Get the list of parameters associated with a component.
-   function Get_Parameters (UI : UIComponent'Class) return UIParameter_Access_Array;
+   function Get_Parameters (UI : Base.UIComponent'Class) return UIParameter_Access_Array;
 
 private
-
-   --  Free the memory held by the component tree.
-   overriding
-   procedure Finalize (Object : in out UIViewRoot);
-   --
---     type UIComponentBase is new UIComponent with null record;
-
-   type UIViewRoot is new Ada.Finalization.Limited_Controlled with record
-      Root : UIComponent_Access;
-   end record;
 
    type UIView is new UIComponentBase with record
       N : Natural;
    end record;
 
-   type UIText is new UIComponent with record
+   type UIText is new Base.UIComponent with record
       Text : ASF.Views.Nodes.Text_Tag_Node_Access;
    end record;
 

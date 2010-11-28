@@ -21,7 +21,7 @@ with EL.Objects;
 with EL.Contexts;
 with EL.Expressions;
 with EL.Functions;
-with ASF.Components;
+with ASF.Components.Base;
 with ASF.Converters;
 with ASF.Validators;
 with Ada.Strings.Unbounded;
@@ -74,12 +74,12 @@ package ASF.Contexts.Facelets is
    --  The included views appended to the parent component tree.
    procedure Include_Facelet (Context : in out Facelet_Context;
                               Source  : in String;
-                              Parent  : in UIComponent_Access);
+                              Parent  : in Base.UIComponent_Access);
 
    --  Include the definition having the given name.
    procedure Include_Definition (Context : in out Facelet_Context;
                                  Name    : in Unbounded_String;
-                                 Parent  : in UIComponent_Access;
+                                 Parent  : in Base.UIComponent_Access;
                                  Found   : out Boolean);
 
    --  Push into the current facelet context the <ui:define> nodes contained in

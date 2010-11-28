@@ -88,7 +88,7 @@ package body ASF.Views.Facelets is
    --  ------------------------------
    procedure Build_View (View    : in Facelet;
                          Context : in out ASF.Contexts.Facelets.Facelet_Context'Class;
-                         Root    : in ASF.Components.UIComponent_Access) is
+                         Root    : in ASF.Components.Base.UIComponent_Access) is
       Old : Unbounded_String;
    begin
       if View.Root /= null then

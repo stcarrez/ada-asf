@@ -19,8 +19,9 @@
 with ASF.Components.Core;
 with ASF.Views.Nodes;
 with Util.Strings.Transforms; use Util.Strings;
-with EL.Functions.Default;
 package body ASF.Components.Utils.Factory is
+
+   use ASF.Components.Base;
 
    function Create_View return UIComponent_Access;
    function Create_Parameter return UIComponent_Access;
@@ -46,7 +47,6 @@ package body ASF.Components.Utils.Factory is
    URI        : aliased constant String := "http://code.google.com/p/ada-asf/util";
    VIEW_TAG   : aliased constant String := "view";
    PARAM_TAG  : aliased constant String := "param";
-   LIST_TAG   : aliased constant String := "list";
 
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => PARAM_TAG'Access,

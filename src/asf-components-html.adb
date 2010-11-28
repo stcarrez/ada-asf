@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with EL.Objects;
+with ASF.Components.Base;
 package body ASF.Components.Html is
 
    use EL.Objects;
@@ -53,7 +54,7 @@ package body ASF.Components.Html is
       begin
          if Names.Contains (Name'Unrestricted_Access) then
             declare
-               Value : constant Object := Get_Value (Attr, UI);
+               Value : constant Object := Base.Get_Value (Attr, UI);
             begin
                if Name = "styleClass" then
                   Writer.Write_Attribute ("class", Value);
@@ -64,7 +65,7 @@ package body ASF.Components.Html is
          end if;
       end Process_Attribute;
 
-      procedure Write_Attributes is new Iterate_Attributes (Process_Attribute);
+      procedure Write_Attributes is new Base.Iterate_Attributes (Process_Attribute);
 
       Id : constant Unbounded_String := UI.Get_Client_Id;
    begin

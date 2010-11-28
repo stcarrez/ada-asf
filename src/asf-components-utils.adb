@@ -21,24 +21,26 @@ package body ASF.Components.Utils is
    --  ------------------------------
    --  Get the line information where the component is defined.
    --  ------------------------------
-   function Get_Line_Info (UI : in UIComponent'Class) return Views.Nodes.Line_Info is
+   function Get_Line_Info (UI : in Base.UIComponent'Class) return Views.Nodes.Line_Info is
+      Tag : constant access ASF.Views.Nodes.Tag_Node'Class := UI.Get_Tag;
    begin
-      if UI.Tag /= null then
-         return UI.Tag.Get_Line_Info;
+      if Tag /= null then
+         return Tag.Get_Line_Info;
       else
-         return UI.Tag.Get_Line_Info;
+         return Tag.Get_Line_Info;
       end if;
    end Get_Line_Info;
 
    --  ------------------------------
    --  Get the line information where the component is defined.
    --  ------------------------------
-   function Get_Line_Info (UI : in UIComponent'Class) return String is
+   function Get_Line_Info (UI : in Base.UIComponent'Class) return String is
+      Tag : constant access ASF.Views.Nodes.Tag_Node'Class := UI.Get_Tag;
    begin
-      if UI.Tag /= null then
-         return UI.Tag.Get_Line_Info;
+      if Tag /= null then
+         return Tag.Get_Line_Info;
       else
-         return UI.Tag.Get_Line_Info;
+         return Tag.Get_Line_Info;
       end if;
    end Get_Line_Info;
 

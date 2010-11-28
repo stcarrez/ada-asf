@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 package ASF.Components.Html.Panels is
 
+   use ASF.Contexts.Faces;
+
    type UIPanelGroup is new UIHtmlComponent with private;
 
    function Get_Layout (UI      : UIPanelGroup;

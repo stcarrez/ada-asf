@@ -43,13 +43,13 @@ package ASF.Applications.Views is
    --  and create the component tree representing that view.
    procedure Restore_View (Handler : in out View_Handler;
                            Name    : in String;
-                           Context : in out ASF.Contexts.Faces.Faces_Context;
+                           Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                            View    : out ASF.Components.Root.UIViewRoot);
 
    --  Render the view represented by the component tree.  The view is
    --  rendered using the context.
    procedure Render_View (Handler : in out View_Handler;
-                          Context : in out ASF.Contexts.Faces.Faces_Context;
+                          Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                           View    : in ASF.Components.Root.UIViewRoot);
 
    --  Closes the view handler

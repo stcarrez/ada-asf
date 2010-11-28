@@ -18,9 +18,6 @@
 
 with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
-with EL.Expressions;
-with EL.Contexts;
-with ASF.Contexts.Facelets;
 with ASF.Converters;
 package body ASF.Components.Base is
 
@@ -99,34 +96,6 @@ package body ASF.Components.Base is
       end if;
    end Initialize;
 
-   function Create_UIComponent (Parent  : UIComponent_Access;
-                                Context : ASF.Contexts.Facelets.Facelet_Context'Class;
-                                Tag     : access ASF.Views.Nodes.Tag_Node'Class)
-                                return UIComponent_Access is
-      Result  : constant UIComponent_Access := new UIComponent;
-
-      procedure Process_Attribute (Attr : in ASF.Views.Nodes.Tag_Attribute_Access) is
-      begin
-         if not ASF.Views.Nodes.Is_Static (Attr.all) then
-            declare
-               Expr : constant EL.Expressions.Expression
-                 := ASF.Views.Nodes.Reduce_Expression (Attr.all, Context);
-            begin
-               null;
-            end;
-         end if;
-      end Process_Attribute;
-
-      --  Iterate over the attributes to resolve some value expressions.
-      procedure Iterate_Attributes is
-        new ASF.Views.Nodes.Iterate_Attributes (Process_Attribute);
-
-   begin
-      Append (Parent, Result, Tag);
-      Iterate_Attributes (Tag.all);
-      return Result;
-   end Create_UIComponent;
-
    procedure Append (UI    : in UIComponent_Access;
                      Child : in UIComponent_Access;
                      Tag   : access ASF.Views.Nodes.Tag_Node'Class) is
@@ -155,6 +124,7 @@ package body ASF.Components.Base is
 
    function Get_Context (UI : in UIComponent)
                          return ASF.Contexts.Faces.Faces_Context_Access is
+      pragma Unreferenced (UI);
    begin
       return ASF.Contexts.Faces.Current;
    end Get_Context;
@@ -289,7 +259,7 @@ package body ASF.Components.Base is
    --  Get the value expression
    function Get_Value_Expression (UI   : in UIComponent;
                                   Name : in String) return EL.Expressions.Value_Expression is
-      Value : access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+      Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
    begin
       if Value = null then
          raise EL.Expressions.Invalid_Expression with "No value expression for: " & Name;

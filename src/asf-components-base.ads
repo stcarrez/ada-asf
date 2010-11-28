@@ -23,7 +23,6 @@
 --
 --  The component tree is created from the <b>ASF.Views</b> tag nodes
 --  for each request.  Unlike tag nodes, the component tree is not shared.
-with Ada.Strings.Unbounded;
 with EL.Objects;
 with EL.Expressions;
 with ASF.Contexts.Faces;
@@ -31,7 +30,6 @@ limited with ASF.Views.Nodes;
 limited with ASF.Converters;
 package ASF.Components.Base is
 
-   use Ada.Strings.Unbounded;
    use ASF.Contexts.Faces;
    type UIComponent_List is private;
 
@@ -169,11 +167,6 @@ package ASF.Components.Base is
    --  Get the attribute value.
    function Get_Value (Attr : UIAttribute;
                        UI   : UIComponent'Class) return EL.Objects.Object;
-
-   --   function Create_UIComponent (Parent  : UIComponent_Access;
-   --                                Context : ASF.Contexts.Facelets.Facelet_Context'Class;
-   --                                Tag    : access ASF.Views.Nodes.Tag_Node'Class)
-   --                                return UIComponent_Access;
 
    --  Iterate over the children of the component and execute
    --  the <b>Process</b> procedure.

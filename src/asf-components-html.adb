@@ -49,6 +49,8 @@ package body ASF.Components.Html is
                                 Names   : in Util.Strings.String_Set.Set;
                                 Writer  : in ResponseWriter_Access) is
 
+      pragma Unreferenced (Context);
+
       procedure Process_Attribute (Name : in String;
                                    Attr : in UIAttribute) is
       begin

@@ -123,7 +123,7 @@ package body ASF.Applications.Views is
    --  ------------------------------
    procedure Restore_View (Handler : in out View_Handler;
                            Name    : in String;
-                           Context : in out ASF.Contexts.Faces.Faces_Context;
+                           Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                            View    : out ASF.Components.Root.UIViewRoot) is
 
       use ASF.Views;
@@ -161,7 +161,7 @@ package body ASF.Applications.Views is
    --  rendered using the context.
    --  ------------------------------
    procedure Render_View (Handler : in out View_Handler;
-                          Context : in out ASF.Contexts.Faces.Faces_Context;
+                          Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                           View    : in ASF.Components.Root.UIViewRoot) is
       pragma Unreferenced (Handler);
 

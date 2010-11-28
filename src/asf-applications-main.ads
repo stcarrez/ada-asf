@@ -28,6 +28,7 @@ with ASF.Locales;
 with ASF.Factory;
 with ASF.Converters;
 with ASF.Contexts.Faces;
+with ASF.Lifecycles;
 with ASF.Applications.Views;
 with ASF.Beans;
 with ASF.Modules;
@@ -135,6 +136,7 @@ private
 
    type Application is new ASF.Servlets.Servlet_Registry with record
       View    : aliased ASF.Applications.Views.View_Handler;
+      Lifecycle : ASF.Lifecycles.Lifecycle_Access;
       Factory : ASF.Beans.Bean_Factory;
       Locales : ASF.Locales.Factory;
       Modules : aliased ASF.Modules.Module_Registry;

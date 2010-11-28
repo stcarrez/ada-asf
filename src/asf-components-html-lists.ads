@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Contexts.Faces;
 package ASF.Components.Html.Lists is
 
    type UIList is new UIHtmlComponent with private;

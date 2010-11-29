@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 
 with ASF.Contexts.Faces;
-with ASF.Applications;
+limited with ASF.Applications.Main;
 package ASF.Lifecycles is
 
    type Phase_Type is (RESTORE_VIEW,
@@ -35,15 +35,21 @@ package ASF.Lifecycles is
    procedure Execute (Controller : in Phase_Controller;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is abstract;
 
-   type Lifecycle is tagged limited private;
+   --  Initialize the phase controller.
+   procedure Initialize (Controller : in out Phase_Controller;
+                         App        : access ASF.Applications.Main.Application'Class) is null;
+
+   type Lifecycle is abstract tagged limited private;
    type Lifecycle_Access is access all Lifecycle'Class;
 
-   --  Initialize the locale support by using the configuration properties.
-   --  Properties matching the pattern: <b>bundles</b>.<i>var-name</i>=<i>bundle-name</i>
-   --  are used to register bindings linking a facelet variable <i>var-name</i>
-   --  to the resource bundle <i>bundle-name</i>.
+   --  Creates the phase controllers by invoking the <b>Set_Controller</b>
+   --  procedure for each phase.  This is called by <b>Initialize</b> to build
+   --  the lifecycle handler.
+   procedure Create_Phase_Controllers (Controller : in out Lifecycle) is abstract;
+
+   --  Initialize the the lifecycle handler.
    procedure Initialize (Controller : in out Lifecycle;
-                         Config     : in ASF.Applications.Config);
+                         App        : access ASF.Applications.Main.Application'Class);
 
    --  Set the controller to be used for the given phase.
    procedure Set_Controller (Controller : in out Lifecycle;
@@ -61,7 +67,7 @@ package ASF.Lifecycles is
 private
    type Phase_Controller is abstract tagged limited null record;
 
-   type Lifecycle is tagged limited record
+   type Lifecycle is abstract tagged limited record
       Controllers : Phase_Controller_Array;
    end record;
 

@@ -18,14 +18,19 @@
 
 package body ASF.Lifecycles is
 
-   --  Initialize the locale support by using the configuration properties.
-   --  Properties matching the pattern: <b>bundles</b>.<i>var-name</i>=<i>bundle-name</i>
-   --  are used to register bindings linking a facelet variable <i>var-name</i>
-   --  to the resource bundle <i>bundle-name</i>.
+   --  ------------------------------
+   --  Initialize the the lifecycle handler.
+   --  ------------------------------
    procedure Initialize (Controller : in out Lifecycle;
-                         Config     : in ASF.Applications.Config) is
+                         App        : access ASF.Applications.Main.Application'Class) is
    begin
-      null;
+      --  Create the phase controllers.
+      Lifecycle'Class (Controller).Create_Phase_Controllers;
+
+      --  Initialize the phase controllers.
+      for Phase in Controller.Controllers'Range loop
+         Controller.Controllers (Phase).Initialize (App);
+      end loop;
    end Initialize;
 
    --  ------------------------------

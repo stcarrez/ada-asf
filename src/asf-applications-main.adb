@@ -20,14 +20,13 @@ with Util.Log.Loggers;
 
 with ASF.Streams;
 with ASF.Contexts.Writer;
-with ASF.Components.Root;
 with ASF.Components.Core;
-with ASF.Components.Base;
 with ASF.Components.Core.Factory;
 with ASF.Components.Html.Factory;
 with ASF.Components.Utils.Factory;
 with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
+with ASF.Lifecycles.Default;
 
 with EL.Expressions;
 with EL.Contexts.Default;
@@ -44,6 +43,36 @@ package body ASF.Applications.Main is
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Applications.Main");
 
    --  ------------------------------
+   --  Factory for creation of lifecycle, view handler
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the lifecycle handler.  The lifecycle handler is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates an <b>ASF.Lifecycles.Default.Default_Lifecycle</b> object.
+   --  It can be overriden to change the behavior of the ASF request lifecycle.
+   --  ------------------------------
+   function Create_Lifecycle_Handler (App : in Application_Factory)
+                                      return ASF.Lifecycles.Lifecycle_Access is
+      pragma Unreferenced (App);
+   begin
+      return new ASF.Lifecycles.Default.Lifecycle;
+   end Create_Lifecycle_Handler;
+
+   --  ------------------------------
+   --  Create the view handler.  The view handler is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates an <b>ASF.Applications.Views.View_Handler</b> object.
+   --  It can be overriden to change the views associated with the application.
+   --  ------------------------------
+   function Create_View_Handler (App : in Application_Factory)
+                                 return ASF.Applications.Views.View_Handler_Access is
+      pragma Unreferenced (App);
+   begin
+      return new ASF.Applications.Views.View_Handler;
+   end Create_View_Handler;
+
+   --  ------------------------------
    --  Get the application view handler.
    --  ------------------------------
    function Get_View_Handler (App : access Application)
@@ -53,10 +82,20 @@ package body ASF.Applications.Main is
    end Get_View_Handler;
 
    --  ------------------------------
+   --  Get the lifecycle handler.
+   --  ------------------------------
+   function Get_Lifecycle_Handler (App : in Application)
+                                   return ASF.Lifecycles.Lifecycle_Access is
+   begin
+      return App.Lifecycle;
+   end Get_Lifecycle_Handler;
+
+   --  ------------------------------
    --  Initialize the application
    --  ------------------------------
-   procedure Initialize (App  : in out Application;
-                         Conf : in Config) is
+   procedure Initialize (App     : in out Application;
+                         Conf    : in Config;
+                         Factory : in Application_Factory'Class) is
       use ASF.Components;
       use ASF.Views;
    begin
@@ -75,9 +114,15 @@ package body ASF.Applications.Main is
       ASF.Components.Utils.Factory.Set_Functions (App.Functions);
       ASF.Views.Nodes.Core.Set_Functions (App.Functions);
 
+      --  Create the lifecycle handler.
+      App.Lifecycle := Factory.Create_Lifecycle_Handler;
+
       App.View.Initialize (App.Components'Unchecked_Access, Conf);
       ASF.Modules.Initialize (App.Modules, Conf);
       ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
+
+      --  Initialize the lifecycle handler.
+      App.Lifecycle.Initialize (App'Unchecked_Access);
    end Initialize;
 
    --  ------------------------------
@@ -285,6 +330,12 @@ package body ASF.Applications.Main is
       ASF.Contexts.Faces.Set_Current (Context, App'Unchecked_Access);
    end Set_Context;
 
+   procedure Execute_Lifecycle (App : in out Application;
+                                Faces : in out ASF.Contexts.Faces.Faces_Context'Class) is
+   begin
+      null;
+   end Execute_Lifecycle;
+
    --  ------------------------------
    --  Dispatch the request received on a page.
    --  ------------------------------
@@ -304,16 +355,14 @@ package body ASF.Applications.Main is
 
       Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
-      View           : Components.Root.UIViewRoot;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
       Root_Resolver  : aliased Web_ELResolver;
 
       Beans          : aliased Bean_Vectors.Vector;
-      --  Get the view handler
-      Handler   : constant access View_Handler'Class := App.Get_View_Handler;
 
       Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
+
    begin
       Log.Info ("Dispatch {0}", Page);
 
@@ -330,8 +379,9 @@ package body ASF.Applications.Main is
       Context.Set_Request (Request'Unchecked_Access);
       Context.Set_Response (Response'Unchecked_Access);
       App.Set_Context (Context'Unchecked_Access);
+
       begin
-         Handler.Restore_View (Page, Context, View);
+         App.Lifecycle.Execute (Context);
 
       exception
          when E : others =>
@@ -341,7 +391,7 @@ package body ASF.Applications.Main is
       end;
 
       begin
-         Handler.Render_View (Context, View);
+         App.Lifecycle.Render (Context);
 
       exception
          when E: others =>
@@ -366,111 +416,6 @@ package body ASF.Applications.Main is
          end loop;
       end;
    end Dispatch;
-
-   --  ------------------------------
-   --  Dispatch the request received on a page.
-   --  ------------------------------
-   procedure Postback (App      : in out Application;
-                       Page     : in String;
-                       Request  : in out ASF.Requests.Request'Class;
-                       Response : in out ASF.Responses.Response'Class) is
-
-      use EL.Contexts.Default;
-      use EL.Variables;
-      use EL.Variables.Default;
-      use EL.Contexts;
-      use EL.Objects;
-      use EL.Beans;
-      use ASF.Applications.Views;
-      use Ada.Exceptions;
-
-      Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
-      Context        : aliased ASF.Contexts.Faces.Faces_Context;
-      View           : Components.Root.UIViewRoot;
-      ELContext      : aliased EL.Contexts.Default.Default_Context;
-      Variables      : aliased Default_Variable_Mapper;
-      Root_Resolver  : aliased Web_ELResolver;
-
-      Beans          : aliased Bean_Vectors.Vector;
-      --  Get the view handler
-      Handler   : constant access View_Handler'Class := App.Get_View_Handler;
-
-      Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
-
-      Root : access ASF.Components.Base.UIComponent'Class;
-   begin
-      Log.Info ("Dispatch {0}", Page);
-
-      Root_Resolver.Application := App'Unchecked_Access;
-      Root_Resolver.Request := Request'Unchecked_Access;
-      Root_Resolver.Beans := Beans'Unchecked_Access;
-      ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
-      ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
-
-      Context.Set_ELContext (ELContext'Unchecked_Access);
-      Context.Set_Response_Writer (Writer'Unchecked_Access);
-      Writer.Initialize ("text/html", "UTF-8", Output);
-
-      Context.Set_Request (Request'Unchecked_Access);
-      Context.Set_Response (Response'Unchecked_Access);
-      App.Set_Context (Context'Unchecked_Access);
-      begin
-         Handler.Restore_View (Page, Context, View);
-
-      exception
-         when E : others =>
-            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
-                       Exception_Name (E), Exception_Message (E));
-            raise;
-      end;
-
-      Root := ASF.Components.Root.Get_Root (View);
-      begin
-         Root.Process_Decodes (Context);
-
-      exception
-         when E: others =>
-            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
-                       Exception_Name (E), Exception_Message (E));
-            raise;
-      end;
-
-      begin
-         Root.Process_Updates (Context);
-
-      exception
-         when E: others =>
-            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
-                       Exception_Name (E), Exception_Message (E));
-            raise;
-      end;
-
-      begin
-         Handler.Render_View (Context, View);
-
-      exception
-         when E: others =>
-            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
-                       Exception_Name (E), Exception_Message (E));
-            raise;
-      end;
-      Writer.Flush;
-
-      declare
-         C : Bean_Vectors.Cursor := Beans.First;
-      begin
-         while Bean_Vectors.Has_Element (C) loop
-            declare
-               Bean : Bean_Object := Bean_Vectors.Element (C);
-            begin
-               if Bean.Bean /= null and then Bean.Free /= null then
-                  Bean.Free (Bean.Bean);
-               end if;
-            end;
-            Bean_Vectors.Next (C);
-         end loop;
-      end;
-   end Postback;
 
    --  ------------------------------
    --  Find the converter instance that was registered under the given name.

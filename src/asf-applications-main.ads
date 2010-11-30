@@ -39,6 +39,28 @@ package ASF.Applications.Main is
 
    use ASF.Beans;
 
+   --  ------------------------------
+   --  Factory for creation of lifecycle, view handler
+   --  ------------------------------
+   type Application_Factory is tagged limited private;
+
+   --  Create the lifecycle handler.  The lifecycle handler is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates an <b>ASF.Lifecycles.Default.Default_Lifecycle</b> object.
+   --  It can be overriden to change the behavior of the ASF request lifecycle.
+   function Create_Lifecycle_Handler (App : in Application_Factory)
+                                      return ASF.Lifecycles.Lifecycle_Access;
+
+   --  Create the view handler.  The view handler is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates an <b>ASF.Applications.Views.View_Handler</b> object.
+   --  It can be overriden to change the views associated with the application.
+   function Create_View_Handler (App : in Application_Factory)
+                                 return ASF.Applications.Views.View_Handler_Access;
+
+   --  ------------------------------
+   --  Application
+   --  ------------------------------
    type Application is new ASF.Servlets.Servlet_Registry with private;
    type Application_Access is access all Application'Class;
 
@@ -46,9 +68,14 @@ package ASF.Applications.Main is
    function Get_View_Handler (App : access Application)
                               return access Views.View_Handler'Class;
 
+   --  Get the lifecycle handler.
+   function Get_Lifecycle_Handler (App : in Application)
+                                   return ASF.Lifecycles.Lifecycle_Access;
+
    --  Initialize the application
-   procedure Initialize (App  : in out Application;
-                         Conf : in Config);
+   procedure Initialize (App     : in out Application;
+                         Conf    : in Config;
+                         Factory : in Application_Factory'Class);
 
    --  Get the configuration parameter;
    function Get_Config (App   : Application;
@@ -116,12 +143,6 @@ package ASF.Applications.Main is
                        Request  : in out ASF.Requests.Request'Class;
                        Response : in out ASF.Responses.Response'Class);
 
-   --  Dispatch the request received on a page.
-   procedure Postback (App      : in out Application;
-                       Page     : in String;
-                       Request  : in out ASF.Requests.Request'Class;
-                       Response : in out ASF.Responses.Response'Class);
-
    --  Find the converter instance that was registered under the given name.
    --  Returns null if no such converter exist.
    function Find (App  : in Application;
@@ -133,6 +154,8 @@ package ASF.Applications.Main is
    procedure Register_Functions (App : in out Application'Class);
 
 private
+
+   type Application_Factory is tagged limited null record;
 
    type Application is new ASF.Servlets.Servlet_Registry with record
       View    : aliased ASF.Applications.Views.View_Handler;

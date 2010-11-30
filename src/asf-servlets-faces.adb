@@ -113,7 +113,7 @@ package body ASF.Servlets.Faces is
                       Response : in out Responses.Response'Class) is
       URI    : constant String := Request.Get_Path_Info;
    begin
-      Server.App.Postback (Page     => URI,
+      Server.App.Dispatch (Page     => URI,
                            Request  => Request,
                            Response => Response);
    end Do_Post;

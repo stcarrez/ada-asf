@@ -18,16 +18,28 @@
 
 --  The <b>ASF.Lifecycles.Restore</b> package defines the behavior
 --  of the restore phase.
+with ASF.Applications.Views;
 package ASF.Lifecycles.Restore is
 
    --  ------------------------------
    --  Restore view controller
    --  ------------------------------
-   type Restore_Controller is new Phase_Controller with null record;
+   type Restore_Controller is new Phase_Controller with private;
+
+   --  Initialize the phase controller.
+   overriding
+   procedure Initialize (Controller : in out Restore_Controller;
+                         App        : access ASF.Applications.Main.Application'Class);
 
    --  Execute the restore view phase.
    overriding
    procedure Execute (Controller : in Restore_Controller;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class);
+
+private
+
+   type Restore_Controller is new Phase_Controller with record
+      View_Handler : access ASF.Applications.Views.View_Handler'Class;
+   end record;
 
 end ASF.Lifecycles.Restore;

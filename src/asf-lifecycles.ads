@@ -23,7 +23,7 @@ package ASF.Lifecycles is
    type Phase_Type is (RESTORE_VIEW,
                        APPLY_REQUEST_VALUES,
                        PROCESS_VALIDATION,
-                       UPDATE_MODEL_VALUES,
+--                         UPDATE_MODEL_VALUES,
                        INVOKE_APPLICATION,
                        RENDER_RESPONSE);
 

@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  asf-lifecycles-restore -- Restore view phase
+--  asf-lifecycles-apply -- Validation phase
 --  Copyright (C) 2010 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -16,55 +16,39 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Exceptions;
-with ASF.Applications.Main;
 with ASF.Components.Root;
-with ASF.Requests;
+with ASF.Components.Base;
 with Util.Log.Loggers;
-package body ASF.Lifecycles.Restore is
+
+--  The <b>ASF.Lifecycles.Validation</b> package defines the behavior
+--  of the validation phase.
+package body ASF.Lifecycles.Validation is
 
    use Ada.Exceptions;
    use Util.Log;
-   use ASF.Applications;
+   use ASF.Components;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Lifecycles.Restore");
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Lifecycles.Validation");
 
    --  ------------------------------
-   --  Initialize the phase controller.
+   --  Execute the validation phase.
    --  ------------------------------
    overriding
-   procedure Initialize (Controller : in out Restore_Controller;
-                         App        : access ASF.Applications.Main.Application'Class) is
-   begin
-      Controller.View_Handler := App.Get_View_Handler;
-   end Initialize;
-
-   --  ------------------------------
-   --  Execute the restore view phase.
-   --  ------------------------------
-   overriding
-   procedure Execute (Controller : in Restore_Controller;
+   procedure Execute (Controller : in Validation_Controller;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
       pragma Unreferenced (Controller);
 
-      Req     : constant ASF.Requests.Request_Access := Context.Get_Request;
-      Page    : constant String := Req.Get_Path_Info;
-      View    : Components.Root.UIViewRoot;
+      View : constant Components.Root.UIViewRoot := Context.Get_View_Root;
+      Root : constant access Components.Base.UIComponent'Class := Components.Root.Get_Root (View);
    begin
-      Controller.View_Handler.Restore_View (Page, Context, View);
-
-      Context.Set_View_Root (View);
-
-      --  If this is not a postback, render the response immediately.
-      if Req.Get_Method = "GET" then
-         Context.Response_Completed;
-      end if;
+      Root.Process_Validators (Context);
 
    exception
-      when E : others =>
-         Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+      when E: others =>
+         Log.Error ("Error when running the validation phase {0}: {1}: {2}", "?",
                     Exception_Name (E), Exception_Message (E));
          raise;
    end Execute;
 
-end ASF.Lifecycles.Restore;
+end ASF.Lifecycles.Validation;

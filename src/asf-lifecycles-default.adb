@@ -18,6 +18,8 @@
 
 with ASF.Lifecycles.Restore;
 with ASF.Lifecycles.Apply;
+with ASF.Lifecycles.Validation;
+with ASF.Lifecycles.Invoke;
 with ASF.Lifecycles.Response;
 package body ASF.Lifecycles.Default is
 
@@ -33,6 +35,12 @@ package body ASF.Lifecycles.Default is
 
       Controller.Set_Controller (Phase    => APPLY_REQUEST_VALUES,
                                  Instance => new Lifecycles.Apply.Apply_Controller);
+
+      Controller.Set_Controller (Phase    => PROCESS_VALIDATION,
+                                 Instance => new Lifecycles.Validation.Validation_Controller);
+
+      Controller.Set_Controller (Phase    => INVOKE_APPLICATION,
+                                 Instance => new Lifecycles.Invoke.Invoke_Controller);
 
       Controller.Set_Controller (Phase    => RENDER_RESPONSE,
                                  Instance => new Lifecycles.Response.Response_Controller);

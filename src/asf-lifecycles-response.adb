@@ -33,6 +33,16 @@ package body ASF.Lifecycles.Response is
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Lifecycles.Response");
 
    --  ------------------------------
+   --  Initialize the phase controller.
+   --  ------------------------------
+   overriding
+   procedure Initialize (Controller : in out Response_Controller;
+                         App        : access ASF.Applications.Main.Application'Class) is
+   begin
+      Controller.View_Handler := App.Get_View_Handler;
+   end Initialize;
+
+   --  ------------------------------
    --  Execute the restore view phase.
    --  ------------------------------
    overriding
@@ -40,11 +50,9 @@ package body ASF.Lifecycles.Response is
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
       pragma Unreferenced (Controller);
 
-      App     : constant access Main.Application'Class   := Context.Get_Application;
-      Handler : constant access Views.View_Handler'Class := App.Get_View_Handler;
       View    : constant Components.Root.UIViewRoot := Context.Get_View_Root;
    begin
-      Handler.Render_View (Context, View);
+      Controller.View_Handler.Render_View (Context, View);
 
    exception
       when E: others =>

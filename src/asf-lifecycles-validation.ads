@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  asf-lifecycles-response -- Response phase
+--  asf-lifecycles-validation -- Validation phase
 --  Copyright (C) 2010 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -16,30 +16,18 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
---  The <b>ASF.Lifecycles.Response</b> package defines the behavior
---  of the response phase.
-with ASF.Applications.Views;
-package ASF.Lifecycles.Response is
+--  The <b>ASF.Lifecycles.Validation</b> package defines the behavior
+--  of the validation phase.
+package ASF.Lifecycles.Validation is
 
    --  ------------------------------
-   --  Response controller
+   --  Validation controller
    --  ------------------------------
-   type Response_Controller is new Phase_Controller with private;
+   type Validation_Controller is new Phase_Controller with null record;
 
-   --  Initialize the phase controller.
+   --  Execute the validation phase.
    overriding
-   procedure Initialize (Controller : in out Response_Controller;
-                         App        : access ASF.Applications.Main.Application'Class);
-
-   --  Execute the restore view phase.
-   overriding
-   procedure Execute (Controller : in Response_Controller;
+   procedure Execute (Controller : in Validation_Controller;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class);
 
-private
-
-   type Response_Controller is new Phase_Controller with record
-      View_Handler : access ASF.Applications.Views.View_Handler'Class;
-   end record;
-
-end ASF.Lifecycles.Response;
+end ASF.Lifecycles.Validation;

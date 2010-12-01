@@ -330,10 +330,14 @@ package body ASF.Applications.Main is
       ASF.Contexts.Faces.Set_Current (Context, App'Unchecked_Access);
    end Set_Context;
 
-   procedure Execute_Lifecycle (App : in out Application;
-                                Faces : in out ASF.Contexts.Faces.Faces_Context'Class) is
+   --  ------------------------------
+   --  Execute the lifecycle phases on the faces context.
+   --  ------------------------------
+   procedure Execute_Lifecycle (App     : in Application;
+                                Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
    begin
-      null;
+      App.Lifecycle.Execute (Context);
+      App.Lifecycle.Render (Context);
    end Execute_Lifecycle;
 
    --  ------------------------------
@@ -381,20 +385,10 @@ package body ASF.Applications.Main is
       App.Set_Context (Context'Unchecked_Access);
 
       begin
-         App.Lifecycle.Execute (Context);
+         Application'Class (App).Execute_Lifecycle (Context);
 
       exception
          when E : others =>
-            Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
-                       Exception_Name (E), Exception_Message (E));
-            raise;
-      end;
-
-      begin
-         App.Lifecycle.Render (Context);
-
-      exception
-         when E: others =>
             Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
                        Exception_Name (E), Exception_Message (E));
             raise;

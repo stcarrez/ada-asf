@@ -137,6 +137,10 @@ package ASF.Applications.Main is
    procedure Set_Context (App     : in out Application;
                           Context : in ASF.Contexts.Faces.Faces_Context_Access);
 
+   --  Execute the lifecycle phases on the faces context.
+   procedure Execute_Lifecycle (App     : in Application;
+                                Context : in out ASF.Contexts.Faces.Faces_Context'Class);
+
    --  Dispatch the request received on a page.
    procedure Dispatch (App      : in out Application;
                        Page     : in String;

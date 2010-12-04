@@ -22,7 +22,7 @@ package body ASF.Responses.Web is
 
    procedure Initialize (Resp : in out Response) is
    begin
-      Resp.Content.Initialize (8192);
+      Resp.Content.Initialize (256 * 1024);
       Resp.Stream := Resp.Content'Unchecked_Access;
    end Initialize;
 

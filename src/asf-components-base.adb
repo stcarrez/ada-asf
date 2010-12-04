@@ -16,10 +16,17 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Log.Loggers;
 with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with ASF.Converters;
+with ASF.Events;
 package body ASF.Components.Base is
+
+   use Util.Log;
+
+   --  The logger
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Components.Base");
 
    --  ------------------------------
    --  Get the parent component.
@@ -404,6 +411,30 @@ package body ASF.Components.Base is
          Child := Child.Next;
       end loop;
    end Process_Updates;
+
+   --  ------------------------------
+   --  Queue an event for broadcast at the end of the current request
+   --  processing lifecycle phase.  The default implementation in
+   --  delegates this call to the parent component.  The <b>UIViewRoot</b>
+   --  component is in charge of queueing events.  The event object
+   --  will be freed after being dispatched.
+   --  ------------------------------
+   procedure Queue_Event (UI    : in out UIComponent;
+                          Event : not null access ASF.Events.Faces_Event'Class) is
+   begin
+      UI.Parent.Queue_Event (Event);
+   end Queue_Event;
+
+   --  ------------------------------
+   --  Broadcast the event to the event listeners installed on this component.
+   --  Listeners are called in the order in which they were added.
+   --  ------------------------------
+   procedure Broadcast (UI      : in out UIComponent;
+                        Event   : not null access ASF.Events.Faces_Event'Class;
+                        Context : in out Faces_Context'Class) is
+   begin
+      LOG.Error ("Event dispatched to a component that cannot handle it");
+   end Broadcast;
 
    --  ------------------------------
    --  Iterate over the children of the component and execute

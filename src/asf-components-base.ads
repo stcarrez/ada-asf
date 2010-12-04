@@ -28,6 +28,7 @@ with EL.Expressions;
 with ASF.Contexts.Faces;
 limited with ASF.Views.Nodes;
 limited with ASF.Converters;
+limited with ASF.Events;
 package ASF.Components.Base is
 
    use ASF.Contexts.Faces;
@@ -139,6 +140,12 @@ package ASF.Components.Base is
    procedure Decode_Children (UI      : in UIComponent'Class;
                               Context : in out Faces_Context'Class);
 
+   --  Decode any new state of the specified component from the request contained
+   --  in the specified context and store that state on the component.
+   --
+   --  During decoding, events may be enqueued for later processing
+   --  (by event listeners that have registered an interest), by calling
+   --  the <b>Queue_Event</b> on the associated component.
    procedure Process_Decodes (UI      : in out UIComponent;
                               Context : in out Faces_Context'Class);
 
@@ -152,8 +159,29 @@ package ASF.Components.Base is
    procedure Process_Validators (UI      : in out UIComponent;
                                  Context : in out Faces_Context'Class);
 
+   --  Perform the component tree processing required by the <b>Update Model Values</b>
+   --  phase of the request processing lifecycle for all facets of this component,
+   --  all children of this component, and this component itself, as follows.
+   --  <ul>
+   --    <li>If this component <b>rendered</b> property is false, skip further processing.
+   --    <li>Call the <b>Process_Updates/b> of all facets and children.
+   --  <ul>
    procedure Process_Updates (UI      : in out UIComponent;
                               Context : in out Faces_Context'Class);
+
+   --  Queue an event for broadcast at the end of the current request
+   --  processing lifecycle phase.  The default implementation in
+   --  delegates this call to the parent component.  The <b>UIViewRoot</b>
+   --  component is in charge of queueing events.  The event object
+   --  will be freed after being dispatched.
+   procedure Queue_Event (UI    : in out UIComponent;
+                          Event : not null access ASF.Events.Faces_Event'Class);
+
+   --  Broadcast the event to the event listeners installed on this component.
+   --  Listeners are called in the order in which they were added.
+   procedure Broadcast (UI      : in out UIComponent;
+                        Event   : not null access ASF.Events.Faces_Event'Class;
+                        Context : in out Faces_Context'Class);
 
    type UIComponent_Array is array (Natural range <>) of UIComponent_Access;
 

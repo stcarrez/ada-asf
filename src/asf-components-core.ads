@@ -18,6 +18,9 @@
 with ASF.Views.Nodes;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
+with ASF.Events;
+with ASF.Lifecycles;
+private with Ada.Containers.Vectors;
 package ASF.Components.Core is
 
    use ASF.Contexts.Faces;
@@ -40,6 +43,53 @@ package ASF.Components.Core is
    overriding
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class);
+
+   --  Decode any new state of the specified component from the request contained
+   --  in the specified context and store that state on the component.
+   --
+   --  During decoding, events may be enqueued for later processing
+   --  (by event listeners that have registered an interest), by calling
+   --  the <b>Queue_Event</b> on the associated component.
+   overriding
+   procedure Process_Decodes (UI      : in out UIView;
+                              Context : in out Faces_Context'Class);
+
+   --  Perform the component tree processing required by the <b>Process Validations</b>
+   --  phase of the request processing lifecycle for all facets of this component,
+   --  all children of this component, and this component itself, as follows:
+   --  <ul>
+   --    <li>If this component <b>rendered</b> property is false, skip further processing.
+   --    <li>Call the <b>Process_Validators</b> of all facets and children.
+   --  <ul>
+   overriding
+   procedure Process_Validators (UI      : in out UIView;
+                                 Context : in out Faces_Context'Class);
+
+   --  Perform the component tree processing required by the <b>Update Model Values</b>
+   --  phase of the request processing lifecycle for all facets of this component,
+   --  all children of this component, and this component itself, as follows.
+   --  <ul>
+   --    <li>If this component <b>rendered</b> property is false, skip further processing.
+   --    <li>Call the <b>Process_Updates/b> of all facets and children.
+   --  <ul>
+   overriding
+   procedure Process_Updates (UI      : in out UIView;
+                              Context : in out Faces_Context'Class);
+
+   --  Queue an event for broadcast at the end of the current request
+   --  processing lifecycle phase.  The event object
+   --  will be freed after being dispatched.
+   procedure Queue_Event (UI    : in out UIView;
+                          Event : not null access ASF.Events.Faces_Event'Class);
+
+   --  Broadcast the events after the specified lifecycle phase.
+   --  Events that were queued will be freed.
+   procedure Broadcast (UI      : in out UIView;
+                        Phase   : in ASF.Lifecycles.Phase_Type;
+                        Context : in out Faces_Context'Class);
+
+   --  Clear the events that were queued.
+   procedure Clear_Events (UI : in out UIView);
 
    type UIText is new Base.UIComponent with private;
    type UIText_Access is access all UIText'Class;
@@ -91,8 +141,17 @@ package ASF.Components.Core is
 
 private
 
+   use ASF.Lifecycles;
+
+   type Faces_Event_Access is access all ASF.Events.Faces_Event'Class;
+
+   package Event_Vectors is new Ada.Containers.Vectors (Index_Type   => Natural,
+                                                        Element_Type => Faces_Event_Access);
+
+   type Event_Queues is array (Phase_Type) of Event_Vectors.Vector;
+
    type UIView is new UIComponentBase with record
-      N : Natural;
+      Phase_Events : Event_Queues;
    end record;
 
    type UIText is new Base.UIComponent with record

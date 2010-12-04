@@ -16,10 +16,15 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Unchecked_Deallocation;
 package body ASF.Components.Core is
 
    use ASF;
    use EL.Objects;
+
+   procedure Free is
+     new Ada.Unchecked_Deallocation (Object => ASF.Events.Faces_Event'Class,
+                                     Name   => Faces_Event_Access);
 
    --  ------------------------------
    --  Return a client-side identifier for this component, generating
@@ -55,6 +60,146 @@ package body ASF.Components.Core is
    begin
       null;
    end Encode_Begin;
+
+   --  ------------------------------
+   --  Decode any new state of the specified component from the request contained
+   --  in the specified context and store that state on the component.
+   --
+   --  During decoding, events may be enqueued for later processing
+   --  (by event listeners that have registered an interest), by calling
+   --  the <b>Queue_Event</b> on the associated component.
+   --  ------------------------------
+   overriding
+   procedure Process_Decodes (UI      : in out UIView;
+                              Context : in out Faces_Context'Class) is
+   begin
+      Base.UIComponent (UI).Process_Decodes (Context);
+
+      --  Dispatch events queued for this phase.
+      UI.Broadcast (ASF.Lifecycles.APPLY_REQUEST_VALUES, Context);
+
+      --  Drop other events if the response is to be returned.
+      if Context.Get_Render_Response or Context.Get_Response_Completed then
+         UI.Clear_Events;
+      end if;
+   end Process_Decodes;
+
+   --  ------------------------------
+   --  Perform the component tree processing required by the <b>Process Validations</b>
+   --  phase of the request processing lifecycle for all facets of this component,
+   --  all children of this component, and this component itself, as follows:
+   --  <ul>
+   --    <li>If this component <b>rendered</b> property is false, skip further processing.
+   --    <li>Call the <b>Process_Validators</b> of all facets and children.
+   --  <ul>
+   --  ------------------------------
+   overriding
+   procedure Process_Validators (UI      : in out UIView;
+                                 Context : in out Faces_Context'Class) is
+   begin
+      Base.UIComponent (UI).Process_Validators (Context);
+
+      --  Dispatch events queued for this phase.
+      UI.Broadcast (ASF.Lifecycles.PROCESS_VALIDATION, Context);
+
+      --  Drop other events if the response is to be returned.
+      if Context.Get_Render_Response or Context.Get_Response_Completed then
+         UI.Clear_Events;
+      end if;
+   end Process_Validators;
+
+   --  ------------------------------
+   --  Perform the component tree processing required by the <b>Update Model Values</b>
+   --  phase of the request processing lifecycle for all facets of this component,
+   --  all children of this component, and this component itself, as follows.
+   --  <ul>
+   --    <li>If this component <b>rendered</b> property is false, skip further processing.
+   --    <li>Call the <b>Process_Updates/b> of all facets and children.
+   --  <ul>
+   --  ------------------------------
+   overriding
+   procedure Process_Updates (UI      : in out UIView;
+                              Context : in out Faces_Context'Class) is
+   begin
+      Base.UIComponent (UI).Process_Updates (Context);
+
+      --  Dispatch events queued for this phase.
+      UI.Broadcast (ASF.Lifecycles.UPDATE_MODEL_VALUES, Context);
+
+      --  Drop other events if the response is to be returned.
+      if Context.Get_Render_Response or Context.Get_Response_Completed then
+         UI.Clear_Events;
+      end if;
+   end Process_Updates;
+
+   --  ------------------------------
+   --  Queue an event for broadcast at the end of the current request
+   --  processing lifecycle phase.  The event object
+   --  will be freed after being dispatched.
+   --  ------------------------------
+   procedure Queue_Event (UI    : in out UIView;
+                          Event : not null access ASF.Events.Faces_Event'Class) is
+   begin
+      UI.Phase_Events(Event.Get_Phase).Append (Event.all'Access);
+   end Queue_Event;
+
+   --  ------------------------------
+   --  Broadcast the events after the specified lifecycle phase.
+   --  Events that were queued will be freed.
+   --  ------------------------------
+   procedure Broadcast (UI      : in out UIView;
+                        Phase   : in ASF.Lifecycles.Phase_Type;
+                        Context : in out Faces_Context'Class) is
+
+      Pos : Natural := 0;
+
+      --  Broadcast the event to the component's listeners
+      --  and free that event.
+      procedure Broadcast (Ev : in out Faces_Event_Access);
+
+      procedure Broadcast (Ev : in out Faces_Event_Access) is
+      begin
+         if Ev /= null then
+            declare
+               C  : constant Base.UIComponent_Access := Ev.Get_Component;
+            begin
+               C.Broadcast (Ev, Context);
+            end;
+            Free (Ev);
+         end if;
+      end Broadcast;
+
+   begin
+      --  Dispatch events in the order in which they were queued.
+      --  More events could be queued as a result of the dispatch.
+      --  After dispatching an event, it is freed but not removed
+      --  from the event queue (the access will be cleared).
+      loop
+         exit when Pos >= UI.Phase_Events(Phase).Last_Index;
+         UI.Phase_Events(Phase).Update_Element (Pos, Broadcast'Access);
+         Pos := Pos + 1;
+      end loop;
+
+      --  Now, clear the queue.
+      UI.Phase_Events(Phase).Clear;
+   end Broadcast;
+
+   --  ------------------------------
+   --  Clear the events that were queued.
+   --  ------------------------------
+   procedure Clear_Events (UI : in out UIView) is
+   begin
+      for Phase in UI.Phase_Events'Range loop
+         for I in 0 .. UI.Phase_Events(Phase).Last_Index loop
+            declare
+               Ev : Faces_Event_Access := UI.Phase_Events(Phase).Element (I);
+            begin
+               Free (Ev);
+            end;
+         end loop;
+         UI.Phase_Events(Phase).Clear;
+      end loop;
+   end Clear_Events;
 
    --  ------------------------------
    --  Abstract Leaf component

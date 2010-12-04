@@ -21,6 +21,7 @@ with ASF.Contexts.Facelets;
 with ASF.Applications.Main;
 with ASF.Components.Base;
 with ASF.Components.Core;
+with ASF.Responses;
 package body ASF.Applications.Views is
 
    use ASF.Components;
@@ -140,7 +141,9 @@ package body ASF.Applications.Views is
                              Context => Ctx,
                              Result  => Tree);
       if Facelets.Is_Null (Tree) then
-         raise No_View;
+         Context.Get_Response.Send_Error (ASF.Responses.SC_NOT_FOUND);
+         Context.Response_Completed;
+         return;
       end if;
 
       --  Build the component tree for this request.

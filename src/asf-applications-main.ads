@@ -35,6 +35,7 @@ with ASF.Modules;
 with ASF.Requests;
 with ASF.Responses;
 with ASF.Servlets;
+with ASF.Events.Actions;
 package ASF.Applications.Main is
 
    use ASF.Beans;
@@ -61,7 +62,8 @@ package ASF.Applications.Main is
    --  ------------------------------
    --  Application
    --  ------------------------------
-   type Application is new ASF.Servlets.Servlet_Registry with private;
+   type Application is new ASF.Servlets.Servlet_Registry
+     and ASF.Events.Actions.Action_Listener with private;
    type Application_Access is access all Application'Class;
 
    --  Get the application view handler.
@@ -71,6 +73,18 @@ package ASF.Applications.Main is
    --  Get the lifecycle handler.
    function Get_Lifecycle_Handler (App : in Application)
                                    return ASF.Lifecycles.Lifecycle_Access;
+
+   --  Get the action event listener responsible for processing action
+   --  events and triggering the navigation to the next view using the
+   --  navigation handler.
+   function Get_Action_Listener (App : in Application)
+                                 return ASF.Events.Actions.Action_Listener_Access;
+
+   --  Process the action associated with the action event.
+   overriding
+   procedure Process_Action (Listener : in Application;
+                             Event    : in ASF.Events.Actions.Action_Event'Class;
+                             Context  : in out Contexts.Faces.Faces_Context'Class);
 
    --  Initialize the application
    procedure Initialize (App     : in out Application;
@@ -161,7 +175,8 @@ private
 
    type Application_Factory is tagged limited null record;
 
-   type Application is new ASF.Servlets.Servlet_Registry with record
+   type Application is new ASF.Servlets.Servlet_Registry
+     and ASF.Events.Actions.Action_Listener with record
       View    : aliased ASF.Applications.Views.View_Handler;
       Lifecycle : ASF.Lifecycles.Lifecycle_Access;
       Factory : ASF.Beans.Bean_Factory;
@@ -174,6 +189,9 @@ private
 
       --  The component factory
       Components : aliased ASF.Factory.Component_Factory;
+
+      --  The action listener.
+      Action_Listener : ASF.Events.Actions.Action_Listener_Access;
    end record;
 
 end ASF.Applications.Main;

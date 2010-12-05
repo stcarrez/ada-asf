@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Util.Events;
 with ASF.Applications;
 package ASF.Events.Modules is
 

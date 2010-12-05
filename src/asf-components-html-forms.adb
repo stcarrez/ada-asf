@@ -20,6 +20,8 @@ with Ada.Exceptions;
 with ASF.Utils;
 with ASF.Components.Base;
 with ASF.Components.Utils;
+with ASF.Events.Actions;
+with ASF.Applications.Main;
 package body ASF.Components.Html.Forms is
 
    use Util.Log;
@@ -204,6 +206,59 @@ package body ASF.Components.Html.Forms is
    begin
       UI.Value := Value;
    end Set_Value;
+
+   --  ------------------------------
+   --  Get the action method expression to invoke if the command is pressed.
+   --  ------------------------------
+   function Get_Action_Expression (UI      : in UICommand;
+                                   Context : in Faces_Context'Class)
+                                   return EL.Expressions.Method_Expression is
+      pragma Unreferenced (Context);
+   begin
+      return UI.Get_Method_Expression (Name => "action");
+   end Get_Action_Expression;
+
+   overriding
+   procedure Process_Decodes (UI      : in out UICommand;
+                              Context : in out Faces_Context'Class) is
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+      declare
+         Id  : constant Unbounded_String := UI.Get_Client_Id;
+         Val : constant String := Context.Get_Parameter (To_String (Id));
+      begin
+         Log.Info ("Check command input parameter {0} -> {1}", Id, Val);
+         if Val /= "" then
+            ASF.Events.Actions.Post_Event (UI     => UI,
+                                           Method => UI.Get_Action_Expression (Context));
+         end if;
+
+      exception
+         when EL.Expressions.Invalid_Expression =>
+            null;
+      end;
+   end Process_Decodes;
+
+   --  ------------------------------
+   --  Broadcast the event to the event listeners installed on this component.
+   --  Listeners are called in the order in which they were added.
+   --  ------------------------------
+   overriding
+   procedure Broadcast (UI      : in out UICommand;
+                        Event   : not null access ASF.Events.Faces_Event'Class;
+                        Context : in out Faces_Context'Class) is
+      use ASF.Events.Actions;
+
+      App  : constant access Applications.Main.Application'Class := Context.Get_Application;
+      Disp : constant Action_Listener_Access := App.Get_Action_Listener;
+   begin
+      if Disp /= null and Event.all in Action_Event'Class then
+         Disp.Process_Action (Event   => Action_Event (Event.all),
+                              Context => Context);
+      end if;
+   end Broadcast;
 
    overriding
    procedure Encode_Begin (UI      : in UICommand;

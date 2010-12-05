@@ -18,6 +18,7 @@
 with Ada.Exceptions;
 with ASF.Components.Root;
 with ASF.Components.Base;
+with ASF.Components.Core;
 with Util.Log.Loggers;
 
 --  The <b>ASF.Lifecycles.Invoke</b> package defines the behavior
@@ -42,8 +43,9 @@ package body ASF.Lifecycles.Invoke is
       View : constant Components.Root.UIViewRoot := Context.Get_View_Root;
       Root : constant access Components.Base.UIComponent'Class := Components.Root.Get_Root (View);
    begin
-      --  Root.Process_Decodes (Context);
-      null;
+      if Root.all in Components.Core.UIView'Class then
+         Components.Core.UIView'Class (Root.all).Process_Application (Context);
+      end if;
 
    exception
       when E: others =>

@@ -133,6 +133,19 @@ package body ASF.Components.Core is
    end Process_Updates;
 
    --  ------------------------------
+   --  Broadcast any events that have been queued for the <b>Invoke Application</b>
+   --  phase of the request processing lifecycle and to clear out any events
+   --  for later phases if the event processing for this phase caused
+   --  <b>renderResponse</b> or <b>responseComplete</b> to be called.
+   --  ------------------------------
+   procedure Process_Application (UI      : in out UIView;
+                                  Context : in out Faces_Context'Class) is
+   begin
+      --  Dispatch events queued for this phase.
+      UI.Broadcast (ASF.Lifecycles.INVOKE_APPLICATION, Context);
+   end Process_Application;
+
+   --  ------------------------------
    --  Queue an event for broadcast at the end of the current request
    --  processing lifecycle phase.  The event object
    --  will be freed after being dispatched.
@@ -175,7 +188,7 @@ package body ASF.Components.Core is
       --  After dispatching an event, it is freed but not removed
       --  from the event queue (the access will be cleared).
       loop
-         exit when Pos >= UI.Phase_Events(Phase).Last_Index;
+         exit when Pos > UI.Phase_Events(Phase).Last_Index;
          UI.Phase_Events(Phase).Update_Element (Pos, Broadcast'Access);
          Pos := Pos + 1;
       end loop;

@@ -91,6 +91,33 @@ package body ASF.Applications.Main is
    end Get_Lifecycle_Handler;
 
    --  ------------------------------
+   --  Get the action event listener responsible for processing action
+   --  events and triggering the navigation to the next view using the
+   --  navigation handler.
+   --  ------------------------------
+   function Get_Action_Listener (App : in Application)
+                                 return ASF.Events.Actions.Action_Listener_Access is
+   begin
+      return App.Action_Listener;
+   end Get_Action_Listener;
+
+   overriding
+   procedure Process_Action (Listener : in Application;
+                             Event    : in ASF.Events.Actions.Action_Event'Class;
+                             Context  : in out Contexts.Faces.Faces_Context'Class) is
+      pragma Unreferenced (Listener);
+
+      Method  : constant EL.Expressions.Method_Expression := Event.Get_Method;
+      Outcome : Unbounded_String;
+   begin
+      LOG.Info ("Execute bean action");
+
+      Events.Actions.Action_Method.Execute (Method  => Method,
+                                            Param   => Outcome,
+                                            Context => Context.Get_ELContext.all);
+   end Process_Action;
+
+   --  ------------------------------
    --  Initialize the application
    --  ------------------------------
    procedure Initialize (App     : in out Application;
@@ -102,6 +129,7 @@ package body ASF.Applications.Main is
       App.Conf := Conf;
       App.Set_Init_Parameters (Params => Conf);
 
+      App.Action_Listener := App'Unchecked_Access;
       ASF.Factory.Register (Factory  => App.Components,
                             Bindings => Core.Factory.Definition);
       ASF.Factory.Register (Factory  => App.Components,

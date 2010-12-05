@@ -16,7 +16,9 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ASF.Components.Html.Text;
+with ASF.Events;
 with EL.Objects;
+with EL.Expressions;
 package ASF.Components.Html.Forms is
 
    --  ------------------------------
@@ -76,6 +78,22 @@ package ASF.Components.Html.Forms is
    --  Set the value to write on the output.
    procedure Set_Value (UI    : in out UICommand;
                         Value : in EL.Objects.Object);
+
+   --  Get the action method expression to invoke if the command is pressed.
+   function Get_Action_Expression (UI      : in UICommand;
+                                   Context : in Faces_Context'Class)
+                                  return EL.Expressions.Method_Expression;
+
+   overriding
+   procedure Process_Decodes (UI      : in out UICommand;
+                              Context : in out Faces_Context'Class);
+
+   --  Broadcast the event to the event listeners installed on this component.
+   --  Listeners are called in the order in which they were added.
+   overriding
+   procedure Broadcast (UI      : in out UICommand;
+                        Event   : not null access ASF.Events.Faces_Event'Class;
+                        Context : in out Faces_Context'Class);
 
    --  ------------------------------
    --  Label Component

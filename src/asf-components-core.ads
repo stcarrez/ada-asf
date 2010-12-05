@@ -76,6 +76,13 @@ package ASF.Components.Core is
    procedure Process_Updates (UI      : in out UIView;
                               Context : in out Faces_Context'Class);
 
+   --  Broadcast any events that have been queued for the <b>Invoke Application</b>
+   --  phase of the request processing lifecycle and to clear out any events
+   --  for later phases if the event processing for this phase caused
+   --  <b>renderResponse</b> or <b>responseComplete</b> to be called.
+   procedure Process_Application (UI      : in out UIView;
+                                  Context : in out Faces_Context'Class);
+
    --  Queue an event for broadcast at the end of the current request
    --  processing lifecycle phase.  The event object
    --  will be freed after being dispatched.

@@ -74,6 +74,9 @@ package ASF.Views.Nodes is
    function Get_Value_Expression (Attribute : Tag_Attribute)
                                   return EL.Expressions.Value_Expression;
 
+   function Get_Method_Expression (Attribute : Tag_Attribute)
+                                  return EL.Expressions.Method_Expression;
+
    --  Reduce the expression by eliminating known variables and computing
    --  constant expressions.  The result expression is either another
    --  expression or a computed constant value.

@@ -165,6 +165,22 @@ package body ASF.Views.Nodes is
 --           return EL.Expressions.Create_ValueExpression (V);
    end Get_Value_Expression;
 
+   function Get_Method_Expression (Attribute : Tag_Attribute)
+                                   return EL.Expressions.Method_Expression is
+   begin
+      if Attribute.Binding /= null then
+         return EL.Expressions.Create_Expression (Attribute.Binding.all);
+      else
+         Error (Attribute, "Invalid method expression", "");
+         raise Constraint_Error with "Invalid method expression";
+      end if;
+
+      --     exception
+      --        when E : others =>
+      --           Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+      --           return EL.Expressions.Create_ValueExpression (V);
+   end Get_Method_Expression;
+
    --  ------------------------------
    --  Reduce the expression by eliminating known variables and computing
    --  constant expressions.  The result expression is either another

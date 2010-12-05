@@ -263,7 +263,9 @@ package body ASF.Components.Base is
       UI.Attributes := Attribute;
    end Set_Attribute;
 
+   --  ------------------------------
    --  Get the value expression
+   --  ------------------------------
    function Get_Value_Expression (UI   : in UIComponent;
                                   Name : in String) return EL.Expressions.Value_Expression is
       Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
@@ -274,6 +276,21 @@ package body ASF.Components.Base is
 
       return ASF.Views.Nodes.Get_Value_Expression (Value.all);
    end Get_Value_Expression;
+
+   --  ------------------------------
+   --  Get the method expression
+   --  Raise an Invalid_Expression if the method expression is invalid.
+   --  ------------------------------
+   function Get_Method_Expression (UI  : in UIComponent;
+                                  Name : in String) return EL.Expressions.Method_Expression is
+      Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+   begin
+      if Value = null then
+         raise EL.Expressions.Invalid_Expression with "No method expression for: " & Name;
+      end if;
+
+      return ASF.Views.Nodes.Get_Method_Expression (Value.all);
+   end Get_Method_Expression;
 
    --  ------------------------------
    --  Get the converter associated with the component
@@ -422,7 +439,11 @@ package body ASF.Components.Base is
    procedure Queue_Event (UI    : in out UIComponent;
                           Event : not null access ASF.Events.Faces_Event'Class) is
    begin
-      UI.Parent.Queue_Event (Event);
+      if UI.Parent = null then
+         LOG.Error ("The component tree does not have a UIView root component. Event ignored.");
+      else
+         UI.Parent.Queue_Event (Event);
+      end if;
    end Queue_Event;
 
    --  ------------------------------

@@ -122,6 +122,11 @@ package ASF.Components.Base is
    function Get_Value_Expression (UI   : in UIComponent;
                                   Name : in String) return EL.Expressions.Value_Expression;
 
+   --  Get the method expression
+   --  Raise an Invalid_Expression if the method expression is invalid.
+   function Get_Method_Expression (UI   : in UIComponent;
+                                   Name : in String) return EL.Expressions.Method_Expression;
+
    procedure Encode_Begin (UI      : in UIComponent;
                            Context : in out Faces_Context'Class);
 

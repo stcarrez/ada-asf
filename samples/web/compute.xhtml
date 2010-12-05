@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <f:view contentType="text/html"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
@@ -31,7 +30,7 @@
                    <f:converter converterId="float"/>
                 </h:input>
              </td></tr>
-             <tr><td></td><td><h:commandButton id='compute' value='Compute'/></td></tr>
+             <tr><td></td><td><h:commandButton id='run' value='Compute' action="#{compute.run}"/></td></tr>
          </table>
      </h:form>
   </div>

@@ -72,7 +72,7 @@ private
       Definition : access ASF.Views.Nodes.Tag_Attribute;
       Name       : Unbounded_String;
       Value      : EL.Objects.Object;
-      Expr       : El.Expressions.Expression;
+      Expr       : EL.Expressions.Expression;
       Next_Attr  : UIAttribute_Access;
    end record;
 

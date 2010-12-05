@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Text_IO;
-with Ada.Exceptions;
 with Ada.IO_Exceptions;
 with Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;
@@ -26,14 +25,8 @@ with GNAT.Command_Line;
 with ASF.Applications.Main;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
-with ASF.Contexts.Faces;
 
 with EL.Objects;
-with EL.Contexts;
-with EL.Contexts.Default;
-with EL.Variables;
-with EL.Variables.Default;
-with ASF.Streams;
 --  This example reads an XHTML file and renders the result.
 procedure Render is
 
@@ -41,17 +34,18 @@ procedure Render is
    use Ada.Strings.Fixed;
 
    use ASF;
-   use ASF.Contexts.Faces;
 
-   use EL.Contexts.Default;
-   use EL.Variables;
-   use EL.Variables.Default;
-   use EL.Contexts;
    use EL.Objects;
 
+   Factory  : ASF.Applications.Main.Application_Factory;
    App      : Applications.Main.Application;
-   Conf      : Applications.Config;
+   Conf     : Applications.Config;
 begin
+   Conf.Set ("view.ignore_white_spaces", "false");
+   Conf.Set ("view.escape_unknown_tags", "false");
+   Conf.Set ("view.ignore_empty_lines", "true");
+
+   App.Initialize (Conf, Factory);
    loop
       case Getopt ("D:") is
          when 'D' =>
@@ -59,13 +53,13 @@ begin
                Value : constant String := Parameter;
                Pos   : constant Natural := Index (Value, "=");
             begin
---                 if Pos > 0 then
---                    Variables.Set_Variable (Value (1 .. Pos - 1),
---                                            To_Object (Value (Pos + 1 .. Value'Last)));
---                 else
---                    Variables.Set_Variable (Value, To_Object(True));
---                 end if;
-               null;
+               if Pos > 0 then
+                  App.Set_Global (Name  => Value (1 .. Pos - 1),
+                                  Value => To_Object (Value (Pos + 1 .. Value'Last)));
+               else
+                  App.Set_Global (Name  => Value (1 .. Pos - 1),
+                                  Value => To_Object(True));
+               end if;
             end;
 
          when others =>
@@ -73,16 +67,12 @@ begin
       end case;
    end loop;
 
-   Conf.Set ("view.ignore_white_spaces", "false");
-   Conf.Set ("view.escape_unknown_tags", "false");
-   Conf.Set ("view.ignore_empty_lines", "true");
    declare
       View_Name : constant String := Get_Argument;
       Req       : ASF.Requests.Mockup.Request;
       Reply     : ASF.Responses.Mockup.Response;
       Content   : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      App.Initialize (Conf);
 
       App.Dispatch (Page     => View_Name,
                     Request  => Req,

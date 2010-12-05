@@ -60,9 +60,10 @@ package body ASF.Applications.Views.Tests is
       View_Name   : constant String := To_String (T.File);
       Result_File : constant String := To_String (T.Result);
       Conf        : Applications.Config;
+      App_Factory : Applications.Main.Application_Factory;
    begin
       Conf.Load_Properties ("regtests/view.properties");
-      App.Initialize (Conf);
+      App.Initialize (Conf, App_Factory);
 
       for I in 1 .. 2 loop
          declare
@@ -70,25 +71,10 @@ package body ASF.Applications.Views.Tests is
             Req       : ASF.Requests.Mockup.Request;
             Rep       : ASF.Responses.Mockup.Response;
             Content   : Unbounded_String;
---              Writer    : aliased Test_Writer;
---              Context   : aliased Faces_Context;
---              View      : Components.Core.UIViewRoot;
---              ELContext : aliased EL.Contexts.Default.Default_Context;
---              Variables : aliased Default_Variable_Mapper;
---              Resolver  : aliased Default_ELResolver;
          begin
---              Context.Set_Response_Writer (Writer'Unchecked_Access);
---              Context.Set_ELContext (ELContext'Unchecked_Access);
---              ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
---              ELContext.Set_Resolver (Resolver'Unchecked_Access);
---              Writer.Initialize ("text/xml", "UTF-8", 16384);
 
---              Set_Current (Context'Unchecked_Access);
---              H.Restore_View (View_Name, Context, View);
---
---              H.Render_View (Context, View);
---              Writer.Flush;
-
+            Req.Set_Method ("GET");
+            Req.Set_Path_Info (View_Name);
             App.Dispatch (Page     => View_Name,
                           Request  => Req,
                           Response => Rep);

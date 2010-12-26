@@ -56,7 +56,7 @@ AC_SUBST(ASF_LIBDIR)
 ##########################################
 
 AC_MSG_CHECKING([Ada Utility library (code.google.com/p/ada-util)])
-AC_ARG_WITH(util,
+AC_ARG_WITH(ada-util,
 AS_HELP_STRING([--with-ada-util=x], [Path for the Ada Utility library (code.google.com/p/ada-util)]),
 [
   UTIL_DIR=${withval}/
@@ -74,7 +74,7 @@ AC_SUBST(UTIL_DIR)
 # Ada Expression Language library
 ##########################################
 AC_MSG_CHECKING([Ada Expression Language library (code.google.com/p/ada-el)])
-AC_ARG_WITH(util,
+AC_ARG_WITH(ada-el,
 AS_HELP_STRING([--with-ada-el=x], [Path for the Ada Expression Language library (code.google.com/p/ada-el)]),
 [
   EL_DIR=${withval}/

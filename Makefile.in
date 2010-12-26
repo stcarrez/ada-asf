@@ -46,7 +46,7 @@ rebuild: clean build
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
 configure.in Makefile.in install-sh \
-asf.gpr.in tests.gpr samples.gpr config.gpr \
+asf.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests \
 bin obj lib
 
@@ -68,6 +68,7 @@ dist:
 	  fi; \
 	done
 	-rm -f $(distdir)/bin/*
+	-rm -f $(distdir)/obj/*
 	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)

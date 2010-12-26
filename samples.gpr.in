@@ -1,18 +1,16 @@
 with "config";
-with "../util/util";
-with "../util/testutil";
-with "aunit";
+with "@UTIL_DIR@util";
+with "@UTIL_DIR@testutil";
+with "@EL_DIR@el";
 with "asf";
 
-project Tests is
+project Samples is
 
-   for Languages use ("Ada", "Project file");
-
-   Mains := ("asf_harness.adb");
-
-   for Source_Dirs use ("regtests");
+   Mains := ("render.adb", "volume_server.adb", "asf_volume_server.adb");
 
    for Main use Mains;
+
+   for Source_Dirs use ("samples");
 
    for Object_Dir use "./" & Config'Object_Dir & "/obj";
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
@@ -22,4 +20,4 @@ project Tests is
    package Compiler renames Config.Compiler;
    package Linker renames Config.Linker;
 
-end Tests;
+end Samples;

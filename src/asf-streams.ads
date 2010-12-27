@@ -31,7 +31,8 @@ package ASF.Streams is
    --  -----------------------
    --  The <b>Print_Stream</b> is an output stream which provides helper methods
    --  for writing text streams.
-   type Print_Stream is limited new Util.Streams.Output_Stream with private;
+   type Print_Stream is new Ada.Finalization.Limited_Controlled
+     and Util.Streams.Output_Stream with private;
 
    procedure Initialize (Stream : in out Print_Stream;
                          To     : in Util.Streams.Texts.Print_Stream_Access);

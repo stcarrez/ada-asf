@@ -77,7 +77,7 @@ package body ASF.Beans is
    --  ------------------------------
    procedure Create (Factory : in Bean_Factory;
                      Name    : in Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type) is
       Pos : constant Bean_Maps.Cursor := Factory.Map.Find (Name);
@@ -93,7 +93,7 @@ package body ASF.Beans is
 
    procedure Create (Factory : in Simple_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type) is
       pragma Unreferenced (Name);

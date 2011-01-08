@@ -22,7 +22,7 @@ with ASF.Converters;
 with ASF.Validators;
 with EL.Objects;
 
-private with EL.Objects.Hash;
+private with Util.Beans.Objects.Hash;
 private with Ada.Containers;
 private with Ada.Containers.Hashed_Maps;
 

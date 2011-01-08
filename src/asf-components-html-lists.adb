@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Log.Loggers;
-with EL.Beans;
+with Util.Beans.Basic;
 with ASF.Components.Base;
 package body ASF.Components.Html.Lists is
 
@@ -54,8 +54,8 @@ package body ASF.Components.Html.Lists is
    procedure Encode_Children (UI      : in UIList;
                               Context : in out Faces_Context'Class) is
       Value : EL.Objects.Object := Get_Value (UI);
-      Bean  : access EL.Beans.Readonly_Bean'Class;
-      List  : EL.Beans.List_Bean_Access;
+      Bean  : access Util.Beans.Basic.Readonly_Bean'Class;
+      List  : Util.Beans.Basic.List_Bean_Access;
       Name  : constant String := UI.Get_Var;
       Count : Natural;
    begin
@@ -69,12 +69,12 @@ package body ASF.Components.Html.Lists is
       end if;
 
       Bean := EL.Objects.To_Bean (Value);
-      if Bean = null or else not (Bean.all in EL.Beans.List_Bean'Class) then
+      if Bean = null or else not (Bean.all in Util.Beans.Basic.List_Bean'Class) then
          Log.Error ("Invalid bean");
          return;
       end if;
 
-      List := EL.Beans.List_Bean'Class (Bean.all)'Unchecked_Access;
+      List := Util.Beans.Basic.List_Bean'Class (Bean.all)'Unchecked_Access;
       Count := List.Get_Count;
       for I in 1 .. Count loop
          List.Set_Row_Index (I);

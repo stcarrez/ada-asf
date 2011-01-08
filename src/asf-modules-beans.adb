@@ -42,7 +42,7 @@ package body ASF.Modules.Beans is
    --
    procedure Create (Factory : in Module_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out ASF.Beans.Free_Bean_Access;
                      Scope   : out ASF.Beans.Scope_Type) is
       pragma Unreferenced (Name);

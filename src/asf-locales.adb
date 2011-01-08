@@ -17,14 +17,14 @@
 -----------------------------------------------------------------------
 
 with EL.Objects;
-with EL.Beans;
+with Util.Beans.Basic;
 with Ada.Strings.Unbounded;
 package body ASF.Locales is
 
    use Util.Properties.Bundles;
 
    type Bundle is new Util.Properties.Bundles.Manager
-     and EL.Beans.Readonly_Bean with null record;
+     and Util.Beans.Basic.Readonly_Bean with null record;
    type Bundle_Access is access all Bundle;
 
    --  Get the value identified by the name.
@@ -42,7 +42,7 @@ package body ASF.Locales is
 
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out ASF.Beans.Free_Bean_Access;
                      Scope   : out ASF.Beans.Scope_Type);
 
@@ -85,7 +85,7 @@ package body ASF.Locales is
 
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out ASF.Beans.Free_Bean_Access;
                      Scope   : out ASF.Beans.Scope_Type) is
       pragma Unreferenced (Name);

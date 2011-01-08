@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with EL.Beans;
+with Util.Beans.Basic;
 with EL.Objects;
 with EL.Contexts;
 with EL.Functions;
@@ -134,7 +134,7 @@ package ASF.Applications.Main is
    --  Create a bean by using the create operation registered for the name
    procedure Create (App     : in Application;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type);
 

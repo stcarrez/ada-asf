@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Strings.Unbounded;
 
-with EL.Beans;
+with Util.Beans.Basic;
 
 private with Ada.Containers.Indefinite_Hashed_Maps;
 private with Ada.Strings.Unbounded.Hash;
@@ -27,11 +27,11 @@ private with Ada.Strings.Unbounded.Hash;
 package ASF.Beans is
 
    --  Create a bean.
-   type Create_Bean_Access is access function return EL.Beans.Readonly_Bean_Access;
+   type Create_Bean_Access is access function return Util.Beans.Basic.Readonly_Bean_Access;
 
    --  Free the bean instance.
    type Free_Bean_Access is
-     access procedure (Bean : in out EL.Beans.Readonly_Bean_Access);
+     access procedure (Bean : in out Util.Beans.Basic.Readonly_Bean_Access);
 
    --  Defines the scope of the bean instance.
    type Scope_Type is
@@ -55,7 +55,7 @@ package ASF.Beans is
 
    procedure Create (Factory : in Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type) is abstract;
 
@@ -89,7 +89,7 @@ package ASF.Beans is
    --  Create a bean by using the create operation registered for the name
    procedure Create (Factory : in Bean_Factory;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type);
 
@@ -97,7 +97,7 @@ package ASF.Beans is
 
    procedure Create (Factory : in Simple_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type);
 

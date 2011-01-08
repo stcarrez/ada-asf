@@ -211,7 +211,7 @@ package body ASF.Applications.Main is
    --  ------------------------------
    procedure Create (App     : in Application;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type) is
    begin
@@ -264,7 +264,7 @@ package body ASF.Applications.Main is
    end Close;
 
    type Bean_Object is record
-      Bean : EL.Beans.Readonly_Bean_Access;
+      Bean : Util.Beans.Basic.Readonly_Bean_Access;
       Free : ASF.Beans.Free_Bean_Access;
    end record;
 
@@ -285,12 +285,12 @@ package body ASF.Applications.Main is
    overriding
    function Get_Value (Resolver : Web_ELResolver;
                        Context  : EL.Contexts.ELContext'Class;
-                       Base     : access EL.Beans.Readonly_Bean'Class;
+                       Base     : access Util.Beans.Basic.Readonly_Bean'Class;
                        Name     : Unbounded_String) return EL.Objects.Object;
    overriding
    procedure Set_Value (Resolver : in Web_ELResolver;
                         Context  : in EL.Contexts.ELContext'Class;
-                        Base     : access EL.Beans.Bean'Class;
+                        Base     : access Util.Beans.Basic.Bean'Class;
                         Name     : in Unbounded_String;
                         Value    : in EL.Objects.Object);
 
@@ -298,14 +298,14 @@ package body ASF.Applications.Main is
    overriding
    function Get_Value (Resolver : Web_ELResolver;
                        Context  : EL.Contexts.ELContext'Class;
-                       Base     : access EL.Beans.Readonly_Bean'Class;
+                       Base     : access Util.Beans.Basic.Readonly_Bean'Class;
                        Name     : Unbounded_String) return EL.Objects.Object is
       use EL.Objects;
-      use EL.Beans;
+      use Util.Beans.Basic;
       use EL.Variables;
 
       Result : Object;
-      Bean   : EL.Beans.Readonly_Bean_Access;
+      Bean   : Util.Beans.Basic.Readonly_Bean_Access;
       Free   : ASF.Beans.Free_Bean_Access := null;
       Scope  : Scope_Type;
       Key    : constant String := To_String (Name);
@@ -334,7 +334,7 @@ package body ASF.Applications.Main is
    overriding
    procedure Set_Value (Resolver : in Web_ELResolver;
                         Context  : in EL.Contexts.ELContext'Class;
-                        Base     : access EL.Beans.Bean'Class;
+                        Base     : access Util.Beans.Basic.Bean'Class;
                         Name     : in Unbounded_String;
                         Value    : in EL.Objects.Object) is
       pragma Unreferenced (Context);
@@ -381,7 +381,7 @@ package body ASF.Applications.Main is
       use EL.Variables.Default;
       use EL.Contexts;
       use EL.Objects;
-      use EL.Beans;
+      use Util.Beans.Basic;
       use ASF.Applications.Views;
       use Ada.Exceptions;
 

@@ -20,7 +20,7 @@ with Ada.Calendar;
 with Ada.Finalization;
 private with Ada.Strings.Unbounded;
 private with Util.Strings;
-private with EL.Objects.Maps;
+private with Util.Beans.Objects.Maps;
 private with Util.Concurrent.Locks;
 private with Util.Concurrent.Counters;
 
@@ -126,7 +126,7 @@ private
       Lock         : Util.Concurrent.Locks.RW_Lock;
 
       --  Attributes bound to this session.
-      Attributes   : aliased EL.Objects.Maps.Map;
+      Attributes   : aliased Util.Beans.Objects.Maps.Map;
 
       --  Time when the session was created.
       Create_Time  : Ada.Calendar.Time;

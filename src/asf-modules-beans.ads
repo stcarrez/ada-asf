@@ -18,7 +18,7 @@
 
 with Ada.Strings.Unbounded;
 with ASF.Beans;
-with EL.Beans;
+with Util.Beans.Basic;
 generic
    type Module is new ASF.Modules.Module with private;
    type Module_Access is access all Module'Class;
@@ -26,7 +26,7 @@ package ASF.Modules.Beans is
 
    --  Create a bean.  The module instance is passed as parameter.
    type Create_Bean_Access is access function (Manager : Module_Access)
-                                               return EL.Beans.Readonly_Bean_Access;
+                                               return Util.Beans.Basic.Readonly_Bean_Access;
 
    --  Register under the given name a function to create the bean instance when
    --  it is accessed for a first time.  The scope defines the scope of the bean.
@@ -52,7 +52,7 @@ private
    --
    procedure Create (Factory : in Module_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out EL.Beans.Readonly_Bean_Access;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Free    : out ASF.Beans.Free_Bean_Access;
                      Scope   : out ASF.Beans.Scope_Type);
 end ASF.Modules.Beans;

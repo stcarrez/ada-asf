@@ -20,7 +20,7 @@ with Util.Locales;
 with Ada.Calendar;
 with Ada.Strings.Unbounded;
 with ASF.Sessions;
-with EL.Objects.Maps;
+with Util.Beans.Objects.Maps;
 
 limited with ASF.Servlets;
 
@@ -325,7 +325,7 @@ package ASF.Requests is
 private
 
    type Request is abstract tagged limited record
-      Attributes : EL.Objects.Maps.Map;
+      Attributes : Util.Beans.Objects.Maps.Map;
       Path_Info  : Unbounded_String;
       Servlet    : access ASF.Servlets.Servlet;
    end record;

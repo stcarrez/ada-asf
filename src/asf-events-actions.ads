@@ -18,13 +18,13 @@
 
 with Ada.Strings.Unbounded;
 with EL.Expressions;
-with EL.Beans.Methods.Proc_1;
+with EL.Methods.Proc_1;
 with ASF.Contexts.Faces;
 with ASF.Components.Base;
 package ASF.Events.Actions is
 
    package Action_Method is
-     new EL.Beans.Methods.Proc_1 (Param1_Type => Ada.Strings.Unbounded.Unbounded_String);
+     new EL.Methods.Proc_1 (Param1_Type => Ada.Strings.Unbounded.Unbounded_String);
 
    --  ------------------------------
    --  Action event

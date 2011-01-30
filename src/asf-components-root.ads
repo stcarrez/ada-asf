@@ -24,14 +24,19 @@ package ASF.Components.Root is
    --  Get the root node of the view.
    function Get_Root (UI : in UIViewRoot) return access ASF.Components.Base.UIComponent'Class;
 
+   --  Get the view identifier.
+   function Get_View_Id (UI : in UIViewRoot) return String;
+
    --  Set the root node of the view.
    procedure Set_Root (UI   : in out UIViewRoot;
-                       Root : access ASF.Components.Base.UIComponent'Class);
+                       Root : access ASF.Components.Base.UIComponent'Class;
+                       Name : in String);
 
 private
 
    type Root_Holder is limited record
       Ref_Counter : Natural;
+      Name        : Unbounded_String;
       View        : access ASF.Components.Base.UIComponent'Class;
    end record;
    type Root_Holder_Access is access all Root_Holder;

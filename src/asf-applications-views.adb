@@ -155,9 +155,22 @@ package body ASF.Applications.Views is
                               Context => Ctx,
                               Root    => Root'Unchecked_Access);
          ASF.Components.Base.Steal_Root_Component (Root, Node);
-         ASF.Components.Root.Set_Root (View, Node);
+         ASF.Components.Root.Set_Root (View, Node, View_Name);
       end;
    end Restore_View;
+
+   --  ------------------------------
+   --  Create a new UIViewRoot instance initialized from the context and with
+   --  the view identifier.  If the view is a valid view, create the component tree
+   --  representing that view.
+   --  ------------------------------
+   procedure Create_View (Handler : in out View_Handler;
+                          Name    : in String;
+                          Context : in out ASF.Contexts.Faces.Faces_Context'Class;
+                          View    : out ASF.Components.Root.UIViewRoot) is
+   begin
+      Handler.Restore_View (Name, Context, View);
+   end Create_View;
 
    --  ------------------------------
    --  Render the view represented by the component tree.  The view is

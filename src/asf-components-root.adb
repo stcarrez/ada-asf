@@ -38,15 +38,25 @@ package body ASF.Components.Root is
    --  Set the root node of the view.
    --  ------------------------------
    procedure Set_Root (UI   : in out UIViewRoot;
-                       Root : access Base.UIComponent'Class) is
+                       Root : access Base.UIComponent'Class;
+                       Name : in String) is
    begin
       if UI.Root /= null then
          Finalize (UI);
       end if;
 
       UI.Root := new Root_Holder '(Ref_Counter => 1,
-                                   View        => Root);
+                                   View        => Root,
+                                   Name        => To_Unbounded_String (Name));
    end Set_Root;
+
+   --  ------------------------------
+   --  Get the view identifier.
+   --  ------------------------------
+   function Get_View_Id (UI : in UIViewRoot) return String is
+   begin
+      return To_String (UI.Root.Name);
+   end Get_View_Id;
 
    --  ------------------------------
    --  Increment the reference counter.

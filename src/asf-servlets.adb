@@ -469,10 +469,10 @@ package body ASF.Servlets is
                           Name     : in String;
                           Server   : in Servlet_Access) is
    begin
-      Log.Info ("Add servlet {0}", Name);
+      Log.Info ("Add servlet '{0}'", Name);
 
       if Server.Context /= null then
-         Log.Error ("Servlet {0} already registered in a servlet registry", Server.Get_Name);
+         Log.Error ("Servlet '{0}' already registered in a servlet registry", Server.Get_Name);
          raise Servlet_Error;
       end if;
 
@@ -490,7 +490,7 @@ package body ASF.Servlets is
                          Name     : in String;
                          Filter   : access ASF.Filters.Filter'Class) is
    begin
-      Log.Info ("Add servlet filter {0}", Name);
+      Log.Info ("Add servlet filter '{0}'", Name);
 
       Filter_Maps.Include (Registry.Filters, To_Unbounded_String (Name),
                            Filter.all'Unchecked_Access);
@@ -836,7 +836,7 @@ package body ASF.Servlets is
       Node      : Mapping_Access := Registry.Mappings;
       Is_Last   : Boolean := False;
    begin
-      if URI (First_Pos) = '/' then
+      if URI'Length > 0 and then URI (First_Pos) = '/' then
          First_Pos := First_Pos + 1;
       end if;
 

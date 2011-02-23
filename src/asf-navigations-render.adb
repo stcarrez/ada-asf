@@ -39,6 +39,8 @@ package body ASF.Navigations.Render is
       Name : constant String := To_String (Controller.View_Name);
       View : Components.Root.UIViewRoot;
    begin
+      Log.Debug ("Navigate to view {0}", Name);
+
       Controller.View_Handler.Create_View (Name, Context, View);
 
       Context.Set_View_Root (View);

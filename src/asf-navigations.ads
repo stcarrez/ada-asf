@@ -20,9 +20,9 @@ with ASF.Contexts.Faces;
 with EL.Expressions;
 with Ada.Finalization;
 with ASF.Applications.Views;
+with Ada.Strings.Unbounded;
 private with Ada.Containers.Vectors;
 private with Ada.Containers.Hashed_Maps;
-private with Ada.Strings.Unbounded;
 private with Ada.Strings.Unbounded.Hash;
 
 --  The <b>ASF.Navigations</b> package is responsible for calculating the view to be

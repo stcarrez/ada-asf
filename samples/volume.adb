@@ -33,12 +33,12 @@ package body Volume is
                                                 Method      => Run,
                                                 Name        => "run");
 
-   Binding_Array : aliased constant EL.Beans.Methods.Method_Binding_Array
+   Binding_Array : aliased constant Util.Beans.Methods.Method_Binding_Array
      := (Run_Binding.Proxy'Unchecked_Access, Run_Binding.Proxy'Unchecked_Access);
 
    overriding
    function Get_Method_Bindings (From : in Compute_Bean)
-                                 return EL.Beans.Methods.Method_Binding_Array_Access is
+                                 return Util.Beans.Methods.Method_Binding_Array_Access is
    begin
       return Binding_Array'Unchecked_Access;
    end Get_Method_Bindings;

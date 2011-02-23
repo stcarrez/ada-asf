@@ -16,9 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Strings.Unbounded;
+with Util.Beans.Objects;
+with Util.Beans.Basic;
+with Util.Beans.Methods;
 with EL.Objects;
-with EL.Beans;
-with EL.Beans.Methods;
+with EL.Methods;
 
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
@@ -27,7 +29,7 @@ package Volume is
 
    type My_Float is delta 0.01 digits 10;
 
-   type Compute_Bean is new EL.Beans.Bean and EL.Beans.Methods.Method_Bean with record
+   type Compute_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
       Height : My_Float := -1.0;
       Radius : My_Float := -1.0;
    end record;
@@ -47,7 +49,7 @@ package Volume is
    --  This bean provides some methods that can be used in a Method_Expression
    overriding
    function Get_Method_Bindings (From : in Compute_Bean)
-                                 return EL.Beans.Methods.Method_Binding_Array_Access;
+                                 return Util.Beans.Methods.Method_Binding_Array_Access;
 
    type Float_Converter is new ASF.Converters.Converter with null record;
 

@@ -53,37 +53,44 @@ package body ASF.Components.Html.Lists is
 
    procedure Encode_Children (UI      : in UIList;
                               Context : in out Faces_Context'Class) is
-      Value : EL.Objects.Object := Get_Value (UI);
-      Bean  : access Util.Beans.Basic.Readonly_Bean'Class;
-      List  : Util.Beans.Basic.List_Bean_Access;
-      Name  : constant String := UI.Get_Var;
-      Count : Natural;
    begin
       if not UI.Is_Rendered (Context) then
          return;
       end if;
 
-      if EL.Objects.Get_Type (Value) /= EL.Objects.TYPE_BEAN then
-         Log.Error ("Invalid list");
-         return;
-      end if;
+      declare
+         Value : EL.Objects.Object := Get_Value (UI);
+         Kind  : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
+         Name  : constant String := UI.Get_Var;
+         Bean  : access Util.Beans.Basic.Readonly_Bean'Class;
+         List  : Util.Beans.Basic.List_Bean_Access;
+         Count : Natural;
+      begin
+         --  Check that we have a List_Bean but do not complain if we have a null value.
+         if Kind /= EL.Objects.TYPE_BEAN then
+            if Kind /= EL.Objects.TYPE_NULL then
+               Log.Error ("Invalid list bean (found a {0})", EL.Objects.Get_Type_Name (Value));
+            end if;
+            return;
+         end if;
 
-      Bean := EL.Objects.To_Bean (Value);
-      if Bean = null or else not (Bean.all in Util.Beans.Basic.List_Bean'Class) then
-         Log.Error ("Invalid bean");
-         return;
-      end if;
+         Bean := EL.Objects.To_Bean (Value);
+         if Bean = null or else not (Bean.all in Util.Beans.Basic.List_Bean'Class) then
+            Log.Error ("Invalid list bean: it does not implement 'List_Bean' interface");
+            return;
+         end if;
 
-      List := Util.Beans.Basic.List_Bean'Class (Bean.all)'Unchecked_Access;
-      Count := List.Get_Count;
-      for I in 1 .. Count loop
-         List.Set_Row_Index (I);
-         Value := List.Get_Row;
+         List := Util.Beans.Basic.List_Bean'Class (Bean.all)'Unchecked_Access;
+         Count := List.Get_Count;
+         for I in 1 .. Count loop
+            List.Set_Row_Index (I);
+            Value := List.Get_Row;
 
-         Context.Set_Attribute (Name, Value);
-         Log.Debug ("Set variable {0}", Name);
-         Base.UIComponent (UI).Encode_Children (Context);
-      end loop;
+            Context.Set_Attribute (Name, Value);
+            Log.Debug ("Set variable {0}", Name);
+            Base.UIComponent (UI).Encode_Children (Context);
+         end loop;
+      end;
    end Encode_Children;
 
 end ASF.Components.Html.Lists;

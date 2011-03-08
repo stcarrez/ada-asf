@@ -30,6 +30,7 @@ with ASF.Converters;
 with ASF.Contexts.Faces;
 with ASF.Lifecycles;
 with ASF.Applications.Views;
+with ASF.Navigations;
 with ASF.Beans;
 with ASF.Modules;
 with ASF.Requests;
@@ -59,6 +60,13 @@ package ASF.Applications.Main is
    function Create_View_Handler (App : in Application_Factory)
                                  return ASF.Applications.Views.View_Handler_Access;
 
+   --  Create the navigation handler.  The navigation handler is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates an <b>ASF.Navigations.Navigation_Handler</b> object.
+   --  It can be overriden to change the navigations associated with the application.
+   function Create_Navigation_Handler (App : in Application_Factory)
+                                       return ASF.Navigations.Navigation_Handler_Access;
+
    --  ------------------------------
    --  Application
    --  ------------------------------
@@ -74,13 +82,19 @@ package ASF.Applications.Main is
    function Get_Lifecycle_Handler (App : in Application)
                                    return ASF.Lifecycles.Lifecycle_Access;
 
+   --  Get the navigation handler.
+   function Get_Navigation_Handler (App : in Application)
+                                    return ASF.Navigations.Navigation_Handler_Access;
+
    --  Get the action event listener responsible for processing action
    --  events and triggering the navigation to the next view using the
    --  navigation handler.
    function Get_Action_Listener (App : in Application)
                                  return ASF.Events.Actions.Action_Listener_Access;
 
-   --  Process the action associated with the action event.
+   --  Process the action associated with the action event.  The action returns
+   --  and outcome which is then passed to the navigation handler to navigate to
+   --  the next view.
    overriding
    procedure Process_Action (Listener : in Application;
                              Event    : in ASF.Events.Actions.Action_Event'Class;
@@ -192,6 +206,9 @@ private
 
       --  The action listener.
       Action_Listener : ASF.Events.Actions.Action_Listener_Access;
+
+      --  The navigation handler.
+      Navigation      : ASF.Navigations.Navigation_Handler_Access := null;
    end record;
 
 end ASF.Applications.Main;

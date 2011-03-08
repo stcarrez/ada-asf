@@ -21,6 +21,8 @@ with EL.Expressions;
 with Ada.Finalization;
 with ASF.Applications.Views;
 with Ada.Strings.Unbounded;
+limited with ASF.Applications.Main;
+
 private with Ada.Containers.Vectors;
 private with Ada.Containers.Hashed_Maps;
 private with Ada.Strings.Unbounded.Hash;
@@ -37,6 +39,7 @@ package ASF.Navigations is
    --  Navigation Handler
    --  ------------------------------
    type Navigation_Handler is new Ada.Finalization.Limited_Controlled with private;
+   type Navigation_Handler_Access is access all Navigation_Handler'Class;
 
    --  After executing an action and getting the action outcome, proceed to the navigation
    --  to the next page.
@@ -44,6 +47,10 @@ package ASF.Navigations is
                                 Action  : in String;
                                 Outcome : in String;
                                 Context : in out ASF.Contexts.Faces.Faces_Context'Class);
+
+   --  Initialize the the lifecycle handler.
+   procedure Initialize (Controller : in out Navigation_Handler;
+                         App        : access ASF.Applications.Main.Application'Class);
 
    --  Free the storage used by the navigation handler.
    overriding

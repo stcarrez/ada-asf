@@ -18,11 +18,18 @@
 with ASF.Components.Root;
 with Util.Strings;
 with Util.Beans.Objects;
+with Util.Log.Loggers;
+
 package body ASF.Navigations is
 
    --  ------------------------------
    --  Navigation Case
    --  ------------------------------
+
+   use Util.Log;
+
+   --  The logger
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Navigations");
 
    --  ------------------------------
    --  Check if the navigator specific condition matches the current execution context.
@@ -113,6 +120,8 @@ package body ASF.Navigations is
 
       Navigator : Navigation_Access;
    begin
+      Log.Info ("Navigate from view {0} and action {1} with outcome {2}", Name, Action, Outcome);
+
       --  Find an exact match
       Navigator := Find_Navigation (Name);
 
@@ -138,6 +147,15 @@ package body ASF.Navigations is
          Navigator.Navigate (Context);
       end if;
    end Handle_Navigation;
+
+   --  ------------------------------
+   --  Initialize the the lifecycle handler.
+   --  ------------------------------
+   procedure Initialize (Controller : in out Navigation_Handler;
+                         App        : access ASF.Applications.Main.Application'Class) is
+   begin
+      Controller.Rules := new Navigation_Rules;
+   end Initialize;
 
    --  ------------------------------
    --  Free the storage used by the navigation handler.

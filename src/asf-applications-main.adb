@@ -73,6 +73,18 @@ package body ASF.Applications.Main is
    end Create_View_Handler;
 
    --  ------------------------------
+   --  Create the navigation handler.  The navigation handler is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates an <b>ASF.Navigations.Navigation_Handler</b> object.
+   --  It can be overriden to change the navigations associated with the application.
+   --  ------------------------------
+   function Create_Navigation_Handler (App : in Application_Factory)
+                                       return ASF.Navigations.Navigation_Handler_Access is
+   begin
+      return new ASF.Navigations.Navigation_Handler;
+   end Create_Navigation_Handler;
+
+   --  ------------------------------
    --  Get the application view handler.
    --  ------------------------------
    function Get_View_Handler (App : access Application)
@@ -91,6 +103,15 @@ package body ASF.Applications.Main is
    end Get_Lifecycle_Handler;
 
    --  ------------------------------
+   --  Get the navigation handler.
+   --  ------------------------------
+   function Get_Navigation_Handler (App : in Application)
+                                    return ASF.Navigations.Navigation_Handler_Access is
+   begin
+      return App.Navigation;
+   end Get_Navigation_Handler;
+
+   --  ------------------------------
    --  Get the action event listener responsible for processing action
    --  events and triggering the navigation to the next view using the
    --  navigation handler.
@@ -101,20 +122,40 @@ package body ASF.Applications.Main is
       return App.Action_Listener;
    end Get_Action_Listener;
 
+   --  ------------------------------
+   --  Process the action associated with the action event.  The action returns
+   --  and outcome which is then passed to the navigation handler to navigate to
+   --  the next view.
+   --  ------------------------------
    overriding
    procedure Process_Action (Listener : in Application;
                              Event    : in ASF.Events.Actions.Action_Event'Class;
                              Context  : in out Contexts.Faces.Faces_Context'Class) is
-      pragma Unreferenced (Listener);
-
       Method  : constant EL.Expressions.Method_Expression := Event.Get_Method;
+      Action  : constant String := Method.Get_Expression;
       Outcome : Unbounded_String;
    begin
-      LOG.Info ("Execute bean action");
+      LOG.Info ("Execute bean action {0}", Action);
 
-      Events.Actions.Action_Method.Execute (Method  => Method,
-                                            Param   => Outcome,
-                                            Context => Context.Get_ELContext.all);
+      begin
+         Events.Actions.Action_Method.Execute (Method  => Method,
+                                               Param   => Outcome,
+                                               Context => Context.Get_ELContext.all);
+
+         LOG.Info ("Action outcome is {0}", Outcome);
+
+      exception
+         when E : others =>
+            Log.Error ("Error when invoking action {0}: {1}: {2}", Action,
+                       Ada.Exceptions.Exception_Name (E),
+                       Ada.Exceptions.Exception_Message (E));
+
+            Outcome := To_Unbounded_String ("failure");
+      end;
+
+      Listener.Navigation.Handle_Navigation (Action  => Action,
+                                             Outcome => To_String (Outcome),
+                                             Context => Context);
    end Process_Action;
 
    --  ------------------------------
@@ -145,12 +186,18 @@ package body ASF.Applications.Main is
       --  Create the lifecycle handler.
       App.Lifecycle := Factory.Create_Lifecycle_Handler;
 
+      --  Create the navigation handler.
+      App.Navigation := Factory.Create_Navigation_Handler;
+
       App.View.Initialize (App.Components'Unchecked_Access, Conf);
       ASF.Modules.Initialize (App.Modules, Conf);
       ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
 
       --  Initialize the lifecycle handler.
       App.Lifecycle.Initialize (App'Unchecked_Access);
+
+      --  Initialize the navigation handler.
+      App.Navigation.Initialize (App'Unchecked_Access);
    end Initialize;
 
    --  ------------------------------

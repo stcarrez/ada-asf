@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Exceptions;
+with Ada.Tags;
 with ASF.Components.Root;
 with ASF.Components.Base;
 with ASF.Components.Core;
@@ -42,9 +43,22 @@ package body ASF.Lifecycles.Invoke is
 
       View : constant Components.Root.UIViewRoot := Context.Get_View_Root;
       Root : constant access Components.Base.UIComponent'Class := Components.Root.Get_Root (View);
+
+      procedure Process (Child : in Components.Base.UIComponent_Access) is
+      begin
+         if Child.all in Components.Core.UIView'Class then
+            Components.Core.UIView'Class (Child.all).Process_Application (Context);
+         end if;
+      end Process;
+
+      procedure Process_Application_Children is new Components.Base.Iterate (Process);
+
    begin
       if Root.all in Components.Core.UIView'Class then
-         Components.Core.UIView'Class (Root.all).Process_Application (Context);
+         Process (Root.all'Unchecked_Access);
+      else
+         Process_Application_Children (Root.all);
+--           Log.Error ("Root of view is a {0}", Ada.Tags.Expanded_Name (Root.all'Tag));
       end if;
 
    exception

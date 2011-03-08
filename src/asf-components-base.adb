@@ -21,6 +21,7 @@ with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with ASF.Converters;
 with ASF.Events;
+with ASF.Components.Core;
 package body ASF.Components.Base is
 
    use Util.Log;

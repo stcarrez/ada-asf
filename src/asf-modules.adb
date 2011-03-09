@@ -63,6 +63,25 @@ package body ASF.Modules is
    end Get_Config;
 
    --  ------------------------------
+   --  Get the application.
+   --  ------------------------------
+   function Get_Application (Plugin : in Module)
+                             return access ASF.Applications.Main.Application'Class is
+   begin
+      return Plugin.App;
+   end Get_Application;
+
+   --  ------------------------------
+   --  Initialize the the module.  This procedure is called by the application when
+   --  the module is registered in the application.
+   --  ------------------------------
+   procedure Initialize (Plugin : in out Module;
+                         App    : access ASF.Applications.Main.Application'Class) is
+   begin
+      Plugin.App := App;
+   end Initialize;
+
+   --  ------------------------------
    --  Send the event to the module
    --  ------------------------------
    procedure Send_Event (Plugin  : in Module;
@@ -176,7 +195,7 @@ package body ASF.Modules is
 
       exception
          when Ada.IO_Exceptions.Name_Error =>
-            Log.Info ("Module configuration file '{0}' does not exist", Path);
+            Log.Warn ("Module configuration file '{0}' does not exist", Path);
       end;
 
       --  Override the module configuration with the application configuration

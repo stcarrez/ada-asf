@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-events -- ASF Events
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ASF.Applications;
+with Util.Beans.Basic;
+with Util.Beans.Objects;
 package ASF.Events.Modules is
 
-   type Module_Event is new Util.Events.Event with private;
+   type Module_Event is new Util.Events.Event and Util.Beans.Basic.Readonly_Bean with private;
 
    --  Set a parameter on the message.
    procedure Set_Parameter (Message : in out Module_Event;
@@ -29,9 +31,13 @@ package ASF.Events.Modules is
    function Get_Parameter (Message : in Module_Event;
                            Name    : String) return String;
 
+   --  Get the value that corresponds to the parameter with the given name.
+   function Get_Value (Message : in Module_Event;
+                       Name    : in String) return Util.Beans.Objects.Object;
+
 private
 
-   type Module_Event is new Util.Events.Event with record
+   type Module_Event is new Util.Events.Event and Util.Beans.Basic.Readonly_Bean with record
       Props : ASF.Applications.Config;
    end record;
 

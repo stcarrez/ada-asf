@@ -17,8 +17,6 @@
 -----------------------------------------------------------------------
 with Util.Events;
 with ASF.Lifecycles;
-with ASF.Contexts.Faces;
-with ASF.Components.Base;
 package body ASF.Events.Actions is
 
    --  ------------------------------
@@ -34,7 +32,7 @@ package body ASF.Events.Actions is
    --  ------------------------------
    procedure Post_Event (UI     : in out Components.Base.UIComponent'Class;
                          Method : in EL.Expressions.Method_Expression) is
-      Ev : Action_Event_Access := new Action_Event;
+      Ev : constant Action_Event_Access := new Action_Event;
    begin
       Ev.Phase     := ASF.Lifecycles.INVOKE_APPLICATION;
       Ev.Component := UI'Unchecked_Access;

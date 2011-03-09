@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-modules -- Application Module and module registry
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,8 @@ with ASF.Beans;
 with ASF.Applications;
 with ASF.Events.Modules;
 
-private with Ada.Containers.Indefinite_Hashed_Maps;
+limited with ASF.Applications.Main;
+private with Ada.Containers.Hashed_Maps;
 
 --  The <b>ASF.Modules</b> package defines simple pluggable modules in
 --  the web application.  A module is a software component that can be
@@ -61,6 +62,15 @@ package ASF.Modules is
    function Get_Config (Plugin  : Module;
                         Name    : String;
                         Default : String := "") return String;
+
+   --  Get the application.
+   function Get_Application (Plugin : in Module)
+                             return access ASF.Applications.Main.Application'Class;
+
+   --  Initialize the the module.  This procedure is called by the application when
+   --  the module is registered in the application.
+   procedure Initialize (Plugin : in out Module;
+                         App    : access ASF.Applications.Main.Application'Class);
 
    --  Send the event to the module.  The module identified by <b>To</b> is
    --  found and the event is posted on its event channel.
@@ -125,10 +135,10 @@ private
 
    --  Map to find a module from its name or its URI
    package Module_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => Name_Access,
-                                            Element_Type    => Module_Access,
-                                            Hash            => Hash,
-                                            Equivalent_Keys => Equivalent_Keys);
+     Ada.Containers.Hashed_Maps (Key_Type        => Name_Access,
+                                 Element_Type    => Module_Access,
+                                 Hash            => Hash,
+                                 Equivalent_Keys => Equivalent_Keys);
 
    --  Event channel subscriber
    type Module_Subscriber is new Util.Events.Channels.Subscriber with record
@@ -142,6 +152,7 @@ private
    type Module is tagged limited record
       Registry   : Module_Registry_Access;
       Subscriber : aliased Module_Subscriber;
+      App        : access ASF.Applications.Main.Application'Class := null;
       Channel    : Util.Events.Channels.Channel_Access;
       Name       : Name_Access;
       URI        : Name_Access;

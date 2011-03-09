@@ -249,6 +249,8 @@ package body ASF.Components.Html.Forms is
    procedure Broadcast (UI      : in out UICommand;
                         Event   : not null access ASF.Events.Faces_Event'Class;
                         Context : in out Faces_Context'Class) is
+      pragma Unreferenced (UI);
+
       use ASF.Events.Actions;
 
       App  : constant access Applications.Main.Application'Class := Context.Get_Application;
@@ -306,6 +308,7 @@ package body ASF.Components.Html.Forms is
    --  Get the action URL to set on the HTML form
    function Get_Action (UI      : in UIForm;
                         Context : in Faces_Context'Class) return String is
+      pragma Unreferenced (UI, Context);
    begin
       return "";
    end Get_Action;

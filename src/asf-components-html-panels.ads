@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.panels -- Layout panels
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 package ASF.Components.Html.Panels is
-
-   use ASF.Contexts.Faces;
 
    type UIPanelGroup is new UIHtmlComponent with private;
 

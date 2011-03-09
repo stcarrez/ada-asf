@@ -67,7 +67,7 @@ package body ASF.Views.Nodes.Facelets is
 
        (Name      => DEBUG_TAG'Access,
         Component => null,
-        Tag       => Create_Decorate_Tag_Node'Access),
+        Tag       => Create_Debug_Tag_Node'Access),
 
        (Name      => DECORATE_TAG'Access,
         Component => null,

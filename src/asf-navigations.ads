@@ -49,12 +49,24 @@ package ASF.Navigations is
                                 Context : in out ASF.Contexts.Faces.Faces_Context'Class);
 
    --  Initialize the the lifecycle handler.
-   procedure Initialize (Controller : in out Navigation_Handler;
-                         App        : access ASF.Applications.Main.Application'Class);
+   procedure Initialize (Handler : in out Navigation_Handler;
+                         App     : access ASF.Applications.Main.Application'Class);
 
    --  Free the storage used by the navigation handler.
    overriding
    procedure Finalize (Handler : in out Navigation_Handler);
+
+   --  Add a navigation case to navigate from the view identifier by <b>From</b>
+   --  to the result view identified by <b>To</b>.  Some optional conditions are evaluated
+   --  The <b>Outcome</b> must match unless it is empty.
+   --  The <b>Action</b> must match unless it is empty.
+   --  The <b>Condition</b> expression must evaluate to True.
+   procedure Add_Navigation_Case (Handler   : in out Navigation_Handler;
+                                  From      : in String;
+                                  To        : in String;
+                                  Outcome   : in String := "";
+                                  Action    : in String := "";
+                                  Condition : in String := "");
 
    --  ------------------------------
    --  Navigation Case
@@ -122,7 +134,8 @@ private
    type Navigation_Rules_Access is access all Navigation_Rules;
 
    type Navigation_Handler is new Ada.Finalization.Limited_Controlled with record
-      Rules : Navigation_Rules_Access;
+      Rules       : Navigation_Rules_Access;
+      Application : access ASF.Applications.Main.Application'Class;
    end record;
 
 end ASF.Navigations;

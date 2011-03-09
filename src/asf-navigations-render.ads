@@ -22,6 +22,7 @@ package ASF.Navigations.Render is
    --  ------------------------------
    --  The <b>Render_Navigator</b> defines the page that must be rendered for the response.
    type Render_Navigator is new Navigation_Case with private;
+   type Render_Navigator_Access is access all Render_Navigator'Class;
 
    --  Navigate to the next page or action according to the controller's navigator.
    --  A navigator controller could redirect the user to another page, render a specific
@@ -29,6 +30,9 @@ package ASF.Navigations.Render is
    overriding
    procedure Navigate (Controller : in Render_Navigator;
                        Context    : in out ASF.Contexts.Faces.Faces_Context'Class);
+
+   --  Create a navigation case to render a view.
+   function Create_Render_Navigator (To_View : in String) return Navigation_Access;
 
 private
 

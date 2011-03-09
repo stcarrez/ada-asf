@@ -20,6 +20,8 @@ with Util.Strings;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 
+with ASF.Applications.Main;
+with ASF.Navigations.Render;
 package body ASF.Navigations is
 
    --  ------------------------------
@@ -126,7 +128,7 @@ package body ASF.Navigations is
       Navigator := Find_Navigation (Name);
 
       --  Find a wildcard match
-      if Navigator /= null then
+      if Navigator = null then
          declare
             Last : Natural := Name'Last;
             N    : Natural;
@@ -151,10 +153,11 @@ package body ASF.Navigations is
    --  ------------------------------
    --  Initialize the the lifecycle handler.
    --  ------------------------------
-   procedure Initialize (Controller : in out Navigation_Handler;
-                         App        : access ASF.Applications.Main.Application'Class) is
+   procedure Initialize (Handler : in out Navigation_Handler;
+                         App     : access ASF.Applications.Main.Application'Class) is
    begin
-      Controller.Rules := new Navigation_Rules;
+      Handler.Rules := new Navigation_Rules;
+      Handler.Application := App;
    end Initialize;
 
    --  ------------------------------
@@ -165,5 +168,46 @@ package body ASF.Navigations is
    begin
       null;
    end Finalize;
+
+   --  ------------------------------
+   --  Add a navigation case to navigate from the view identifier by <b>From</b>
+   --  to the result view identified by <b>To</b>.  Some optional conditions are evaluated
+   --  The <b>Outcome</b> must match unless it is empty.
+   --  The <b>Action</b> must match unless it is empty.
+   --  The <b>Condition</b> expression must evaluate to True.
+   --  ------------------------------
+   procedure Add_Navigation_Case (Handler   : in out Navigation_Handler;
+                                  From      : in String;
+                                  To        : in String;
+                                  Outcome   : in String := "";
+                                  Action    : in String := "";
+                                  Condition : in String := "") is
+
+      C : constant Navigation_Access := Render.Create_Render_Navigator (To);
+   begin
+      if Outcome'Length > 0 then
+         C.Outcome := new String '(Outcome);
+      end if;
+      if Action'Length > 0 then
+         C.Action := new String '(Action);
+      end if;
+
+      C.View_Handler := Handler.Application.Get_View_Handler;
+      declare
+         View : constant Unbounded_String := To_Unbounded_String (From);
+         Pos  : constant Rule_Map.Cursor := Handler.Rules.Rules.Find (View);
+         R    : Rule_Access;
+      begin
+         if not Rule_Map.Has_Element (Pos) then
+            R := new Rule;
+            Handler.Rules.Rules.Include (Key      => View,
+                                         New_Item => R);
+         else
+            R := Rule_Map.Element (Pos);
+         end if;
+
+         R.Navigators.Append (C);
+      end;
+   end Add_Navigation_Case;
 
 end ASF.Navigations;

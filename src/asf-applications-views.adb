@@ -168,8 +168,13 @@ package body ASF.Applications.Views is
                           Name    : in String;
                           Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                           View    : out ASF.Components.Root.UIViewRoot) is
+      Pos : constant Natural := Util.Strings.Rindex (Name, '.');
    begin
-      Handler.Restore_View (Name, Context, View);
+      if Pos > 0 then
+         Handler.Restore_View (Name (Name'First .. Pos - 1), Context, View);
+      else
+         Handler.Restore_View (Name, Context, View);
+      end if;
    end Create_View;
 
    --  ------------------------------

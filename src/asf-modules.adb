@@ -82,18 +82,48 @@ package body ASF.Modules is
    end Initialize;
 
    --  ------------------------------
+   --  Get the event subscribers for a given event name.
+   --  ------------------------------
+   function Get_Subscribers (Plugin : in Module;
+                             Event  : in String) return String is
+      Base_Name   : constant String := Plugin.Name.all & ".event.publish";
+      Subscribers : constant String := Plugin.Get_Config (Base_Name & "." & Event, "");
+   begin
+      if Subscribers'Length > 0 then
+         return Subscribers;
+      else
+         return Plugin.Get_Config (Base_Name, "");
+      end if;
+   end Get_Subscribers;
+
+   --  ------------------------------
    --  Send the event to the module
    --  ------------------------------
    procedure Send_Event (Plugin  : in Module;
                          To      : in String;
                          Content : in ASF.Events.Modules.Module_Event'Class) is
-      Target : constant Module_Access := Plugin.Find_Module (To);
+      Subscribers : constant String := Plugin.Get_Subscribers (To);
+      Target      : Module_Access;
+      Last_Pos    : Natural := Subscribers'First;
+      Pos         : Natural;
    begin
-      if Target = null then
-         Log.Info ("Event sent to '{0}' has no recipient", To);
-         return;
-      end if;
-      Target.Channel.Post (Content);
+      while Last_Pos < Subscribers'Last loop
+         Pos := Util.Strings.Index (Source => Subscribers,
+                                    Char   => ',',
+                                    From   => Last_Pos);
+         if Pos = 0 then
+            Pos := Subscribers'Last + 1;
+         end if;
+         exit when Last_Pos = Pos;
+         Target := Plugin.Find_Module (Subscribers (Last_Pos .. Pos - 1));
+         if Target = null then
+            Log.Warn ("Event {0} cannot be sent to missing module {1}",
+                      To, Subscribers (Last_Pos .. Pos - 1));
+            return;
+         end if;
+         Target.Channel.Post (Content);
+         Last_Pos := Pos + 1;
+      end loop;
    end Send_Event;
 
    --  ------------------------------
@@ -180,6 +210,7 @@ package body ASF.Modules is
       Plugin.Registry := Registry;
       Plugin.Name     := new String '(Name);
       Plugin.URI      := new String '(URI);
+      Plugin.Subscriber.Module := Plugin;
       Plugin.Registry.Name_Map.Insert (Plugin.Name, Plugin);
       if URI /= "" then
          Plugin.Registry.URI_Map.Insert (Plugin.URI, Plugin);

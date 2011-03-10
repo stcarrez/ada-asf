@@ -72,6 +72,10 @@ package ASF.Modules is
    procedure Initialize (Plugin : in out Module;
                          App    : access ASF.Applications.Main.Application'Class);
 
+   --  Get the event subscribers for a given event name.
+   function Get_Subscribers (Plugin : in Module;
+                             Event  : in String) return String;
+
    --  Send the event to the module.  The module identified by <b>To</b> is
    --  found and the event is posted on its event channel.
    procedure Send_Event (Plugin  : in Module;

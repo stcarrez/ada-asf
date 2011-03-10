@@ -139,7 +139,7 @@ package body ASF.Navigations is
 
                Navigator := Find_Navigation (Name (Name'First .. N) & "*");
                exit when Navigator /= null or N = Name'First;
-               Last := Name'First - 1;
+               Last := N - 1;
             end loop;
          end;
       end if;

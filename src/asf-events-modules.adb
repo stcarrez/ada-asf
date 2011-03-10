@@ -34,7 +34,7 @@ package body ASF.Events.Modules is
    function Get_Parameter (Message : in Module_Event;
                            Name    : String) return String is
    begin
-      return Message.Props.Get (Name);
+      return Message.Props.Get (Name, "");
    end Get_Parameter;
 
    --  ------------------------------

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-modules -- Application Module and module registry
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,13 +86,12 @@ package body ASF.Modules is
    --  ------------------------------
    function Get_Subscribers (Plugin : in Module;
                              Event  : in String) return String is
-      Base_Name   : constant String := Plugin.Name.all & ".event.publish";
-      Subscribers : constant String := Plugin.Get_Config (Base_Name & "." & Event, "");
+      Subscribers : constant String := Plugin.Get_Config ("event.publish." & Event, "");
    begin
       if Subscribers'Length > 0 then
          return Subscribers;
       else
-         return Plugin.Get_Config (Base_Name, "");
+         return Plugin.Get_Config ("event.publish", "");
       end if;
    end Get_Subscribers;
 
@@ -222,7 +221,7 @@ package body ASF.Modules is
          Paths : constant String := Registry.Config.Get ("app.modules.dir", "./config");
          Path  : constant String := Util.Files.Find_File_Path (Base, Paths);
       begin
-         Plugin.Config.Load_Properties (Path);
+         Plugin.Config.Load_Properties (Path => Path, Prefix => Name & ".", Strip => True);
 
       exception
          when Ada.IO_Exceptions.Name_Error =>
@@ -230,11 +229,11 @@ package body ASF.Modules is
       end;
 
       --  Override the module configuration with the application configuration
-      Plugin.Config.Copy (Registry.Config, Name & ".");
+      Plugin.Config.Copy (From => Registry.Config, Prefix => Name & ".", Strip => True);
 
       --  Configure the event channels for this module
       declare
-         Kind : constant String := Plugin.Config.Get (Name & ".channel.type", "direct");
+         Kind : constant String := Plugin.Config.Get ("channel.type", "direct");
       begin
          Plugin.Channel := Util.Events.Channels.Create (Name, Kind);
          Plugin.Channel.Subscribe (Plugin.Subscriber'Access);

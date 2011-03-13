@@ -25,4 +25,11 @@ package ASF.Requests.Tools is
                        Print_Headers    : in Boolean := True;
                        Print_Attributes : in Boolean := False) return String;
 
+   --  Set the internal context associated with a request:
+   --  <ul>
+   --     <li>The servlet that processes the request,
+   --  </ul/
+   procedure Set_Context (Req     : in out Request'Class;
+                          Servlet : access ASF.Servlets.Servlet'Class);
+
 end ASF.Requests.Tools;

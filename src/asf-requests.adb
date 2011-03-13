@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Ada.Unchecked_Deallocation;
 with ASF.Servlets;
 
 --  The <b>ASF.Requests</b> package is an Ada implementation of
@@ -49,10 +49,10 @@ package body ASF.Requests is
    --  This method is most often used in conjunction with RequestDispatcher.
    --
    --  If the object passed in is null, the effect is the same as calling
-   --  removeAttribute(java.lang.String).  It is Warned That when The Request is
-   --  Dispatched From The Servlet Resides in A Different Web Application By
-   --  RequestDispatcher, The Object Set By This Method May not Be Correctly
-   --  Retrieved in The Caller Servlet.
+   --  removeAttribute(java.lang.String).  It is warned that when the request is
+   --  dispatched from the servlet resides in a different web application by
+   --  RequestDispatcher, the object set by this method may not be correctly
+   --  retrieved in the caller servlet.
    procedure Set_Attribute (Req   : in out Request;
                             Name  : in String;
                             Value : in EL.Objects.Object) is
@@ -96,6 +96,7 @@ package body ASF.Requests is
    --  Returns the name of the character encoding used in the body of this request.
    --  This method returns null if the request does not specify a character encoding
    function Get_Character_Encoding (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "UTF-8";
    end Get_Character_Encoding;
@@ -150,6 +151,7 @@ package body ASF.Requests is
    --  If the parameter has a single value, the array has a length of 1.
    function Get_Parameter_Values (Req  : in Request;
                                   Name : in String) return String is
+      pragma Unreferenced (Req, Name);
    begin
       return "";
    end Get_Parameter_Values;
@@ -158,6 +160,7 @@ package body ASF.Requests is
    --  protocol/majorVersion.minorVersion, for example, HTTP/1.1. For HTTP servlets,
    --  the value returned is the same as the value of the CGI variable SERVER_PROTOCOL.
    function Get_Protocol (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "HTTP/1.1";
    end Get_Protocol;
@@ -166,6 +169,7 @@ package body ASF.Requests is
    --  https, or ftp. Different schemes have different rules for constructing URLs,
    --  as noted in RFC 1738.
    function Get_Scheme (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "http";
    end Get_Scheme;
@@ -174,6 +178,7 @@ package body ASF.Requests is
    --  It is the value of the part before ":" in the Host  header value, if any,
    --  or the resolved server name, or the server IP address.
    function Get_Server_Name (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Server_Name;
@@ -182,6 +187,7 @@ package body ASF.Requests is
    --  part after ":" in the Host  header value, if any, or the server port where the
    --  client connection was accepted on.
    function Get_Server_Port (Req : in Request) return Natural is
+      pragma Unreferenced (Req);
    begin
       return 0;
    end Get_Server_Port;
@@ -190,6 +196,7 @@ package body ASF.Requests is
    --  sent the request. For HTTP servlets, same as the value of the CGI variable
    --  REMOTE_ADDR.
    function Get_Remote_Addr (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Remote_Addr;
@@ -207,6 +214,7 @@ package body ASF.Requests is
    --  on the Accept-Language header. If the client request doesn't provide an
    --  Accept-Language header, this method returns the default locale for the server.
    function Get_Locale (Req : in Request) return Util.Locales.Locale is
+      pragma Unreferenced (Req);
    begin
       return Util.Locales.ENGLISH;
    end Get_Locale;
@@ -217,6 +225,7 @@ package body ASF.Requests is
    --  provide an Accept-Language header, this method returns an Enumeration containing
    --  one Locale, the default locale for the server.
    function Get_Locales (Req : in Request) return Util.Locales.Locale is
+      pragma Unreferenced (Req);
    begin
       return Util.Locales.ENGLISH;
    end Get_Locales;
@@ -224,6 +233,7 @@ package body ASF.Requests is
    --  Returns a boolean indicating whether this request was made using a secure
    --  channel, such as HTTPS.
    function Is_Secure (Req : in Request) return Boolean is
+      pragma Unreferenced (Req);
    begin
       return False;
    end Is_Secure;
@@ -231,6 +241,7 @@ package body ASF.Requests is
    --  Returns the Internet Protocol (IP) source port of the client or last proxy
    --  that sent the request.
    function Get_Remote_Port (Req : in Request) return Natural is
+      pragma Unreferenced (Req);
    begin
       return 0;
    end Get_Remote_Port;
@@ -238,6 +249,7 @@ package body ASF.Requests is
    --  Returns the host name of the Internet Protocol (IP) interface on which
    --  the request was received.
    function Get_Local_Name (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Local_Name;
@@ -245,6 +257,7 @@ package body ASF.Requests is
    --  Returns the Internet Protocol (IP) address of the interface on which the
    --  request was received.
    function Get_Local_Addr (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Local_Addr;
@@ -252,6 +265,7 @@ package body ASF.Requests is
    --  Returns the Internet Protocol (IP) port number of the interface on which
    --  the request was received.
    function Get_Local_Port (Req : in Request) return Natural is
+      pragma Unreferenced (Req);
    begin
       return 0;
    end Get_Local_Port;
@@ -261,6 +275,7 @@ package body ASF.Requests is
    --  and may additionally support digest authentication. If the servlet is not
    --  authenticated null is returned.
    function Get_Auth_Type (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Auth_Type;
@@ -268,6 +283,7 @@ package body ASF.Requests is
    --  Returns an array containing all of the Cookie  objects the client sent with
    --  this request. This method returns null if no cookies were sent.
    function Get_Cookies (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Cookies;
@@ -297,6 +313,7 @@ package body ASF.Requests is
    --  this method with any request header.
    function Get_Header (Req  : in Request;
                         Name : in String) return String is
+      pragma Unreferenced (Req, Name);
    begin
       return "";
    end Get_Header;
@@ -313,6 +330,7 @@ package body ASF.Requests is
    --  this method with any request header.
    function Get_Headers (Req  : in Request;
                          Name : in String) return String is
+      pragma Unreferenced (Req, Name);
    begin
       return "";
    end Get_Headers;
@@ -334,6 +352,7 @@ package body ASF.Requests is
    --  for example, GET, POST, or PUT. Same as the value of the CGI variable
    --  REQUEST_METHOD.
    function Get_Method (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "GET";
    end Get_Method;
@@ -352,6 +371,7 @@ package body ASF.Requests is
    --  For servlets in the default (root) context, this method returns "".
    --  The container does not decode this string.
    function Get_Context_Path (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "/";
    end Get_Context_Path;
@@ -360,27 +380,41 @@ package body ASF.Requests is
    --  This method returns null  if the URL does not have a query string. Same as the
    --  value of the CGI variable QUERY_STRING.
    function Get_Query_String (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Query_String;
 
+   --  ------------------------------
    --  Returns the login of the user making this request, if the user has been
    --  authenticated, or null if the user has not been authenticated. Whether
    --  the user name is sent with each subsequent request depends on the browser
    --  and type of authentication. Same as the value of the CGI variable REMOTE_USER.
+   --  ------------------------------
    function Get_Remote_User (Req : in Request) return String is
+      use type ASF.Principals.Principal_Access;
    begin
-      return "";
+      if Req.Principal = null then
+         return "";
+      else
+         return Req.Principal.Get_Name;
+      end if;
    end Get_Remote_User;
 
-   --  Returns a java.security.Principal object containing the name of the current
+   --  ------------------------------
+   --  Returns a Principal object containing the name of the current
    --  authenticated user. If the user has not been authenticated, the method returns null.
---   function Get_User_Principal (Req : in Request) return User_Principal;
+   --  ------------------------------
+   function Get_User_Principal (Req : in Request) return ASF.Principals.Principal_Access is
+   begin
+      return Req.Principal;
+   end Get_User_Principal;
 
    --  Returns the session ID specified by the client. This may not be the same as
    --  the ID of the current valid session for this request. If the client did not
    --  specify a session ID, this method returns null.
    function Get_Request_Session_Id (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Request_Session_Id;
@@ -393,6 +427,7 @@ package body ASF.Requests is
    --  GET http://foo.bar/a.html HTTP/1.0       /a.html
    --  HEAD /xyz?a=b HTTP/1.1       /xyz
    function Get_Request_URI (Req : in Request) return String is
+      pragma Unreferenced (Req);
    begin
       return "";
    end Get_Request_URI;
@@ -410,6 +445,7 @@ package body ASF.Requests is
    --
    --  This method is useful for creating redirect messages and for reporting errors.
    function Get_Request_URL (Req : in Request) return Ada.Strings.Unbounded.Unbounded_String is
+      pragma Unreferenced (Req);
       Res : Ada.Strings.Unbounded.Unbounded_String;
    begin
       return Res;
@@ -428,6 +464,7 @@ package body ASF.Requests is
       return Req.Servlet.Get_Name;
    end Get_Servlet_Path;
 
+   --  ------------------------------
    --  Returns the current HttpSession  associated with this request or, if there
    --  is no current session and create is true, returns a new session.
    --
@@ -438,10 +475,22 @@ package body ASF.Requests is
    --  before the response is committed. If the container is using cookies to maintain
    --  session integrity and is asked to create a new session when the response is
    --  committed, an IllegalStateException is thrown.
+   --  ------------------------------
    function Get_Session (Req : in Request) return ASF.Sessions.Session is
-      N : ASF.Sessions.Session;
    begin
-      return N;
+      if not Req.Info.Session_Initialized then
+         declare
+            SID : constant String := Req.Get_Header (Name => "SID");
+         begin
+            if SID'Length > 0 then
+               --  Find a session object
+               Req.Servlet.Get_Servlet_Context.Find_Session (Id     => SID,
+                                                             Result => Req.Info.Session);
+            end if;
+         end;
+         Req.Info.Session_Initialized := True;
+      end if;
+      return Req.Info.Session;
    end Get_Session;
 
    --  ------------------------------
@@ -452,5 +501,24 @@ package body ASF.Requests is
    begin
       Req.Path_Info := To_Unbounded_String (Path);
    end Set_Path_Info;
+
+   --  ------------------------------
+   --  Initialize the request object.
+   --  ------------------------------
+   overriding
+   procedure Initialize (Req : in out Request) is
+   begin
+      Req.Info := new Request_Data;
+   end Initialize;
+
+   --  ------------------------------
+   --  Finalize the request object.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Req : in out Request) is
+      procedure Free is new Ada.Unchecked_Deallocation (Request_Data, Request_Data_Access);
+   begin
+      Free (Req.Info);
+   end Finalize;
 
 end ASF.Requests;

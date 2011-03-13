@@ -95,4 +95,16 @@ package body ASF.Requests.Tools is
       return To_String (Info);
    end To_String;
 
+   --  ------------------------------
+   --  Set the internal context associated with a request:
+   --  <ul>
+   --     <li>The servlet that processes the request,
+   --  </ul/
+   --  ------------------------------
+   procedure Set_Context (Req     : in out Request'Class;
+                          Servlet : access ASF.Servlets.Servlet'Class) is
+   begin
+      Req.Servlet := Servlet;
+   end Set_Context;
+
 end ASF.Requests.Tools;

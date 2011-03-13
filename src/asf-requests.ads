@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,13 @@ with EL.Objects;
 with Util.Locales;
 with Ada.Calendar;
 with Ada.Strings.Unbounded;
-with ASF.Sessions;
 with Util.Beans.Objects.Maps;
 
+with Ada.Finalization;
+
+with ASF.Sessions;
+with ASF.Responses;
+with ASF.Principals;
 limited with ASF.Servlets;
 
 --  The <b>ASF.Requests</b> package is an Ada implementation of
@@ -30,7 +34,7 @@ package ASF.Requests is
 
    use Ada.Strings.Unbounded;
 
-   type Request is abstract tagged limited private;
+   type Request is abstract new Ada.Finalization.Limited_Controlled with private;
    type Request_Access is access all Request'Class;
 
    --  Returns the value of the named attribute as an Object, or null if no attribute
@@ -50,10 +54,10 @@ package ASF.Requests is
    --  This method is most often used in conjunction with RequestDispatcher.
    --
    --  If the object passed in is null, the effect is the same as calling
-   --  removeAttribute(java.lang.String).  It is Warned That when The Request is
-   --  Dispatched From The Servlet Resides in A Different Web Application By
-   --  RequestDispatcher, The Object Set By This Method May not Be Correctly
-   --  Retrieved in The Caller Servlet.
+   --  removeAttribute(java.lang.String).  It is warned that when the request is
+   --  dispatched from the servlet resides in a different web application by
+   --  RequestDispatcher, the object set by this method may not be correctly
+   --  retrieved in the caller servlet.
    procedure Set_Attribute (Req   : in out Request;
                             Name  : in String;
                             Value : in EL.Objects.Object);
@@ -265,9 +269,9 @@ package ASF.Requests is
    --  and type of authentication. Same as the value of the CGI variable REMOTE_USER.
    function Get_Remote_User (Req : in Request) return String;
 
-   --  Returns a java.security.Principal object containing the name of the current
+   --  Returns a Principal object containing the name of the current
    --  authenticated user. If the user has not been authenticated, the method returns null.
-   --  function Get_User_Principal (Req : in Request) return User_Principal;
+   function Get_User_Principal (Req : in Request) return ASF.Principals.Principal_Access;
 
    --  Returns the session ID specified by the client. This may not be the same as
    --  the ID of the current valid session for this request. If the client did not
@@ -322,12 +326,34 @@ package ASF.Requests is
    procedure Set_Path_Info (Req  : in out Request;
                             Path : in String);
 
+   --  Initialize the request object.
+   overriding
+   procedure Initialize (Req : in out Request);
+
+   --  Finalize the request object.
+   overriding
+   procedure Finalize (Req : in out Request);
+
 private
 
-   type Request is abstract tagged limited record
+   type Request_Data is record
+      --  The session
+      Session             : ASF.Sessions.Session;
+
+      --  Indicates whether the session object is known.
+      Session_Initialized : Boolean := False;
+
+      --  The response object associated with the request.
+      Response            : ASF.Responses.Response_Access;
+   end record;
+   type Request_Data_Access is access Request_Data;
+
+   type Request is abstract new Ada.Finalization.Limited_Controlled with record
       Attributes : Util.Beans.Objects.Maps.Map;
       Path_Info  : Unbounded_String;
-      Servlet    : access ASF.Servlets.Servlet;
+      Servlet    : access ASF.Servlets.Servlet'Class;
+      Principal  : ASF.Principals.Principal_Access := null;
+      Info       : Request_Data_Access := null;
    end record;
 
 end ASF.Requests;

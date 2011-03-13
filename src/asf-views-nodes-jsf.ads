@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,11 @@ with ASF.Contexts.Facelets;
 
 --  The <b>ASF.Views.Nodes.Jsf</b> package implements various JSF Core Tag
 --  components which alter the component tree but don't need to create
---  new UI components.
+--  new UI components.  The following components are supported:
+--
+--  <f:attribute name='...' value='...'/>
+--  <f:converter converterId='...'/>
+--
 package ASF.Views.Nodes.Jsf is
 
    --  ------------------------------

@@ -356,6 +356,7 @@ package body ASF.Servlets is
          declare
             Chain : Filter_Chain;
          begin
+            ASF.Requests.Tools.Set_Context (Request, Dispatcher.Mapping.Servlet.all'Access);
             Chain.Filters := Dispatcher.Mapping.Filters;
             Chain.Servlet := Dispatcher.Mapping.Servlet;
             Chain.Filter_Pos := Chain.Filters'Last;
@@ -365,6 +366,7 @@ package body ASF.Servlets is
          end;
 
       else
+         ASF.Requests.Tools.Set_Context (Request, Dispatcher.Mapping.Servlet.all'Access);
          Dispatcher.Mapping.Servlet.Service (Request, Response);
       end if;
    end Forward;
@@ -455,6 +457,14 @@ package body ASF.Servlets is
    begin
       Context.Config.Copy (Params);
    end Set_Init_Parameters;
+
+   procedure Create_Session (Context  : in out Servlet_Registry;
+                             Response : in out ASF.Responses.Response'Class;
+                             Session  : out ASF.Sessions.Session) is
+   begin
+      Context.Create_Session (Session);
+      Response.Add_Cookie (Cookie => "SID=");
+   end Create_Session;
 
    --  ------------------------------
    --  Registers the given servlet instance with this ServletContext under

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 with ASF.Requests;
 with ASF.Responses;
 with ASF.Sessions;
+with ASF.Sessions.Factory;
 limited with ASF.Filters;
 
 with Ada.Finalization;
@@ -29,7 +30,6 @@ with Util.Properties;
 
 private with Ada.Containers.Hashed_Maps;
 private with Ada.Strings.Unbounded.Hash;
-private with ASF.Sessions.Factory;
 
 --  The <b>ASF.Servlets</b> package implements a subset of the
 --  Java Servlet Specification adapted for the Ada language.
@@ -57,7 +57,7 @@ package ASF.Servlets is
                         Response : in out Responses.Response'Class);
 
    --  type Servlet_Registry;
-   type Servlet_Registry is tagged limited private;
+   type Servlet_Registry is new ASF.Sessions.Factory.Session_Factory with private;
 
    type Servlet_Registry_Access is access all Servlet_Registry'Class;
 
@@ -471,11 +471,10 @@ private
                                  Hash                => Hash,
                                  Equivalent_Keys     => "=");
 
-   type Servlet_Registry is new Ada.Finalization.Limited_Controlled with record
+   type Servlet_Registry is new ASF.Sessions.Factory.Session_Factory with record
       Config            : Util.Properties.Manager;
       Servlets          : Servlet_Maps.Map;
       Filters           : Filter_Maps.Map;
-      Sessions          : ASf.Sessions.Factory.Session_Factory;
       Mappings          : Mapping_Access := null;
       Extension_Mapping : Mapping_Access := null;
       Error_Pages       : Error_Maps.Map;

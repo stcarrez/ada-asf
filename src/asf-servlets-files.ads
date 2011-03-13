@@ -35,8 +35,8 @@ package ASF.Servlets.Files is
    --  last modification time should override this method. This makes browser and
    --  proxy caches work more effectively, reducing the load on server and network
    --  resources.
-   function Get_Last_Modified (Server : in File_Servlet;
-                               Requet : in Requests.Request'Class)
+   function Get_Last_Modified (Server  : in File_Servlet;
+                               Request : in Requests.Request'Class)
                                return Ada.Calendar.Time;
 
    --  Called by the server (via the service method) to allow a servlet to handle

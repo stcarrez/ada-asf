@@ -52,9 +52,10 @@ package body ASF.Servlets.Files is
    --  proxy caches work more effectively, reducing the load on server and network
    --  resources.
    --  ------------------------------
-   function Get_Last_Modified (Server : in File_Servlet;
-                               Requet : in Requests.Request'Class)
+   function Get_Last_Modified (Server  : in File_Servlet;
+                               Request : in Requests.Request'Class)
                                return Ada.Calendar.Time is
+      pragma Unreferenced (Server, Request);
    begin
       return Ada.Calendar.Clock;
    end Get_Last_Modified;

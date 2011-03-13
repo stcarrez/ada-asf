@@ -26,27 +26,22 @@ package body ASF.Sessions.Factory is
    use Ada.Strings.Unbounded;
 
    --  ------------------------------
-   --  Create a new session
+   --  Allocate a unique and random session identifier.  The default implementation
+   --  generates a 256 bit random number that it serializes as base64 in the string.
+   --  Upon successful completion, the sequence string buffer is allocated and
+   --  returned in <b>Id</b>.  The buffer will be freed when the session is removed.
    --  ------------------------------
-   procedure Create_Session (Factory : in out Session_Factory;
-                             Result  : out Session) is
+   procedure Allocate_Session_Id (Factory : in out Session_Factory;
+                                  Id      : out String_Access) is
       use Ada.Streams;
       use Interfaces;
 
-      Sess    : Session;
-      Impl    : constant Session_Record_Access := new Session_Record;
       Rand    : Stream_Element_Array (0 .. 4 * Factory.Id_Size - 1);
       Buffer  : Stream_Element_Array (0 .. 4 * 3 * Factory.Id_Size);
       Encoder : Util.Encoders.Base64.Encoder;
       Last    : Stream_Element_Offset;
       Encoded : Stream_Element_Offset;
    begin
-      Impl.Ref_Counter  := Util.Concurrent.Counters.ONE;
-      Impl.Create_Time  := Ada.Calendar.Clock;
-      Impl.Access_Time  := Impl.Create_Time;
-      Impl.Max_Inactive := Factory.Max_Inactive;
-      Sess.Impl         := Impl;
-
       Factory.Lock.Write;
 
       --  Generate the random sequence.
@@ -60,21 +55,38 @@ package body ASF.Sessions.Factory is
             Rand (4 * I + 3) := Stream_Element (Shift_Right (Value, 24) and 16#0FF#);
          end;
       end loop;
+      Factory.Lock.Release_Write;
 
       --  Encode the random stream in base64 and save it into the Id string.
       Encoder.Transform (Data => Rand, Into => Buffer,
                          Last => Last, Encoded => Encoded);
 
-      declare
-         Id : constant String_Access := new String (1 .. Natural (Encoded + 1));
-      begin
-         for I in 0 .. Encoded loop
-            Id (Natural (I + 1)) := Character'Val (Buffer (I));
-         end loop;
+      Id := new String (1 .. Natural (Encoded + 1));
+      for I in 0 .. Encoded loop
+         Id (Natural (I + 1)) := Character'Val (Buffer (I));
+      end loop;
 
-         Impl.Id := Id;
-         Factory.Sessions.Insert (Id.all'Access, Sess);
-      end;
+   end Allocate_Session_Id;
+
+   --  ------------------------------
+   --  Create a new session
+   --  ------------------------------
+   procedure Create_Session (Factory : in out Session_Factory;
+                             Result  : out Session) is
+
+      Sess    : Session;
+      Impl    : constant Session_Record_Access := new Session_Record;
+   begin
+      Impl.Ref_Counter  := Util.Concurrent.Counters.ONE;
+      Impl.Create_Time  := Ada.Calendar.Clock;
+      Impl.Access_Time  := Impl.Create_Time;
+      Impl.Max_Inactive := Factory.Max_Inactive;
+      Sess.Impl         := Impl;
+
+      Session_Factory'Class (Factory).Allocate_Session_Id (Impl.Id);
+
+      Factory.Lock.Write;
+      Factory.Sessions.Insert (Impl.Id.all'Access, Sess);
       Factory.Lock.Release_Write;
 
       Result := Sess;

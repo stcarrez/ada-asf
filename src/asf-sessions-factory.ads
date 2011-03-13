@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.sessions.factory -- ASF Sessions factory
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Ada.Finalization;
+with Ada.Strings.Unbounded;
 private with Util.Strings;
 private with Util.Concurrent.Locks;
 private with Ada.Containers.Indefinite_Hashed_Maps;
@@ -29,6 +30,13 @@ private with Ada.Streams;
 package ASF.Sessions.Factory is
 
    type Session_Factory is tagged limited private;
+
+   --  Allocate a unique and random session identifier.  The default implementation
+   --  generates a 256 bit random number that it serializes as base64 in the string.
+   --  Upon successful completion, the sequence string buffer is allocated and
+   --  returned in <b>Id</b>.  The buffer will be freed when the session is removed.
+   procedure Allocate_Session_Id (Factory : in out Session_Factory;
+                                  Id      : out Ada.Strings.Unbounded.String_Access);
 
    --  Create a new session
    procedure Create_Session (Factory : in out Session_Factory;
@@ -71,19 +79,19 @@ private
    package Id_Random is new Ada.Numerics.Discrete_Random (Interfaces.Unsigned_32);
 
    type Session_Factory is new Ada.Finalization.Limited_Controlled with record
-      Lock     : Util.Concurrent.Locks.RW_Lock;
+      Lock         : Util.Concurrent.Locks.RW_Lock;
 
       --  Id to session map.
-      Sessions : Session_Maps.Map;
+      Sessions     : Session_Maps.Map;
 
       --  Max inactive time in seconds.
       Max_Inactive : Duration := DEFAULT_INACTIVE_TIMEOUT;
 
       --  Random number generator used for ID generation.
-      Random   : Id_Random.Generator;
+      Random       : Id_Random.Generator;
 
       --  Number of 32-bit random numbers used for the ID generation.
-      Id_Size  : Ada.Streams.Stream_Element_Offset := 8;
+      Id_Size      : Ada.Streams.Stream_Element_Offset := 8;
    end record;
 
    --  Initialize the session factory.

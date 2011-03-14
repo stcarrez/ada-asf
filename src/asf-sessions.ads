@@ -18,7 +18,7 @@
 with EL.Objects;
 with Ada.Calendar;
 with Ada.Finalization;
-private with Ada.Strings.Unbounded;
+with Ada.Strings.Unbounded;
 private with Util.Strings;
 private with Util.Beans.Objects.Maps;
 private with Util.Concurrent.Locks;

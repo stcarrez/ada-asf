@@ -32,7 +32,7 @@ package body ASF.Sessions.Factory is
    --  returned in <b>Id</b>.  The buffer will be freed when the session is removed.
    --  ------------------------------
    procedure Allocate_Session_Id (Factory : in out Session_Factory;
-                                  Id      : out String_Access) is
+                                  Id      : out Ada.Strings.Unbounded.String_Access) is
       use Ada.Streams;
       use Interfaces;
 

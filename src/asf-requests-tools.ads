@@ -28,8 +28,10 @@ package ASF.Requests.Tools is
    --  Set the internal context associated with a request:
    --  <ul>
    --     <li>The servlet that processes the request,
+   --     <li>The response associated with the request
    --  </ul/
-   procedure Set_Context (Req     : in out Request'Class;
-                          Servlet : access ASF.Servlets.Servlet'Class);
+   procedure Set_Context (Req      : in out Request'Class;
+                          Servlet  : access ASF.Servlets.Servlet'Class;
+                          Response : in ASF.Responses.Response_Access);
 
 end ASF.Requests.Tools;

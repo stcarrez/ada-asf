@@ -320,7 +320,8 @@ package ASF.Requests is
    --  before the response is committed. If the container is using cookies to maintain
    --  session integrity and is asked to create a new session when the response is
    --  committed, an IllegalStateException is thrown.
-   function Get_Session (Req : in Request) return ASF.Sessions.Session;
+   function Get_Session (Req    : in Request;
+                         Create : in Boolean := False) return ASF.Sessions.Session;
 
    --  Set the path info
    procedure Set_Path_Info (Req  : in out Request;

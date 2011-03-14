@@ -17,13 +17,13 @@
 -----------------------------------------------------------------------
 
 with Ada.Finalization;
+with Util.Strings;
 with Ada.Strings.Unbounded;
-private with Util.Strings;
-private with Util.Concurrent.Locks;
-private with Ada.Containers.Indefinite_Hashed_Maps;
-private with Ada.Numerics.Discrete_Random;
-private with Interfaces;
-private with Ada.Streams;
+with Util.Concurrent.Locks;
+with Ada.Containers.Hashed_Maps;
+with Ada.Numerics.Discrete_Random;
+with Interfaces;
+with Ada.Streams;
 
 --  The <b>ASF.Sessions.Factory</b> package is a factory for creating, searching
 --  and deleting sessions.
@@ -31,16 +31,16 @@ package ASF.Sessions.Factory is
 
    type Session_Factory is tagged limited private;
 
+   --  Create a new session
+   procedure Create_Session (Factory : in out Session_Factory;
+                             Result  : out Session);
+
    --  Allocate a unique and random session identifier.  The default implementation
    --  generates a 256 bit random number that it serializes as base64 in the string.
    --  Upon successful completion, the sequence string buffer is allocated and
    --  returned in <b>Id</b>.  The buffer will be freed when the session is removed.
    procedure Allocate_Session_Id (Factory : in out Session_Factory;
                                   Id      : out Ada.Strings.Unbounded.String_Access);
-
-   --  Create a new session
-   procedure Create_Session (Factory : in out Session_Factory;
-                             Result  : out Session);
 
    --  Deletes the session.
    procedure Delete_Session (Factory : in out Session_Factory;
@@ -71,10 +71,10 @@ private
    use Util.Strings;
 
    package Session_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => Name_Access,
-                                            Element_Type    => Session,
-                                            Hash            => Hash,
-                                            Equivalent_Keys => Util.Strings.Equivalent_Keys);
+     Ada.Containers.Hashed_Maps (Key_Type        => Name_Access,
+                                 Element_Type    => Session,
+                                 Hash            => Hash,
+                                 Equivalent_Keys => Util.Strings.Equivalent_Keys);
 
    package Id_Random is new Ada.Numerics.Discrete_Random (Interfaces.Unsigned_32);
 

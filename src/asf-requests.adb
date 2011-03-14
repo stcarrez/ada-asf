@@ -410,13 +410,14 @@ package body ASF.Requests is
       return Req.Principal;
    end Get_User_Principal;
 
+   --  ------------------------------
    --  Returns the session ID specified by the client. This may not be the same as
    --  the ID of the current valid session for this request. If the client did not
    --  specify a session ID, this method returns null.
+   --  ------------------------------
    function Get_Request_Session_Id (Req : in Request) return String is
-      pragma Unreferenced (Req);
    begin
-      return "";
+      return Request'Class (Req).Get_Header (Name => "SID");
    end Get_Request_Session_Id;
 
    --  Returns the part of this request's URL from the protocol name up to the query
@@ -451,7 +452,7 @@ package body ASF.Requests is
       return Res;
    end Get_Request_URL;
 
-
+   --  ------------------------------
    --  Returns the part of this request's URL that calls the servlet. This path starts
    --  with a "/" character and includes either the servlet name or a path to the
    --  servlet, but does not include any extra path information or a query string.
@@ -459,6 +460,7 @@ package body ASF.Requests is
    --
    --  This method will return an empty string ("") if the servlet used to process
    --  this request was matched using the "/*" pattern.
+   --  ------------------------------
    function Get_Servlet_Path (Req : in Request) return String is
    begin
       return Req.Servlet.Get_Name;
@@ -476,16 +478,23 @@ package body ASF.Requests is
    --  session integrity and is asked to create a new session when the response is
    --  committed, an IllegalStateException is thrown.
    --  ------------------------------
-   function Get_Session (Req : in Request) return ASF.Sessions.Session is
+   function Get_Session (Req    : in Request;
+                         Create : in Boolean := False) return ASF.Sessions.Session is
    begin
       if not Req.Info.Session_Initialized then
          declare
             SID : constant String := Req.Get_Header (Name => "SID");
+            Ctx : constant ASF.Servlets.Servlet_Registry_Access := Req.Servlet.Get_Servlet_Context;
          begin
             if SID'Length > 0 then
                --  Find a session object
-               Req.Servlet.Get_Servlet_Context.Find_Session (Id     => SID,
-                                                             Result => Req.Info.Session);
+               Ctx.Find_Session (Id     => SID,
+                                 Result => Req.Info.Session);
+            end if;
+
+            --  Create the session if necessary.
+            if Create and not Req.Info.Session.Is_Valid then
+               Ctx.Create_Session (Req.Info.Session);
             end if;
          end;
          Req.Info.Session_Initialized := True;

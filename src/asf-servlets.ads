@@ -442,6 +442,7 @@ private
 
    type Request_Dispatcher is limited record
       Mapping : Mapping_Access := null;
+      Servlet : Servlet_Access := null;
       Path    : Unbounded_String;
    end record;
 

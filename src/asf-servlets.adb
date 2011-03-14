@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Calendar;
 with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
 
@@ -135,6 +134,7 @@ package body ASF.Servlets is
    function Get_Last_Modified (Server  : in Servlet;
                                Request : in Requests.Request'Class)
                                return Ada.Calendar.Time is
+      pragma Unreferenced (Server, Request);
    begin
       return No_Time;
    end Get_Last_Modified;
@@ -180,6 +180,7 @@ package body ASF.Servlets is
    procedure Do_Get (Server   : in Servlet;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server, Request);
    begin
       Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Get;
@@ -202,6 +203,7 @@ package body ASF.Servlets is
    procedure Do_Head (Server   : in Servlet;
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server, Request);
    begin
       null;
    end Do_Head;
@@ -240,6 +242,7 @@ package body ASF.Servlets is
    procedure Do_Post (Server   : in Servlet;
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server, Request);
    begin
       Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Post;
@@ -267,6 +270,7 @@ package body ASF.Servlets is
    procedure Do_Put (Server   : in Servlet;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server, Request);
    begin
       Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Put;
@@ -287,6 +291,7 @@ package body ASF.Servlets is
    procedure Do_Delete (Server   : in Servlet;
                         Request  : in out Requests.Request'Class;
                         Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server, Request);
    begin
       Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Delete;
@@ -305,6 +310,7 @@ package body ASF.Servlets is
    procedure Do_Options (Server   : in Servlet;
                          Request  : in out Requests.Request'Class;
                          Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server, Request);
    begin
       Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Options;
@@ -318,6 +324,7 @@ package body ASF.Servlets is
    procedure Do_Trace (Server   : in Servlet;
                        Request  : in out Requests.Request'Class;
                        Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server, Request);
    begin
       Response.Send_Error (Responses.SC_METHOD_NOT_ALLOWED);
    end Do_Trace;
@@ -347,7 +354,12 @@ package body ASF.Servlets is
    begin
       Request.Set_Path_Info (To_String (Dispatcher.Path));
 
-      if Dispatcher.Mapping = null or else Dispatcher.Mapping.Servlet = null then
+      if Dispatcher.Servlet /= null then
+         ASF.Requests.Tools.Set_Context (Request, Dispatcher.Servlet.all'Access,
+                                         Response'Unchecked_Access);
+         Dispatcher.Servlet.Service (Request, Response);
+
+      elsif Dispatcher.Mapping = null or else Dispatcher.Mapping.Servlet = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
 
          -- If we have some filters, create the filter chain
@@ -356,7 +368,8 @@ package body ASF.Servlets is
          declare
             Chain : Filter_Chain;
          begin
-            ASF.Requests.Tools.Set_Context (Request, Dispatcher.Mapping.Servlet.all'Access);
+            ASF.Requests.Tools.Set_Context (Request, Dispatcher.Mapping.Servlet.all'Access,
+                                            Response'Unchecked_Access);
             Chain.Filters := Dispatcher.Mapping.Filters;
             Chain.Servlet := Dispatcher.Mapping.Servlet;
             Chain.Filter_Pos := Chain.Filters'Last;
@@ -366,7 +379,8 @@ package body ASF.Servlets is
          end;
 
       else
-         ASF.Requests.Tools.Set_Context (Request, Dispatcher.Mapping.Servlet.all'Access);
+         ASF.Requests.Tools.Set_Context (Request, Dispatcher.Mapping.Servlet.all'Access,
+                                         Response'Unchecked_Access);
          Dispatcher.Mapping.Servlet.Service (Request, Response);
       end if;
    end Forward;
@@ -420,8 +434,14 @@ package body ASF.Servlets is
    function Get_Name_Dispatcher (Context : in Servlet_Registry;
                                  Name    : in String)
                                  return Request_Dispatcher is
+      Pos : constant Servlet_Maps.Cursor := Context.Servlets.Find (To_Unbounded_String (Name));
    begin
-      return R : Request_Dispatcher;
+      if not Servlet_Maps.Has_Element (Pos) then
+         raise Servlet_Error with "No servlet " & Name;
+      end if;
+      return R : Request_Dispatcher do
+         R.Servlet := Servlet_Maps.Element (Pos);
+      end return;
    end Get_Name_Dispatcher;
 
    --  ------------------------------
@@ -457,14 +477,6 @@ package body ASF.Servlets is
    begin
       Context.Config.Copy (Params);
    end Set_Init_Parameters;
-
-   procedure Create_Session (Context  : in out Servlet_Registry;
-                             Response : in out ASF.Responses.Response'Class;
-                             Session  : out ASF.Sessions.Session) is
-   begin
-      Context.Create_Session (Session);
-      Response.Add_Cookie (Cookie => "SID=");
-   end Create_Session;
 
    --  ------------------------------
    --  Registers the given servlet instance with this ServletContext under

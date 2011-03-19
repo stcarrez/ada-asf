@@ -80,6 +80,7 @@ package body ASF.Server.Web is
 
       Server.Service (Req, Resp);
 
+      Resp.Build;
       return Resp.Get_Data;
    end Server_Callback;
 

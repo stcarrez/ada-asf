@@ -18,6 +18,7 @@
 
 with ASF.Requests;
 with ASF.Responses;
+with ASF.Sessions;
 limited with ASF.Converters;
 with ASF.Components.Root;
 limited with ASF.Applications.Main;
@@ -76,6 +77,10 @@ package ASF.Contexts.Faces is
    --  Get a request parameter
    function Get_Parameter (Context : Faces_Context;
                            Name    : String) return String;
+
+   --  Get the session associated with the current faces context.
+   function Get_Session (Context : in Faces_Context;
+                         Create  : in Boolean := False) return ASF.Sessions.Session;
 
    --  Get the request
    function Get_Request (Context : Faces_Context) return ASF.Requests.Request_Access;

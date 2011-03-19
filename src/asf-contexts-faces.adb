@@ -93,6 +93,15 @@ package body ASF.Contexts.Faces is
    end Get_Parameter;
 
    --  ------------------------------
+   --  Get the session associated with the current faces context.
+   --  ------------------------------
+   function Get_Session (Context : in Faces_Context;
+                         Create  : in Boolean := False) return ASF.Sessions.Session is
+   begin
+      return Context.Request.Get_Session (Create);
+   end Get_Session;
+
+   --  ------------------------------
    --  Get the request
    --  ------------------------------
    function Get_Request (Context : Faces_Context)

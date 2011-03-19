@@ -516,6 +516,12 @@ package body ASF.Requests is
             --  Create the session if necessary.
             if Create and not Req.Info.Session.Is_Valid then
                Ctx.Create_Session (Req.Info.Session);
+               declare
+                  C : constant ASF.Cookies.Cookie
+                    := ASF.Cookies.Create ("SID", Req.Info.Session.Get_Id);
+               begin
+                  Req.Info.Response.Add_Cookie (Cookie => C);
+               end;
             end if;
          end;
          Req.Info.Session_Initialized := True;

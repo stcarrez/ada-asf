@@ -25,6 +25,10 @@ package ASF.Cookies is
 
    type Cookie is private;
 
+   type Cookie_Array is array (Natural range <>) of Cookie;
+
+   type Cookie_Array_Access is access all Cookie_Array;
+
    --  Constructs a cookie with a specified name and value.
    --
    --  The name must conform to RFC 2109. That means it can contain only ASCII alphanumeric
@@ -140,6 +144,9 @@ package ASF.Cookies is
 
    --  Get the cookie definition
    function To_Http_Header (Object : in Cookie) return String;
+
+   --  Parse the header and return an array of cookies.
+   function Get_Cookies (Header : in String) return Cookie_Array_Access;
 
 private
 

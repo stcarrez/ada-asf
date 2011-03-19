@@ -32,6 +32,7 @@ package body ASF.Cookies is
    Forbidden : constant Maps.Character_Set
      := Maps.To_Set (Span => (Low  => Character'Val (0),
                               High => Character'Val (31)))
+     or Maps.To_Set (";")
      or Maps.To_Set (Span => (Low  => Character'Val (127),
                               High => Character'Val (Character'Pos (Character'Last))));
 
@@ -392,5 +393,117 @@ package body ASF.Cookies is
 
       return To_String (Result);
    end To_Http_Header;
+
+   --  ------------------------------
+   --  Get number of cookies present in the header value
+   --  ------------------------------
+   function Get_Cookie_Count (Header : in String) return Natural is
+      Pos      : Natural := Header'First;
+      Cnt      : Natural := 0;
+      In_Value : Boolean := False;
+   begin
+      while Pos <= Header'Last loop
+         declare
+            C : constant Character := Header (Pos);
+         begin
+            if In_Value then
+               if C = ';' or C = ',' then
+                  In_Value := False;
+               end if;
+            else
+               if C = '=' then
+                  Cnt := Cnt + 1;
+                  In_Value := True;
+               end if;
+            end if;
+         end;
+         Pos := Pos + 1;
+      end loop;
+      return Cnt;
+   end Get_Cookie_Count;
+
+   --  Parse the header and return an array of cookies.
+   function Get_Cookies (Header : in String) return Cookie_Array_Access is
+      Pos : Natural := Header'First;
+
+      Cnt    : constant Natural := Get_Cookie_Count (Header);
+      Result : constant Cookie_Array_Access := new Cookie_Array (1 .. Cnt);
+      Idx    : Positive := 1;
+      Start_Pos  : Natural;
+      End_Pos    : Natural;
+      Is_Special : Boolean;
+      C          : Character;
+   begin
+      while Pos < Header'Last loop
+         --  Skip spaces
+         while Pos < Header'Last loop
+            C := Header (Pos);
+            exit when C /= ' ' and C /= ASCII.HT;
+            Pos := Pos + 1;
+         end loop;
+
+         Start_Pos := Pos;
+         Is_Special := C = '$';
+         if Is_Special then
+            Pos := Pos + 1;
+         end if;
+
+         --  Find the token end position
+         while Pos < Header'Last loop
+            C := Header (Pos);
+            exit when Maps.Is_In (Element => C, Set => Reserved);
+            Pos := Pos + 1;
+         end loop;
+
+         End_Pos := Pos - 1;
+         exit when Start_Pos > End_Pos;
+         Result (Idx).Name := To_Unbounded_String (Header (Start_Pos .. End_Pos));
+
+         --  Skip spaces
+         while Pos < Header'Last loop
+            C := Header (Pos);
+            exit when C /= ' ' and C /= ASCII.HT;
+            Pos := Pos + 1;
+         end loop;
+
+         if C = '=' then
+            Pos := Pos + 1;
+
+            --  Skip spaces
+            while Pos <= Header'Last loop
+               C := Header (Pos);
+               exit when C /= ' ' and C /= ASCII.HT;
+               Pos := Pos + 1;
+            end loop;
+
+            Start_Pos := Pos;
+            if C = ';' then
+               null;
+            elsif C = '"' then
+               Pos := Pos + 1;
+            else
+               Start_Pos := Pos;
+               while Pos <= Header'Last loop
+                  C := Header (Pos);
+                  exit when Maps.Is_In (Element => C, Set => Forbidden);
+                  Pos := Pos + 1;
+               end loop;
+            end if;
+            if Start_Pos < Pos then
+               Result (Idx).Value := To_Unbounded_String (Header (Start_Pos .. Pos - 1));
+            end if;
+         end if;
+         Idx := Idx + 1;
+         while Pos <= Header'Last loop
+            C := Header (Pos);
+            exit when C /= ' ' and C /= ASCII.HT;
+            Pos := Pos + 1;
+         end loop;
+         if C = ';' then
+            Pos := Pos + 1;
+         end if;
+      end loop;
+      return Result;
+   end Get_Cookies;
 
 end ASF.Cookies;

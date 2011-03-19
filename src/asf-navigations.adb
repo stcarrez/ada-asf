@@ -20,6 +20,7 @@ with Util.Strings;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 
+with Ada.Unchecked_Deallocation;
 with ASF.Applications.Main;
 with ASF.Navigations.Render;
 package body ASF.Navigations is
@@ -95,6 +96,41 @@ package body ASF.Navigations is
    end Find_Navigation;
 
    --  ------------------------------
+   --  Clear the navigation rules.
+   --  ------------------------------
+   procedure Clear (Controller : in out Rule) is
+      procedure Free is new Ada.Unchecked_Deallocation (Navigation_Case'Class,
+                                                        Navigation_Access);
+   begin
+      while not Controller.Navigators.Is_Empty loop
+         declare
+            Iter      : Navigator_Vector.Cursor := Controller.Navigators.Last;
+            Navigator : Navigation_Access := Navigator_Vector.Element (Iter);
+         begin
+            Free (Navigator);
+            Controller.Navigators.Delete (Iter);
+         end;
+      end loop;
+   end Clear;
+
+   --  ------------------------------
+   --  Clear the navigation rules.
+   --  ------------------------------
+   procedure Clear (Controller : in out Navigation_Rules) is
+      procedure Free is new Ada.Unchecked_Deallocation (Rule'Class, Rule_Access);
+   begin
+      while not Controller.Rules.Is_Empty loop
+         declare
+            Iter : Rule_Map.Cursor := Controller.Rules.First;
+            Rule : Rule_Access := Rule_Map.Element (Iter);
+         begin
+            Free (Rule);
+            Controller.Rules.Delete (Iter);
+         end;
+      end loop;
+   end Clear;
+
+   --  ------------------------------
    --  Navigation Handler
    --  ------------------------------
 
@@ -165,8 +201,12 @@ package body ASF.Navigations is
    --  ------------------------------
    overriding
    procedure Finalize (Handler : in out Navigation_Handler) is
+      procedure Free is new Ada.Unchecked_Deallocation (Navigation_Rules, Navigation_Rules_Access);
    begin
-      null;
+      if Handler.Rules /= null then
+         Clear (Handler.Rules.all);
+         Free (Handler.Rules);
+      end if;
    end Finalize;
 
    --  ------------------------------

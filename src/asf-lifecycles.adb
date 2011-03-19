@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles -- Lifecycle
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Unchecked_Deallocation;
 package body ASF.Lifecycles is
 
    --  ------------------------------
@@ -32,6 +33,20 @@ package body ASF.Lifecycles is
          Controller.Controllers (Phase).Initialize (App);
       end loop;
    end Initialize;
+
+   --  ------------------------------
+   --  Finalize the lifecycle handler, freeing the allocated storage.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Controller : in out Lifecycle) is
+      procedure Free is new Ada.Unchecked_Deallocation (Phase_Controller'Class,
+                                                        Phase_Controller_Access);
+   begin
+      --  Free the phase controllers.
+      for Phase in Controller.Controllers'Range loop
+         Free (Controller.Controllers (Phase));
+      end loop;
+   end Finalize;
 
    --  ------------------------------
    --  Set the controller to be used for the given phase.

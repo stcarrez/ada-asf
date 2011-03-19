@@ -111,6 +111,9 @@ private
       Navigators : Navigator_Vector.Vector;
    end record;
 
+   --  Clear the navigation rules.
+   procedure Clear (Controller : in out Rule);
+
    --  Search for the navigator that matches the current action, outcome and context.
    --  Returns the navigator or null if there was no match.
    function Find_Navigation (Controller : in Rule;
@@ -130,6 +133,9 @@ private
       --  Exact match rules
       Rules : Rule_Map.Map;
    end record;
+
+   --  Clear the navigation rules.
+   procedure Clear (Controller : in out Navigation_Rules);
 
    type Navigation_Rules_Access is access all Navigation_Rules;
 

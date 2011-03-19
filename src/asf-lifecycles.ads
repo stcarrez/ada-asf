@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles -- Lifecycle
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Finalization;
 with ASF.Contexts.Faces;
 limited with ASF.Applications.Main;
 package ASF.Lifecycles is
@@ -39,7 +40,7 @@ package ASF.Lifecycles is
    procedure Initialize (Controller : in out Phase_Controller;
                          App        : access ASF.Applications.Main.Application'Class) is null;
 
-   type Lifecycle is abstract tagged limited private;
+   type Lifecycle is abstract new Ada.Finalization.Limited_Controlled with private;
    type Lifecycle_Access is access all Lifecycle'Class;
 
    --  Creates the phase controllers by invoking the <b>Set_Controller</b>
@@ -50,6 +51,10 @@ package ASF.Lifecycles is
    --  Initialize the the lifecycle handler.
    procedure Initialize (Controller : in out Lifecycle;
                          App        : access ASF.Applications.Main.Application'Class);
+
+   --  Finalize the lifecycle handler, freeing the allocated storage.
+   overriding
+   procedure Finalize (Controller : in out Lifecycle);
 
    --  Set the controller to be used for the given phase.
    procedure Set_Controller (Controller : in out Lifecycle;
@@ -67,7 +72,7 @@ package ASF.Lifecycles is
 private
    type Phase_Controller is abstract tagged limited null record;
 
-   type Lifecycle is abstract tagged limited record
+   type Lifecycle is abstract new Ada.Finalization.Limited_Controlled with record
       Controllers : Phase_Controller_Array;
    end record;
 

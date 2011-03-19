@@ -33,7 +33,7 @@ with EL.Contexts.Default;
 
 with Ada.Exceptions;
 with Ada.Containers.Vectors;
-
+with Ada.Unchecked_Deallocation;
 package body ASF.Applications.Main is
 
    use Util.Log;
@@ -503,5 +503,22 @@ package body ASF.Applications.Main is
    begin
       Set_Functions (App.Functions);
    end Register_Functions;
+
+   --  ------------------------------
+   --  Finalizes the application, freeing the memory.
+   --  ------------------------------
+   overriding
+   procedure Finalize (App : in out Application) is
+      procedure Free is new Ada.Unchecked_Deallocation (ASF.Applications.Views.View_Handler'Class,
+                                                        ASF.Applications.Views.View_Handler_Access);
+      procedure Free is new Ada.Unchecked_Deallocation (ASF.Navigations.Navigation_Handler'Class,
+                                                        ASF.Navigations.Navigation_Handler_Access);
+      procedure Free is new Ada.Unchecked_Deallocation (ASF.Lifecycles.Lifecycle'Class,
+                                                        ASF.Lifecycles.Lifecycle_Access);
+   begin
+      Free (App.Navigation);
+      Free (App.Lifecycle);
+      ASF.Servlets.Servlet_Registry (App).Finalize;
+   end Finalize;
 
 end ASF.Applications.Main;

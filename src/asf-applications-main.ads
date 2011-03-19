@@ -105,6 +105,10 @@ package ASF.Applications.Main is
                          Conf    : in Config;
                          Factory : in Application_Factory'Class);
 
+   --  Finalizes the application, freeing the memory.
+   overriding
+   procedure Finalize (App : in out Application);
+
    --  Get the configuration parameter;
    function Get_Config (App   : Application;
                         Param : Config_Param) return String;

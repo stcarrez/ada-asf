@@ -69,6 +69,8 @@ package body ASF.Components.Root is
       end if;
    end Adjust;
 
+   Empty : ASF.Components.Base.UIComponent;
+
    --  ------------------------------
    --  Free the memory held by the component tree.
    --  ------------------------------
@@ -83,7 +85,11 @@ package body ASF.Components.Root is
       if Object.Root /= null then
          Object.Root.Ref_Counter := Object.Root.Ref_Counter - 1;
          if Object.Root.Ref_Counter = 0 then
---              Free (Object.Root.View);
+            declare
+               C : ASF.Components.Base.UIComponent_Access := Object.Root.View.all'Unchecked_Access;
+            begin
+               ASF.Components.Base.Steal_Root_Component (Empty, C);
+            end;
             Free (Object.Root);
          end if;
       end if;

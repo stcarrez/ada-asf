@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Strings;
+
 --  The <b>ASF.Responses</b> package is an Ada implementation of
 --  the Java servlet response (JSR 315 5. The Response).
 package body ASF.Responses is
@@ -145,12 +147,15 @@ package body ASF.Responses is
       return Util.Locales.ENGLISH;
    end Get_Locale;
 
+   --  ------------------------------
    --  Adds the specified cookie to the response. This method can be called multiple
    --  times to set more than one cookie.
-   procedure Add_Cookie (Resp : in out Response;
-                         Cookie : in String) is
+   --  ------------------------------
+   procedure Add_Cookie (Resp   : in out Response;
+                         Cookie : in ASF.Cookies.Cookie) is
    begin
-      null;
+      Response'Class (Resp).Add_Header (Name  => "Set-Cookie",
+                                        Value => ASF.Cookies.To_Http_Header (Cookie));
    end Add_Cookie;
 
    --  Returns a boolean indicating whether the named response header has already
@@ -222,6 +227,7 @@ package body ASF.Responses is
       Resp.Status := Error;
    end Send_Error;
 
+   --  ------------------------------
    --  Sends a temporary redirect response to the client using the specified redirect
    --  location URL. This method can accept relative URLs; the servlet container must
    --  convert the relative URL to an absolute URL before sending the response to the
@@ -233,10 +239,13 @@ package body ASF.Responses is
    --  If the response has already been committed, this method throws an
    --  IllegalStateException. After using this method, the response should be
    --  considered to be committed and should not be written to.
+   --  ------------------------------
    procedure Send_Redirect (Resp     : in out Response;
                             Location : in String) is
    begin
-      null;
+      Response'Class (Resp).Set_Status (SC_FOUND);
+      Response'Class (Resp).Set_Header (Name  => "Location",
+                                        Value => Location);
    end Send_Redirect;
 
    --  Sets a response header with the given name and date-value.
@@ -280,26 +289,33 @@ package body ASF.Responses is
       null;
    end Add_Header;
 
+   --  ------------------------------
    --  Sets a response header with the given name and integer value.
    --  If the header had already been set, the new value overwrites the previous one.
    --  The containsHeader  method can be used to test for the presence of a header
    --  before setting its value.
+   --  ------------------------------
    procedure Set_Int_Header (Resp  : in out Response;
                              Name  : in String;
                              Value : in Integer) is
    begin
-      null;
+      Response'Class (Resp).Set_Header (Name  => Name,
+                                        Value => Util.Strings.Image (Value));
    end Set_Int_Header;
 
+   --  ------------------------------
    --  Adds a response header with the given name and integer value. This method
    --  allows response headers to have multiple values.
+   --  ------------------------------
    procedure Add_Int_Header (Resp  : in out Response;
                              Name  : in String;
                              Value : in Integer) is
    begin
-      null;
+      Response'Class (Resp).Add_Header (Name  => Name,
+                                        Value => Util.Strings.Image (Value));
    end Add_Int_Header;
 
+   --  ------------------------------
    --  Sets the status code for this response. This method is used to set the
    --  return status code when there is no error (for example, for the status
    --  codes SC_OK or SC_MOVED_TEMPORARILY). If there is an error, and the caller
@@ -308,6 +324,7 @@ package body ASF.Responses is
    --
    --  The container clears the buffer and sets the Location header,
    --  preserving cookies and other headers.
+   --  ------------------------------
    procedure Set_Status (Resp   : in out Response;
                          Status : in Natural) is
    begin

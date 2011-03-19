@@ -21,6 +21,7 @@ with Ada.Strings.Unbounded;
 with Ada.Finalization;
 
 with ASF.Streams;
+with ASF.Cookies;
 private with Util.Streams.Texts;
 
 --  The <b>ASF.Responses</b> package is an Ada implementation of
@@ -175,8 +176,8 @@ package ASF.Responses is
 
    --  Adds the specified cookie to the response. This method can be called multiple
    --  times to set more than one cookie.
-   procedure Add_Cookie (Resp : in out Response;
-                         Cookie : in String);
+   procedure Add_Cookie (Resp   : in out Response;
+                         Cookie : in ASF.Cookies.Cookie);
 
    --  Returns a boolean indicating whether the named response header has already
    --  been set.

@@ -22,6 +22,7 @@ with ASF.Views.Nodes;
 with ASF.Converters;
 with ASF.Events;
 with ASF.Components.Core;
+with EL.Variables;
 package body ASF.Components.Base is
 
    use Util.Log;
@@ -178,6 +179,12 @@ package body ASF.Components.Base is
                   return Attribute.Expr.Get_Value (Context.Get_ELContext.all);
                end if;
             end if;
+
+         exception
+            when EL.Variables.No_Variable =>
+               UI.Tag.Error ("Variable not found in expression: {0}",
+                             Attribute.Expr.Get_Expression);
+               return EL.Objects.Null_Object;
          end;
          Attribute := Attribute.Next_Attr;
       end loop;

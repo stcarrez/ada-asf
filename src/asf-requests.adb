@@ -280,13 +280,34 @@ package body ASF.Requests is
       return "";
    end Get_Auth_Type;
 
+   --  ------------------------------
    --  Returns an array containing all of the Cookie  objects the client sent with
    --  this request. This method returns null if no cookies were sent.
-   function Get_Cookies (Req : in Request) return String is
-      pragma Unreferenced (Req);
+   --  ------------------------------
+   function Get_Cookies (Req : in Request) return ASF.Cookies.Cookie_Array is
+      use type ASF.Cookies.Cookie_Array_Access;
    begin
-      return "";
+      if Req.Info.Cookies = null then
+         Req.Info.Cookies := ASF.Cookies.Get_Cookies (Request'Class (Req).Get_Header ("Cookie"));
+      end if;
+      return Req.Info.Cookies.all;
    end Get_Cookies;
+
+   --  ------------------------------
+   --  Iterate over the request cookies and executes the <b>Process</b> procedure.
+   --  ------------------------------
+   procedure Iterate_Cookies(Req     : in Request;
+                             Process : not null access
+                               procedure (Cookie : in ASF.Cookies.Cookie)) is
+      use type ASF.Cookies.Cookie_Array_Access;
+   begin
+      if Req.Info.Cookies = null then
+         Req.Info.Cookies := ASF.Cookies.Get_Cookies (Request'Class (Req).Get_Header ("Cookie"));
+      end if;
+      for I in Req.Info.Cookies'Range loop
+         Process (Cookie => Req.Info.Cookies (I));
+      end loop;
+   end Iterate_Cookies;
 
    --  Returns the value of the specified request header as a long value that
    --  represents a Date object. Use this method with headers that contain dates,
@@ -526,7 +547,10 @@ package body ASF.Requests is
    overriding
    procedure Finalize (Req : in out Request) is
       procedure Free is new Ada.Unchecked_Deallocation (Request_Data, Request_Data_Access);
+      procedure Free is new Ada.Unchecked_Deallocation (ASF.Cookies.Cookie_Array,
+                                                        ASF.Cookies.Cookie_Array_Access);
    begin
+      Free (Req.Info.Cookies);
       Free (Req.Info);
    end Finalize;
 

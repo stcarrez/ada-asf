@@ -23,6 +23,7 @@ with Util.Beans.Objects.Maps;
 
 with Ada.Finalization;
 
+with ASF.Cookies;
 with ASF.Sessions;
 with ASF.Responses;
 with ASF.Principals;
@@ -190,7 +191,12 @@ package ASF.Requests is
 
    --  Returns an array containing all of the Cookie  objects the client sent with
    --  this request. This method returns null if no cookies were sent.
-   function Get_Cookies (Req : in Request) return String;
+   function Get_Cookies (Req : in Request) return ASF.Cookies.Cookie_Array;
+
+   --  Iterate over the request cookies and executes the <b>Process</b> procedure.
+   procedure Iterate_Cookies(Req     : in Request;
+                             Process : not null access
+                               procedure (Cookie : in ASF.Cookies.Cookie));
 
    --  Returns the value of the specified request header as a long value that
    --  represents a Date object. Use this method with headers that contain dates,
@@ -346,6 +352,9 @@ private
 
       --  The response object associated with the request.
       Response            : ASF.Responses.Response_Access;
+
+      --  The request cookies.
+      Cookies             : ASF.Cookies.Cookie_Array_Access := null;
    end record;
    type Request_Data_Access is access Request_Data;
 

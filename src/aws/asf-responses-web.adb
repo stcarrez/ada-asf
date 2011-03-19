@@ -17,7 +17,9 @@
 -----------------------------------------------------------------------
 with Ada.Streams;
 with Util.Streams.Buffered;
+
 with AWS.Messages;
+with AWS.Response.Set;
 package body ASF.Responses.Web is
 
    procedure Initialize (Resp : in out Response) is
@@ -55,17 +57,59 @@ package body ASF.Responses.Web is
       end case;
    end To_Status_Code;
 
-   function Get_Data (Resp : in Response) return AWS.Response.Data is
+   --  ------------------------------
+   --  Sets a response header with the given name and value. If the header had already
+   --  been set, the new value overwrites the previous one. The containsHeader
+   --  method can be used to test for the presence of a header before setting its value.
+   --  ------------------------------
+   procedure Set_Header (Resp  : in out Response;
+                         Name  : in String;
+                         Value : in String) is
+   begin
+      if AWS.Response.Header (Resp.Data, Name)'Length = 0 then
+         AWS.Response.Set.Add_Header (D     => Resp.Data,
+                                      Name  => Name,
+                                      Value => Value);
+      end if;
+   end Set_Header;
+
+   --  ------------------------------
+   --  Adds a response header with the given name and value.
+   --  This method allows response headers to have multiple values.
+   --  ------------------------------
+   procedure Add_Header (Resp  : in out Response;
+                         Name  : in String;
+                         Value : in String) is
+   begin
+      AWS.Response.Set.Add_Header (D     => Resp.Data,
+                                   Name  => Name,
+                                   Value => Value);
+   end Add_Header;
+
+   --  ------------------------------
+   --  Prepare the response data by collecting the status, content type and message body.
+   --  ------------------------------
+   procedure Build (Resp : in out Response) is
       use Ada.Streams;
 
       Buffer : Util.Streams.Buffered.Buffer_Access := Resp.Content.Get_Buffer;
       Size   : Stream_Element_Offset := Stream_Element_Offset (Resp.Content.Get_Size);
 
    begin
+      AWS.Response.Set.Content_Type (D     => Resp.Data,
+                                     Value => Resp.Get_Content_Type);
+      AWS.Response.Set.Message_Body (D     => Resp.Data,
+                                     Value => Buffer.all (Buffer'First .. Size));
+      AWS.Response.Set.Status_Code (D     => Resp.Data,
+                                    Value => To_Status_Code (Resp.Get_Status));
+   end Build;
 
-      return AWS.Response.Build (Content_Type => Resp.Get_Content_Type,
-                                 Message_Body => Buffer.all (Buffer'First .. Size),
-                                 Status_Code  => To_Status_Code (Resp.Get_Status));
+   --  ------------------------------
+   --  Get the response data
+   --  ------------------------------
+   function Get_Data (Resp : in Response) return AWS.Response.Data is
+   begin
+      return Resp.Data;
    end Get_Data;
 
 end ASF.Responses.Web;

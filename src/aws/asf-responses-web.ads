@@ -23,8 +23,25 @@ package ASF.Responses.Web is
    type Response is new ASF.Responses.Response with private;
 --     type Request_Access is access all Request'Class;
 
---     function Get_Parameter (R : Request; Name : String) return String;
+   --     function Get_Parameter (R : Request; Name : String) return String;
 
+   --  Sets a response header with the given name and value. If the header had already
+   --  been set, the new value overwrites the previous one. The containsHeader
+   --  method can be used to test for the presence of a header before setting its value.
+   procedure Set_Header (Resp  : in out Response;
+                         Name  : in String;
+                         Value : in String);
+
+   --  Adds a response header with the given name and value.
+   --  This method allows response headers to have multiple values.
+   procedure Add_Header (Resp  : in out Response;
+                         Name  : in String;
+                         Value : in String);
+
+   --  Prepare the response data by collecting the status, content type and message body.
+   procedure Build (Resp : in out Response);
+
+   --  Get the response data
    function Get_Data (Resp : in Response) return AWS.Response.Data;
 
 private

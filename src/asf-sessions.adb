@@ -171,6 +171,30 @@ package body ASF.Sessions is
    end Remove_Attribute;
 
    --  ------------------------------
+   --  Gets the principal that authenticated to the session.
+   --  Returns null if there is no principal authenticated.
+   --  ------------------------------
+   function Get_Principal (Sess : in Session) return ASF.Principals.Principal_Access is
+   begin
+      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+         raise No_Session;
+      end if;
+      return Sess.Impl.Principal;
+   end Get_Principal;
+
+   --  ------------------------------
+   --  Sets the principal associated with the session.
+   --  ------------------------------
+   procedure Set_Principal (Sess      : in out Session;
+                            Principal : in ASF.Principals.Principal_Access) is
+   begin
+      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+         raise No_Session;
+      end if;
+      Sess.Impl.Principal := Principal;
+   end Set_Principal;
+
+   --  ------------------------------
    --  Invalidates this session then unbinds any objects bound to it.
    --  ------------------------------
    procedure Invalidate (Sess : in out Session) is

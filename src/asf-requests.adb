@@ -281,15 +281,23 @@ package body ASF.Requests is
    end Get_Auth_Type;
 
    --  ------------------------------
+   --  Make sure the cookies are loaded in the request object.
+   --  ------------------------------
+   procedure Load_Cookies (Req : in Request'Class) is
+      use type ASF.Cookies.Cookie_Array_Access;
+   begin
+      if Req.Info.Cookies = null then
+         Req.Info.Cookies := ASF.Cookies.Get_Cookies (Req.Get_Header ("Cookie"));
+      end if;
+   end Load_Cookies;
+
+   --  ------------------------------
    --  Returns an array containing all of the Cookie  objects the client sent with
    --  this request. This method returns null if no cookies were sent.
    --  ------------------------------
    function Get_Cookies (Req : in Request) return ASF.Cookies.Cookie_Array is
-      use type ASF.Cookies.Cookie_Array_Access;
    begin
-      if Req.Info.Cookies = null then
-         Req.Info.Cookies := ASF.Cookies.Get_Cookies (Request'Class (Req).Get_Header ("Cookie"));
-      end if;
+      Req.Load_Cookies;
       return Req.Info.Cookies.all;
    end Get_Cookies;
 
@@ -301,9 +309,7 @@ package body ASF.Requests is
                                procedure (Cookie : in ASF.Cookies.Cookie)) is
       use type ASF.Cookies.Cookie_Array_Access;
    begin
-      if Req.Info.Cookies = null then
-         Req.Info.Cookies := ASF.Cookies.Get_Cookies (Request'Class (Req).Get_Header ("Cookie"));
-      end if;
+      Req.Load_Cookies;
       for I in Req.Info.Cookies'Range loop
          Process (Cookie => Req.Info.Cookies (I));
       end loop;
@@ -438,7 +444,13 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_Request_Session_Id (Req : in Request) return String is
    begin
-      return Request'Class (Req).Get_Header (Name => "SID");
+      Req.Load_Cookies;
+      for I in Req.Info.Cookies'Range loop
+         if ASF.Cookies.Get_Name (Req.Info.Cookies (I)) = "SID" then
+            return ASF.Cookies.Get_Value (Req.Info.Cookies (I));
+         end if;
+      end loop;
+      return "";
    end Get_Request_Session_Id;
 
    --  Returns the part of this request's URL from the protocol name up to the query
@@ -488,6 +500,27 @@ package body ASF.Requests is
    end Get_Servlet_Path;
 
    --  ------------------------------
+   --  Get and check the request session
+   --  ------------------------------
+   function Has_Session (Req : in Request'Class) return Boolean is
+   begin
+      Req.Load_Cookies;
+      for I in Req.Info.Cookies'Range loop
+         if ASF.Cookies.Get_Name (Req.Info.Cookies (I)) = "SID" then
+            declare
+               SID : constant String := ASF.Cookies.Get_Value (Req.Info.Cookies (I));
+               Ctx : constant ASF.Servlets.Servlet_Registry_Access := Req.Servlet.Get_Servlet_Context;
+            begin
+               Ctx.Find_Session (Id     => SID,
+                                 Result => Req.Info.Session);
+               return Req.Info.Session.Is_Valid;
+            end;
+         end if;
+      end loop;
+      return False;
+   end Has_Session;
+
+   --  ------------------------------
    --  Returns the current HttpSession  associated with this request or, if there
    --  is no current session and create is true, returns a new session.
    --
@@ -503,28 +536,27 @@ package body ASF.Requests is
                          Create : in Boolean := False) return ASF.Sessions.Session is
    begin
       if not Req.Info.Session_Initialized then
-         declare
-            SID : constant String := Req.Get_Header (Name => "SID");
-            Ctx : constant ASF.Servlets.Servlet_Registry_Access := Req.Servlet.Get_Servlet_Context;
-         begin
-            if SID'Length > 0 then
-               --  Find a session object
-               Ctx.Find_Session (Id     => SID,
-                                 Result => Req.Info.Session);
-            end if;
-
-            --  Create the session if necessary.
-            if Create and not Req.Info.Session.Is_Valid then
-               Ctx.Create_Session (Req.Info.Session);
-               declare
-                  C : constant ASF.Cookies.Cookie
-                    := ASF.Cookies.Create ("SID", Req.Info.Session.Get_Id);
-               begin
-                  Req.Info.Response.Add_Cookie (Cookie => C);
-               end;
-            end if;
-         end;
+         --  Look if the session exist
+         if not Req.Has_Session then
+            null;
+         end if;
          Req.Info.Session_Initialized := True;
+      end if;
+
+      --  Create the session if necessary.
+      if Create and not Req.Info.Session.Is_Valid then
+         declare
+            Ctx : constant ASF.Servlets.Servlet_Registry_Access
+              := Req.Servlet.Get_Servlet_Context;
+         begin
+            Ctx.Create_Session (Req.Info.Session);
+            declare
+               C : constant ASF.Cookies.Cookie
+                 := ASF.Cookies.Create ("SID", Req.Info.Session.Get_Id);
+            begin
+               Req.Info.Response.Add_Cookie (Cookie => C);
+            end;
+         end;
       end if;
       return Req.Info.Session;
    end Get_Session;

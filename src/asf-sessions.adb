@@ -39,7 +39,7 @@ package body ASF.Sessions is
    --  ------------------------------
    function Get_Id (Sess : in Session) return String is
    begin
-      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+      if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       else
          return Sess.Impl.Id.all;
@@ -56,7 +56,7 @@ package body ASF.Sessions is
    --  ------------------------------
    function Get_Last_Accessed_Time (Sess : in Session) return Ada.Calendar.Time is
    begin
-      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+      if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       else
          return Sess.Impl.Access_Time;
@@ -72,7 +72,7 @@ package body ASF.Sessions is
    --  ------------------------------
    function Get_Max_Inactive_Interval (Sess : in Session) return Duration is
    begin
-      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+      if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       else
          return Sess.Impl.Max_Inactive;
@@ -87,7 +87,7 @@ package body ASF.Sessions is
    procedure Set_Max_Inactive_Interval (Sess     : in Session;
                                         Interval : in Duration) is
    begin
-      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+      if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       else
          Sess.Impl.Max_Inactive := Interval;
@@ -102,7 +102,7 @@ package body ASF.Sessions is
                            Name : in String) return EL.Objects.Object is
       Key : constant Unbounded_String := To_Unbounded_String (Name);
    begin
-      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+      if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       end if;
 
@@ -137,7 +137,7 @@ package body ASF.Sessions is
                             Name  : in String;
                             Value : in EL.Objects.Object) is
    begin
-      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+      if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       end if;
 
@@ -176,7 +176,7 @@ package body ASF.Sessions is
    --  ------------------------------
    function Get_Principal (Sess : in Session) return ASF.Principals.Principal_Access is
    begin
-      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+      if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       end if;
       return Sess.Impl.Principal;
@@ -188,7 +188,7 @@ package body ASF.Sessions is
    procedure Set_Principal (Sess      : in out Session;
                             Principal : in ASF.Principals.Principal_Access) is
    begin
-      if Sess.Impl = null and then not Sess.Impl.Is_Active then
+      if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       end if;
       Sess.Impl.Principal := Principal;

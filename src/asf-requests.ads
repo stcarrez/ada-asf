@@ -343,6 +343,12 @@ package ASF.Requests is
 
 private
 
+   --  Make sure the cookies are loaded in the request object.
+   procedure Load_Cookies (Req : in Request'Class);
+
+   --  Get and check the request session
+   function Has_Session (Req : in Request'Class) return Boolean;
+
    type Request_Data is record
       --  The session
       Session             : ASF.Sessions.Session;

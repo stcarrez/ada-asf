@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.files -- Static file servlet
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Util.Files;
+with Util.Strings;
 with Util.Streams;
 with Util.Streams.Files;
 with Ada.Streams;
@@ -37,9 +38,11 @@ package body ASF.Servlets.Files is
    --  ------------------------------
    procedure Initialize (Server  : in out File_Servlet;
                          Context : in Servlet_Registry'Class) is
-      Dir : constant String := Context.Get_Init_Parameter ("web.dir");
+      Dir      : constant String := Context.Get_Init_Parameter ("web.dir");
+      Def_Type : constant String := Context.Get_Init_Parameter ("content-type.default");
    begin
       Server.Dir := new String '(Dir);
+      Server.Default_Content_Type := new String '(Def_Type);
    end Initialize;
 
    --  ------------------------------
@@ -59,6 +62,36 @@ package body ASF.Servlets.Files is
    begin
       return Ada.Calendar.Clock;
    end Get_Last_Modified;
+
+   --  ------------------------------
+   --  Set the content type associated with the given file
+   --  ------------------------------
+   procedure Set_Content_Type (Server   : in File_Servlet;
+                               Path     : in String;
+                               Response : in out Responses.Response'Class) is
+      Pos : constant Natural := Util.Strings.Rindex (Path, '.');
+   begin
+      if Pos = 0 then
+         Response.Set_Content_Type (Server.Default_Content_Type.all);
+         return;
+      end if;
+      if Path (Pos .. Path'Last) = ".css" then
+         Response.Set_Content_Type ("text/css");
+         return;
+      end if;
+      if Path (Pos .. Path'Last) = ".js" then
+         Response.Set_Content_Type ("text/javascript");
+         return;
+      end if;
+      if Path (Pos .. Path'Last) = ".html" then
+         Response.Set_Content_Type ("text/html");
+         return;
+      end if;
+      if Path (Pos .. Path'Last) = ".txt" then
+         Response.Set_Content_Type ("text/plain");
+         return;
+      end if;
+   end Set_Content_Type;
 
    --  ------------------------------
    --  Called by the server (via the service method) to allow a servlet to handle
@@ -113,6 +146,7 @@ package body ASF.Servlets.Files is
          return;
       end if;
 
+      File_Servlet'Class (Server).Set_Content_Type (Path, Response);
       declare
          Output : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
          Input  : Util.Streams.Files.File_Stream;

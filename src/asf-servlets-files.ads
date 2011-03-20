@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.files -- Static file servlet
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,6 +38,11 @@ package ASF.Servlets.Files is
    function Get_Last_Modified (Server  : in File_Servlet;
                                Request : in Requests.Request'Class)
                                return Ada.Calendar.Time;
+
+   --  Set the content type associated with the given file.
+   procedure Set_Content_Type (Server   : in File_Servlet;
+                               Path     : in String;
+                               Response : in out Responses.Response'Class);
 
    --  Called by the server (via the service method) to allow a servlet to handle
    --  a GET request.
@@ -82,7 +87,8 @@ package ASF.Servlets.Files is
 private
 
    type File_Servlet is new Servlet with record
-      Dir       : String_Access;
+      Dir                  : String_Access;
+      Default_Content_Type : String_Access;
    end record;
 
 end ASF.Servlets.Files;

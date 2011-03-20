@@ -309,8 +309,9 @@ package ASF.Responses is
 private
 
    type Response is abstract new Ada.Finalization.Limited_Controlled with record
-      Status : Integer := SC_OK;
-      Stream : Util.Streams.Texts.Print_Stream_Access;
+      Status       : Integer := SC_OK;
+      Stream       : Util.Streams.Texts.Print_Stream_Access;
+      Content_Type : Ada.Strings.Unbounded.Unbounded_String;
    end record;
 
 end ASF.Responses;

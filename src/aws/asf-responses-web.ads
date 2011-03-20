@@ -15,15 +15,24 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with AWS.Status;
+with Ada.Streams;
+
 with AWS.Response;
+with Util.Streams;
 with Util.Streams.Texts;
 package ASF.Responses.Web is
 
-   type Response is new ASF.Responses.Response with private;
+   type Response is new ASF.Responses.Response and Util.Streams.Output_Stream with private;
 --     type Request_Access is access all Request'Class;
 
    --     function Get_Parameter (R : Request; Name : String) return String;
+
+   --  Write the buffer array to the output stream.
+   procedure Write (Stream : in out Response;
+                    Buffer : in Ada.Streams.Stream_Element_Array);
+
+   --  Flush the buffer (if any) to the sink.
+   procedure Flush (Stream : in out Response);
 
    --  Sets a response header with the given name and value. If the header had already
    --  been set, the new value overwrites the previous one. The containsHeader
@@ -49,7 +58,7 @@ private
    overriding
    procedure Initialize (Resp : in out Response);
 
-   type Response is new ASF.Responses.Response with record
+   type Response is new ASF.Responses.Response and Util.Streams.Output_Stream with record
       Data    : AWS.Response.Data;
       Content : aliased Util.Streams.Texts.Print_Stream;
    end record;

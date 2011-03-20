@@ -24,9 +24,29 @@ package body ASF.Responses.Web is
 
    procedure Initialize (Resp : in out Response) is
    begin
-      Resp.Content.Initialize (256 * 1024);
+      Resp.Content.Initialize (Size   => 256 * 1024,
+                               Output => Resp'Unchecked_Access,
+                               Input  => null);
       Resp.Stream := Resp.Content'Unchecked_Access;
    end Initialize;
+
+   --  ------------------------------
+   --  Write the buffer array to the output stream.
+   --  ------------------------------
+   procedure Write (Stream : in out Response;
+                    Buffer : in Ada.Streams.Stream_Element_Array) is
+   begin
+      AWS.Response.Set.Append_Body (D    => Stream.Data,
+                                    Item => Buffer);
+   end Write;
+
+   --  ------------------------------
+   --  Flush the buffer (if any) to the sink.
+   --  ------------------------------
+   procedure Flush (Stream : in out Response) is
+   begin
+      null;
+   end Flush;
 
    function To_Status_Code (Status : in Natural) return AWS.Messages.Status_Code is
       use AWS.Messages;
@@ -90,18 +110,12 @@ package body ASF.Responses.Web is
    --  Prepare the response data by collecting the status, content type and message body.
    --  ------------------------------
    procedure Build (Resp : in out Response) is
-      use Ada.Streams;
-
-      Buffer : Util.Streams.Buffered.Buffer_Access := Resp.Content.Get_Buffer;
-      Size   : Stream_Element_Offset := Stream_Element_Offset (Resp.Content.Get_Size);
-
    begin
       AWS.Response.Set.Content_Type (D     => Resp.Data,
                                      Value => Resp.Get_Content_Type);
-      AWS.Response.Set.Message_Body (D     => Resp.Data,
-                                     Value => Buffer.all (Buffer'First .. Size));
       AWS.Response.Set.Status_Code (D     => Resp.Data,
                                     Value => To_Status_Code (Resp.Get_Status));
+      Resp.Content.Flush;
    end Build;
 
    --  ------------------------------

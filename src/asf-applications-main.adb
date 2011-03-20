@@ -16,9 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
 with Util.Log.Loggers;
 
 with ASF.Streams;
+with ASF.Sessions;
 with ASF.Contexts.Writer;
 with ASF.Components.Core;
 with ASF.Components.Core.Factory;
@@ -365,6 +367,18 @@ package body ASF.Applications.Main is
       if not EL.Objects.Is_Null (Result) then
          return Result;
       end if;
+
+      --  If there is a session, look if the attribute is defined there.
+      declare
+         Session : constant ASF.Sessions.Session := Resolver.Request.Get_Session;
+      begin
+         if Session.Is_Valid then
+            Result := Session.Get_Attribute (Key);
+            if not Util.Beans.Objects.Is_Null (Result) then
+               return Result;
+            end if;
+         end if;
+      end;
       Resolver.Application.Create (Name, Bean, Free, Scope);
       if Bean = null then
          return Resolver.Application.Get_Global (Name, Context);

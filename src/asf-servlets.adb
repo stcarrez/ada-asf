@@ -453,9 +453,10 @@ package body ASF.Servlets is
    --  or the name of a system that holds critical data.
    --  ------------------------------
    function Get_Init_Parameter (Context : in Servlet_Registry;
-                                Name    : in String) return String is
+                                Name    : in String;
+                                Default : in String := "") return String is
    begin
-      return Context.Config.Get (Name);
+      return Context.Config.Get (Name, Default);
    end Get_Init_Parameter;
 
    --  ------------------------------

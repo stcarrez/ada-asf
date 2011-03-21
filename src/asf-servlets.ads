@@ -312,7 +312,8 @@ package ASF.Servlets is
    --  "web application". For example, it can provide a webmaster's email address
    --  or the name of a system that holds critical data.
    function Get_Init_Parameter (Context : in Servlet_Registry;
-                                Name    : in String) return String;
+                                Name    : in String;
+                                Default : in String := "") return String;
 
    --  Set the init parameter identified by <b>Name</b> to the value <b>Value</b>.
    procedure Set_Init_Parameter (Context : in out Servlet_Registry;

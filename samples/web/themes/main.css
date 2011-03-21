@@ -7,15 +7,53 @@ html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fiel
 }
 
 body {
-    font-family: Arial, sans-serif;
-    font-size: 12px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
   padding: 10px;
+  background-color: #e0ecec;
 }
 
+div {
+  float: left;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #bcd;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px 6px;
+}
 h1 {
-  padding-top: 20px;
+  font-size: 20px;
+  text-align: center;
+  padding-bottom: 20px;
 }
 
 h2 {
+  clear: left;
+  float: left;
   padding: 10px;
+  font-size: 15px;
+  padding-top: 20px;
+}
+
+dl {
+  float: left;
+  width: 500px;
+  border: 1px solid #bcd;
+  background-color: #ffffff;
+  padding: 10px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px 6px;
+}
+dt {
+  clear: left;
+  float: left;
+  font-weight: bold;
+  width: 20%;
+  height: 20px;
+  line-height: 24px;
+  padding: 5px;
+}
+dd {
+  float: left;
+  padding: 5px;
 }

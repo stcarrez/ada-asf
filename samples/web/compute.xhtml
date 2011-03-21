@@ -13,25 +13,31 @@
   <div>
      <h1>Compute the volume of a cylinder</h1>
 
-     <h:panelGroup rendered="#{not empty compute.volume}">
-         <h2>The cylinder volume is #{compute.volume}</h2>
-     </h:panelGroup>
-
      <h:form id='compute'>
-         <table>
-             <tr><td>Height</td><td>
-		<h:input id='height' size='10' value='#{compute.height}'>
-                   <f:converter converterId="float"/>
-                </h:input>
-             </td></tr>
-             <tr><td>Radius</td><td>
+         <dl>
+			<dt>Height</dt>
+			<dd>
+			  <h:input id='height' size='10' value='#{compute.height}'>
+				<f:converter converterId="float" />
+			  </h:input>
+			</dd>
+			<dt>Radius</dt>
+            <dd>
                 <h:input id='radius' size='10' value='#{compute.radius}'>
                    <f:converter converterId="float"/>
                 </h:input>
-             </td></tr>
-             <tr><td></td><td><h:commandButton id='run' value='Compute' action="#{compute.run}"/></td></tr>
-         </table>
-     </h:form>
+            </dd>
+            <dt>
+            </dt>
+            <dd>
+              <h:commandButton id='run' value='Compute' action="#{compute.run}"/>
+            </dd>
+        </dl>
+	</h:form>
+
+     <h:panelGroup rendered="#{not empty compute.volume}">
+         <h2>The cylinder volume is #{compute.volume}</h2>
+     </h:panelGroup>
   </div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf_volume_server -- The volume_server application with Ada Server Faces
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ with ASF.Servlets.Files;
 with ASF.Filters.Dump;
 with ASF.Applications;
 with ASF.Applications.Main;
-with EL.Objects;
+with Util.Beans.Objects;
 
 with Volume;
 procedure Asf_Volume_Server is
@@ -48,15 +48,15 @@ begin
 
    App.Initialize (C, Factory);
    App.Set_Global ("contextPath", CONTEXT_PATH);
-   App.Set_Global ("compute", EL.Objects.To_Object (Bean'Unchecked_Access));
+   App.Set_Global ("faces", Util.Beans.Objects.To_Object (Bean'Unchecked_Access));
 
    --  Register the servlets and filters
-   App.Add_Servlet (Name => "compute", Server => Faces'Unchecked_Access);
+   App.Add_Servlet (Name => "faces", Server => Faces'Unchecked_Access);
    App.Add_Servlet (Name => "files", Server => Files'Unchecked_Access);
    App.Add_Filter (Name => "dump", Filter => Dump'Unchecked_Access);
 
    --  Define servlet mappings
-   App.Add_Mapping (Name => "compute", Pattern => "*.html");
+   App.Add_Mapping (Name => "faces", Pattern => "*.html");
    App.Add_Mapping (Name => "files", Pattern => "*.css");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
 

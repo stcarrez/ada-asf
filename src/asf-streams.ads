@@ -24,7 +24,7 @@ with Util.Streams.Texts;
 with EL.Objects;
 package ASF.Streams is
 
-   pragma Preelaborate;
+--     pragma Preelaborate;
 
    --  -----------------------
    --  Print stream
@@ -68,6 +68,10 @@ package ASF.Streams is
    --  Flush the buffer by writing on the output stream.
    --  Raises Data_Error if there is no output stream.
    procedure Flush (Stream : in out Print_Stream);
+
+   --  Write into the text stream.
+   procedure Write (Stream : in out Print_Stream;
+                    Print  : access procedure (Into : in out Util.Streams.Texts.Print_Stream'Class));
 
 private
 

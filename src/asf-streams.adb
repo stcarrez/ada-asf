@@ -96,4 +96,13 @@ package body ASF.Streams is
       Stream.Target.Flush;
    end Flush;
 
+   --  ------------------------------
+   --  Write into the text stream.
+   --  ------------------------------
+   procedure Write (Stream : in out Print_Stream;
+                    Print  : access procedure (Into : in out Util.Streams.Texts.Print_Stream'Class)) is
+   begin
+      Print (Into => Stream.Target.all);
+   end Write;
+
 end ASF.Streams;

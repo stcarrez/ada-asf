@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-factory -- Factory for HTML UI Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -114,7 +114,8 @@ package body ASF.Components.Html.Factory is
    URI                : aliased constant String := "http://java.sun.com/jsf/html";
    COMMAND_BUTTON_TAG : aliased constant String := "commandButton";
    FORM_TAG           : aliased constant String := "form";
-   INPUT_TAG          : aliased constant String := "input";
+   INPUT_SECRET_TAG   : aliased constant String := "inputSecret";
+   INPUT_TEXT_TAG     : aliased constant String := "inputText";
    LABEL_TAG          : aliased constant String := "label";
    LIST_TAG           : aliased constant String := "list";
    OUTPUT_FORMAT_TAG  : aliased constant String := "outputFormat";
@@ -129,25 +130,28 @@ package body ASF.Components.Html.Factory is
          2 => (Name      => FORM_TAG'Access,
                Component => Create_Form'Access,
                Tag       => Create_Component_Node'Access),
-         3 => (Name      => INPUT_TAG'Access,
+         3 => (Name      => INPUT_SECRET_TAG'Access,
                Component => Create_Input'Access,
                Tag       => Create_Component_Node'Access),
-         4 => (Name      => LABEL_TAG'Access,
+         4 => (Name      => INPUT_TEXT_TAG'Access,
+               Component => Create_Input'Access,
+               Tag       => Create_Component_Node'Access),
+         5 => (Name      => LABEL_TAG'Access,
                Component => Create_Label'Access,
                Tag       => Create_Component_Node'Access),
-         5 => (Name      => LIST_TAG'Access,
+         6 => (Name      => LIST_TAG'Access,
                Component => Create_List'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => OUTPUT_FORMAT_TAG'Access,
+         7 => (Name      => OUTPUT_FORMAT_TAG'Access,
                Component => Create_Output_Format'Access,
                Tag       => Create_Component_Node'Access),
-         7 => (Name      => OUTPUT_LINK_TAG'Access,
+         8 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,
                Tag       => Create_Component_Node'Access),
-         8 => (Name      => OUTPUT_TEXT_TAG'Access,
+         9 => (Name      => OUTPUT_TEXT_TAG'Access,
                Component => Create_Output'Access,
                Tag       => Create_Component_Node'Access),
-         9 => (Name      => PANEL_GROUP_TAG'Access,
+        10 => (Name      => PANEL_GROUP_TAG'Access,
                Component => Create_PanelGroup'Access,
                Tag       => Create_Component_Node'Access)
         );

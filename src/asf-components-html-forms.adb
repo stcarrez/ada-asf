@@ -18,7 +18,6 @@
 with Util.Log.Loggers;
 with Ada.Exceptions;
 with ASF.Utils;
-with ASF.Components.Base;
 with ASF.Components.Utils;
 with ASF.Events.Actions;
 with ASF.Applications.Main;
@@ -36,6 +35,16 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    --  Input Component
    --  ------------------------------
+
+   --  ------------------------------
+   --  Create an UIInput secret component
+   --  ------------------------------
+   function Create_Input_Secret return ASF.Components.Base.UIComponent_Access is
+      Result : constant UIInput_Access := new UIInput;
+   begin
+      Result.Is_Secret := True;
+      return Result.all'Access;
+   end Create_Input_Secret;
 
    --  ------------------------------
    --  Check if this component has the required attribute set.
@@ -63,7 +72,11 @@ package body ASF.Components.Html.Forms is
          Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
       begin
          Writer.Start_Element ("input");
-         Writer.Write_Attribute (Name => "type", Value => "text");
+         if UI.Is_Secret then
+            Writer.Write_Attribute (Name => "type", Value => "password");
+         else
+            Writer.Write_Attribute (Name => "type", Value => "text");
+         end if;
          Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
          if not EL.Objects.Is_Null (Value) then
             declare
@@ -96,7 +109,9 @@ package body ASF.Components.Html.Forms is
          Id  : constant Unbounded_String := UI.Get_Client_Id;
          Val : constant String := Context.Get_Parameter (To_String (Id));
       begin
-         Log.Info ("Set input parameter {0} -> {1}", Id, Val);
+         if not UI.Is_Secret then
+            Log.Info ("Set input parameter {0} -> {1}", Id, Val);
+         end if;
          UI.Submitted_Value := UI.Convert_Value (Val, Context);
          UI.Is_Valid := True;
 

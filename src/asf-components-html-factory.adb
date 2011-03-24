@@ -34,7 +34,7 @@ package body ASF.Components.Html.Factory is
    function Create_List return UIComponent_Access;
    function Create_PanelGroup return UIComponent_Access;
    function Create_Form return UIComponent_Access;
-   function Create_Input return UIComponent_Access;
+   function Create_Input_Text return UIComponent_Access;
    function Create_Command return UIComponent_Access;
 
    --  ------------------------------
@@ -96,10 +96,10 @@ package body ASF.Components.Html.Factory is
    --  ------------------------------
    --  Create an UIInput component
    --  ------------------------------
-   function Create_Input return UIComponent_Access is
+   function Create_Input_Text return UIComponent_Access is
    begin
       return new ASF.Components.Html.Forms.UIInput;
-   end Create_Input;
+   end Create_Input_Text;
 
    --  ------------------------------
    --  Create an UICommand component
@@ -131,10 +131,10 @@ package body ASF.Components.Html.Factory is
                Component => Create_Form'Access,
                Tag       => Create_Component_Node'Access),
          3 => (Name      => INPUT_SECRET_TAG'Access,
-               Component => Create_Input'Access,
+               Component => ASF.Components.Html.Forms.Create_Input_Secret'Access,
                Tag       => Create_Component_Node'Access),
          4 => (Name      => INPUT_TEXT_TAG'Access,
-               Component => Create_Input'Access,
+               Component => Create_Input_Text'Access,
                Tag       => Create_Component_Node'Access),
          5 => (Name      => LABEL_TAG'Access,
                Component => Create_Label'Access,

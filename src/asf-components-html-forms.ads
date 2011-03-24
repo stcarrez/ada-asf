@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with ASF.Components.Base;
 with ASF.Components.Html.Text;
 with ASF.Events;
 with EL.Objects;
@@ -25,6 +26,10 @@ package ASF.Components.Html.Forms is
    --  Input Component
    --  ------------------------------
    type UIInput is new Text.UIOutput with private;
+   type UIInput_Access is access all UIInput'Class;
+
+   --  Create an UIInput secret component
+   function Create_Input_Secret return ASF.Components.Base.UIComponent_Access;
 
    --  Check if this component has the required attribute set.
    function Is_Required (UI      : in UIInput;
@@ -132,6 +137,7 @@ private
    type UIInput is new Text.UIOutput with record
       Submitted_Value : EL.Objects.Object;
       Is_Valid        : Boolean;
+      Is_Secret       : Boolean := False;
    end record;
 
    type UICommand is new UIHtmlComponent with record

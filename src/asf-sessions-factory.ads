@@ -29,7 +29,7 @@ with Ada.Streams;
 --  and deleting sessions.
 package ASF.Sessions.Factory is
 
-   type Session_Factory is tagged limited private;
+   type Session_Factory is new Ada.Finalization.Limited_Controlled with private;
 
    --  Create a new session
    procedure Create_Session (Factory : in out Session_Factory;

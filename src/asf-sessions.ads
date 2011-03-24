@@ -20,7 +20,6 @@ with Ada.Calendar;
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with ASF.Principals;
-private with Util.Strings;
 private with Util.Beans.Objects.Maps;
 private with Util.Concurrent.Locks;
 private with Util.Concurrent.Counters;

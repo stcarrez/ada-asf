@@ -22,6 +22,7 @@ with ASF.Servlets;
 --  the Java servlet request (JSR 315 3. The Request).
 package body ASF.Requests is
 
+   --  ------------------------------
    --  Returns the value of the named attribute as an Object, or null if no attribute
    --  of the given name exists.
    --
@@ -32,12 +33,12 @@ package body ASF.Requests is
    --  be set programatically using setAttribute(String, Object).
    --  This allows information to be embedded into a request before
    --  a RequestDispatcher call.
+   --  ------------------------------
    function Get_Attribute (Req  : in Request;
                            Name : in String) return EL.Objects.Object is
       Key : constant Ada.Strings.Unbounded.Unbounded_String := To_Unbounded_String (Name);
       Pos : constant EL.Objects.Maps.Cursor := Req.Attributes.Find (Key);
    begin
-
       if EL.Objects.Maps.Has_Element (Pos) then
          return EL.Objects.Maps.Element (Pos);
       else
@@ -45,6 +46,7 @@ package body ASF.Requests is
       end if;
    end Get_Attribute;
 
+   --  ------------------------------
    --  Stores an attribute in this request. Attributes are reset between requests.
    --  This method is most often used in conjunction with RequestDispatcher.
    --
@@ -53,6 +55,7 @@ package body ASF.Requests is
    --  dispatched from the servlet resides in a different web application by
    --  RequestDispatcher, the object set by this method may not be correctly
    --  retrieved in the caller servlet.
+   --  ------------------------------
    procedure Set_Attribute (Req   : in out Request;
                             Name  : in String;
                             Value : in EL.Objects.Object) is
@@ -65,8 +68,10 @@ package body ASF.Requests is
       end if;
    end Set_Attribute;
 
+   --  ------------------------------
    --  Removes an attribute from this request. This method is not generally needed
    --  as attributes only persist as long as the request is being handled.
+   --  ------------------------------
    procedure Remove_Attribute (Req  : in out Request;
                                Name : in String) is
    begin
@@ -110,16 +115,20 @@ package body ASF.Requests is
       null;
    end Set_Character_Encoding;
 
+   --  ------------------------------
    --  Returns the length, in bytes, of the request body and made available by the
    --  input stream, or -1 if the length is not known. For HTTP servlets,
    --  same as the value of the CGI variable CONTENT_LENGTH.
+   --  ------------------------------
    function Get_Content_Length (Req : in Request) return Integer is
    begin
       return Request'Class (Req).Get_Int_Header ("Content-Length");
    end Get_Content_Length;
 
+   --  ------------------------------
    --  Returns the MIME type of the body of the request, or null if the type is
    --  not known. For HTTP servlets, same as the value of the CGI variable CONTENT_TYPE.
+   --  ------------------------------
    function Get_Content_Type (Req : in Request) return String is
    begin
       return Request'Class (Req).Get_Header ("Content-Type");
@@ -156,9 +165,11 @@ package body ASF.Requests is
       return "";
    end Get_Parameter_Values;
 
+   --  ------------------------------
    --  Returns the name and version of the protocol the request uses in the form
    --  protocol/majorVersion.minorVersion, for example, HTTP/1.1. For HTTP servlets,
    --  the value returned is the same as the value of the CGI variable SERVER_PROTOCOL.
+   --  ------------------------------
    function Get_Protocol (Req : in Request) return String is
       pragma Unreferenced (Req);
    begin

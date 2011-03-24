@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.sessions -- ASF Sessions
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with Ada.Unchecked_Deallocation;
-with Ada.Strings.Unbounded;
 
 --  The <b>ASF.Sessions</b> package is an Ada implementation of the
 --  Java servlet Specification (See JSR 315 at jcp.org).
@@ -202,7 +201,6 @@ package body ASF.Sessions is
       if Sess.Impl /= null then
          Sess.Impl.Is_Active := False;
          Finalize (Sess);
-         Sess.Impl := null;
       end if;
    end Invalidate;
 

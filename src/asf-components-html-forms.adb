@@ -195,6 +195,7 @@ package body ASF.Components.Html.Forms is
    exception
       when E : others =>
          UI.Is_Valid := False;
+         Add_Message (UI, "requiredMessage", "req", Context);
          Log.Info (Utils.Get_Line_Info (UI)
                    & ": Exception raised when updating value {0} for component {1}: {2}",
                    EL.Objects.To_String (UI.Submitted_Value),

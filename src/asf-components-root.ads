@@ -42,7 +42,7 @@ private
    type Root_Holder_Access is access all Root_Holder;
 
    type UIViewRoot is new Ada.Finalization.Controlled with record
-      Root : Root_Holder_Access;
+      Root : Root_Holder_Access := null;
    end record;
 
    --  Increment the reference counter.

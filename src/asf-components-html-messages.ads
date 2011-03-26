@@ -1,0 +1,47 @@
+-----------------------------------------------------------------------
+--  html.messages -- Faces messages
+--  Copyright (C) 2011 Stephane Carrez
+--  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+--
+--  Licensed under the Apache License, Version 2.0 (the "License");
+--  you may not use this file except in compliance with the License.
+--  You may obtain a copy of the License at
+--
+--      http://www.apache.org/licenses/LICENSE-2.0
+--
+--  Unless required by applicable law or agreed to in writing, software
+--  distributed under the License is distributed on an "AS IS" BASIS,
+--  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--  See the License for the specific language governing permissions and
+--  limitations under the License.
+-----------------------------------------------------------------------
+
+with ASF.Applications.Messages.Vectors;
+
+--  The <b>ASF.Components.Html.Messages</b> package implements the <b>h:message</b>
+--  and <b>h:messages</b> components.
+package ASF.Components.Html.Messages is
+
+   --  ------------------------------
+   --  UIMessage component
+   --  ------------------------------
+   --  The <b>h:message</b> component renders a message associated with an input component.
+   type UIMessage is new UIHtmlComponent with private;
+
+   --  Encode the begining of the <b>h:message</b> component.
+   procedure Encode_Begin (UI      : in UIMessage;
+                           Context : in out Faces_Context'Class);
+
+   --  Encode the end of the <b>h:message</b> component.
+   procedure Encode_End (UI      : in UIMessage;
+                         Context : in out Faces_Context'Class);
+
+   procedure Write_Messages (UI       : in UIMessage;
+                             Context  : in out Faces_Context'Class;
+                             Messages : in out ASF.Applications.Messages.Vectors.Cursor);
+
+private
+
+   type UIMessage is new UIHtmlComponent with null record;
+
+end ASF.Components.Html.Messages;

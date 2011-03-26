@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+
+with Util.Beans.Objects;
 with Util.Log.Loggers;
 with Ada.Exceptions;
 with ASF.Utils;
@@ -60,6 +62,21 @@ package body ASF.Components.Html.Forms is
       return EL.Objects.To_Boolean (Attr);
    end Is_Required;
 
+   --  ------------------------------
+   --  Get the value of the component.  If the component has a submitted value, returns it.
+   --  If the component has a local value which is not null, returns it.
+   --  Otherwise, if we have a Value_Expression evaluate and returns the value.
+   --  ------------------------------
+   overriding
+   function Get_Value (UI : in UIInput) return EL.Objects.Object is
+   begin
+      if not Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
+         return UI.Submitted_Value;
+      else
+         return Text.UIOutput (UI).Get_Value;
+      end if;
+   end Get_Value;
+
    overriding
    procedure Encode_Begin (UI      : in UIInput;
                            Context : in out Faces_Context'Class) is
@@ -83,7 +100,7 @@ package body ASF.Components.Html.Forms is
                Convert : constant access Converters.Converter'Class
                  := UIInput'Class (UI).Get_Converter;
             begin
-               if Convert /= null then
+               if Convert /= null and Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
                   Writer.Write_Attribute (Name  => "value",
                                           Value => Convert.To_String (Value => Value,
                                                                       Component => UI,
@@ -149,7 +166,7 @@ package body ASF.Components.Html.Forms is
    procedure Validate (UI      : in out UIInput;
                        Context : in out Faces_Context'Class) is
    begin
-      if not EL.Objects.Is_Null(UI.Submitted_Value) then
+      if not EL.Objects.Is_Null (UI.Submitted_Value) then
          UIInput'Class (UI).Validate_Value (UI.Submitted_Value, Context);
 
          --  Render the response after the current phase if something is wrong.
@@ -195,7 +212,7 @@ package body ASF.Components.Html.Forms is
    exception
       when E : others =>
          UI.Is_Valid := False;
-         Add_Message (UI, "requiredMessage", "req", Context);
+         Add_Message (UI, "converterMessage", "convert", Context);
          Log.Info (Utils.Get_Line_Info (UI)
                    & ": Exception raised when updating value {0} for component {1}: {2}",
                    EL.Objects.To_String (UI.Submitted_Value),

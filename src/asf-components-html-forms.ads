@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,12 @@ package ASF.Components.Html.Forms is
    --  Check if this component has the required attribute set.
    function Is_Required (UI      : in UIInput;
                          Context : in Faces_Context'Class) return Boolean;
+
+   --  Get the value of the component.  If the component has a submitted value, returns it.
+   --  If the component has a local value which is not null, returns it.
+   --  Otherwise, if we have a Value_Expression evaluate and returns the value.
+   overriding
+   function Get_Value (UI    : in UIInput) return EL.Objects.Object;
 
    overriding
    procedure Encode_Begin (UI      : in UIInput;

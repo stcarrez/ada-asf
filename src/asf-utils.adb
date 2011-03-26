@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,12 @@ package body ASF.Utils is
 
    TABINDEX_ATTR      : aliased constant String := "tabindex";
 
+   AUTOCOMPLETE_ATTR  : aliased constant String := "autocomplete";
    SIZE_ATTR          : aliased constant String := "size";
+   MAXLENGTH_ATTR     : aliased constant String := "maxlength";
+   ALT_ATTR           : aliased constant String := "alt";
+   DISABLED_ATTR      : aliased constant String := "disabled";
+   READONLY_ATTR      : aliased constant String := "readonly";
 
    --  ------------------------------
    --  Add in the <b>names</b> set, the basic text attributes that can be set
@@ -84,6 +89,11 @@ package body ASF.Utils is
    procedure Set_Input_Attributes (Names : in out Util.Strings.String_Set.Set) is
    begin
       Names.Insert (SIZE_ATTR'Access);
+      Names.Insert (AUTOCOMPLETE_ATTR'Access);
+      Names.Insert (MAXLENGTH_ATTR'Access);
+      Names.Insert (ALT_ATTR'Access);
+      Names.Insert (DISABLED_ATTR'Access);
+      Names.Insert (READONLY_ATTR'Access);
    end Set_Input_Attributes;
 
 end ASF.Utils;

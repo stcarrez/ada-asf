@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,14 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
 with Util.Log.Loggers;
 with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with ASF.Converters;
 with ASF.Events;
 with ASF.Components.Core;
+with ASF.Components.Utils;
 with EL.Variables;
 package body ASF.Components.Base is
 
@@ -47,6 +49,15 @@ package body ASF.Components.Base is
    begin
       return UI.Id;
    end Get_Client_Id;
+
+   --  ------------------------------
+   --  Returns True if the component has a client-side identifier matching the given name.
+   --  ------------------------------
+   function Is_Client_Id (UI : in UIComponent;
+                          Id : in String) return Boolean is
+   begin
+      return UI.Id = Id;
+   end Is_Client_Id;
 
    --  ------------------------------
    --  Get the list of children.
@@ -121,13 +132,70 @@ package body ASF.Components.Base is
    end Append;
 
    --  ------------------------------
+   --  Search within the component tree for the {@link UIComponent} with
+   --  an <code>id</code> that matches the specified search expression.
+   --  ------------------------------
+   function Find_Child (UI : in UIComponent'Class;
+                        Id : in String) return UIComponent_Access is
+      Child : UIComponent_Access := UI.First_Child;
+   begin
+      while Child /= null loop
+         if Child.Is_Client_Id (Id) then
+            return Child;
+         end if;
+         if Child.First_Child /= null then
+            declare
+               Result : constant UIComponent_Access := Child.Find_Child (Id);
+            begin
+               if Result /= null then
+                  return Result;
+               end if;
+            end;
+         end if;
+         Child := Child.Next;
+      end loop;
+      return null;
+   end Find_Child;
+
+   --  ------------------------------
    --  Search for and return the {@link UIComponent} with an <code>id</code>
    --  that matches the specified search expression (if any), according to
    --  the algorithm described below.
+   --   o look first in the sub-tree representing the parent node.
+   --   o if not found, move to the parent's node
+   --  Returns null if the component was not found in the view.
    --  ------------------------------
-   function Find (UI : UIComponent;
-                  Name : String) return UIComponent_Access is
+   function Find (UI : in UIComponent;
+                  Id : in String) return UIComponent_Access is
+      Ignore : UIComponent_Access := null;
+      Parent : UIComponent_Access := UI.Parent;
+      Node   : UIComponent_Access;
+      Result : UIComponent_Access;
    begin
+      while Parent /= null loop
+         if Parent.Is_Client_Id (Id) then
+            return Parent;
+         end if;
+
+         --  Search the children recursively but skip the previous sub-tree we come from.
+         Node := Parent.First_Child;
+         while Node /= null loop
+            if Node /= Ignore then
+               if Node.Is_Client_Id (Id) then
+                  return Node;
+               end if;
+               Result := Node.Find_Child (Id => Id);
+               if Result /= null then
+                  return Result;
+               end if;
+            end if;
+            Node := Node.Next;
+         end loop;
+
+         --  Move up to the parent and ignore this sub-tree now.
+         Ignore := Parent;
+         Parent := Parent.Parent;
+      end loop;
       return null;
    end Find;
 
@@ -211,6 +279,23 @@ package body ASF.Components.Base is
          return null;
       else
          return UI.Tag.Get_Attribute (Name);
+      end if;
+   end Get_Attribute;
+
+   --  ------------------------------
+   --  Get the attribute value as a boolean.
+   --  If the attribute does not exist, returns the default.
+   --  ------------------------------
+   function Get_Attribute (UI      : in UIComponent;
+                           Name    : in String;
+                           Context : in Faces_Context'Class;
+                           Default : in Boolean := False) return Boolean is
+      Attr : constant Util.Beans.Objects.Object := UI.Get_Attribute (Context, Name);
+   begin
+      if Util.Beans.Objects.Is_Null (Attr) then
+         return Default;
+      else
+         return Util.Beans.Objects.To_Boolean (Attr);
       end if;
    end Get_Attribute;
 
@@ -518,6 +603,18 @@ package body ASF.Components.Base is
       end if;
    end Get_Value;
 
+   --  ------------------------------
+   --  Report an error message in the logs caused by an invalid configuration or
+   --  setting on the component.
+   --  ------------------------------
+   procedure Log_Error (UI      : in UIComponent'Class;
+                        Message : in String;
+                        Arg1    : in String := "";
+                        Arg2    : in String := "") is
+   begin
+      Log.Info (Utils.Get_Line_Info (UI) & ": " & Message, Arg1, Arg2);
+    end Log_Error;
+
    --  Get the root component from the <b>UI</b> component tree.
    --  After the operation, the <b>UI</b> component tree will contain no
    --  nodes.
@@ -533,12 +630,14 @@ package body ASF.Components.Base is
          Root := null;
       elsif UI.First_Child.Next = null then
          Root := UI.First_Child;
+         Root.Parent    := null;
          UI.First_Child := null;
          UI.Last_Child  := null;
       else
          Root := new UIComponent;
          Root.First_Child := UI.First_Child;
          Root.Last_Child  := UI.Last_Child;
+         Root.Parent    := null;
          UI.First_Child := null;
          UI.Last_Child  := null;
       end if;

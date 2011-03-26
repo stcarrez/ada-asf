@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,6 +50,10 @@ package ASF.Components.Base is
    --  one if necessary.
    function Get_Client_Id (UI : UIComponent) return Unbounded_String;
 
+   --  Returns True if the component has a client-side identifier matching the given name.
+   function Is_Client_Id (UI : in UIComponent;
+                          Id : in String) return Boolean;
+
    --  Get the list of children.
    function Get_Children (UI : UIComponent) return UIComponent_List;
 
@@ -75,8 +79,16 @@ package ASF.Components.Base is
    --  Search for and return the {@link UIComponent} with an <code>id</code>
    --  that matches the specified search expression (if any), according to
    --  the algorithm described below.
-   function Find (UI : UIComponent;
-                  Name : String) return UIComponent_Access;
+   --   o look first in the sub-tree representing the parent node.
+   --   o if not found, move to the parent's node
+   --  Returns null if the component was not found in the view.
+   function Find (UI : in UIComponent;
+                  Id : in String) return UIComponent_Access;
+
+   --  Search within the component tree for the {@link UIComponent} with
+   --  an <code>id</code> that matches the specified search expression.
+   function Find_Child (UI : in UIComponent'Class;
+                        Id : in String) return UIComponent_Access;
 
    --  Check whether the component and its children must be rendered.
    function Is_Rendered (UI : UIComponent;
@@ -94,6 +106,13 @@ package ASF.Components.Base is
    --  Get the attribute tag
    function Get_Attribute (UI      : UIComponent;
                            Name    : String) return access ASF.Views.Nodes.Tag_Attribute;
+
+   --  Get the attribute value as a boolean.
+   --  If the attribute does not exist, returns the default.
+   function Get_Attribute (UI      : in UIComponent;
+                           Name    : in String;
+                           Context : in Faces_Context'Class;
+                           Default : in Boolean := False) return Boolean;
 
    procedure Set_Attribute (UI    : in out UIComponent;
                             Name  : in String;
@@ -214,6 +233,13 @@ package ASF.Components.Base is
                               Attr : in UIAttribute);
    procedure Iterate_Attributes (UI : in UIComponent'Class);
 
+   --  Report an error message in the logs caused by an invalid configuration or
+   --  setting on the component.
+   procedure Log_Error (UI      : in UIComponent'Class;
+                        Message : in String;
+                        Arg1    : in String := "";
+                        Arg2    : in String := "");
+
    --  Get the root component from the <b>UI</b> component tree.
    --  After the operation, the <b>UI</b> component tree will contain no
    --  nodes.
@@ -234,11 +260,11 @@ private
    type UIComponent is tagged limited record
       Id          : Unbounded_String;
       Tag         : access ASF.Views.Nodes.Tag_Node'Class;
-      Parent      : UIComponent_Access;
-      First_Child : UIComponent_Access;
-      Last_Child  : UIComponent_Access;
-      Next        : UIComponent_Access;
-      Attributes  : UIAttribute_Access;
+      Parent      : UIComponent_Access := null;
+      First_Child : UIComponent_Access := null;
+      Last_Child  : UIComponent_Access := null;
+      Next        : UIComponent_Access := null;
+      Attributes  : UIAttribute_Access := null;
    end record;
 
 end ASF.Components.Base;

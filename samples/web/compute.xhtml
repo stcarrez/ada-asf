@@ -15,17 +15,19 @@
 
      <h:form id='compute'>
          <dl>
-			<dt>Height</dt>
-			<dd>
-			  <h:input id='height' size='10' value='#{compute.height}'>
-				<f:converter converterId="float" />
-			  </h:input>
-			</dd>
-			<dt>Radius</dt>
+	    <dt>Height</dt>
+	    <dd>
+	      <h:inputText id='height' size='10' value='#{compute.height}'>
+		<f:converter converterId="float" />
+	      </h:inputText>
+              <h:message for='height'/>
+	    </dd>
+	    <dt>Radius</dt>
             <dd>
-                <h:input id='radius' size='10' value='#{compute.radius}'>
+                <h:inputText id='radius' size='10' value='#{compute.radius}'>
                    <f:converter converterId="float"/>
-                </h:input>
+                </h:inputText>
+              <h:message for='radius'/>
             </dd>
             <dt>
             </dt>

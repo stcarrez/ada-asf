@@ -74,6 +74,7 @@ begin
       Content   : Ada.Strings.Unbounded.Unbounded_String;
    begin
 
+      Req.Set_Path_Info (View_Name);
       App.Dispatch (Page     => View_Name,
                     Request  => Req,
                     Response => Reply);

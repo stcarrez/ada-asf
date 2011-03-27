@@ -48,7 +48,7 @@ begin
 
    App.Initialize (C, Factory);
    App.Set_Global ("contextPath", CONTEXT_PATH);
-   App.Set_Global ("faces", Util.Beans.Objects.To_Object (Bean'Unchecked_Access));
+   App.Set_Global ("compute", Util.Beans.Objects.To_Object (Bean'Unchecked_Access));
 
    --  Register the servlets and filters
    App.Add_Servlet (Name => "faces", Server => Faces'Unchecked_Access);

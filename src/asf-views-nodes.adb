@@ -465,16 +465,59 @@ package body ASF.Views.Nodes is
       end loop;
    end Iterate_Attributes;
 
+   --  ------------------------------
+   --  Freeze the tag node tree.
+   --  Count the number of Tag_Content represented by this node.
+   --  ------------------------------
+   overriding
+   procedure Freeze (Node : access Text_Tag_Node) is
+      Content : access constant Tag_Content := Node.Content'Access;
+      Count   : Natural := 0;
+   begin
+      loop
+         Content := Content.Next;
+         Count   := Count + 1;
+         exit when Content = null;
+      end loop;
+      Node.Count := Count;
+   end Freeze;
+
    overriding
    procedure Build_Components (Node    : access Text_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
       pragma Unreferenced (Context);
 
-      UI : constant UIComponent_Access
+      UI : constant ASF.Components.Core.UIText_Access
         := ASF.Components.Core.Create_UIText (Node.all'Access);
+      Expr_Table : Expression_Access_Array_Access := null;
+      Ctx        : constant EL.Contexts.ELContext_Access := Context.Get_ELContext;
+      Content    : access constant Tag_Content := Node.Content'Access;
+      Pos        : Natural := 1;
    begin
-      Append (Parent, UI, Node);
+      Append (Parent, UI.all'Access, Node);
+      loop
+         if not Content.Expr.Is_Null then
+            --  Reduce the expression by eliminating variables which are defined in
+            --  the Facelet context.  We can obtain another expression or a constant value.
+            declare
+               Expr : constant EL.Expressions.Expression
+                 := Content.Expr.Reduce_Expression (Ctx.all);
+            begin
+               if Expr.Is_Constant then
+                  if Expr_Table = null then
+                     Expr_Table := new Expression_Access_Array (1 .. Node.Count);
+                     UI.Set_Expression_Table (Expr_Table);
+                  end if;
+                  Expr_Table (Pos) := new EL.Expressions.Expression '(Expr);
+               end if;
+            end;
+         end if;
+
+         Content := Content.Next;
+         Pos     := Pos + 1;
+         exit when Content = null;
+      end loop;
    end Build_Components;
 
    --  ------------------------------
@@ -499,23 +542,36 @@ package body ASF.Views.Nodes is
    --  Encode the content represented by this text node.
    --  The expressions are evaluated if necessary.
    --  ------------------------------
-   procedure Encode_All (Node    : Text_Tag_Node;
+   procedure Encode_All (Node    : in Text_Tag_Node;
+                         Expr    : in Expression_Access_Array_Access;
                          Context : in Faces_Context'Class) is
       Writer  : constant ASF.Contexts.Writer.ResponseWriter_Access
         := Context.Get_Response_Writer;
       Content : access constant Tag_Content := Node.Content'Access;
+      Pos     : Natural := 1;
    begin
       loop
          Writer.Write (Content.Text);
          begin
-            declare
-               Value : constant EL.Objects.Object
-                 := Content.Expr.Get_Value (Context.Get_ELContext.all);
-            begin
-               if not EL.Objects.Is_Null (Value) then
-                  Writer.Write_Text (Value);
-               end if;
-            end;
+            if Expr /= null and then Expr (Pos) /= null then
+               declare
+                  Value : constant EL.Objects.Object
+                    := Expr (Pos).Get_Value (Context.Get_ELContext.all);
+               begin
+                  if not EL.Objects.Is_Null (Value) then
+                     Writer.Write_Text (Value);
+                  end if;
+               end;
+            else
+               declare
+                  Value : constant EL.Objects.Object
+                    := Content.Expr.Get_Value (Context.Get_ELContext.all);
+               begin
+                  if not EL.Objects.Is_Null (Value) then
+                     Writer.Write_Text (Value);
+                  end if;
+               end;
+            end if;
 
          exception
             when E : others =>
@@ -523,6 +579,7 @@ package body ASF.Views.Nodes is
 
          end;
          Content := Content.Next;
+         Pos := Pos + 1;
          exit when Content = null;
       end loop;
    end Encode_All;

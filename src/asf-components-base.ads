@@ -23,6 +23,8 @@
 --
 --  The component tree is created from the <b>ASF.Views</b> tag nodes
 --  for each request.  Unlike tag nodes, the component tree is not shared.
+
+with Ada.Finalization;
 with EL.Objects;
 with EL.Expressions;
 with ASF.Contexts.Faces;
@@ -39,7 +41,7 @@ package ASF.Components.Base is
    --  ------------------------------
 
    --     type UIComponent is new Ada.Finalization.Controlled with private;
-   type UIComponent is tagged limited private;
+   type UIComponent is new Ada.Finalization.Limited_Controlled with private;
    type UIComponent_Access is access all UIComponent'Class;
 
    --  Get the parent component.
@@ -260,7 +262,7 @@ private
       Child : UIComponent_Access := null;
    end record;
 
-   type UIComponent is tagged limited record
+   type UIComponent is new Ada.Finalization.Limited_Controlled with record
       Id           : Unbounded_String;
       Id_Generated : Boolean := False;
       Tag         : access ASF.Views.Nodes.Tag_Node'Class;

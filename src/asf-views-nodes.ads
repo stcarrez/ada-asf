@@ -36,6 +36,9 @@ package ASF.Views.Nodes is
    use ASF.Contexts.Faces;
    use ASF.Contexts.Facelets;
 
+   type Expression_Access_Array is array (Natural range <>) of EL.Expressions.Expression_Access;
+   type Expression_Access_Array_Access is access Expression_Access_Array;
+
    --  ------------------------------
    --  Attribute of a node.
    --  ------------------------------
@@ -186,12 +189,18 @@ package ASF.Views.Nodes is
    --  Encode the content represented by this text node.
    --  The expressions are evaluated if necessary.
    procedure Encode_All (Node    : in Text_Tag_Node;
+                         Expr    : in Expression_Access_Array_Access;
                          Context : in Faces_Context'Class);
 
    overriding
    procedure Build_Components (Node    : access Text_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class);
+
+   --  Freeze the tag node tree.
+   --  Count the number of Tag_Content represented by this node.
+   overriding
+   procedure Freeze (Node : access Text_Tag_Node);
 
    --  Delete the node and its children freeing the memory as necessary
    procedure Delete (Node : access Text_Tag_Node);
@@ -279,6 +288,7 @@ private
 
    type Text_Tag_Node is new Tag_Node with record
       Content : aliased Tag_Content;
+      Count   : Natural := 0;
       Last    : Tag_Content_Access := null;
    end record;
 

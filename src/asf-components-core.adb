@@ -41,18 +41,54 @@ package body ASF.Components.Core is
       return Base.UIComponent (UI).Get_Client_Id;
    end Get_Client_Id;
 
+   --  ------------------------------
+   --  Renders the UIText evaluating the EL expressions it may contain.
+   --  ------------------------------
    procedure Encode_Begin (UI      : in UIText;
                            Context : in out Faces_Context'Class) is
    begin
-      UI.Text.Encode_All (Context);
+      UI.Text.Encode_All (UI.Expr_Table, Context);
    end Encode_Begin;
 
+   --  ------------------------------
+   --  Set the expression array that contains reduced expressions.
+   --  ------------------------------
+   procedure Set_Expression_Table (UI         : in out UIText;
+                                   Expr_Table : in ASF.Views.Nodes.Expression_Access_Array_Access) is
+      use type ASF.Views.Nodes.Expression_Access_Array_Access;
+   begin
+      if UI.Expr_Table /= null then
+         raise Program_Error with "Expression table already initialized";
+      end if;
+      UI.Expr_Table := Expr_Table;
+   end Set_Expression_Table;
+
+   --  ------------------------------
+   --  Finalize the object.
+   --  ------------------------------
+   overriding
+   procedure Finalize (UI : in out UIText) is
+      use type ASF.Views.Nodes.Expression_Access_Array_Access;
+
+      procedure Free is new Ada.Unchecked_Deallocation (EL.Expressions.Expression'Class,
+                                                        EL.Expressions.Expression_Access);
+      procedure Free is new Ada.Unchecked_Deallocation (ASF.Views.Nodes.Expression_Access_Array,
+                                                        ASF.Views.Nodes.Expression_Access_Array_Access);
+   begin
+      if UI.Expr_Table /= null then
+         for I in UI.Expr_Table'Range loop
+            Free (UI.Expr_Table (I));
+         end loop;
+         Free (UI.Expr_Table);
+      end if;
+   end Finalize;
+
    function Create_UIText (Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
-                           return Base.UIComponent_Access is
+                           return UIText_Access is
       Result : constant UIText_Access := new UIText;
    begin
       Result.Text := Tag;
-      return Result.all'Access;
+      return Result;
    end Create_UIText;
 
    --  ------------------------------

@@ -378,6 +378,17 @@ package body ASF.Views.Nodes.Reader is
    end Collect_Text;
 
    --  ------------------------------
+   --  Freeze the current Text_Tag node, counting the number of elements it contains.
+   --  ------------------------------
+   procedure Finish_Text_Node (Handler : in out Xhtml_Reader'Class) is
+   begin
+      if Handler.Text /= null then
+         Handler.Text.Freeze;
+         Handler.Text := null;
+      end if;
+   end Finish_Text_Node;
+
+   --  ------------------------------
    --  Start_Element
    --  ------------------------------
    overriding
@@ -446,7 +457,8 @@ package body ASF.Views.Nodes.Reader is
          Node.Factory   := Factory.Component;
          Handler.Current.Parent := Node;
          Handler.Current.Text   := False;
-         Handler.Text   := null;
+
+         Finish_Text_Node (Handler);
          Handler.Spaces := Null_Unbounded_String;
          Handler.State  := Handler.Default_State;
 
@@ -502,10 +514,10 @@ package body ASF.Views.Nodes.Reader is
      pragma Unreferenced (Local_Name);
    begin
       if Handler.Current.Parent = null then
-         Handler.Text := null;
+         Finish_Text_Node (Handler);
 
       elsif not Handler.Current.Text then
-         Handler.Text := null;
+         Finish_Text_Node (Handler);
          Handler.Current.Parent.Freeze;
 
       end if;
@@ -713,6 +725,7 @@ package body ASF.Views.Nodes.Reader is
          LOG.Warn ("There is no function mapper");
       end if;
       Sax.Readers.Reader (Parser).Parse (Input);
+      Finish_Text_Node (Parser);
       Parser.Functions.Factory := null;
       Parser.ELContext := null;
 

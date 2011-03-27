@@ -99,14 +99,30 @@ package ASF.Components.Core is
    --  Clear the events that were queued.
    procedure Clear_Events (UI : in out UIView);
 
+   --  ------------------------------
+   --  Raw text component
+   --  ------------------------------
+   --  The <b>UIText</b> component represents a raw text to be written on the output stream.
+   --  This text is also composed of EL expressions to evaluate.  The text and EL nodes
+   --  are represented by <b>ASF.Views.Nodes.Text_Tag_Node</b> and is therefore shared
+   --  among requests.
    type UIText is new Base.UIComponent with private;
    type UIText_Access is access all UIText'Class;
 
+   --  Renders the UIText evaluating the EL expressions it may contain.
    procedure Encode_Begin (UI      : in UIText;
                            Context : in out Faces_Context'Class);
 
-   function Create_UIText (Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
-                           return Base.UIComponent_Access;
+   --  Set the expression array that contains reduced expressions.
+   procedure Set_Expression_Table (UI         : in out UIText;
+                                   Expr_Table : in ASF.Views.Nodes.Expression_Access_Array_Access);
+
+   --  Finalize the object.
+   overriding
+   procedure Finalize (UI : in out UIText);
+
+   function Create_UIText (Tag : in ASF.Views.Nodes.Text_Tag_Node_Access)
+                           return UIText_Access;
 
 
    --  ------------------------------
@@ -163,7 +179,8 @@ private
    end record;
 
    type UIText is new Base.UIComponent with record
-      Text : ASF.Views.Nodes.Text_Tag_Node_Access;
+      Text       : ASF.Views.Nodes.Text_Tag_Node_Access;
+      Expr_Table : ASF.Views.Nodes.Expression_Access_Array_Access := null;
    end record;
 
    type UILeaf is new UIComponentBase with null record;

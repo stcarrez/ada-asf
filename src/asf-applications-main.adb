@@ -34,7 +34,7 @@ with EL.Expressions;
 with EL.Contexts.Default;
 
 with Ada.Exceptions;
-with Ada.Containers.Vectors;
+with Ada.Containers.Indefinite_Vectors;
 with Ada.Unchecked_Deallocation;
 package body ASF.Applications.Main is
 
@@ -312,12 +312,13 @@ package body ASF.Applications.Main is
       ASF.Applications.Views.Close (App.View);
    end Close;
 
-   type Bean_Object is record
+   type Bean_Object (Length : Natural) is record
       Bean : Util.Beans.Basic.Readonly_Bean_Access;
       Free : ASF.Beans.Free_Bean_Access;
+      Key  : String (1 .. Length);
    end record;
 
-   package Bean_Vectors is new Ada.Containers.Vectors
+   package Bean_Vectors is new Ada.Containers.Indefinite_Vectors
      (Index_Type => Natural, Element_Type => Bean_Object);
 
    type Bean_Vector_Access is access all Bean_Vectors.Vector;
@@ -385,7 +386,7 @@ package body ASF.Applications.Main is
          --           raise No_Variable
          --             with "Bean not found: '" & To_String (Name) & "'";
       end if;
-      Resolver.Beans.Append (Bean_Object '(Bean, Free));
+      Resolver.Beans.Append (Bean_Object '(Key'Length, Bean, Free, Key));
       Result := To_Object (Bean);
       Resolver.Request.Set_Attribute (Key, Result);
       return Result;
@@ -497,6 +498,7 @@ package body ASF.Applications.Main is
                if Bean.Bean /= null and then Bean.Free /= null then
                   Bean.Free (Bean.Bean);
                end if;
+               Request.Remove_Attribute (Name => Bean.Key);
             end;
             Bean_Vectors.Next (C);
          end loop;

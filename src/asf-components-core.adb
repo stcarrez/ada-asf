@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core -- ASF Core Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.objects;
 with Ada.Unchecked_Deallocation;
 package body ASF.Components.Core is
 
@@ -54,11 +55,19 @@ package body ASF.Components.Core is
       return Result.all'Access;
    end Create_UIText;
 
+   --  ------------------------------
+   --  Encode the begining of the view.  Set the response content type.
+   --  ------------------------------
    overriding
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class) is
+      Content_Type : constant Util.Beans.Objects.Object
+        := UI.Get_Attribute (Context => Context,
+                             Name    => "contentType");
    begin
-      null;
+      if not Util.Beans.Objects.Is_Null (Content_Type) then
+         Context.Get_Response.Set_Content_Type (Util.Beans.Objects.To_String (Content_Type));
+      end if;
    end Encode_Begin;
 
    --  ------------------------------

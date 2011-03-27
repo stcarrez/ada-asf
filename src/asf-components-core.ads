@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core -- ASF Core Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,6 +40,7 @@ package ASF.Components.Core is
    type UIView is new UIComponentBase with private;
    type UIView_Access is access all UIView'Class;
 
+   --  Encode the begining of the view.  Set the response content type.
    overriding
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class);

@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Strings;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 with Ada.Unchecked_Deallocation;
@@ -49,6 +50,14 @@ package body ASF.Components.Base is
    begin
       return UI.Id;
    end Get_Client_Id;
+
+   --  ------------------------------
+   --  Returns True if the client-side identifier was generated automatically.
+   --  ------------------------------
+   function Is_Generated_Id (UI : in UIComponent) return Boolean is
+   begin
+      return UI.Id_Generated;
+   end Is_Generated_Id;
 
    --  ------------------------------
    --  Returns True if the component has a client-side identifier matching the given name.
@@ -108,11 +117,15 @@ package body ASF.Components.Base is
                          Context : in out Faces_Context'Class) is
       --  Then, look in the static attributes
       Attr : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute ("id");
+      Id   : Natural;
    begin
       if Attr = null then
-         UI.Id := To_Unbounded_String ("d");
+         Context.Create_Unique_Id (Id);
+         UI.Id := To_Unbounded_String ("id" & Util.Strings.Image (Id));
+         UI.Id_Generated := True;
       else
          UI.Id := EL.Objects.To_Unbounded_String (ASF.Views.Nodes.Get_Value (Attr.all, UI));
+         UI.Id_Generated := False;
       end if;
    end Initialize;
 

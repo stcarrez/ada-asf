@@ -28,7 +28,9 @@ package body ASF.Components.Html is
       Class  : constant Object := UI.Get_Attribute (Context, "styleClass");
       Title  : constant Object := UI.Get_Attribute (Context, "title");
    begin
-      Writer.Write_Attribute ("id", UI.Get_Client_Id);
+      if not UI.Is_Generated_Id then
+         Writer.Write_Attribute ("id", UI.Get_Client_Id);
+      end if;
       if not Is_Null (Class) then
          Writer.Write_Attribute ("class", Class);
       end if;
@@ -69,9 +71,8 @@ package body ASF.Components.Html is
 
       procedure Write_Attributes is new Base.Iterate_Attributes (Process_Attribute);
 
-      Id : constant Unbounded_String := UI.Get_Client_Id;
    begin
-      if Length (Id) > 0 then
+      if not UI.Is_Generated_Id then
          Writer.Write_Attribute ("id", UI.Get_Client_Id);
       end if;
       Write_Attributes (UI);

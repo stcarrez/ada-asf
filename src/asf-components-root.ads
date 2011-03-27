@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-root -- ASF Root View Component
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,10 @@ package ASF.Components.Root is
    --  Get the view identifier.
    function Get_View_Id (UI : in UIViewRoot) return String;
 
+   --  Create an identifier for a component.
+   procedure Create_Unique_Id (UI : in out UIViewRoot;
+                               Id : out Natural);
+
    --  Set the root node of the view.
    procedure Set_Root (UI   : in out UIViewRoot;
                        Root : access ASF.Components.Base.UIComponent'Class;
@@ -42,7 +46,8 @@ private
    type Root_Holder_Access is access all Root_Holder;
 
    type UIViewRoot is new Ada.Finalization.Controlled with record
-      Root : Root_Holder_Access := null;
+      Root    : Root_Holder_Access := null;
+      Last_Id : Natural := 0;
    end record;
 
    --  Increment the reference counter.

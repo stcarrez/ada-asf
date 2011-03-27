@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-root -- ASF Root View Component
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
+
+with Util.Strings;
 with ASF.Components.Base;
 package body ASF.Components.Root is
 
@@ -57,6 +59,16 @@ package body ASF.Components.Root is
    begin
       return To_String (UI.Root.Name);
    end Get_View_Id;
+
+   --  ------------------------------
+   --  Create an identifier for a component.
+   --  ------------------------------
+   procedure Create_Unique_Id (UI : in out UIViewRoot;
+                               Id : out Natural) is
+   begin
+      UI.Last_Id := UI.Last_Id + 1;
+      Id := UI.Last_Id;
+   end Create_Unique_Id;
 
    --  ------------------------------
    --  Increment the reference counter.

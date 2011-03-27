@@ -50,6 +50,9 @@ package ASF.Components.Base is
    --  one if necessary.
    function Get_Client_Id (UI : UIComponent) return Unbounded_String;
 
+   --  Returns True if the client-side identifier was generated automatically.
+   function Is_Generated_Id (UI : in UIComponent) return Boolean;
+
    --  Returns True if the component has a client-side identifier matching the given name.
    function Is_Client_Id (UI : in UIComponent;
                           Id : in String) return Boolean;
@@ -258,7 +261,8 @@ private
    end record;
 
    type UIComponent is tagged limited record
-      Id          : Unbounded_String;
+      Id           : Unbounded_String;
+      Id_Generated : Boolean := False;
       Tag         : access ASF.Views.Nodes.Tag_Node'Class;
       Parent      : UIComponent_Access := null;
       First_Child : UIComponent_Access := null;

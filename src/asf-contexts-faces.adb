@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -312,6 +312,15 @@ package body ASF.Contexts.Faces is
    begin
       Context.Root := View;
    end Set_View_Root;
+
+   --  ------------------------------
+   --  Create an identifier for a component.
+   --  ------------------------------
+   procedure Create_Unique_Id (Context : in out Faces_Context;
+                               Id      : out Natural) is
+   begin
+      ASF.Components.Root.Create_Unique_Id (Context.Root, Id);
+   end Create_Unique_Id;
 
    --  ------------------------------
    --  Get the current faces context.  The faces context is saved

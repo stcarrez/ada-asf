@@ -39,6 +39,12 @@ package ASF.Responses.Mockup is
    function Contains_Header (Resp : in Response;
                              Name : in String) return Boolean;
 
+   --  Iterate over the response headers and executes the <b>Process</b> procedure.
+   procedure Iterate_Headers (Resp    : in Response;
+                              Process : not null access
+                                procedure (Name  : in String;
+                                           Value : in String));
+
    --  Sets a response header with the given name and value. If the header had already
    --  been set, the new value overwrites the previous one. The containsHeader
    --  method can be used to test for the presence of a header before setting its value.

@@ -42,6 +42,26 @@ package body ASF.Responses.Mockup is
    end Contains_Header;
 
    --  ------------------------------
+   --  Iterate over the response headers and executes the <b>Process</b> procedure.
+   --  ------------------------------
+   procedure Iterate_Headers (Resp    : in Response;
+                              Process : not null access
+                                procedure (Name  : in String;
+                                           Value : in String)) is
+
+      procedure Process_Wrapper (Position : in Util.Strings.Maps.Cursor);
+
+      procedure Process_Wrapper (Position : in Util.Strings.Maps.Cursor) is
+      begin
+         Process.all (Name  => Util.Strings.Maps.Key (Position),
+                      Value => Util.Strings.Maps.Element (Position));
+      end Process_Wrapper;
+
+   begin
+      Resp.Headers.Iterate (Process => Process_Wrapper'Access);
+   end Iterate_Headers;
+
+   --  ------------------------------
    --  Sets a response header with the given name and value. If the header had already
    --  been set, the new value overwrites the previous one. The containsHeader
    --  method can be used to test for the presence of a header before setting its value.

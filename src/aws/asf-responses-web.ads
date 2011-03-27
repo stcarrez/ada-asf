@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  asf.requests -- ASF Requests
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  asf.responses.web -- ASF Responses with AWS server
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,9 +23,6 @@ with Util.Streams.Texts;
 package ASF.Responses.Web is
 
    type Response is new ASF.Responses.Response and Util.Streams.Output_Stream with private;
---     type Request_Access is access all Request'Class;
-
-   --     function Get_Parameter (R : Request; Name : String) return String;
 
    --  Write the buffer array to the output stream.
    procedure Write (Stream : in out Response;
@@ -33,6 +30,12 @@ package ASF.Responses.Web is
 
    --  Flush the buffer (if any) to the sink.
    procedure Flush (Stream : in out Response);
+
+   --  Iterate over the response headers and executes the <b>Process</b> procedure.
+   procedure Iterate_Headers (Resp    : in Response;
+                              Process : not null access
+                                procedure (Name  : in String;
+                                           Value : in String));
 
    --  Sets a response header with the given name and value. If the header had already
    --  been set, the new value overwrites the previous one. The containsHeader

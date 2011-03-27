@@ -184,6 +184,12 @@ package ASF.Responses is
    function Contains_Header (Resp : in Response;
                              Name : in String) return Boolean;
 
+   --  Iterate over the response headers and executes the <b>Process</b> procedure.
+   procedure Iterate_Headers (Resp    : in Response;
+                              Process : not null access
+                                procedure (Name  : in String;
+                                           Value : in String)) is abstract;
+
    --  Encodes the specified URL by including the session ID in it, or, if encoding
    --  is not needed, returns the URL unchanged. The implementation of this method
    --  includes the logic to determine whether the session ID needs to be encoded

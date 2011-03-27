@@ -1,0 +1,12 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testUseParam" styleClass="test" style="color: red;">
+  <ui:include src="output_title.xhtml">
+    <ui:param name="some_variable" value=" (from use_param)"/>
+  </ui:include>
+
+  <ui:include src="output_title.xhtml">
+    <ui:param name="some_variable" value="Second include"/>
+  </ui:include>
+</p>

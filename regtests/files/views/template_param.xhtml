@@ -1,0 +1,15 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testTemplate" styleClass="test" style="color: red;">
+  <ul>
+     <c:if test="#{not empty has_block}">
+       <li id='block'><ui:insert name="block">Block not defined</ui:insert></li>
+     </c:if>
+     <h:panelGroup rendered="#{not empty has_block2}">
+       <li id='block2'><ui:insert name="block2">Block2 not defined</ui:insert></li>
+     </h:panelGroup>
+     <li id='block' title="#{title}"><ui:insert name="block">Block not defined</ui:insert></li>
+     <li id='inner' style="#{style}"><ui:insert name="inner">Inner not defined</ui:insert></li>
+  </ul>
+</p>

@@ -1,0 +1,29 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testOutput" styleClass="test" style="color: red;">
+  <ui:decorate template="template_param.xhtml">
+     <ui:param name="has_block" value="d"/>
+     <ui:param name="title" value="Decorate param title"/>
+     <ui:param name="style" value="color: red;"/>
+
+     <ui:define name="block">
+        <i>The block 'block' defined in use_template</i>
+     </ui:define>
+     <ui:define name="block2">
+        <p>The block 'block2' defined in use_template</p>
+     </ui:define>
+
+     <ui:define name="inner">
+         <ui:composition>
+             <ui:define name="block">
+                 <b>The inner block in bold</b>
+             </ui:define>
+             <ul>
+               <li><ui:insert name="block2"/></li>
+               <li><ui:insert name="block"/></li>
+             </ul>
+         </ui:composition>
+     </ui:define>
+  </ui:decorate>
+</p>

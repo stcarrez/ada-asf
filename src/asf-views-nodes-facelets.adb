@@ -87,7 +87,7 @@ package body ASF.Views.Nodes.Facelets is
 
        (Name      => PARAM_TAG'Access,
         Component => null,
-        Tag       => Create_Insert_Tag_Node'Access)
+        Tag       => Create_Param_Tag_Node'Access)
       );
 
    Tag_Factory   : aliased constant ASF.Factory.Factory_Bindings
@@ -144,6 +144,9 @@ package body ASF.Views.Nodes.Facelets is
       --  Set a variable mapper for the include context.
       --  The <ui:param> variables will be declared in that mapper.
       Ctx.all.Set_Variable_Mapper (Mapper'Unchecked_Access);
+
+      --  Build the children to take into account the <ui:param> nodes.
+      Node.Build_Children (Parent, Context);
       Context.Include_Facelet (Source => Source, Parent => Parent);
       Ctx.all.Set_Variable_Mapper (Old);
    end Build_Components;
@@ -187,6 +190,7 @@ package body ASF.Views.Nodes.Facelets is
       --  Set a variable mapper for the include context.
       --  The <ui:param> variables will be declared in that mapper.
       Ctx.all.Set_Variable_Mapper (Mapper'Unchecked_Access);
+      Node.Build_Children (Parent, Context);
       if Node.Template /= null then
          declare
             Source : constant String := To_String (Get_Value (Node.Template.all, Context));
@@ -194,8 +198,6 @@ package body ASF.Views.Nodes.Facelets is
             Log.Info ("Include facelet {0}", Source);
             Context.Include_Facelet (Source => Source, Parent => Parent);
          end;
-      else
-         Node.Build_Children (Parent, Context);
       end if;
       Ctx.all.Set_Variable_Mapper (Old);
       Context.Pop_Defines;

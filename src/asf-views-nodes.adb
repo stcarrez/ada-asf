@@ -409,12 +409,20 @@ package body ASF.Views.Nodes is
       procedure Process_Attribute (Attr : in Tag_Attribute_Access) is
       begin
          if Attr.Binding /= null then
+            --  Reduce the expression by eliminating variables which are defined in
+            --  the Facelet context.  We can obtain another expression or a constant value.
             declare
+               Ctx  : constant EL.Contexts.ELContext_Access := Context.Get_ELContext;
                Expr : constant EL.Expressions.Expression
-                 := ASF.Views.Nodes.Reduce_Expression (Attr.all, Context);
+                 := EL.Expressions.Expression (Attr.Binding.all).Reduce_Expression (Ctx.all);
             begin
-               UI.Set_Attribute (Def   => Attr,
-                                 Value => Expr);
+               if Expr.Is_Constant then
+                  UI.Set_Attribute (Def   => Attr,
+                                    Value => Expr.Get_Value (Ctx.all));
+               else
+                  UI.Set_Attribute (Def   => Attr,
+                                    Value => Expr);
+               end if;
             end;
          end if;
       end Process_Attribute;

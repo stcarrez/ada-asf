@@ -456,6 +456,7 @@ package body ASF.Applications.Main is
 
       Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
 
+      Prev_Context   : constant Contexts.Faces.Faces_Context_Access := Contexts.Faces.Current;
    begin
       Log.Info ("Dispatch {0}", Page);
 
@@ -480,8 +481,10 @@ package body ASF.Applications.Main is
          when E : others =>
             Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
                        Exception_Name (E), Exception_Message (E));
+            Contexts.Faces.Restore (Prev_Context);
             raise;
       end;
+      Contexts.Faces.Restore (Prev_Context);
       Writer.Flush;
 
       declare

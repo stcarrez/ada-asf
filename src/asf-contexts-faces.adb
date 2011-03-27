@@ -332,4 +332,12 @@ package body ASF.Contexts.Faces is
       Task_Context.Set_Value (Context);
    end Set_Current;
 
+   --  ------------------------------
+   --  Restore the previous faces context.
+   --  ------------------------------
+   procedure Restore (Context : in Faces_Context_Access) is
+   begin
+      Task_Context.Set_Value (Context);
+   end Restore;
+
 end ASF.Contexts.Faces;

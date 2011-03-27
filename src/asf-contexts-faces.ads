@@ -166,6 +166,9 @@ package ASF.Contexts.Faces is
    procedure Set_Current (Context     : Faces_Context_Access;
                           Application : access ASF.Applications.Main.Application'Class);
 
+   --  Restore the previous faces context.
+   procedure Restore (Context : in Faces_Context_Access);
+
 private
 
    use ASF.Applications.Messages;

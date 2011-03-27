@@ -19,13 +19,17 @@
 with Util.Strings;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
+
+with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with ASF.Converters;
 with ASF.Events;
 with ASF.Components.Core;
 with ASF.Components.Utils;
+
 with EL.Variables;
+with EL.Contexts.Default;
 package body ASF.Components.Base is
 
    use Util.Log;
@@ -585,7 +589,14 @@ package body ASF.Components.Base is
 
       procedure Process_Tag_Attribute (Attr : in ASF.Views.Nodes.Tag_Attribute_Access) is
          A : UIAttribute;
+         N : UIAttribute_Access := UI.Attributes;
       begin
+         while N /= null loop
+            if N.Definition = Attr then
+               return;
+            end if;
+            N := N.Next_Attr;
+         end loop;
          A.Definition := Attr;
          Process (ASF.Views.Nodes.Get_Name (Attr.all), A);
       end Process_Tag_Attribute;
@@ -608,9 +619,25 @@ package body ASF.Components.Base is
    --  ------------------------------
    function Get_Value (Attr : UIAttribute;
                        UI   : UIComponent'Class) return EL.Objects.Object is
+
+      procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence) is
+      begin
+         ASF.Views.Nodes.Error (Attr.Definition.all, "Evaluation error: {0}",
+                                Ada.Exceptions.Exception_Message (E));
+      end Handle_Exception;
+
    begin
       if not EL.Objects.Is_Null (Attr.Value) then
          return Attr.Value;
+
+      elsif not Attr.Expr.Is_Null then
+         declare
+            Ctx     : constant EL.Contexts.ELContext_Access := UI.Get_Context.Get_ELContext;
+            Context : EL.Contexts.Default.Guarded_Context (Handle_Exception'Access, Ctx);
+         begin
+            return Attr.Expr.Get_Value (Context);
+         end;
+
       else
          return ASF.Views.Nodes.Get_Value (Attr.Definition.all, UI);
       end if;

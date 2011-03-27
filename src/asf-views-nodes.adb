@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with EL.Contexts.Default;
 with ASF.Components.Core;
 with ASF.Contexts.Writer;
 with Ada.Unchecked_Deallocation;
@@ -103,17 +104,23 @@ package body ASF.Views.Nodes is
    --  ------------------------------
    function Get_Value (Attribute : Tag_Attribute;
                        UI        : UIComponent'Class) return EL.Objects.Object is
+
+      procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence) is
+      begin
+         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+      end Handle_Exception;
+
    begin
       if Attribute.Binding /= null then
-         return Attribute.Binding.Get_Value (UI.Get_Context.Get_ELContext.all);
+         declare
+            Ctx     : constant EL.Contexts.ELContext_Access := UI.Get_Context.Get_ELContext;
+            Context : EL.Contexts.Default.Guarded_Context (Handle_Exception'Access, Ctx);
+         begin
+            return Attribute.Binding.Get_Value (Context);
+         end;
       else
          return EL.Objects.To_Object (Attribute.Value);
       end if;
-
-   exception
-      when E : others =>
-         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
-         return EL.Objects.Null_Object;
    end Get_Value;
 
    --  ------------------------------
@@ -122,32 +129,43 @@ package body ASF.Views.Nodes is
    --  ------------------------------
    function Get_Value (Attribute : Tag_Attribute;
                        Context   : Faces_Context'Class) return EL.Objects.Object is
+
+      procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence) is
+      begin
+         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+      end Handle_Exception;
+
    begin
       if Attribute.Binding /= null then
-         return Attribute.Binding.Get_Value (Context.Get_ELContext.all);
+         declare
+            Ctx     : constant EL.Contexts.ELContext_Access := Context.Get_ELContext;
+            Context : EL.Contexts.Default.Guarded_Context (Handle_Exception'Access, Ctx);
+         begin
+            return Attribute.Binding.Get_Value (Context);
+         end;
       else
          return EL.Objects.To_Object (Attribute.Value);
       end if;
-
-   exception
-      when E : others =>
-         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
-         return EL.Objects.Null_Object;
    end Get_Value;
 
    function Get_Value (Attribute : Tag_Attribute;
                        Context   : Facelet_Context'Class) return EL.Objects.Object is
+
+      procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence) is
+      begin
+         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
+      end Handle_Exception;
    begin
       if Attribute.Binding /= null then
-         return Attribute.Binding.Get_Value (Context.Get_ELContext.all);
+         declare
+            Ctx     : constant EL.Contexts.ELContext_Access := Context.Get_ELContext;
+            Context : EL.Contexts.Default.Guarded_Context (Handle_Exception'Access, Ctx);
+         begin
+            return Attribute.Binding.Get_Value (Context);
+         end;
       else
          return EL.Objects.To_Object (Attribute.Value);
       end if;
-
-   exception
-      when E : others =>
-         Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
-         return EL.Objects.Null_Object;
    end Get_Value;
 
    function Get_Value_Expression (Attribute : Tag_Attribute)

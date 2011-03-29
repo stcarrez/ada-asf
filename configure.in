@@ -104,5 +104,5 @@ ASF_ASM_DIR="src/$src_asm"
 AC_SUBST(ASF_ASM_DIR)
 
 AC_OUTPUT(
-Makefile asf.gpr tests.gpr samples.gpr
+Makefile asf.gpr tests.gpr samples.gpr asfunit.gpr
 )

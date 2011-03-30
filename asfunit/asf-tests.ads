@@ -21,6 +21,9 @@ with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Server;
 with ASF.Applications.Main;
+with AUnit.Assertions;
+
+with GNAT.Source_Info;
 
 --  The <b>ASF.Tests</b> package provides a set of utility procedures to write a unit test
 --  on top of ASF.
@@ -50,5 +53,25 @@ package ASF.Tests is
                       Response : in out ASF.Responses.Mockup.Response;
                       URI      : in String;
                       Save     : in String := "");
+
+   --  Simulate a raw request.  The URI and method must have been set on the Request object.
+   procedure Do_Req (Request  : in out ASF.Requests.Mockup.Request;
+                     Response : in out ASF.Responses.Mockup.Response);
+
+   --  Check that the response body contains the string
+   procedure Assert_Contains (T       : in AUnit.Assertions.Test'Class;
+                              Value   : in String;
+                              Reply   : in out ASF.Responses.Mockup.Response;
+                              Message : in String := "Test failed";
+                              Source  : String := GNAT.Source_Info.File;
+                              Line    : Natural := GNAT.Source_Info.Line);
+
+   --  Check that the response body matches the regular expression
+   procedure Assert_Matches (T       : in AUnit.Assertions.Test'Class;
+                             Pattern : in String;
+                             Reply   : in out ASF.Responses.Mockup.Response;
+                             Message : in String := "Test failed";
+                             Source  : String := GNAT.Source_Info.File;
+                             Line    : Natural := GNAT.Source_Info.Line);
 
 end ASF.Tests;

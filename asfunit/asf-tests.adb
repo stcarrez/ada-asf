@@ -16,11 +16,14 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with GNAT.Regpat;
+
 with Ada.Strings.Unbounded;
 
 with Util.Tests;
 with Util.Files;
 
+with ASF.Streams;
 with ASF.Servlets.Faces;
 with ASF.Servlets.Files;
 with ASF.Servlets.Measures;
@@ -32,8 +35,9 @@ with ASF.Filters.Dump;
 package body ASF.Tests is
 
    use Ada.Strings.Unbounded;
+   use Util.Tests;
 
-   CONTEXT_PATH : constant String := "/awa";
+   CONTEXT_PATH : constant String := "/asfunit";
 
    Server   : access ASF.Server.Container;
 
@@ -52,7 +56,6 @@ package body ASF.Tests is
       use type ASF.Applications.Main.Application_Access;
 
       C        : ASF.Applications.Config;
-      Database : constant String := Props.Get ("test.database");
    begin
       if Application /= null then
          App := Application;
@@ -64,10 +67,9 @@ package body ASF.Tests is
       Server.Register_Application (CONTEXT_PATH, App.all'Access);
 
       C.Copy (Props);
-      C.Set ("database", Database);
       App.Initialize (C, Fact);
       App.Register ("layoutMsg", "layout");
-      App.Set_Global ("contextPath", "/awa");
+      App.Set_Global ("contextPath", CONTEXT_PATH);
 
       --  Register the servlets and filters
       App.Add_Servlet (Name => "faces", Server => Faces'Access);
@@ -80,9 +82,13 @@ package body ASF.Tests is
       App.Add_Mapping (Name => "faces", Pattern => "*.html");
       App.Add_Mapping (Name => "files", Pattern => "*.css");
       App.Add_Mapping (Name => "files", Pattern => "*.js");
+      App.Add_Mapping (Name => "files", Pattern => "*.properties");
+      App.Add_Mapping (Name => "files", Pattern => "*.xhtml");
       App.Add_Mapping (Name => "measures", Pattern => "stats.xml");
 
       App.Add_Filter_Mapping (Name => "measures", Pattern => "*");
+      App.Add_Filter_Mapping (Name => "measures", Pattern => "*.html");
+      App.Add_Filter_Mapping (Name => "measures", Pattern => "*.xhtml");
       App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
       App.Add_Filter_Mapping (Name => "dump", Pattern => "*.css");
    end Initialize;
@@ -115,15 +121,25 @@ package body ASF.Tests is
                                                         Print_Headers => True);
       Result_Path : constant String := Util.Tests.Get_Test_Path ("regtests/result");
       Content     : Unbounded_String;
+      Stream      : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
    begin
       Response.Read_Content (Content);
+      Stream.Write (Content);
+
       Insert (Content, 1, Info);
       Util.Files.Write_File (Result_Path & "/" & Name, Content);
+
    end Save_Response;
 
+   --  ------------------------------
+   --  Simulate a raw request.  The URI and method must have been set on the Request object.
+   --  ------------------------------
    procedure Do_Req (Request  : in out ASF.Requests.Mockup.Request;
                      Response : in out ASF.Responses.Mockup.Response) is
+      Content : Unbounded_String;
    begin
+      --  For the purpose of writing tests, clear the buffer before invoking the service.
+      Response.Read_Content (Content);
       Server.Service (Request  => Request,
                       Response => Response);
    end Do_Req;
@@ -165,5 +181,55 @@ package body ASF.Tests is
          Save_Response (Save, Response);
       end if;
    end Do_Post;
+
+   --  ------------------------------
+   --  Check that the response body contains the string
+   --  ------------------------------
+   procedure Assert_Contains (T       : in AUnit.Assertions.Test'Class;
+                              Value   : in String;
+                              Reply   : in out ASF.Responses.Mockup.Response;
+                              Message : in String := "Test failed";
+                              Source  : String := GNAT.Source_Info.File;
+                              Line    : Natural := GNAT.Source_Info.Line) is
+      Stream  : ASF.Streams.Print_Stream := Reply.Get_Output_Stream;
+      Content : Unbounded_String;
+   begin
+      Reply.Read_Content (Content);
+      Stream.Write (Content);
+
+      Assert_Equals (T, ASF.Responses.SC_OK, Reply.Get_Status, "Invalid response", Source, Line);
+
+      T.Assert (Condition => Index (Content, Value) > 0,
+                Message   => Message & ": value '" & Value & "' not found",
+                Source    => Source,
+                Line      => Line);
+   end Assert_Contains;
+
+   --  ------------------------------
+   --  Check that the response body matches the regular expression
+   --  ------------------------------
+   procedure Assert_Matches (T       : in AUnit.Assertions.Test'Class;
+                             Pattern : in String;
+                             Reply   : in out ASF.Responses.Mockup.Response;
+                             Message : in String := "Test failed";
+                             Source  : String := GNAT.Source_Info.File;
+                             Line    : Natural := GNAT.Source_Info.Line) is
+      use GNAT.Regpat;
+
+      Stream  : ASF.Streams.Print_Stream := Reply.Get_Output_Stream;
+      Content : Unbounded_String;
+      Regexp  : Pattern_Matcher := Compile (Expression => Pattern,
+                                            Flags      => Multiple_Lines);
+   begin
+      Reply.Read_Content (Content);
+      Stream.Write (Content);
+
+      Assert_Equals (T, ASF.Responses.SC_OK, Reply.Get_Status, "Invalid response", Source, Line);
+
+      T.Assert (Condition => Match (Regexp, To_String (Content)),
+                Message   => Message & ": does not match '" & Pattern & "'",
+                Source    => Source,
+                Line      => Line);
+   end Assert_Matches;
 
 end ASF.Tests;

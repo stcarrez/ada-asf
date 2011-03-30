@@ -50,7 +50,7 @@ package body ASF.Cookies.Tests is
    --  Test creation of cookie
    --  ------------------------------
    procedure Test_Create_Cookie (T : in out Test) is
-      C : Cookie := Create ("cookie", "value");
+      C : constant Cookie := Create ("cookie", "value");
    begin
       Assert_Equals (T, "cookie", Get_Name (C), "Invalid name");
       Assert_Equals (T, "value", Get_Value (C), "Invalid value");
@@ -88,7 +88,6 @@ package body ASF.Cookies.Tests is
          Test_Cookie (C);
       end Test_Cookie;
 
-      S : constant String := To_Http_Header (Create ("cookie", "value"));
    begin
       Test_Cookie ("a", "b");
       Test_Cookie ("session_id", "79e2317bcabe731e2f681f5725bbc621-&v=1");

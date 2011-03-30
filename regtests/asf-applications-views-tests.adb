@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Render Tests - Unit tests for ASF.Applications.Views
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,8 @@
 
 with Ada.Text_IO;
 with ASF.Applications.Main;
-with ASF.Applications.Views;
-with ASF.Components.Core;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
-with EL.Contexts;
-with EL.Contexts.Default;
-with EL.Variables.Default;
-with ASF.Contexts.Writer.Tests;
 with Ada.Directories;
 with Util.Tests;
 with Util.Files;
@@ -34,7 +28,6 @@ package body ASF.Applications.Views.Tests is
 
    use AUnit;
    use Ada.Strings.Unbounded;
-   use ASF.Contexts.Writer.Tests;
 
    overriding
    procedure Set_Up (T : in out Test) is
@@ -48,11 +41,6 @@ package body ASF.Applications.Views.Tests is
 
       use ASF;
       use ASF.Contexts.Faces;
-
-      use EL.Contexts.Default;
-      use EL.Variables;
-      use EL.Variables.Default;
-      use EL.Contexts;
 
       App      : Applications.Main.Application;
 --        H        : Applications.Views.View_Handler;
@@ -116,7 +104,7 @@ package body ASF.Applications.Views.Tests is
       Expect_Path : constant String := Util.Tests.Get_Path (Expect_Dir);
       Result_Path : constant String := Util.Tests.Get_Test_Path (Result_Dir);
       Search      : Search_Type;
-      Filter      : Filter_Type := (others => True);
+      Filter      : constant Filter_Type := (others => True);
       Ent         : Directory_Entry_Type;
    begin
       if Kind (Path) = Directory then

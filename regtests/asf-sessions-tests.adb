@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Sessions Tests - Unit tests for ASF.Sessions
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,7 @@
 -----------------------------------------------------------------------
 
 with AUnit.Test_Caller;
-with Ada.Text_IO;
 with ASF.Sessions.Factory;
-with Ada.Calendar;
 with Util.Tests;
 with Util.Measures;
 with EL.Objects;
@@ -82,7 +80,7 @@ package body ASF.Sessions.Tests is
       S.Set_Attribute ("a2", EL.Objects.To_Object (String '("name")));
 
       declare
-         Value : EL.Objects.Object := S.Get_Attribute ("a1");
+         Value : constant EL.Objects.Object := S.Get_Attribute ("a1");
       begin
          Assert_Equals (T, "234", EL.Objects.To_String (Value), "Invalid attribute a1");
       end;

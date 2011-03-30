@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Sessions Tests - Unit tests for ASF.Sessions
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,8 @@
 -----------------------------------------------------------------------
 
 with AUnit.Test_Caller;
-with Ada.Text_IO;
-with ASF.Sessions.Factory;
-with Ada.Calendar;
 with Util.Tests;
 with Util.Measures;
-with EL.Objects;
 
 with ASF.Streams;
 with ASF.Requests.Mockup;
@@ -34,6 +30,8 @@ package body ASF.Servlets.Tests is
    procedure Do_Get (Server   : in Test_Servlet1;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server);
+
       Output : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
    begin
       Output.Write ("URI: " & Request.Get_Request_URI);
@@ -57,14 +55,13 @@ package body ASF.Servlets.Tests is
       Ctx : Servlet_Registry;
 
       S1  : aliased Test_Servlet1;
-      S2  : aliased Test_Servlet2;
    begin
       Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
 
       Ctx.Add_Mapping (Pattern => "*.jsf", Name => "Faces");
 
       declare
-         Dispatcher : Request_Dispatcher := Ctx.Get_Request_Dispatcher (Path => "/home/test.jsf");
+         Dispatcher : constant Request_Dispatcher := Ctx.Get_Request_Dispatcher (Path => "/home/test.jsf");
          Req        : ASF.Requests.Mockup.Request;
          Resp       : ASF.Responses.Mockup.Response;
          Result     : Unbounded_String;
@@ -96,7 +93,6 @@ package body ASF.Servlets.Tests is
       Ctx : Servlet_Registry;
 
       S1  : aliased Test_Servlet1;
-      S2  : aliased Test_Servlet2;
    begin
       Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
 
@@ -119,7 +115,7 @@ package body ASF.Servlets.Tests is
                             Ctx    : in Servlet_Registry;
                             URI    : in String;
                             Server : in Servlet_Access) is
-      Map : Mapping_Access := Ctx.Find_Mapping (URI);
+      Map : constant Mapping_Access := Ctx.Find_Mapping (URI);
    begin
       if Map = null then
          T.Assert (Server = null, "No mapping returned for URI: " & URI);

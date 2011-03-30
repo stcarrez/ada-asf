@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Writer Tests - Unit tests for ASF.Contexts.Writer
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,12 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Caller;
-with AUnit.Assertions;
 with Ada.Text_IO;
-with ASF.Testsuite;
 with Ada.Calendar;
 with Ada.Unchecked_Deallocation;
+
 with Util.Tests;
+with Util.Test_Caller;
 package body ASF.Contexts.Writer.Tests is
 
    use Util.Tests;
@@ -122,26 +121,29 @@ package body ASF.Contexts.Writer.Tests is
                      T.Writer.Response);
    end Test_Write_Text;
 
-   package Caller is new AUnit.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test);
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
 
    begin
       --  To document what is tested, register the test methods for each
       --  operation that is tested.
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Writer.Start_Element",
-                                     Test_Write_Element'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Writer.End_Element",
-                                      Test_Write_Element'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Writer.Write_Element",
-                                     Test_Write_Element'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Writer.Write_Attribute",
-                                      Test_Write_Element'Access));
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Writer.Start_Element",
+                       Test_Write_Element'Access);
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Writer.End_Element",
+                       Test_Write_Element'Access);
 
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Writer.Write_Text",
-                                     Test_Write_Text'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Writer.Write_Char",
-                                      Test_Write_Text'Access));
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Writer.Write_Element",
+                       Test_Write_Element'Access);
+
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Writer.Write_Attribute",
+                       Test_Write_Element'Access);
+
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Writer.Write_Text",
+                       Test_Write_Text'Access);
+
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Writer.Write_Char",
+                       Test_Write_Text'Access);
    end Add_Tests;
 
 end ASF.Contexts.Writer.Tests;

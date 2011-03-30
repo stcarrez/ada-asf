@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Render Tests - Unit tests for ASF.Applications.Views
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@
 
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Suites; use AUnit.Test_Suites;
-with AUnit.Test_Fixtures;
 
 with Ada.Strings.Unbounded;
 package ASF.Applications.Views.Tests is

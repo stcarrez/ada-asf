@@ -82,6 +82,7 @@ package body ASF.Applications.Main is
    --  ------------------------------
    function Create_Navigation_Handler (App : in Application_Factory)
                                        return ASF.Navigations.Navigation_Handler_Access is
+      pragma Unreferenced (App);
    begin
       return new ASF.Navigations.Navigation_Handler;
    end Create_Navigation_Handler;
@@ -528,8 +529,8 @@ package body ASF.Applications.Main is
    --  ------------------------------
    overriding
    procedure Finalize (App : in out Application) is
-      procedure Free is new Ada.Unchecked_Deallocation (ASF.Applications.Views.View_Handler'Class,
-                                                        ASF.Applications.Views.View_Handler_Access);
+--        procedure Free is new Ada.Unchecked_Deallocation (ASF.Applications.Views.View_Handler'Class,
+--                                                          ASF.Applications.Views.View_Handler_Access);
       procedure Free is new Ada.Unchecked_Deallocation (ASF.Navigations.Navigation_Handler'Class,
                                                         ASF.Navigations.Navigation_Handler_Access);
       procedure Free is new Ada.Unchecked_Deallocation (ASF.Lifecycles.Lifecycle'Class,

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  contexts-facelets -- Contexts for facelets
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -110,6 +110,7 @@ package body ASF.Contexts.Facelets is
       The_Name  : aliased constant String := To_String (Name);
    begin
       if Context.Inserts.Contains (The_Name'Unchecked_Access) then
+         Found := True;
          return;
       end if;
       Context.Inserts.Insert (The_Name'Unchecked_Access);

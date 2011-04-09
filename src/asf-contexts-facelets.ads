@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  contexts-facelets -- Contexts for facelets
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ with EL.Expressions;
 with EL.Functions;
 with ASF.Components.Base;
 with ASF.Converters;
-with ASF.Validators;
+--  with ASF.Validators;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 limited with ASF.Applications.Main;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.responses -- ASF Responses
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ package body ASF.Responses is
    --  been committed have no effect on the character encoding. If no character
    --  encoding has been specified, ISO-8859-1 is returned.
    function Get_Character_Encoding (Resp : in Response) return String is
+      pragma Unreferenced (Resp);
    begin
       return "";
    end Get_Character_Encoding;
@@ -70,16 +71,19 @@ package body ASF.Responses is
    --  response's writer.
    procedure Set_Character_Encoding (Resp     : in out Response;
                                      Encoding : in String) is
+      pragma Unreferenced (Encoding, Resp);
    begin
       null;
    end Set_Character_Encoding;
 
+   --  ------------------------------
    --  Sets the length of the content body in the response In HTTP servlets,
    --  this method sets the HTTP Content-Length header.
+   --  ------------------------------
    procedure Set_Content_Length (Resp   : in out Response;
                                  Length : in Integer) is
    begin
-      null;
+      Response'Class (Resp).Set_Header ("Content-Length", Util.Strings.Image (Length));
    end Set_Content_Length;
 
 
@@ -105,14 +109,17 @@ package body ASF.Responses is
       Resp.Content_Type := Ada.Strings.Unbounded.To_Unbounded_String (Content);
    end Set_Content_Type;
 
+   --  ------------------------------
    --  Returns a boolean indicating if the response has been committed.
    --  A committed response has already had its status code and headers written.
+   --  ------------------------------
    function Is_Committed (Resp : in Response) return Boolean is
+      pragma Unreferenced (Resp);
    begin
       return False;
    end Is_Committed;
 
-
+   --  ------------------------------
    --  Sets the locale of the response, if the response has not been committed yet.
    --  It also sets the response's character encoding appropriately for the locale,
    --  if the character encoding has not been explicitly set using
@@ -136,19 +143,22 @@ package body ASF.Responses is
    --  header for text media types. Note that the character encoding cannot be
    --  communicated via HTTP headers if the servlet does not specify a content type;
    --  however, it is still used to encode text written via the servlet response's writer.
+   --  ------------------------------
    procedure Set_Locale (Resp : in out Response;
                          Loc  : in Util.Locales.Locale) is
    begin
-      null;
+      Resp.Locale := Loc;
    end Set_Locale;
 
+   --  ------------------------------
    --  Returns the locale specified for this response using the
    --  setLocale(java.util.Locale) method. Calls made to setLocale after the
    --  response is committed have no effect. If no locale has been specified,
    --  the container's default locale is returned.
+   --  ------------------------------
    function Get_Locale (Resp : in Response) return Util.Locales.Locale is
    begin
-      return Util.Locales.ENGLISH;
+      return Resp.Locale;
    end Get_Locale;
 
    --  ------------------------------
@@ -162,15 +172,6 @@ package body ASF.Responses is
                                         Value => ASF.Cookies.To_Http_Header (Cookie));
    end Add_Cookie;
 
-   --  Returns a boolean indicating whether the named response header has already
-   --  been set.
-   function Contains_Header (Resp : in Response;
-                             Name : in String) return Boolean is
-   begin
-      return False;
-   end Contains_Header;
-
-
    --  Encodes the specified URL by including the session ID in it, or, if encoding
    --  is not needed, returns the URL unchanged. The implementation of this method
    --  includes the logic to determine whether the session ID needs to be encoded
@@ -182,6 +183,7 @@ package body ASF.Responses is
    --  support cookies.
    function Encode_URL (Resp : in Response;
                         URL  : in String) return String is
+      pragma Unreferenced (Resp);
    begin
       return URL;
    end Encode_URL;
@@ -198,10 +200,12 @@ package body ASF.Responses is
    --  which do not support cookies.
    function Encode_Redirect_URL (Resp : in Response;
                                  URL  : in String) return String is
+      pragma Unreferenced (Resp);
    begin
       return URL;
    end Encode_Redirect_URL;
 
+   --  ------------------------------
    --  Sends an error response to the client using the specified status. The server
    --  defaults to creating the response to look like an HTML-formatted server error
    --  page containing the specified message, setting the content type to "text/html",
@@ -212,9 +216,11 @@ package body ASF.Responses is
    --  If the response has already been committed, this method throws an
    --  IllegalStateException. After using this method, the response should be
    --  considered to be committed and should not be written to.
+   --  ------------------------------
    procedure Send_Error (Resp    : in out Response;
                          Error   : in Integer;
                          Message : in String) is
+      pragma Unreferenced (Message);
    begin
       Resp.Status := Error;
    end Send_Error;

@@ -149,9 +149,7 @@ private
    --  If the <b>Value</b> string does not contain the whole EL experssion
    --  the <b>Expr_Buffer</b> stored in the reader is used to collect
    --  that expression.
-   procedure Collect_Expression (Handler  : in out Xhtml_Reader;
-                                 Value    : in Unicode.CES.Byte_Sequence;
-                                 Pos      : in out Natural);
+   procedure Collect_Expression (Handler  : in out Xhtml_Reader);
 
    --  Collect the raw-text in a buffer.  The text must be flushed
    --  when a new element is started or when an exiting element is closed.

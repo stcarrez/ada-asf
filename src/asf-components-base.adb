@@ -25,7 +25,6 @@ with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with ASF.Converters;
 with ASF.Events;
-with ASF.Components.Core;
 with ASF.Components.Utils;
 
 with EL.Variables;
@@ -563,6 +562,7 @@ package body ASF.Components.Base is
    procedure Broadcast (UI      : in out UIComponent;
                         Event   : not null access ASF.Events.Faces_Event'Class;
                         Context : in out Faces_Context'Class) is
+      pragma Unreferenced (UI, Event, Context);
    begin
       LOG.Error ("Event dispatched to a component that cannot handle it");
    end Broadcast;

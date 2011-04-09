@@ -91,6 +91,17 @@ package body ASF.Responses.Web is
    end Iterate_Headers;
 
    --  ------------------------------
+   --  Returns a boolean indicating whether the named response header has already
+   --  been set.
+   --  ------------------------------
+   function Contains_Header (Resp : in Response;
+                             Name : in String) return Boolean is
+   begin
+      raise Program_Error with "Contains_Header is not implemented";
+      return False;
+   end Contains_Header;
+
+   --  ------------------------------
    --  Sets a response header with the given name and value. If the header had already
    --  been set, the new value overwrites the previous one. The containsHeader
    --  method can be used to test for the presence of a header before setting its value.

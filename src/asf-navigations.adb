@@ -222,6 +222,7 @@ package body ASF.Navigations is
                                   Outcome   : in String := "";
                                   Action    : in String := "";
                                   Condition : in String := "") is
+      pragma Unreferenced (Condition);
 
       C : constant Navigation_Access := Render.Create_Render_Navigator (To);
    begin

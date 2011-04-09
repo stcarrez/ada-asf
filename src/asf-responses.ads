@@ -182,7 +182,7 @@ package ASF.Responses is
    --  Returns a boolean indicating whether the named response header has already
    --  been set.
    function Contains_Header (Resp : in Response;
-                             Name : in String) return Boolean;
+                             Name : in String) return Boolean is abstract;
 
    --  Iterate over the response headers and executes the <b>Process</b> procedure.
    procedure Iterate_Headers (Resp    : in Response;
@@ -318,6 +318,7 @@ private
       Status       : Integer := SC_OK;
       Stream       : Util.Streams.Texts.Print_Stream_Access;
       Content_Type : Ada.Strings.Unbounded.Unbounded_String;
+      Locale       : Util.Locales.Locale;
    end record;
 
 end ASF.Responses;

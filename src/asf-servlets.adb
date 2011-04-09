@@ -93,7 +93,8 @@ package body ASF.Servlets is
    begin
       if Method = "GET" then
          declare
-            Last_Mod : Ada.Calendar.Time := Servlet'Class (Server).Get_Last_Modified (Request);
+            Last_Mod : constant Ada.Calendar.Time
+              := Servlet'Class (Server).Get_Last_Modified (Request);
          begin
             Servlet'Class (Server).Do_Get (Request, Response);
          end;

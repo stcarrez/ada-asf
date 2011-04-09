@@ -57,7 +57,7 @@ package body ASF.Navigations.Render is
    --  Create a navigation case to render a view.
    --  ------------------------------
    function Create_Render_Navigator (To_View : in String) return Navigation_Access is
-      Result : Render_Navigator_Access := new Render_Navigator;
+      Result : constant Render_Navigator_Access := new Render_Navigator;
    begin
       Result.View_Name := To_Unbounded_String (To_View);
       return Result.all'Access;

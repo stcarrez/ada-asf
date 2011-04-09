@@ -37,6 +37,11 @@ package ASF.Responses.Web is
                                 procedure (Name  : in String;
                                            Value : in String));
 
+   --  Returns a boolean indicating whether the named response header has already
+   --  been set.
+   function Contains_Header (Resp : in Response;
+                             Name : in String) return Boolean;
+
    --  Sets a response header with the given name and value. If the header had already
    --  been set, the new value overwrites the previous one. The containsHeader
    --  method can be used to test for the presence of a header before setting its value.

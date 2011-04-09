@@ -15,10 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with EL.Objects;
 package body ASF.Utils is
-
-   use EL.Objects;
 
    TITLE_ATTR         : aliased constant String := "title";
    STYLE_ATTR         : aliased constant String := "style";

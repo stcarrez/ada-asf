@@ -18,7 +18,6 @@
 
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
-with Ada.Strings.Unbounded;
 
 with Util.Strings.Transforms;
 with Util.Strings;

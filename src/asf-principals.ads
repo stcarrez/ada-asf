@@ -15,16 +15,13 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Security.Permissions;
 package ASF.Principals is
 
    --  ------------------------------
    --  Principal
    --  ------------------------------
-   type Principal is limited interface;
+   type Principal is abstract new Security.Permissions.Principal with null record;
    type Principal_Access is access all Principal'Class;
-
-   --  Get the principal name.
-   function Get_Name (From : in Principal) return String is abstract;
 
 end ASF.Principals;

@@ -486,7 +486,6 @@ package body ASF.Views.Nodes is
    procedure Build_Components (Node    : access Text_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
-      pragma Unreferenced (Context);
 
       UI : constant ASF.Components.Core.UIText_Access
         := ASF.Components.Core.Create_UIText (Node.all'Access);

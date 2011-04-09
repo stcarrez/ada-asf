@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-response -- Response phase
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 with Ada.Exceptions;
 with ASF.Applications.Main;
-with ASF.Applications.Views;
 with ASF.Components.Root;
 with Util.Log.Loggers;
 
@@ -48,8 +47,6 @@ package body ASF.Lifecycles.Response is
    overriding
    procedure Execute (Controller : in Response_Controller;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
-      pragma Unreferenced (Controller);
-
       View    : constant Components.Root.UIViewRoot := Context.Get_View_Root;
    begin
       Controller.View_Handler.Render_View (Context, View);

@@ -22,7 +22,6 @@ with Unicode;
 
 with Ada.Exceptions;
 with Ada.Strings.Fixed;
-with ASF.Views.Nodes.Factory;
 with Util.Log.Loggers;
 package body ASF.Views.Nodes.Reader is
 
@@ -236,9 +235,7 @@ package body ASF.Views.Nodes.Reader is
    --  the <b>Expr_Buffer</b> stored in the reader is used to collect
    --  that expression.
    --  ------------------------------
-   procedure Collect_Expression (Handler  : in out Xhtml_Reader;
-                                 Value    : in Unicode.CES.Byte_Sequence;
-                                 Pos      : in out Natural) is
+   procedure Collect_Expression (Handler  : in out Xhtml_Reader) is
       use Ada.Exceptions;
 
       Expr    : constant String := To_String (Handler.Expr_Buffer);
@@ -274,8 +271,6 @@ package body ASF.Views.Nodes.Reader is
    procedure Collect_Text (Handler : in out Xhtml_Reader;
                            Value   : in Unicode.CES.Byte_Sequence) is
       Pos      : Natural := Value'First;
-      Last     : Natural := Value'First;
-      N        : Natural;
       C        : Character;
       Content  : Tag_Content_Access;
       Start_Pos : Natural;
@@ -318,7 +313,7 @@ package body ASF.Views.Nodes.Reader is
 
                Append (Handler.Expr_Buffer, Value (Start_Pos .. Last_Pos));
                if Handler.State /= PARSE_EXPR then
-                  Handler.Collect_Expression (Value, N);
+                  Handler.Collect_Expression;
                end if;
 
                --  Collect the raw text in the current content buffer
@@ -330,7 +325,7 @@ package body ASF.Views.Nodes.Reader is
                   Handler.Text.Last := Handler.Text.Content'Access;
 
                elsif Length (Handler.Expr_Buffer) > 0 then
-                  Handler.Collect_Expression (Value, Pos);
+                  Handler.Collect_Expression;
                   Pos := Pos + 1;
 
                end if;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with Unicode;
-with Ada.Unchecked_Deallocation;
 package body ASF.Contexts.Writer is
 
    use Unicode;

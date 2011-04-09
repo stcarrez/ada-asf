@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.filters.dump -- Filter to dump the request information
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +32,7 @@ package body ASF.Filters.Dump is
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Filters.Dump");
 
+   --  ------------------------------
    --  The Do_Filter method of the Filter is called by the container each time
    --  a request/response pair is passed through the chain due to a client request
    --  for a resource at the end of the chain.  The Filter_Chain passed in to this
@@ -50,10 +51,13 @@ package body ASF.Filters.Dump is
    --     filter chain to block the request processing
    --  5. Directly set headers on the response after invocation of the next
    --     entity in the filter chain.
+   --  ------------------------------
    procedure Do_Filter (F        : in Dump_Filter;
                         Request  : in out Requests.Request'Class;
                         Response : in out Responses.Response'Class;
                         Chain    : in out ASF.Servlets.Filter_Chain) is
+      pragma Unreferenced (F);
+
       Info : constant String := ASF.Requests.Tools.To_String (Req              => Request,
                                                               Html             => False,
                                                               Print_Headers    => True,

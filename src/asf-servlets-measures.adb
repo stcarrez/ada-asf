@@ -17,18 +17,21 @@
 -----------------------------------------------------------------------
 
 with Util.Streams.Texts;
-with Util.Measures;
 with ASF.Streams;
 package body ASF.Servlets.Measures is
 
+   --  ------------------------------
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
+   --  ------------------------------
    procedure Initialize (Server  : in out Measure_Servlet;
                          Context : in Servlet_Registry'Class) is
+      pragma Unreferenced (Context);
    begin
       Server.Current := Server.Measures'Unchecked_Access;
    end Initialize;
 
+   --  ------------------------------
    --  Returns the time the Request object was last modified, in milliseconds since
    --  midnight January 1, 1970 GMT.  If the time is unknown, this method returns
    --  a negative number (the default).
@@ -37,14 +40,17 @@ package body ASF.Servlets.Measures is
    --  last modification time should override this method. This makes browser and
    --  proxy caches work more effectively, reducing the load on server and network
    --  resources.
+   --  ------------------------------
    overriding
    function Get_Last_Modified (Server  : in Measure_Servlet;
                                Request : in Requests.Request'Class)
                                return Ada.Calendar.Time is
+      pragma Unreferenced (Server, Request);
    begin
       return Ada.Calendar.Clock;
    end Get_Last_Modified;
 
+   --  ------------------------------
    --  Called by the server (via the service method) to allow a servlet to handle
    --  a GET request.
    --
@@ -81,10 +87,13 @@ package body ASF.Servlets.Measures is
    --  data is neither safe nor idempotent.
    --
    --  If the request is incorrectly formatted, Do_Get  returns an HTTP "Bad Request"
+   --  ------------------------------
    overriding
    procedure Do_Get (Server   : in Measure_Servlet;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Request);
+
       use type Util.Measures.Measure_Set_Access;
 
       Output   : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
@@ -102,6 +111,7 @@ package body ASF.Servlets.Measures is
       Output.Write (Print'Access);
    end Do_Get;
 
+   --  ------------------------------
    --  The Do_Filter method of the Filter is called by the container each time
    --  a request/response pair is passed through the chain due to a client request
    --  for a resource at the end of the chain.  The Filter_Chain passed in to this
@@ -120,6 +130,7 @@ package body ASF.Servlets.Measures is
    --     filter chain to block the request processing
    --  5. Directly set headers on the response after invocation of the next
    --     entity in the filter chain.
+   --  ------------------------------
    overriding
    procedure Do_Filter (F        : in Measure_Servlet;
                         Request  : in out Requests.Request'Class;

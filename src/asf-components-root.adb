@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 
-with Util.Strings;
 with ASF.Components.Base;
 package body ASF.Components.Root is
 

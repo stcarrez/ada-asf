@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 with AUnit.Test_Caller;
 
 with Util.Tests;
-with ASF.Applications.Messages;
 
 package body ASF.Contexts.Faces.Tests is
 
@@ -52,6 +51,7 @@ package body ASF.Contexts.Faces.Tests is
       Ctx.Add_Message (Client_Id => "warn", Message => "msg3", Severity => WARN);
       Ctx.Add_Message (Client_Id => "error", Message => "msg3", Severity => ERROR);
       Ctx.Add_Message (Client_Id => "fatal", Message => "msg3", Severity => FATAL);
+      Assert (T, Ctx.Get_Maximum_Severity = FATAL, "Add message failed");
    end Test_Add_Message;
 
    procedure Test_Max_Severity (T : in out Test) is

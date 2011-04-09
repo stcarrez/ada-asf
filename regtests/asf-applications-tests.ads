@@ -19,7 +19,6 @@
 with AUnit.Test_Suites; use AUnit.Test_Suites;
 with AUnit.Test_Fixtures;
 
-with Ada.Strings.Unbounded;
 package ASF.Applications.Tests is
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);

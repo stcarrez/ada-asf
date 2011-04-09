@@ -48,6 +48,8 @@ package body ASF.Applications.Tests is
    --  ------------------------------
    overriding
    procedure Set_Up (T : in out Test) is
+      pragma Unreferenced (T);
+
       use type ASF.Applications.Main.Application_Access;
    begin
       if ASF.Tests.Get_Application = null then

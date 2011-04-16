@@ -20,6 +20,7 @@ with Ada.Finalization;
 with Ada.Containers.Hashed_Maps;
 
 with Util.Strings;
+with Util.Refs;
 
 --  The <b>Security.Permissions</b> package defines the different permissions that can be
 --  checked by the access control manager.
@@ -85,6 +86,7 @@ package Security.Permissions is
    --  The <b>Permission_Manager</b> verifies through some policy that a permission
    --  is granted to a user.
    type Permission_Manager is new Ada.Finalization.Limited_Controlled with private;
+   type Permission_Manager_Access is access all Permission_Manager'Class;
 
    --  Returns True if the user has the permission to access the given URI permission.
    function Has_Permission (Manager    : in Permission_Manager;

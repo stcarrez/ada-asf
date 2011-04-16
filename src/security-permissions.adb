@@ -94,8 +94,8 @@ package body Security.Permissions is
    --  Returns True if the user has the given role permission.
    --  ------------------------------
    function Has_Permission (Manager    : in Permission_Manager;
-                           User       : in Principal'Class;
-                           Permission : in Permission_Type) return Boolean is
+                            User       : in Principal'Class;
+                            Permission : in Permission_Type) return Boolean is
    begin
       return User.Has_Permission (Permission);
    end Has_Permission;

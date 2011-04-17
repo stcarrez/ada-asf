@@ -23,6 +23,7 @@ with ASF.Servlets.Tests;
 with ASF.Contexts.Faces.Tests;
 with ASF.Cookies.Tests;
 with ASF.Applications.Tests;
+with Security.Openid.Tests;
 package body ASF.Testsuite is
 
    Tests : aliased Test_Suite;
@@ -37,6 +38,8 @@ package body ASF.Testsuite is
       ASF.Applications.Views.Tests.Add_Tests (Ret);
       ASF.Sessions.Tests.Add_Tests (Ret);
       ASF.Servlets.Tests.Add_Tests (Ret);
+
+      Security.Openid.Tests.Add_Tests (Ret);
 
       --  Run the application tests at the end.
       ASF.Applications.Tests.Add_Tests (Ret);

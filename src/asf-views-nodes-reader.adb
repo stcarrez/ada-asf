@@ -346,9 +346,22 @@ package body ASF.Views.Nodes.Reader is
                      Last_Pos := Pos - 1;
                      Pos := Pos + 2;
                      exit;
-                  end if;
 
-                  if (C = ASCII.CR or C = ASCII.LF) and Handler.Ignore_Empty_Lines then
+                     --  Handle \#{ and \${ as escape sequence
+                  elsif C = '\' and then Pos + 2 <= Value'Last
+                    and then Value (Pos + 2) = '{'
+                    and then (Value (Pos + 1) = '#' or Value (Pos + 1) = '$') then
+                     --  Since we have to strip the '\', flush the spaces and append the text
+                     --  but ignore the '\'.
+                     Append (Content.Text, Handler.Spaces);
+                     Handler.Spaces := Null_Unbounded_String;
+                     if Start_Pos < Pos then
+                        Append (Content.Text, Value (Start_Pos .. Pos - 1));
+                     end if;
+                     Start_Pos := Pos + 1;
+                     Pos := Pos + 2;
+
+                  elsif (C = ASCII.CR or C = ASCII.LF) and Handler.Ignore_Empty_Lines then
                      Last_Pos := Pos;
                      Handler.State := NO_CONTENT;
                      exit;

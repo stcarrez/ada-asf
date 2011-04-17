@@ -91,6 +91,14 @@ package body ASF.Servlets.Files is
          Response.Set_Content_Type ("text/plain");
          return;
       end if;
+      if Path (Pos .. Path'Last) = ".png" then
+         Response.Set_Content_Type ("image/png");
+         return;
+      end if;
+      if Path (Pos .. Path'Last) = ".jpg" then
+         Response.Set_Content_Type ("image/jpg");
+         return;
+      end if;
    end Set_Content_Type;
 
    --  ------------------------------

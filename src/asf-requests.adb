@@ -510,6 +510,7 @@ package body ASF.Requests is
       return Req.Servlet.Get_Name;
    end Get_Servlet_Path;
 
+
    --  ------------------------------
    --  Get and check the request session
    --  ------------------------------
@@ -520,7 +521,7 @@ package body ASF.Requests is
          if ASF.Cookies.Get_Name (Req.Info.Cookies (I)) = "SID" then
             declare
                SID : constant String := ASF.Cookies.Get_Value (Req.Info.Cookies (I));
-               Ctx : constant ASF.Servlets.Servlet_Registry_Access := Req.Servlet.Get_Servlet_Context;
+               Ctx : constant Servlets.Servlet_Registry_Access := Req.Servlet.Get_Servlet_Context;
             begin
                Ctx.Find_Session (Id     => SID,
                                  Result => Req.Info.Session);

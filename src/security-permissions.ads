@@ -17,10 +17,13 @@
 -----------------------------------------------------------------------
 
 with Ada.Finalization;
+with Ada.Strings.Unbounded;
 with Ada.Containers.Hashed_Maps;
+with Ada.Containers.Vectors;
 
 with Util.Strings;
 with Util.Refs;
+with GNAT.Regexp;
 
 --  The <b>Security.Permissions</b> package defines the different permissions that can be
 --  checked by the access control manager.
@@ -32,7 +35,7 @@ package Security.Permissions is
 
    --  Each permission is represented by a <b>Permission_Type</b> number to provide a fast
    --  and efficient permission check.
-   type Permission_Type is new Positive range 1 .. 64;
+   type Permission_Type is new Natural range 0 .. 63;
 
    --  The <b>Permission_Map</b> represents a set of permissions which are granted to a user.
    --  Each permission is represented by a boolean in the map.  The implementation is limited
@@ -107,6 +110,11 @@ package Security.Permissions is
                                 Name       : in String;
                                 Permission : out Permission_Type);
 
+   --  Get or build a permission type for the given name.
+   procedure Build_Permission_Type (Manager   : in out Permission_Manager;
+                                    Name      : in String;
+                                    Result    : out Permission_Type);
+
    --  Grant the permission to access to the given <b>URI</b> to users having the <b>To</b>
    --  permissions.
    procedure Grant_URI_Permission (Manager : in out Permission_Manager;
@@ -119,28 +127,76 @@ package Security.Permissions is
                                     Path    : in String;
                                     To      : in String);
 
+   --  Read the policy file
+   procedure Read_Policy (Manager : in out Permission_Manager;
+                          File    : in String);
+
+   --  Initialize the permission manager.
+   overriding
+   procedure Initialize (Manager : in out Permission_Manager);
+
+   --  Finalize the permission manager.
+   overriding
+   procedure Finalize (Manager : in out Permission_Manager);
+
 private
 
    use Util.Strings;
 
-   type Permission_Name_Array is array (Permission_Type'Range) of Util.Strings.Name_Access;
+   type Permission_Name_Array is
+     array (Permission_Type'Range) of Ada.Strings.Unbounded.String_Access;
 
    type Permission_Type_Array is array (1 .. 10) of Permission_Type;
 
+   --  The <b>Access_Rule</b> represents a list of permissions to verify to grant
+   --  access to the resource.  To make it simple, the user must have one of the
+   --  permission from the list.
    type Access_Rule is record
-      Permissions : Permission_Type_Array;
-      Last        : Natural;
+      Permissions : Permission_Type_Array := (others => Permission_Type'First);
+      Last        : Natural := 0;
    end record;
 
-   package Rules_Maps is new Ada.Containers.Hashed_Maps (Key_Type        => Name_Access,
+   --  No rule
+   No_Rule : constant Access_Rule := (Permissions => (others => Permission_Type'First),
+                                      Last        => 0);
+
+   --  Find the access rule of the policy that matches the given URI.
+   --  Returns the No_Rule value (disable access) if no rule is found.
+   function Find_Access_Rule (Manager : in Permission_Manager;
+                              URI     : in String) return Access_Rule;
+
+   --  The <b>Policy</b> defines the access rules that are applied on a given
+   --  URL, set of URLs or files.
+   type Policy is record
+      Id      : Natural;
+      Pattern : GNAT.Regexp.Regexp;
+      Rule    : Access_Rule;
+   end record;
+
+   --  The <b>Policy_Vector</b> represents the whole permission policy.  The order of
+   --  policy in the list is important as policies can override each other.
+   package Policy_Vector is new Ada.Containers.Vectors (Index_Type   => Positive,
+                                                        Element_Type => Policy);
+
+   package Rules_Maps is new Ada.Containers.Hashed_Maps (Key_Type        => String_Ref,
                                                          Element_Type    => Access_Rule,
                                                          Hash            => Hash,
                                                          Equivalent_Keys => Equivalent_Keys);
 
+   type Rules is new Util.Refs.Ref_Entity with record
+      Map : Rules_Maps.Map;
+   end record;
+   type Rules_Access is access all Rules;
+
+   package Rules_Ref is new Util.Refs.References (Rules, Rules_Access);
+
+   type Rules_Ref_Access is access Rules_Ref.Atomic_Ref;
+
    type Permission_Manager is new Ada.Finalization.Limited_Controlled with record
       Names           : Permission_Name_Array;
-      Rules           : Rules_Maps.Map;
+      Cache           : Rules_Ref_Access;
       Next_Permission : Permission_Type := Permission_Type'First;
+      Policies        : Policy_Vector.Vector;
    end record;
 
 end Security.Permissions;

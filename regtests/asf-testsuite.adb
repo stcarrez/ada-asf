@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF testsuite - Ada Server Faces Test suite
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ with ASF.Contexts.Faces.Tests;
 with ASF.Cookies.Tests;
 with ASF.Applications.Tests;
 with Security.Openid.Tests;
+with Security.Permissions.Tests;
 package body ASF.Testsuite is
 
    Tests : aliased Test_Suite;
@@ -40,6 +41,7 @@ package body ASF.Testsuite is
       ASF.Servlets.Tests.Add_Tests (Ret);
 
       Security.Openid.Tests.Add_Tests (Ret);
+      Security.Permissions.Tests.Add_Tests (Ret);
 
       --  Run the application tests at the end.
       ASF.Applications.Tests.Add_Tests (Ret);

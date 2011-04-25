@@ -68,6 +68,8 @@ package body Security.Openid is
                             Result : out End_Point) is
       Output : Unbounded_String;
    begin
+      Log.Info ("Discover XRDS on {0}", URI);
+
       Manager'Class (Realm).Get_Request (URI           => URI,
                                          Accept_Format => "application/xrds+xml",
                                          Result        => Output);
@@ -217,20 +219,20 @@ package body Security.Openid is
       return To_String (Result);
    end Get_Authentication_URL;
 
-   function Get_Full_Name (From : Parameter_List'Class;
-                           Axa  : String) return Unbounded_String is
+   function Get_Full_Name (Request : in ASF.Requests.Request'Class;
+                           Axa     : String) return String is
    begin
-      return From.Get_Parameter ("openid." & Axa & ".value.fullname");
+      return Request.Get_Parameter ("openid." & Axa & ".value.fullname");
    end Get_Full_Name;
 
-   function Get_Last_Name (From : Parameter_List'Class;
-                           Axa  : String) return Unbounded_String is
+   function Get_Last_Name (Request : in ASF.Requests.Request'Class;
+                           Axa     : String) return String is
    begin
-      return From.Get_Parameter ("openid." & Axa & ".value.lastname");
+      return Request.Get_Parameter ("openid." & Axa & ".value.lastname");
    end Get_Last_Name;
 
-   procedure Set_Result (Result : in out Authentication;
-                         Status : in Auth_Result;
+   procedure Set_Result (Result  : in out Authentication;
+                         Status  : in Auth_Result;
                          Message : in String) is
    begin
       if Status /= AUTHENTICATED then
@@ -241,36 +243,36 @@ package body Security.Openid is
       Result.Status := Status;
    end Set_Result;
 
-   procedure Extract_Value (Into       : in out Unbounded_String;
-                            Parameters : in Parameter_List'Class;
-                            Name       : in String) is
+   procedure Extract_Value (Into    : in out Unbounded_String;
+                            Request : in ASF.Requests.Request'Class;
+                            Name    : in String) is
    begin
       if Length (Into) = 0 then
-         Into := Parameters.Get_Parameter (Name);
+         Into := To_Unbounded_String (Request.Get_Parameter (Name));
       end if;
    end Extract_Value;
 
-   procedure Extract_Profile (Prefix     : in String;
-                              Parameters : in Parameter_List'Class;
-                              Result     : in out Authentication) is
+   procedure Extract_Profile (Prefix  : in String;
+                              Request : in ASF.Requests.Request'Class;
+                              Result  : in out Authentication) is
    begin
-      Extract_Value (Result.Email, Parameters, Prefix & ".email");
-      Extract_Value (Result.Nickname, Parameters, Prefix & ".nickname");
-      Extract_Value (Result.Gender, Parameters, Prefix & ".gender");
-      Extract_Value (Result.Country, Parameters, Prefix & ".country");
-      Extract_Value (Result.Language, Parameters, Prefix & ".language");
-      Extract_Value (Result.Full_Name, Parameters, Prefix & ".fullname");
-      Extract_Value (Result.Timezone, Parameters, Prefix & ".timezone");
+      Extract_Value (Result.Email, Request, Prefix & ".email");
+      Extract_Value (Result.Nickname, Request, Prefix & ".nickname");
+      Extract_Value (Result.Gender, Request, Prefix & ".gender");
+      Extract_Value (Result.Country, Request, Prefix & ".country");
+      Extract_Value (Result.Language, Request, Prefix & ".language");
+      Extract_Value (Result.Full_Name, Request, Prefix & ".fullname");
+      Extract_Value (Result.Timezone, Request, Prefix & ".timezone");
    end Extract_Profile;
 
    --  ------------------------------
    --  Verify the authentication result
    --  ------------------------------
-   procedure Verify (Realm      : in out Manager;
-                     Assoc      : in Association;
-                     Parameters : in Parameter_List'Class;
-                     Result     : out Authentication) is
-      Value  : Unbounded_String := Parameters.Get_Parameter ("openid.mode");
+   procedure Verify (Realm   : in out Manager;
+                     Assoc   : in Association;
+                     Request : in ASF.Requests.Request'Class;
+                     Result  : out Authentication) is
+      Value  : Unbounded_String := To_Unbounded_String (Request.Get_Parameter ("openid.mode"));
    begin
       --  Step 1: verify the response status
       if Value = "cancel" then
@@ -289,45 +291,45 @@ package body Security.Openid is
       end if;
 
       --  OpenID Section: 11.1.  Verifying the Return URL
-      Value := Parameters.Get_Parameter ("openid.return_to");
+      Value := To_Unbounded_String (Request.Get_Parameter ("openid.return_to"));
       if Value /= Realm.Return_To then
          Set_Result (Result, UNKNOWN, "openid.return_to URL does not match");
          return;
       end if;
 
       --  OpenID Section: 11.2.  Verifying Discovered Information
-      Manager'Class (Realm).Verify_Discovered (Assoc, Parameters, Result);
+      Manager'Class (Realm).Verify_Discovered (Assoc, Request, Result);
 
       --  OpenID Section: 11.3.  Checking the Nonce
-      Value := Parameters.Get_Parameter ("openid.response_nonce");
+      Value := To_Unbounded_String (Request.Get_Parameter ("openid.response_nonce"));
 
       --  OpenID Section: 11.4.  Verifying Signatures
-      Manager'Class (Realm).Verify_Signature (Assoc, Parameters, Result);
+      Manager'Class (Realm).Verify_Signature (Assoc, Request, Result);
 
       --  Extract profile information
-      Value := Parameters.Get_Parameter ("openid.ns.sreg");
+      Value := To_Unbounded_String (Request.Get_Parameter ("openid.ns.sreg"));
       if Value = "http://openid.net/extensions/sreg/1.1" then
-         Extract_Profile ("openid.sreg", Parameters, Result);
+         Extract_Profile ("openid.sreg", Request, Result);
       end if;
-      Value := Parameters.Get_Parameter ("openid.ns.ax");
+      Value := To_Unbounded_String (Request.Get_Parameter ("openid.ns.ax"));
       if Value = "http://openid.net/srv/ax/1.0" then
-         Extract_Profile ("openid.ax.value", Parameters, Result);
+         Extract_Profile ("openid.ax.value", Request, Result);
       end if;
-      Value := Parameters.Get_Parameter ("openid.ns.ext1");
+      Value := To_Unbounded_String (Request.Get_Parameter ("openid.ns.ext1"));
       if Value = "http://openid.net/srv/ax/1.0" then
-         Extract_Profile ("openid.ext1.value", Parameters, Result);
+         Extract_Profile ("openid.ext1.value", Request, Result);
       end if;
    end Verify;
 
    --  ------------------------------
    --  Verify the signature part of the result
    --  ------------------------------
-   procedure Verify_Signature (Realm      : in Manager;
-                               Assoc      : in Association;
-                               Parameters : in Parameter_List'Class;
-                               Result     : in out Authentication) is
-      Signed : constant Unbounded_String := Parameters.Get_Parameter ("openid.signed");
-      Len    : constant Natural := Length (Signed);
+   procedure Verify_Signature (Realm   : in Manager;
+                               Assoc   : in Association;
+                               Request : in ASF.Requests.Request'Class;
+                               Result  : in out Authentication) is
+      Signed : constant String := Request.Get_Parameter ("openid.signed");
+      Len    : constant Natural := Signed'Length;
       Sign   : Unbounded_String;
       Param  : Unbounded_String;
       Pos    : Natural := 1;
@@ -336,15 +338,15 @@ package body Security.Openid is
       while Pos < Len loop
          Last := Index (Signed, ",", Pos);
          if Last > 0 then
-            Param := Unbounded_Slice (Signed, Pos, Last - 1);
+            Param := To_Unbounded_String (Signed (Pos .. Last - 1));
             Pos  := Last + 1;
          else
-            Param := Unbounded_Slice (Signed, Pos, Len);
+            Param := To_Unbounded_String (Signed (Pos .. Len));
             Pos  := Len + 1;
          end if;
          declare
             Name  : constant String := "openid." & To_String (Param);
-            Value : constant Unbounded_String := Parameters.Get_Parameter (Name);
+            Value : constant String := Request.Get_Parameter (Name);
          begin
             Append (Sign, Name);
             Append (Sign, ':');
@@ -355,27 +357,27 @@ package body Security.Openid is
       Log.Info ("Signing {0}", To_String (Sign));
 
       declare
-         S         : Unbounded_String := Parameters.Get_Parameter ("openid.sig");
+         S         : String := Request.Get_Parameter ("openid.sig");
          Signature : GNAT.SHA1.Context;
          R         : GNAT.SHA1.Message_Digest;
       begin
          GNAT.SHA1.Update (Signature, To_String (Assoc.Mac_Key));
          GNAT.SHA1.Update (Signature, To_String (Sign));
          R := GNAT.SHA1.Digest (Signature);
-         Log.Info ("Signature: {0} - {1}", R, To_String (S));
+         Log.Info ("Signature: {0} - {1}", R, S);
       end;
    end Verify_Signature;
 
    --  ------------------------------
    --  Verify the authentication result
    --  ------------------------------
-   procedure Verify_Discovered (Realm      : in out Manager;
-                                Assoc      : in Association;
-                                Parameters : in Parameter_List'Class;
-                                Result     : out Authentication) is
+   procedure Verify_Discovered (Realm   : in out Manager;
+                                Assoc   : in Association;
+                                Request : in ASF.Requests.Request'Class;
+                                Result  : out Authentication) is
    begin
-      Result.Claimed_Id := Parameters.Get_Parameter ("openid.claimed_id");
-      Result.Identity := Parameters.Get_Parameter ("openid.identity");
+      Result.Claimed_Id := To_Unbounded_String (Request.Get_Parameter ("openid.claimed_id"));
+      Result.Identity   := To_Unbounded_String (Request.Get_Parameter ("openid.identity"));
    end Verify_Discovered;
 
    function To_String (OP : End_Point) return String is

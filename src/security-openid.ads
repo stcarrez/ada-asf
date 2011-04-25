@@ -18,6 +18,14 @@
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
 with Ada.Finalization;
+
+with ASF.Requests;
+
+--  The <b>Security.Openid</b> package implements an authentication framework based
+--  on OpenID 2.0.
+--
+--  See OpenID Authentication 2.0 - Final
+--  http://openid.net/specs/openid-authentication-2_0.html
 package Security.Openid is
 
    Invalid_End_Point : exception;
@@ -56,22 +64,24 @@ package Security.Openid is
    --  Get the email address
    function Get_Email (Auth : Authentication) return String;
 
-   type Parameter is record
-      Name  : Ada.Strings.Unbounded.Unbounded_String;
-      Value : Ada.Strings.Unbounded.Unbounded_String;
-   end record;
-
-   type Parameter_Array is array (Natural range <>) of Parameter;
-
-   type Parameter_List is interface;
-
-   function Get_Parameter (List : Parameter_List;
-                           Name : String)
-                           return Ada.Strings.Unbounded.Unbounded_String is abstract;
-
    --  ------------------------------
    --  OpenID Manager
    --  ------------------------------
+   --  The process is the following:
+   --
+   --  o <b>Initialize</b> is called to configure the OpenID realm and set the
+   --    OpenID return callback CB.
+   --  o <b>Discover</b> is called to retrieve from the OpenID provider the XRDS
+   --    stream and identify the provider.  An <b>End_Point</b> is returned.
+   --  o <b>Associate</b> is called to make the association with the <b>End_Point</b>.
+   --    The <b>Association</b> record holds session, and authentication.
+   --  o <b>Get_Authentication_URL</b> builds the provider OpenID authentication
+   --    URL for the association.
+   --  o The user should be redirected to the authentication URL.
+   --  o The OpenID provider authenticate the user and redirects the user to the callback CB.
+   --  o The association is decoded from the callback parameter.
+   --  o <b>Verify</b> is called with the association to check the result and
+   --    obtain the authentication results.
    type Manager is abstract tagged limited private;
 
    --  Initialize the OpenID realm.
@@ -99,22 +109,22 @@ package Security.Openid is
                                     Assoc : in Association) return String;
 
    --  Verify the authentication result
-   procedure Verify (Realm      : in out Manager;
-                     Assoc      : in Association;
-                     Parameters : in Parameter_List'Class;
-                     Result     : out Authentication);
+   procedure Verify (Realm   : in out Manager;
+                     Assoc   : in Association;
+                     Request : in ASF.Requests.Request'Class;
+                     Result  : out Authentication);
 
    --  Verify the authentication result
-   procedure Verify_Discovered (Realm      : in out Manager;
-                                Assoc      : in Association;
-                                Parameters : in Parameter_List'Class;
-                                Result     : out Authentication);
+   procedure Verify_Discovered (Realm   : in out Manager;
+                                Assoc   : in Association;
+                                Request : in ASF.Requests.Request'Class;
+                                Result  : out Authentication);
 
    --  Verify the signature part of the result
-   procedure Verify_Signature (Realm      : in Manager;
-                               Assoc      : in Association;
-                               Parameters : in Parameter_List'Class;
-                               Result     : in out Authentication);
+   procedure Verify_Signature (Realm   : in Manager;
+                               Assoc   : in Association;
+                               Request : in ASF.Requests.Request'Class;
+                               Result  : in out Authentication);
 
    --  Read the XRDS document from the URI and initialize the OpenID provider end point.
    procedure Discover_XRDS (Realm  : in out Manager;

@@ -563,9 +563,10 @@ package body ASF.Requests is
          begin
             Ctx.Create_Session (Req.Info.Session);
             declare
-               C : constant ASF.Cookies.Cookie
+               C : ASF.Cookies.Cookie
                  := ASF.Cookies.Create ("SID", Req.Info.Session.Get_Id);
             begin
+               ASF.Cookies.Set_Path (C, Req.Get_Context_Path);
                Req.Info.Response.Add_Cookie (Cookie => C);
             end;
          end;

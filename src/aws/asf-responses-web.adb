@@ -62,6 +62,10 @@ package body ASF.Responses.Web is
             return S201;
          when 202 =>
             return S202;
+         when 301 =>
+            return S301;
+         when 302 =>
+            return S302;
          when 400 =>
             return S400;
          when 401 =>
@@ -131,15 +135,42 @@ package body ASF.Responses.Web is
    end Add_Header;
 
    --  ------------------------------
+   --  Sends a temporary redirect response to the client using the specified redirect
+   --  location URL. This method can accept relative URLs; the servlet container must
+   --  convert the relative URL to an absolute URL before sending the response to the
+   --  client. If the location is relative without a leading '/' the container
+   --  interprets it as relative to the current request URI. If the location is relative
+   --  with a leading '/' the container interprets it as relative to the servlet
+   --  container root.
+   --
+   --  If the response has already been committed, this method throws an
+   --  IllegalStateException. After using this method, the response should be
+   --  considered to be committed and should not be written to.
+   --  ------------------------------
+   procedure Send_Redirect (Resp     : in out Response;
+                            Location : in String) is
+   begin
+      Response'Class (Resp).Set_Status (SC_FOUND);
+      Response'Class (Resp).Set_Header (Name  => "Location",
+                                        Value => Location);
+      Resp.Redirect := True;
+   end Send_Redirect;
+
+   --  ------------------------------
    --  Prepare the response data by collecting the status, content type and message body.
    --  ------------------------------
    procedure Build (Resp : in out Response) is
    begin
-      AWS.Response.Set.Content_Type (D     => Resp.Data,
-                                     Value => Resp.Get_Content_Type);
+      if not Resp.Redirect then
+         AWS.Response.Set.Content_Type (D     => Resp.Data,
+                                        Value => Resp.Get_Content_Type);
+         Resp.Content.Flush;
+      else
+         AWS.Response.Set.Mode (D     => Resp.Data,
+                                Value => AWS.Response.Header);
+      end if;
       AWS.Response.Set.Status_Code (D     => Resp.Data,
                                     Value => To_Status_Code (Resp.Get_Status));
-      Resp.Content.Flush;
    end Build;
 
    --  ------------------------------

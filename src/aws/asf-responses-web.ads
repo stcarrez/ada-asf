@@ -55,6 +55,20 @@ package ASF.Responses.Web is
                          Name  : in String;
                          Value : in String);
 
+   --  Sends a temporary redirect response to the client using the specified redirect
+   --  location URL. This method can accept relative URLs; the servlet container must
+   --  convert the relative URL to an absolute URL before sending the response to the
+   --  client. If the location is relative without a leading '/' the container
+   --  interprets it as relative to the current request URI. If the location is relative
+   --  with a leading '/' the container interprets it as relative to the servlet
+   --  container root.
+   --
+   --  If the response has already been committed, this method throws an
+   --  IllegalStateException. After using this method, the response should be
+   --  considered to be committed and should not be written to.
+   procedure Send_Redirect (Resp     : in out Response;
+                            Location : in String);
+
    --  Prepare the response data by collecting the status, content type and message body.
    procedure Build (Resp : in out Response);
 
@@ -67,8 +81,9 @@ private
    procedure Initialize (Resp : in out Response);
 
    type Response is new ASF.Responses.Response and Util.Streams.Output_Stream with record
-      Data    : AWS.Response.Data;
-      Content : aliased Util.Streams.Texts.Print_Stream;
+      Data     : AWS.Response.Data;
+      Content  : aliased Util.Streams.Texts.Print_Stream;
+      Redirect : Boolean := False;
    end record;
 
 end ASF.Responses.Web;

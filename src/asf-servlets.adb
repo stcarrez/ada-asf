@@ -421,7 +421,13 @@ package body ASF.Servlets is
    begin
       return R : Request_Dispatcher do
          R.Mapping := Context.Find_Mapping (URI => Path);
-         R.Path    := To_Unbounded_String (Path);
+         if R.Mapping = null then
+            R.Path := To_Unbounded_String (Path);
+         elsif Path'First + R.Mapping.Path_Pos < Path'Last then
+            R.Path := To_Unbounded_String (Path (Path'First + R.Mapping.Path_Pos - 1 .. Path'Last));
+         else
+            R.Path := Null_Unbounded_String;
+         end if;
       end return;
    end Get_Request_Dispatcher;
 
@@ -709,6 +715,7 @@ package body ASF.Servlets is
                                    Child_Map        => null,
                                    Next_Servlet_Map => Server.Mappings,
                                    Filters          => null,
+                                   Path_Pos         => 1,
                                    Servlet          => Server,
                                    Next_Map         => Registry.Extension_Mapping);
          Registry.Extension_Mapping := Map;
@@ -779,6 +786,7 @@ package body ASF.Servlets is
                                         Filters          => null,
                                         Servlet          => Server,
                                         Next_Servlet_Map => Server.Mappings,
+                                        Path_Pos         => First_Pos - 1,
                                         Next_Map         => null);
 
          elsif Is_Last then
@@ -789,6 +797,7 @@ package body ASF.Servlets is
                                         Filters          => null,
                                         Servlet          => Server,
                                         Next_Servlet_Map => Server.Mappings,
+                                        Path_Pos         => Last_Pos,
                                         Next_Map         => null);
 
          else
@@ -799,6 +808,7 @@ package body ASF.Servlets is
                                         Filters          => null,
                                         Next_Servlet_Map => null,
                                         Servlet          => null,
+                                        Path_Pos         => 0,
                                         Next_Map         => null);
          end if;
 

@@ -412,6 +412,9 @@ private
 
       --  The list of filters to invoke before the servlet
       Filters   : Filter_List_Access;
+
+      --  The position of the first character to build the path info part of the request.
+      Path_Pos  : Natural := 0;
    end record;
 
    overriding

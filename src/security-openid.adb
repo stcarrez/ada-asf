@@ -17,11 +17,11 @@
 -----------------------------------------------------------------------
 with Ada.Strings.Fixed;
 with Ada.Text_IO;
-with Ada.Streams;
 
 with ASF.Clients;
 with ASF.Responses;
 
+with Util.Strings;
 with Util.Encoders;
 with Util.Log.Loggers;
 with Util.Encoders.SHA1;
@@ -201,6 +201,8 @@ package body Security.Openid is
    procedure Associate (Realm  : in out Manager;
                         OP     : in End_Point;
                         Result : out Association) is
+      pragma Unreferenced (Realm);
+
       Output : Unbounded_String;
       URI    : constant String := To_String (OP.URL);
       Params : constant String := Get_Association_Query;
@@ -408,7 +410,8 @@ package body Security.Openid is
                                Assoc   : in Association;
                                Request : in ASF.Requests.Request'Class;
                                Result  : in out Authentication) is
-      use Ada.Streams;
+      pragma Unreferenced (Realm);
+
       use type Util.Encoders.SHA1.Digest;
 
       Signed : constant String := Request.Get_Parameter ("openid.signed");
@@ -463,6 +466,7 @@ package body Security.Openid is
                                 Assoc   : in Association;
                                 Request : in ASF.Requests.Request'Class;
                                 Result  : out Authentication) is
+      pragma Unreferenced (Realm, Assoc);
    begin
       Result.Claimed_Id := To_Unbounded_String (Request.Get_Parameter ("openid.claimed_id"));
       Result.Identity   := To_Unbounded_String (Request.Get_Parameter ("openid.identity"));

@@ -21,6 +21,7 @@ with AWS.Response;
 
 with ASF.Requests.Web;
 with ASF.Responses.Web;
+with ASF.Clients.Web;
 
 with Util.Log.Loggers;
 package body ASF.Server.Web is
@@ -84,4 +85,6 @@ package body ASF.Server.Web is
       return Resp.Get_Data;
    end Server_Callback;
 
+begin
+   ASF.Clients.Web.Register;
 end ASF.Server.Web;

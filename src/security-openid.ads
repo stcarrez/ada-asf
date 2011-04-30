@@ -53,7 +53,7 @@ package Security.Openid is
    --  Dump the association as a string (for debugging purposes)
    function To_String (Assoc : Association) return String;
 
-   type Auth_Result is (AUTHENTICATED, CANCEL, SETUP_NEEDED, UNKNOWN);
+   type Auth_Result is (AUTHENTICATED, CANCEL, SETUP_NEEDED, UNKNOWN, INVALID_SIGNATURE);
 
    --  ------------------------------
    --  OpenID provider
@@ -62,7 +62,25 @@ package Security.Openid is
    type Authentication is private;
 
    --  Get the email address
-   function Get_Email (Auth : Authentication) return String;
+   function Get_Email (Auth : in Authentication) return String;
+
+   --  Get the user first name.
+   function Get_First_Name (Auth : in Authentication) return String;
+
+   -- Get the user last name.
+   function Get_Last_Name (Auth : in Authentication) return String;
+
+   --  Get the user identity.
+   function Get_Identity (Auth : in Authentication) return String;
+
+   --  Get the user claimed identity.
+   function Get_Claimed_Id (Auth : in Authentication) return String;
+
+   --  Get the user language.
+   function Get_Language (Auth : in Authentication) return String;
+
+   --  Get the result of the authentication.
+   function Get_Status (Auth : in Authentication) return Auth_Result;
 
    --  ------------------------------
    --  OpenID Manager
@@ -82,7 +100,7 @@ package Security.Openid is
    --  o The association is decoded from the callback parameter.
    --  o <b>Verify</b> is called with the association to check the result and
    --    obtain the authentication results.
-   type Manager is abstract tagged limited private;
+   type Manager is tagged limited private;
 
    --  Initialize the OpenID realm.
    procedure Initialize (Realm     : in out Manager;
@@ -139,16 +157,6 @@ package Security.Openid is
                            Content : in String;
                            Result  : out End_Point);
 
-   procedure Get_Request (Realm  : in Manager;
-                          URI    : in String;
-                          Accept_Format : in String;
-                          Result : out Ada.Strings.Unbounded.Unbounded_String) is abstract;
-
-   procedure Post_Request (Realm  : in Manager;
-                           URI    : in String;
-                           Params : in String;
-                           Result : out Ada.Strings.Unbounded.Unbounded_String) is abstract;
-
 private
 
    use Ada.Strings.Unbounded;
@@ -182,7 +190,7 @@ private
       Expired    : Ada.Calendar.Time;
    end record;
 
-   type Manager is abstract new Ada.Finalization.Limited_Controlled with record
+   type Manager is new Ada.Finalization.Limited_Controlled with record
       Realm     : Unbounded_String;
       Return_To : Unbounded_String;
    end record;

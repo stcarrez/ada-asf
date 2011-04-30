@@ -17,8 +17,15 @@
 -----------------------------------------------------------------------
 with Ada.Strings.Fixed;
 with Ada.Text_IO;
+with Ada.Streams;
+
+with ASF.Clients;
+with ASF.Responses;
+
+with Util.Encoders;
 with Util.Log.Loggers;
-with GNAT.SHA1;
+with Util.Encoders.SHA1;
+with Util.Encoders.HMAC.SHA1;
 package body Security.Openid is
 
    use Ada.Strings.Fixed;
@@ -27,18 +34,64 @@ package body Security.Openid is
    Log : constant Util.Log.Loggers.Logger := Loggers.Create ("Security.Openid");
 
    --  ------------------------------
-   --  Read-only Bean interface.
-   --  ------------------------------
-
-   --  ------------------------------
    --  Get the email address
    --  ------------------------------
-   function Get_Email (Auth : Authentication) return String is
+   function Get_Email (Auth : in Authentication) return String is
    begin
       return To_String (Auth.Email);
    end Get_Email;
 
+   --  ------------------------------
+   --  Get the user first name.
+   --  ------------------------------
+   function Get_First_Name (Auth : in Authentication) return String is
+   begin
+      return To_String (Auth.First_Name);
+   end Get_First_Name;
+
+   --  ------------------------------
+   -- Get the user last name.
+   --  ------------------------------
+   function Get_Last_Name (Auth : in Authentication) return String is
+   begin
+      return To_String (Auth.Last_Name);
+   end Get_Last_Name;
+
+   --  ------------------------------
+   --  Get the user identity.
+   --  ------------------------------
+   function Get_Identity (Auth : in Authentication) return String is
+   begin
+      return To_String (Auth.Identity);
+   end Get_Identity;
+
+   --  ------------------------------
+   --  Get the user claimed identity.
+   --  ------------------------------
+   function Get_Claimed_Id (Auth : in Authentication) return String is
+   begin
+      return To_String (Auth.Claimed_Id);
+   end Get_Claimed_Id;
+
+   --  ------------------------------
+   --  Get the user language.
+   --  ------------------------------
+   function Get_Language (Auth : in Authentication) return String is
+   begin
+      return To_String (Auth.Language);
+   end Get_Language;
+
+   --  ------------------------------
+   --  Get the result of the authentication.
+   --  ------------------------------
+   function Get_Status (Auth : in Authentication) return Auth_Result is
+   begin
+      return Auth.Status;
+   end Get_Status;
+
+   --  ------------------------------
    --  Initialize the OpenID realm.
+   --  ------------------------------
    procedure Initialize (Realm     : in out Manager;
                          Name      : in String;
                          Return_To : in String) is
@@ -47,10 +100,12 @@ package body Security.Openid is
       Realm.Return_To := To_Unbounded_String (Return_To);
    end Initialize;
 
+   --  ------------------------------
    --  Discover the OpenID provider that must be used to authenticate the user.
    --  The <b>Name</b> can be an URL or an alias that identifies the provider.
    --  A cached OpenID provider can be returned.
    --  (See OpenID Section 7.3 Discovery)
+   --  ------------------------------
    procedure Discover (Realm  : in out Manager;
                        Name   : in String;
                        Result : out End_Point) is
@@ -66,14 +121,21 @@ package body Security.Openid is
    procedure Discover_XRDS (Realm  : in out Manager;
                             URI    : in String;
                             Result : out End_Point) is
-      Output : Unbounded_String;
+      Client : ASF.Clients.Client;
+      Reply  : ASF.Clients.Response;
    begin
       Log.Info ("Discover XRDS on {0}", URI);
 
-      Manager'Class (Realm).Get_Request (URI           => URI,
-                                         Accept_Format => "application/xrds+xml",
-                                         Result        => Output);
-      Manager'Class (Realm).Extract_XRDS (Content => To_String (Output),
+      Client.Add_Header ("Accept", "application/xrds+xml");
+      Client.Do_Get (URL   => URI,
+                     Reply => Reply);
+      if Reply.Get_Status /= ASF.Responses.SC_OK then
+         Log.Error ("Received error {0} when discovering XRDS on {1}",
+                    Util.Strings.Image (Reply.Get_Status), URI);
+         raise Service_Error with "Discovering XRDS of OpenID provider failed.";
+      end if;
+
+      Manager'Class (Realm).Extract_XRDS (Content => Reply.Get_Body,
                                           Result  => Result);
    end Discover_XRDS;
 
@@ -140,12 +202,21 @@ package body Security.Openid is
                         OP     : in End_Point;
                         Result : out Association) is
       Output : Unbounded_String;
+      URI    : constant String := To_String (OP.URL);
       Params : constant String := Get_Association_Query;
+      Client : ASF.Clients.Client;
+      Reply  : ASF.Clients.Response;
       Pos, Last, N : Natural;
    begin
-      Manager'Class (Realm).Post_Request (URI    => To_String (OP.URL),
-                                          Params => Params,
-                                          Result => Output);
+      Client.Do_Post (URL   => URI,
+                      Data  => Params,
+                      Reply => Reply);
+      if Reply.Get_Status /= ASF.Responses.SC_OK then
+         Log.Error ("Received error {0} when creating assoication with {1}",
+                    Util.Strings.Image (Reply.Get_Status), URI);
+         raise Service_Error with "Cannot create association with OpenID provider.";
+      end if;
+      Output := To_Unbounded_String (Reply.Get_Body);
       Pos := 1;
       while Pos < Length (Output) loop
          N := Index (Output, ":", Pos);
@@ -181,7 +252,7 @@ package body Security.Openid is
          end;
          Pos := Last + 2;
       end loop;
-      Ada.Text_IO.Put_Line ("Result: " & To_String (Output));
+      Log.Debug ("Received end point {0}", To_String (Output));
    end Associate;
 
    function Get_Authentication_URL (Realm : in Manager;
@@ -218,18 +289,6 @@ package body Security.Openid is
       Append (Result, Realm.Realm);
       return To_String (Result);
    end Get_Authentication_URL;
-
-   function Get_Full_Name (Request : in ASF.Requests.Request'Class;
-                           Axa     : String) return String is
-   begin
-      return Request.Get_Parameter ("openid." & Axa & ".value.fullname");
-   end Get_Full_Name;
-
-   function Get_Last_Name (Request : in ASF.Requests.Request'Class;
-                           Axa     : String) return String is
-   begin
-      return Request.Get_Parameter ("openid." & Axa & ".value.lastname");
-   end Get_Last_Name;
 
    procedure Set_Result (Result  : in out Authentication;
                          Status  : in Auth_Result;
@@ -272,53 +331,74 @@ package body Security.Openid is
                      Assoc   : in Association;
                      Request : in ASF.Requests.Request'Class;
                      Result  : out Authentication) is
-      Value  : Unbounded_String := To_Unbounded_String (Request.Get_Parameter ("openid.mode"));
+      Mode : constant String := Request.Get_Parameter ("openid.mode");
    begin
       --  Step 1: verify the response status
-      if Value = "cancel" then
+      if Mode = "cancel" then
          Set_Result (Result, CANCEL, "Authentication refused");
          return;
       end if;
 
-      if Value = "setup_needed" then
+      if Mode = "setup_needed" then
          Set_Result (Result, SETUP_NEEDED, "Setup is needed");
          return;
       end if;
 
-      if Value /= "id_res" then
+      if Mode /= "id_res" then
          Set_Result (Result, UNKNOWN, "Setup is needed");
          return;
       end if;
 
       --  OpenID Section: 11.1.  Verifying the Return URL
-      Value := To_Unbounded_String (Request.Get_Parameter ("openid.return_to"));
-      if Value /= Realm.Return_To then
-         Set_Result (Result, UNKNOWN, "openid.return_to URL does not match");
-         return;
-      end if;
+      declare
+         Value : constant String := Request.Get_Parameter ("openid.return_to");
+      begin
+         if Value /= Realm.Return_To then
+            Set_Result (Result, UNKNOWN, "openid.return_to URL does not match");
+            return;
+         end if;
+      end;
 
       --  OpenID Section: 11.2.  Verifying Discovered Information
       Manager'Class (Realm).Verify_Discovered (Assoc, Request, Result);
 
       --  OpenID Section: 11.3.  Checking the Nonce
-      Value := To_Unbounded_String (Request.Get_Parameter ("openid.response_nonce"));
+      declare
+         Value : constant String := Request.Get_Parameter ("openid.response_nonce");
+      begin
+         if Value = "" then
+            Set_Result (Result, UNKNOWN, "openid.response_nonce is empty");
+            return;
+         end if;
+      end;
 
       --  OpenID Section: 11.4.  Verifying Signatures
       Manager'Class (Realm).Verify_Signature (Assoc, Request, Result);
 
-      --  Extract profile information
-      Value := To_Unbounded_String (Request.Get_Parameter ("openid.ns.sreg"));
-      if Value = "http://openid.net/extensions/sreg/1.1" then
-         Extract_Profile ("openid.sreg", Request, Result);
-      end if;
-      Value := To_Unbounded_String (Request.Get_Parameter ("openid.ns.ax"));
-      if Value = "http://openid.net/srv/ax/1.0" then
-         Extract_Profile ("openid.ax.value", Request, Result);
-      end if;
-      Value := To_Unbounded_String (Request.Get_Parameter ("openid.ns.ext1"));
-      if Value = "http://openid.net/srv/ax/1.0" then
-         Extract_Profile ("openid.ext1.value", Request, Result);
-      end if;
+      declare
+         Value : constant String := Request.Get_Parameter ("openid.ns.sreg");
+      begin
+         --  Extract profile information
+         if Value = "http://openid.net/extensions/sreg/1.1" then
+            Extract_Profile ("openid.sreg", Request, Result);
+         end if;
+      end;
+
+      declare
+         Value : constant String := Request.Get_Parameter ("openid.ns.ax");
+      begin
+         if Value = "http://openid.net/srv/ax/1.0" then
+            Extract_Profile ("openid.ax.value", Request, Result);
+         end if;
+      end;
+
+      declare
+         Value : constant String := Request.Get_Parameter ("openid.ns.ext1");
+      begin
+         if Value = "http://openid.net/srv/ax/1.0" then
+            Extract_Profile ("openid.ext1.value", Request, Result);
+         end if;
+      end;
    end Verify;
 
    --  ------------------------------
@@ -328,6 +408,9 @@ package body Security.Openid is
                                Assoc   : in Association;
                                Request : in ASF.Requests.Request'Class;
                                Result  : in out Authentication) is
+      use Ada.Streams;
+      use type Util.Encoders.SHA1.Digest;
+
       Signed : constant String := Request.Get_Parameter ("openid.signed");
       Len    : constant Natural := Signed'Length;
       Sign   : Unbounded_String;
@@ -348,23 +431,28 @@ package body Security.Openid is
             Name  : constant String := "openid." & To_String (Param);
             Value : constant String := Request.Get_Parameter (Name);
          begin
-            Append (Sign, Name);
+            Append (Sign, Param);
             Append (Sign, ':');
             Append (Sign, Value);
             Append (Sign, ASCII.LF);
          end;
       end loop;
-      Log.Info ("Signing {0}", To_String (Sign));
+      Log.Info ("Signing: '{0}'", To_String (Sign));
 
       declare
-         S         : String := Request.Get_Parameter ("openid.sig");
-         Signature : GNAT.SHA1.Context;
-         R         : GNAT.SHA1.Message_Digest;
+         Decoder : constant Util.Encoders.Encoder := Util.Encoders.Create (Util.Encoders.BASE_64);
+         S       : constant String := Request.Get_Parameter ("openid.sig");
+         Key     : constant String := Decoder.Decode (To_String (Assoc.Mac_Key));
+
+         R : constant Util.Encoders.SHA1.Base64_Digest
+           := Util.Encoders.HMAC.SHA1.Sign_Base64 (Key, To_String (Sign));
       begin
-         GNAT.SHA1.Update (Signature, To_String (Assoc.Mac_Key));
-         GNAT.SHA1.Update (Signature, To_String (Sign));
-         R := GNAT.SHA1.Digest (Signature);
-         Log.Info ("Signature: {0} - {1}", R, S);
+         Log.Info ("Signature: {0} - {1}", S, R);
+         if R /= S then
+            Set_Result (Result, INVALID_SIGNATURE, "openid.response_nonce is empty");
+         else
+            Set_Result (Result, AUTHENTICATED, "authenticated");
+         end if;
       end;
    end Verify_Signature;
 

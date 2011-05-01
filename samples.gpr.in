@@ -6,7 +6,7 @@ with "asf";
 
 project Samples is
 
-   Mains := ("render.adb", "volume_server.adb", "asf_volume_server.adb");
+   Mains := ("render.adb", "volume_server.adb", "asf_volume_server.adb", "openid.adb");
 
    for Main use Mains;
 

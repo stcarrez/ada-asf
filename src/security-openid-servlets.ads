@@ -106,6 +106,13 @@ package Security.Openid.Servlets is
                      Request  : in out ASF.Requests.Request'Class;
                      Response : in out ASF.Responses.Response'Class);
 
+   --  Create a principal object that correspond to the authenticated user identified
+   --  by the <b>Auth</b> information.  The principal will be attached to the session
+   --  and will be destroyed when the session is closed.
+   procedure Create_Principal (Server : in Verify_Auth_Servlet;
+                               Auth   : in Authentication;
+                               Result : out ASF.Principals.Principal_Access);
+
 private
    function Get_Provider_URL (Server   : in Request_Auth_Servlet;
                               Request  : in ASF.Requests.Request'Class) return String;

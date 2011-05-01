@@ -58,6 +58,14 @@ package body Security.Openid is
    end Get_Last_Name;
 
    --  ------------------------------
+   --  Get the user full name.
+   --  ------------------------------
+   function Get_Full_Name (Auth : in Authentication) return String is
+   begin
+      return To_String (Auth.Full_Name);
+   end Get_Full_Name;
+
+   --  ------------------------------
    --  Get the user identity.
    --  ------------------------------
    function Get_Identity (Auth : in Authentication) return String is
@@ -82,12 +90,58 @@ package body Security.Openid is
    end Get_Language;
 
    --  ------------------------------
+   --  Get the user country.
+   --  ------------------------------
+   function Get_Country (Auth : in Authentication) return String is
+   begin
+      return To_String (Auth.Country);
+   end Get_Country;
+
+   --  ------------------------------
    --  Get the result of the authentication.
    --  ------------------------------
    function Get_Status (Auth : in Authentication) return Auth_Result is
    begin
       return Auth.Status;
    end Get_Status;
+
+   --  ------------------------------
+   --  OpenID Default principal
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Returns true if the given permission is stored in the user principal.
+   --  ------------------------------
+   function Has_Permission (User       : in Principal;
+                            Permission : in Permissions.Permission_Type) return Boolean is
+      pragma Unreferenced (User, Permission);
+   begin
+      return True;
+   end Has_Permission;
+
+   --  ------------------------------
+   --  Get the principal name.
+   --  ------------------------------
+   function Get_Name (From : in Principal) return String is
+   begin
+      return Get_First_Name (From.Auth) & " " & Get_Last_Name (From.Auth);
+   end Get_Name;
+
+   --  ------------------------------
+   --  Get the user email address.
+   --  ------------------------------
+   function Get_Email (From : in Principal) return String is
+   begin
+      return Get_Email (From.Auth);
+   end Get_Email;
+
+   --  ------------------------------
+   --  Get the authentication data.
+   --  ------------------------------
+   function Get_Authentication (From : in Principal) return Authentication is
+   begin
+      return From.Auth;
+   end Get_Authentication;
 
    --  ------------------------------
    --  Initialize the OpenID realm.
@@ -324,6 +378,8 @@ package body Security.Openid is
       Extract_Value (Result.Language, Request, Prefix & ".language");
       Extract_Value (Result.Full_Name, Request, Prefix & ".fullname");
       Extract_Value (Result.Timezone, Request, Prefix & ".timezone");
+      Extract_Value (Result.First_Name, Request, Prefix & ".firstname");
+      Extract_Value (Result.Last_Name, Request, Prefix & ".lastname");
    end Extract_Profile;
 
    --  ------------------------------

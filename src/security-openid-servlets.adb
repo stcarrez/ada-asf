@@ -133,11 +133,11 @@ package body Security.Openid.Servlets is
                      Response : in out ASF.Responses.Response'Class) is
 
       Session : ASF.Sessions.Session := Request.Get_Session (Create => False);
-      Bean    : Util.Beans.Objects.Object := Session.Get_Attribute (OPENID_ASSOC_ATTRIBUTE);
+      Bean    : constant Util.Beans.Objects.Object := Session.Get_Attribute (OPENID_ASSOC_ATTRIBUTE);
       Mgr     : Security.Openid.Manager;
-      OP      : Security.Openid.End_Point;
       Assoc   : Association_Access;
       Auth    : Security.Openid.Authentication;
+      Ctx     : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
    begin
       Log.Info ("Verify openid authentication");
 
@@ -161,6 +161,34 @@ package body Security.Openid.Servlets is
       end if;
 
       Log.Info ("Authentication succeeded for {0}", Get_Email (Auth));
+
+      --  Get a user principal and set it on the session.
+      declare
+         User : ASF.Principals.Principal_Access;
+         URL  : constant String := Ctx.Get_Init_Parameter ("openid.success_url");
+      begin
+         Verify_Auth_Servlet'Class (Server).Create_Principal (Auth, User);
+         Session.Set_Principal (User);
+
+         Log.Info ("Redirect user to success URL: {0}", URL);
+         Response.Send_Redirect (Location => URL);
+      end;
    end Do_Get;
+
+   --  ------------------------------
+   --  Create a principal object that correspond to the authenticated user identified
+   --  by the <b>Auth</b> information.  The principal will be attached to the session
+   --  and will be destroyed when the session is closed.
+   --  ------------------------------
+   procedure Create_Principal (Server : in Verify_Auth_Servlet;
+                               Auth   : in Authentication;
+                               Result : out ASF.Principals.Principal_Access) is
+      pragma Unreferenced (Server);
+
+      P : constant Principal_Access := new Principal;
+   begin
+      P.Auth := Auth;
+      Result := P.all'Access;
+   end Create_Principal;
 
 end Security.Openid.Servlets;

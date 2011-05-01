@@ -20,6 +20,8 @@ with Ada.Calendar;
 with Ada.Finalization;
 
 with ASF.Requests;
+with ASF.Principals;
+with Security.Permissions;
 
 --  The <b>Security.Openid</b> package implements an authentication framework based
 --  on OpenID 2.0.
@@ -70,6 +72,9 @@ package Security.Openid is
    -- Get the user last name.
    function Get_Last_Name (Auth : in Authentication) return String;
 
+   --  Get the user full name.
+   function Get_Full_Name (Auth : in Authentication) return String;
+
    --  Get the user identity.
    function Get_Identity (Auth : in Authentication) return String;
 
@@ -79,8 +84,30 @@ package Security.Openid is
    --  Get the user language.
    function Get_Language (Auth : in Authentication) return String;
 
+   --  Get the user country.
+   function Get_Country (Auth : in Authentication) return String;
+
    --  Get the result of the authentication.
    function Get_Status (Auth : in Authentication) return Auth_Result;
+
+   --  ------------------------------
+   --  OpenID Default principal
+   --  ------------------------------
+   type Principal is new ASF.Principals.Principal with private;
+   type Principal_Access is access all Principal'Class;
+
+   --  Returns true if the given permission is stored in the user principal.
+   function Has_Permission (User       : in Principal;
+                            Permission : in Permissions.Permission_Type) return Boolean;
+
+   --  Get the principal name.
+   function Get_Name (From : in Principal) return String;
+
+   --  Get the user email address.
+   function Get_Email (From : in Principal) return String;
+
+   --  Get the authentication data.
+   function Get_Authentication (From : in Principal) return Authentication;
 
    --  ------------------------------
    --  OpenID Manager
@@ -193,6 +220,10 @@ private
    type Manager is new Ada.Finalization.Limited_Controlled with record
       Realm     : Unbounded_String;
       Return_To : Unbounded_String;
+   end record;
+
+   type Principal is new ASF.Principals.Principal with record
+      Auth : Authentication;
    end record;
 
 end Security.Openid;

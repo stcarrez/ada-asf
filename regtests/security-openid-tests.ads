@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  EL testsuite - EL Testsuite
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  security-openid - Tests for OpenID
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,33 +18,16 @@
 
 with AUnit.Test_Suites;
 with AUnit.Test_Fixtures;
-with Ada.Strings.Unbounded;
 package Security.Openid.Tests is
 
    use Ada.Strings.Unbounded;
 
-   type Manager is new Security.Openid.Manager with record
-      File : Unbounded_String;
-   end record;
-
-   overriding
-   procedure Get_Request (Realm  : in Manager;
-                          URI    : in String;
-                          Accept_Format : in String;
-                          Result : out Ada.Strings.Unbounded.Unbounded_String);
-
-   overriding
-   procedure Post_Request (Realm  : in Manager;
-                           URI    : in String;
-                           Params : in String;
-                           Result : out Ada.Strings.Unbounded.Unbounded_String);
-
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
-   type Test is new AUnit.Test_Fixtures.Test_Fixture with record
-      N : Natural;
-   end record;
+   type Test is new AUnit.Test_Fixtures.Test_Fixture with null record;
 
    procedure Test_Discovery (T : in out Test);
+
+   procedure Test_Verify_Signature (T : in out Test);
 
 end Security.Openid.Tests;

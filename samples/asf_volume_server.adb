@@ -24,11 +24,14 @@ with ASF.Filters.Dump;
 with ASF.Applications;
 with ASF.Applications.Main;
 with Util.Beans.Objects;
+with Util.Log.Loggers;
 
 with Volume;
 procedure Asf_Volume_Server is
 
    CONTEXT_PATH : constant String := "/volume";
+
+   Log     : Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Openid");
 
    Factory : ASF.Applications.Main.Application_Factory;
    App     : aliased ASF.Applications.Main.Application;
@@ -40,8 +43,6 @@ procedure Asf_Volume_Server is
    WS      : ASF.Server.Web.AWS_Container;
    C       : ASF.Applications.Config;
 begin
-   Bean.Radius := 1.2;
-   Bean.Height := 2.0;
    C.Set (ASF.Applications.VIEW_EXT, ".html");
    C.Set (ASF.Applications.VIEW_DIR, "samples/web");
    C.Set ("web.dir", "samples/web");
@@ -64,6 +65,7 @@ begin
 
    WS.Register_Application (CONTEXT_PATH, App'Unchecked_Access);
 
+   Log.Info ("Connect you browser to: http://localhost:8080/volume/compute.html");
    WS.Start;
 
    delay 600.0;

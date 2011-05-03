@@ -145,7 +145,10 @@ package body ASF.Sessions is
       begin
          Sess.Impl.Lock.Write;
          if EL.Objects.Is_Null (Value) then
-            Sess.Impl.Attributes.Delete (Key);
+            --  Do not complain if there is no attribute with the given name.
+            if Sess.Impl.Attributes.Contains (Key) then
+               Sess.Impl.Attributes.Delete (Key);
+            end if;
          else
             Sess.Impl.Attributes.Include (Key, Value);
          end if;

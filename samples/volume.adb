@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  volume - Bean to compute the cylinder volume
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,13 +29,16 @@ package body Volume is
    package Float_Output is new Ada.Text_IO.Editing.Decimal_Output(My_Float);
 
    package Run_Binding is
-     new ASF.Events.Actions.Action_Method.Bind (Bean => Compute_Bean,
-                                                Method      => Run,
-                                                Name        => "run");
+     new ASF.Events.Actions.Action_Method.Bind (Bean   => Compute_Bean,
+                                                Method => Run,
+                                                Name   => "run");
 
    Binding_Array : aliased constant Util.Beans.Methods.Method_Binding_Array
      := (Run_Binding.Proxy'Unchecked_Access, Run_Binding.Proxy'Unchecked_Access);
 
+   --  ------------------------------
+   --  This bean provides some methods that can be used in a Method_Expression
+   --  ------------------------------
    overriding
    function Get_Method_Bindings (From : in Compute_Bean)
                                  return Util.Beans.Methods.Method_Binding_Array_Access is
@@ -43,9 +46,16 @@ package body Volume is
       return Binding_Array'Unchecked_Access;
    end Get_Method_Bindings;
 
+   --  ------------------------------
+   --  Compute the volume of the cylinder.
+   --  ------------------------------
    procedure Run (From    : in out Compute_Bean;
                   Outcome : in out Ada.Strings.Unbounded.Unbounded_String) is
+      V : My_Float;
    begin
+      V := (From.Radius * From.Radius);
+      V := V * From.Height;
+      From.Volume := V * 3.141;
       Outcome := To_Unbounded_String ("compute");
    end Run;
 
@@ -54,7 +64,6 @@ package body Volume is
    --  ------------------------------
    function Get_Value (From : Compute_Bean;
                        Name : String) return EL.Objects.Object is
-      V : My_Float;
    begin
       if Name = "radius" and From.Radius >= 0.0 then
          return EL.Objects.To_Object (Float (From.Radius));
@@ -62,11 +71,9 @@ package body Volume is
       elsif Name = "height" and From.Height >= 0.0 then
          return EL.Objects.To_Object (Float (From.Height));
 
-      elsif Name = "volume" and From.Radius >= 0.0 and From.Height >= 0.0 then
-         V := (From.Radius * From.Radius);
-         V := V * From.Height;
-         V := V * 3.141;
-         return EL.Objects.To_Object (Float_Output.Image (V, Pic));
+      elsif Name = "volume" and From.Volume >= 0.0 then
+         return EL.Objects.To_Object (Float (From.Volume));
+
       else
          return EL.Objects.Null_Object;
       end if;

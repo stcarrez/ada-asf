@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  volume - A simple bean example
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +32,7 @@ package Volume is
    type Compute_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
       Height : My_Float := -1.0;
       Radius : My_Float := -1.0;
+      Volume : My_Float := -1.0;
    end record;
 
    --  Get the value identified by the name.
@@ -43,6 +44,7 @@ package Volume is
                         Name  : in String;
                         Value : in EL.Objects.Object);
 
+   --  Compute the volume of the cylinder.
    procedure Run (From    : in out Compute_Bean;
                   Outcome : in out Ada.Strings.Unbounded.Unbounded_String);
 

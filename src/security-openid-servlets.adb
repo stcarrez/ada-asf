@@ -133,13 +133,21 @@ package body Security.Openid.Servlets is
                      Response : in out ASF.Responses.Response'Class) is
 
       Session : ASF.Sessions.Session := Request.Get_Session (Create => False);
-      Bean    : constant Util.Beans.Objects.Object := Session.Get_Attribute (OPENID_ASSOC_ATTRIBUTE);
+      Bean    : Util.Beans.Objects.Object;
       Mgr     : Security.Openid.Manager;
       Assoc   : Association_Access;
       Auth    : Security.Openid.Authentication;
       Ctx     : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
    begin
       Log.Info ("Verify openid authentication");
+
+      if not Session.Is_Valid then
+         Log.Warn ("Session has expired during OpenID authentication process");
+         Response.Set_Status (ASF.Responses.SC_FORBIDDEN);
+         return;
+      end if;
+
+      Bean := Session.Get_Attribute (OPENID_ASSOC_ATTRIBUTE);
 
       --  Cleanup the session and drop the association end point.
       Session.Remove_Attribute (OPENID_ASSOC_ATTRIBUTE);

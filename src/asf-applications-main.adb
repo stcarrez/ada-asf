@@ -250,10 +250,9 @@ package body ASF.Applications.Main is
    procedure Register (App     : in out Application;
                        Name    : in String;
                        Handler : in Create_Bean_Access;
-                       Free    : in Free_Bean_Access := null;
                        Scope   : in Scope_Type := REQUEST_SCOPE) is
    begin
-      ASF.Beans.Register (App.Factory, Name, Handler, Free, Scope);
+      ASF.Beans.Register (App.Factory, Name, Handler, Scope);
    end Register;
 
    --  ------------------------------
@@ -262,10 +261,9 @@ package body ASF.Applications.Main is
    procedure Create (App     : in Application;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type) is
    begin
-      ASF.Beans.Create (App.Factory, Name, Result, Free, Scope);
+      ASF.Beans.Create (App.Factory, Name, Result, Scope);
    end Create;
 
    --  ------------------------------
@@ -315,7 +313,6 @@ package body ASF.Applications.Main is
 
    type Bean_Object (Length : Natural) is record
       Bean : Util.Beans.Basic.Readonly_Bean_Access;
-      Free : ASF.Beans.Free_Bean_Access;
       Key  : String (1 .. Length);
    end record;
 
@@ -357,7 +354,6 @@ package body ASF.Applications.Main is
 
       Result : Object;
       Bean   : Util.Beans.Basic.Readonly_Bean_Access;
-      Free   : ASF.Beans.Free_Bean_Access := null;
       Scope  : Scope_Type;
       Key    : constant String := To_String (Name);
    begin
@@ -381,13 +377,13 @@ package body ASF.Applications.Main is
             end if;
          end if;
       end;
-      Resolver.Application.Create (Name, Bean, Free, Scope);
+      Resolver.Application.Create (Name, Bean, Scope);
       if Bean = null then
          return Resolver.Application.Get_Global (Name, Context);
          --           raise No_Variable
          --             with "Bean not found: '" & To_String (Name) & "'";
       end if;
-      Resolver.Beans.Append (Bean_Object '(Key'Length, Bean, Free, Key));
+      Resolver.Beans.Append (Bean_Object '(Key'Length, Bean, Key));
       Result := To_Object (Bean);
       Resolver.Request.Set_Attribute (Key, Result);
       return Result;
@@ -496,9 +492,6 @@ package body ASF.Applications.Main is
             declare
                Bean : Bean_Object := Bean_Vectors.Element (C);
             begin
-               if Bean.Bean /= null and then Bean.Free /= null then
-                  Bean.Free (Bean.Bean);
-               end if;
                Request.Remove_Attribute (Name => Bean.Key);
             end;
             Bean_Vectors.Next (C);

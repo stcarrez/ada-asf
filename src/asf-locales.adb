@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,6 @@ package body ASF.Locales is
 
    type Locale_Binding is new ASF.Beans.Binding with record
       Loader  : Loader_Access;
-      Free    : ASF.Beans.Free_Bean_Access;
       Scope   : ASF.Beans.Scope_Type;
       Name    : Util.Strings.Name_Access;
    end record;
@@ -43,7 +42,6 @@ package body ASF.Locales is
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out ASF.Beans.Free_Bean_Access;
                      Scope   : out ASF.Beans.Scope_Type);
 
    --  ------------------------------
@@ -77,7 +75,6 @@ package body ASF.Locales is
       L : constant Locale_Binding_Access := new Locale_Binding;
    begin
       L.Loader := Fac.Factory'Unchecked_Access;
-      L.Free   := null;
       L.Scope  := ASF.Beans.REQUEST_SCOPE;
       L.Name   := new String '(Bundle);
       ASF.Beans.Register (Beans, Name, L.all'Access);
@@ -86,7 +83,6 @@ package body ASF.Locales is
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out ASF.Beans.Free_Bean_Access;
                      Scope   : out ASF.Beans.Scope_Type) is
       pragma Unreferenced (Name);
 
@@ -99,7 +95,6 @@ package body ASF.Locales is
                    Bundle  => B.all);
       Result := B.all'Access;
       Scope  := ASF.Beans.REQUEST_SCOPE;
-      Free   := null;
    end Create;
 
    --  Get the value identified by the name.

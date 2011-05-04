@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.beans -- Bean Registration and Factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,10 +32,8 @@ package body ASF.Beans is
    procedure Register (Factory : in out Bean_Factory;
                        Name    : in String;
                        Handler : in Create_Bean_Access;
-                       Free    : in Free_Bean_Access := null;
                        Scope   : in Scope_Type := REQUEST_SCOPE) is
-      B : constant Simple_Binding_Access := new Simple_Binding '(Free => Free,
-                                                                 Create => Handler,
+      B : constant Simple_Binding_Access := new Simple_Binding '(Create => Handler,
                                                                  Scope  => Scope);
    begin
       Log.Info ("Register bean '{0}' in scope {1}", Name, Scope_Type'Image (Scope));
@@ -78,7 +76,6 @@ package body ASF.Beans is
    procedure Create (Factory : in Bean_Factory;
                      Name    : in Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type) is
       Pos : constant Bean_Maps.Cursor := Factory.Map.Find (Name);
    begin
@@ -86,7 +83,7 @@ package body ASF.Beans is
          declare
             B : constant Binding_Access := Bean_Maps.Element (Pos);
          begin
-            B.Create (Name, Result, Free, Scope);
+            B.Create (Name, Result, Scope);
          end;
       end if;
    end Create;
@@ -94,12 +91,10 @@ package body ASF.Beans is
    procedure Create (Factory : in Simple_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type) is
       pragma Unreferenced (Name);
    begin
       Result := Factory.Create.all;
-      Free   := Factory.Free;
       Scope  := Factory.Scope;
    end Create;
 

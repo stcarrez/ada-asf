@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-modules-beans -- Module beans factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,12 +24,10 @@ package body ASF.Modules.Beans is
    procedure Register (Plugin  : in Module_Access;
                        Name    : in String;
                        Handler : in Create_Bean_Access;
-                       Free    : in ASF.Beans.Free_Bean_Access := null;
                        Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE) is
       Binding : constant Module_Binding_Access
         := new Module_Binding '(Module  => Plugin,
                                 Create  => Handler,
-                                Free    => Free,
                                 Scope   => Scope);
    begin
       Plugin.Register (Name, Binding.all'Access);
@@ -43,12 +41,10 @@ package body ASF.Modules.Beans is
    procedure Create (Factory : in Module_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out ASF.Beans.Free_Bean_Access;
                      Scope   : out ASF.Beans.Scope_Type) is
       pragma Unreferenced (Name);
    begin
       Result := Factory.Create.all (Factory.Module);
-      Free   := Factory.Free;
       Scope  := Factory.Scope;
    end Create;
 

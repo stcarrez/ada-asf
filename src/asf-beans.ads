@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.beans -- Bean Registration and Factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +29,6 @@ package ASF.Beans is
    --  Create a bean.
    type Create_Bean_Access is access function return Util.Beans.Basic.Readonly_Bean_Access;
 
-   --  Free the bean instance.
-   type Free_Bean_Access is
-     access procedure (Bean : in out Util.Beans.Basic.Readonly_Bean_Access);
-
    --  Defines the scope of the bean instance.
    type Scope_Type is
      (
@@ -56,7 +52,6 @@ package ASF.Beans is
    procedure Create (Factory : in Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type) is abstract;
 
    --  ------------------------------
@@ -72,7 +67,6 @@ package ASF.Beans is
    procedure Register (Factory : in out Bean_Factory;
                        Name    : in String;
                        Handler : in Create_Bean_Access;
-                       Free    : in Free_Bean_Access := null;
                        Scope   : in Scope_Type := REQUEST_SCOPE);
 
    --  Register under the given name a function to create the bean instance when
@@ -90,7 +84,6 @@ package ASF.Beans is
    procedure Create (Factory : in Bean_Factory;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type);
 
    type Simple_Binding is new Binding with private;
@@ -98,13 +91,11 @@ package ASF.Beans is
    procedure Create (Factory : in Simple_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type);
 
 private
 
    type Simple_Binding is new Binding with record
-      Free   : Free_Bean_Access;
       Scope  : Scope_Type;
       Create : Create_Bean_Access;
    end record;

@@ -92,7 +92,6 @@ package ASF.Modules is
    procedure Register (Plugin  : in out Module;
                        Name    : in String;
                        Handler : in ASF.Beans.Create_Bean_Access;
-                       Free    : in ASF.Beans.Free_Bean_Access := null;
                        Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE);
 
    --  Register under the given name a function to create the bean instance when

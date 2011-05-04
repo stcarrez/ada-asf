@@ -135,7 +135,6 @@ package ASF.Applications.Main is
    procedure Register (App     : in out Application;
                        Name    : in String;
                        Handler : in Create_Bean_Access;
-                       Free    : in Free_Bean_Access := null;
                        Scope   : in Scope_Type := REQUEST_SCOPE);
 
    --  Register the module in the application
@@ -153,7 +152,6 @@ package ASF.Applications.Main is
    procedure Create (App     : in Application;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Free    : out Free_Bean_Access;
                      Scope   : out Scope_Type);
 
    --  Add a converter in the application.  The converter is referenced by

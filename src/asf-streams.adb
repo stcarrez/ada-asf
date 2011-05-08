@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF.Streams -- Print streams for servlets
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -100,7 +100,8 @@ package body ASF.Streams is
    --  Write into the text stream.
    --  ------------------------------
    procedure Write (Stream : in out Print_Stream;
-                    Print  : access procedure (Into : in out Util.Streams.Texts.Print_Stream'Class)) is
+                    Print  : access procedure
+                      (Into : in out Util.Streams.Texts.Print_Stream'Class)) is
    begin
       Print (Into => Stream.Target.all);
    end Write;

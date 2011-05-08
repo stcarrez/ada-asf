@@ -223,7 +223,8 @@ package body ASF.Contexts.Faces is
    procedure Add_Message (Context   : in out Faces_Context;
                           Client_Id : in String;
                           Message   : in String;
-                          Severity  : in Applications.Messages.Severity := Applications.Messages.ERROR) is
+                          Severity  : in Applications.Messages.Severity
+                          := Applications.Messages.ERROR) is
       Msg : ASF.Applications.Messages.Message;
    begin
       ASF.Applications.Messages.Set_Severity (Msg, Severity);

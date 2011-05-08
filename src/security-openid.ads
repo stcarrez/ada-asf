@@ -69,7 +69,7 @@ package Security.Openid is
    --  Get the user first name.
    function Get_First_Name (Auth : in Authentication) return String;
 
-   -- Get the user last name.
+   --  Get the user last name.
    function Get_Last_Name (Auth : in Authentication) return String;
 
    --  Get the user full name.

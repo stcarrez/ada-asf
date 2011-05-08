@@ -146,6 +146,8 @@ package body ASF.Navigations is
       View      : constant Components.Root.UIViewRoot := Context.Get_View_Root;
       Name      : constant String := Components.Root.Get_View_Id (View);
 
+      function Find_Navigation (View : in String) return Navigation_Access;
+
       function Find_Navigation (View : in String) return Navigation_Access is
          Pos : constant Rule_Map.Cursor := Nav_Rules.Rules.Find (To_Unbounded_String (View));
       begin

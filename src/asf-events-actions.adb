@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-events -- ASF Events
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,7 @@ package body ASF.Events.Actions is
       Ev.Phase     := ASF.Lifecycles.INVOKE_APPLICATION;
       Ev.Component := UI'Unchecked_Access;
       Ev.Method    := Method;
-      UI.Queue_Event(Ev.all'Access);
+      UI.Queue_Event (Ev.all'Access);
    end Post_Event;
 
 end ASF.Events.Actions;

@@ -315,9 +315,9 @@ package body ASF.Requests is
    --  ------------------------------
    --  Iterate over the request cookies and executes the <b>Process</b> procedure.
    --  ------------------------------
-   procedure Iterate_Cookies(Req     : in Request;
-                             Process : not null access
-                               procedure (Cookie : in ASF.Cookies.Cookie)) is
+   procedure Iterate_Cookies (Req     : in Request;
+                              Process : not null access
+                                procedure (Cookie : in ASF.Cookies.Cookie)) is
       use type ASF.Cookies.Cookie_Array_Access;
    begin
       Req.Load_Cookies;

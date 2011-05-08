@@ -32,7 +32,7 @@ package body Security.Filters is
    --  Set the permission manager that must be used to verify the permission.
    --  ------------------------------
    procedure Set_Permission_Manager (Filter  : in out Auth_Filter;
-                                     Manager : in Security.Permissions.Permission_Manager_Access) is
+                                     Manager : in Permissions.Permission_Manager_Access) is
    begin
       Filter.Manager := Manager;
    end Set_Permission_Manager;
@@ -56,6 +56,8 @@ package body Security.Filters is
       SID     : Unbounded_String;
       AID     : Unbounded_String;
       Auth    : ASF.Principals.Principal_Access;
+
+      procedure Fetch_Cookie (Cookie : in ASF.Cookies.Cookie);
 
       --  ------------------------------
       --  Collect the AID and SID cookies.

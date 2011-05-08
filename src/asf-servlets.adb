@@ -26,6 +26,7 @@ with ASF.Requests.Tools;
 with EL.Objects;
 with GNAT.Traceback.Symbolic;
 
+with Util.Strings;
 with Util.Log.Loggers;
 
 
@@ -95,6 +96,7 @@ package body ASF.Servlets is
          declare
             Last_Mod : constant Ada.Calendar.Time
               := Servlet'Class (Server).Get_Last_Modified (Request);
+            pragma Unreferenced (Last_Mod);
          begin
             Servlet'Class (Server).Do_Get (Request, Response);
          end;
@@ -363,8 +365,8 @@ package body ASF.Servlets is
       elsif Dispatcher.Mapping = null or else Dispatcher.Mapping.Servlet = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
 
-         -- If we have some filters, create the filter chain
-         -- and invoke the first filter.
+         --  If we have some filters, create the filter chain
+         --  and invoke the first filter.
       elsif Dispatcher.Mapping.Filters /= null then
          declare
             Chain : Filter_Chain;
@@ -424,7 +426,8 @@ package body ASF.Servlets is
          if R.Mapping = null then
             R.Path := To_Unbounded_String (Path);
          elsif Path'First + R.Mapping.Path_Pos < Path'Last then
-            R.Path := To_Unbounded_String (Path (Path'First + R.Mapping.Path_Pos - 1 .. Path'Last));
+            R.Path := To_Unbounded_String
+              (Path (Path'First + R.Mapping.Path_Pos - 1 .. Path'Last));
          else
             R.Path := Null_Unbounded_String;
          end if;
@@ -678,7 +681,7 @@ package body ASF.Servlets is
          raise Servlet_Error with "No servlet " & Name;
       end if;
 
-      Registry.Add_Mapping (Pattern, Servlet_maps.Element (Pos));
+      Registry.Add_Mapping (Pattern, Servlet_Maps.Element (Pos));
    end Add_Mapping;
 
    --  ------------------------------
@@ -830,28 +833,6 @@ package body ASF.Servlets is
       end loop;
    end Add_Mapping;
 
-   function Index (Source : in String;
-                   Char   : in Character;
-                   From   : in Natural) return Natural is
-   begin
-      for I in From .. Source'Last loop
-         if Source (I) = Char then
-            return I;
-         end if;
-      end loop;
-      return 0;
-   end Index;
-
-   function RIndex (Source : in String; Ch : in Character) return Natural is
-   begin
-      for I in reverse Source'Range loop
-         if Source (I) = Ch then
-            return I;
-         end if;
-      end loop;
-      return 0;
-   end RIndex;
-
    --  ------------------------------
    --  Find the servlet and filter mapping that must be used for the given URI.
    --  Search the mapping according to Ch 12/SRV 11. Mapping Requests to Servlets:
@@ -863,6 +844,7 @@ package body ASF.Servlets is
    function Find_Mapping (Registry : in Servlet_Registry;
                           URI      : in String) return Mapping_Access is
       use Ada.Strings;
+      use Util.Strings;
 
       First_Pos : Natural := URI'First;
       Pos       : Natural;
@@ -919,7 +901,7 @@ package body ASF.Servlets is
 
       --  No exact match and no wildcard match.
       --  Look for an extension.
-      Pos  := RIndex (Source => URI, Ch => '.');
+      Pos  := Util.Strings.Rindex (Source => URI, Ch => '.');
       if Pos > 0 then
          Pos  := Pos + 1;
          Node := Registry.Extension_Mapping;

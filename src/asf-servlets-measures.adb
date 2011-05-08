@@ -98,6 +98,8 @@ package body ASF.Servlets.Measures is
 
       Output   : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
 
+      procedure Print (Into : in out Util.Streams.Texts.Print_Stream'Class);
+
       procedure Print (Into : in out Util.Streams.Texts.Print_Stream'Class) is
       begin
          Util.Measures.Write (Measures => Server.Current.all,

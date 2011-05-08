@@ -18,6 +18,8 @@
 with ASF.Views.Nodes;
 package body ASF.Components.Utils is
 
+   function Get_Line_Info (UI : in Base.UIComponent'Class) return Views.Nodes.Line_Info;
+
    --  ------------------------------
    --  Get the line information where the component is defined.
    --  ------------------------------
@@ -30,6 +32,7 @@ package body ASF.Components.Utils is
          return Tag.Get_Line_Info;
       end if;
    end Get_Line_Info;
+   pragma Unreferenced (Get_Line_Info);
 
    --  ------------------------------
    --  Get the line information where the component is defined.

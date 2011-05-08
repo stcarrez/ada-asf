@@ -171,6 +171,6 @@ private
    overriding
    procedure Finalize (Object : in out Session);
 
-   Null_Session : constant Session := Session' (Ada.Finalization.Controlled with Impl => null);
+   Null_Session : constant Session := Session'(Ada.Finalization.Controlled with Impl => null);
 
 end ASF.Sessions;

@@ -549,7 +549,7 @@ package body ASF.Components.Base is
                           Event : not null access ASF.Events.Faces_Event'Class) is
    begin
       if UI.Parent = null then
-         LOG.Error ("The component tree does not have a UIView root component. Event ignored.");
+         Log.Error ("The component tree does not have a UIView root component. Event ignored.");
       else
          UI.Parent.Queue_Event (Event);
       end if;
@@ -564,7 +564,7 @@ package body ASF.Components.Base is
                         Context : in out Faces_Context'Class) is
       pragma Unreferenced (UI, Event, Context);
    begin
-      LOG.Error ("Event dispatched to a component that cannot handle it");
+      Log.Error ("Event dispatched to a component that cannot handle it");
    end Broadcast;
 
    --  ------------------------------
@@ -586,6 +586,8 @@ package body ASF.Components.Base is
    --  ------------------------------
    procedure Iterate_Attributes (UI : in UIComponent'Class) is
       Attribute : UIAttribute_Access := UI.Attributes;
+
+      procedure Process_Tag_Attribute (Attr : in ASF.Views.Nodes.Tag_Attribute_Access);
 
       procedure Process_Tag_Attribute (Attr : in ASF.Views.Nodes.Tag_Attribute_Access) is
          A : UIAttribute;
@@ -620,6 +622,8 @@ package body ASF.Components.Base is
    function Get_Value (Attr : UIAttribute;
                        UI   : UIComponent'Class) return EL.Objects.Object is
 
+      procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence);
+
       procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence) is
       begin
          ASF.Views.Nodes.Error (Attr.Definition.all, "Evaluation error: {0}",
@@ -653,13 +657,15 @@ package body ASF.Components.Base is
                         Arg2    : in String := "") is
    begin
       Log.Info (Utils.Get_Line_Info (UI) & ": " & Message, Arg1, Arg2);
-    end Log_Error;
+   end Log_Error;
 
+   --  ------------------------------
    --  Get the root component from the <b>UI</b> component tree.
    --  After the operation, the <b>UI</b> component tree will contain no
    --  nodes.
    --  If the <b>Root</b> pointer is not null, first deletes recursively
    --  the component tree.
+   --  ------------------------------
    procedure Steal_Root_Component (UI   : in out UIComponent'Class;
                                    Root : in out UIComponent_Access) is
    begin

@@ -63,7 +63,7 @@ package body ASF.Filters.Dump is
                                                               Print_Headers    => True,
                                                               Print_Attributes => True);
    begin
-      Log.Info ("Request {0}", info);
+      Log.Info ("Request {0}", Info);
       ASF.Servlets.Do_Filter (Chain    => Chain,
                               Request  => Request,
                               Response => Response);

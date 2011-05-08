@@ -34,6 +34,11 @@ package body ASF.Components.Html.Forms is
 
    INPUT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 
+   procedure Add_Message (UI      : in Base.UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Context : in out Faces_Context'Class);
+
    --  ------------------------------
    --  Input Component
    --  ------------------------------
@@ -141,8 +146,8 @@ package body ASF.Components.Html.Forms is
       end;
    end Process_Decodes;
 
-   procedure Add_Message (UI : in Base.UIComponent'Class;
-                          Name : in String;
+   procedure Add_Message (UI      : in Base.UIComponent'Class;
+                          Name    : in String;
                           Default : in String;
                           Context : in out Faces_Context'Class) is
       Id  : constant String := To_String (UI.Get_Client_Id);

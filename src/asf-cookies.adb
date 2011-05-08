@@ -28,6 +28,17 @@ package body ASF.Cookies is
    use Ada.Strings;
    use type Maps.Character_Set;
 
+   --  Get number of cookies present in the header value
+   function Get_Cookie_Count (Header : in String) return Natural;
+
+   --  Check that the value contains valid character
+   --  Raises Invalid_Value if an invalid character is found
+   procedure Check_Value (S : in String);
+
+   --  Check that the value contains valid character
+   --  Raises Invalid_Value if an invalid character is found
+   procedure Check_Token (S : in String);
+
    Forbidden : constant Maps.Character_Set
      := Maps.To_Set (Span => (Low  => Character'Val (0),
                               High => Character'Val (31)))
@@ -290,6 +301,12 @@ package body ASF.Cookies is
          "Sep", "Oct", "Nov", "Dec");
 
    procedure Append_Digits (Into  : in out Unbounded_String;
+                            Value : in Natural);
+
+   procedure Append_Date (Into : in out Unbounded_String;
+                          Date : in Ada.Calendar.Time);
+
+   procedure Append_Digits (Into  : in out Unbounded_String;
                             Value : in Natural) is
    begin
       Append (Into, Character'Val (Character'Pos ('0') + Value / 10));
@@ -330,6 +347,10 @@ package body ASF.Cookies is
    --  ------------------------------
    function To_Http_Header (Object : in Cookie) return String is
       V      : Natural := Object.Version;
+
+      procedure Append_Value (Into  : in out Unbounded_String;
+                              Name  : in String;
+                              Value : in Unbounded_String);
 
       procedure Append_Value (Into  : in out Unbounded_String;
                               Name  : in String;

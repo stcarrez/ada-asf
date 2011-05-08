@@ -28,7 +28,7 @@ package body ASF.Responses.Tools is
                        Html             : in Boolean := False;
                        Print_Headers    : in Boolean := True) return String is
 
-      use ada.Strings.Unbounded;
+      use Ada.Strings.Unbounded;
 
       procedure Put (Title : in String; Value : in String);
       procedure Append_Html (Content : in String);

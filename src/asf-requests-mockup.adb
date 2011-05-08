@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests.mockup -- ASF Requests mockup
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,9 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 package body ASF.Requests.Mockup is
+
+   function Find (Map  : in Util.Strings.Maps.Map;
+                  Name : in String) return String;
 
    --  ------------------------------
    --  Find and return the string associated with a key in the map.

@@ -31,6 +31,8 @@ package body ASF.Clients.Web is
       Default_Http_Manager := Manager'Access;
    end Register;
 
+   function To_Status (Code : in AWS.Messages.Status_Code) return Natural;
+
    function To_Status (Code : in AWS.Messages.Status_Code) return Natural is
       use AWS.Messages;
    begin

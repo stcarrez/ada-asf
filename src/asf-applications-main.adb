@@ -138,14 +138,14 @@ package body ASF.Applications.Main is
       Action  : constant String := Method.Get_Expression;
       Outcome : Unbounded_String;
    begin
-      LOG.Info ("Execute bean action {0}", Action);
+      Log.Info ("Execute bean action {0}", Action);
 
       begin
          Events.Actions.Action_Method.Execute (Method  => Method,
                                                Param   => Outcome,
                                                Context => Context.Get_ELContext.all);
 
-         LOG.Info ("Action outcome is {0}", Outcome);
+         Log.Info ("Action outcome is {0}", Outcome);
 
       exception
          when E : others =>
@@ -490,7 +490,7 @@ package body ASF.Applications.Main is
       begin
          while Bean_Vectors.Has_Element (C) loop
             declare
-               Bean : Bean_Object := Bean_Vectors.Element (C);
+               Bean : constant Bean_Object := Bean_Vectors.Element (C);
             begin
                Request.Remove_Attribute (Name => Bean.Key);
             end;
@@ -522,8 +522,6 @@ package body ASF.Applications.Main is
    --  ------------------------------
    overriding
    procedure Finalize (App : in out Application) is
---        procedure Free is new Ada.Unchecked_Deallocation (ASF.Applications.Views.View_Handler'Class,
---                                                          ASF.Applications.Views.View_Handler_Access);
       procedure Free is new Ada.Unchecked_Deallocation (ASF.Navigations.Navigation_Handler'Class,
                                                         ASF.Navigations.Navigation_Handler_Access);
       procedure Free is new Ada.Unchecked_Deallocation (ASF.Lifecycles.Lifecycle'Class,

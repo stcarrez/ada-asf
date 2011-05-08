@@ -45,7 +45,7 @@ package body ASF.Lifecycles.Validation is
       Root.Process_Validators (Context);
 
    exception
-      when E: others =>
+      when E : others =>
          Log.Error ("Error when running the validation phase {0}: {1}: {2}", "?",
                     Exception_Name (E), Exception_Message (E));
          raise;

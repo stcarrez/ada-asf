@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,9 @@ package body ASF.Components.Html is
                                 Writer  : in ResponseWriter_Access) is
 
       pragma Unreferenced (Context);
+
+      procedure Process_Attribute (Name : in String;
+                                   Attr : in UIAttribute);
 
       procedure Process_Attribute (Name : in String;
                                    Attr : in UIAttribute) is

@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Beans.objects;
+with Util.Beans.Objects;
 with Ada.Unchecked_Deallocation;
 package body ASF.Components.Core is
 
@@ -54,7 +54,7 @@ package body ASF.Components.Core is
    --  Set the expression array that contains reduced expressions.
    --  ------------------------------
    procedure Set_Expression_Table (UI         : in out UIText;
-                                   Expr_Table : in ASF.Views.Nodes.Expression_Access_Array_Access) is
+                                   Expr_Table : in Views.Nodes.Expression_Access_Array_Access) is
       use type ASF.Views.Nodes.Expression_Access_Array_Access;
    begin
       if UI.Expr_Table /= null then
@@ -70,10 +70,12 @@ package body ASF.Components.Core is
    procedure Finalize (UI : in out UIText) is
       use type ASF.Views.Nodes.Expression_Access_Array_Access;
 
-      procedure Free is new Ada.Unchecked_Deallocation (EL.Expressions.Expression'Class,
-                                                        EL.Expressions.Expression_Access);
-      procedure Free is new Ada.Unchecked_Deallocation (ASF.Views.Nodes.Expression_Access_Array,
-                                                        ASF.Views.Nodes.Expression_Access_Array_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (EL.Expressions.Expression'Class,
+                                        EL.Expressions.Expression_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (ASF.Views.Nodes.Expression_Access_Array,
+                                        ASF.Views.Nodes.Expression_Access_Array_Access);
    begin
       if UI.Expr_Table /= null then
          for I in UI.Expr_Table'Range loop
@@ -198,7 +200,7 @@ package body ASF.Components.Core is
    procedure Queue_Event (UI    : in out UIView;
                           Event : not null access ASF.Events.Faces_Event'Class) is
    begin
-      UI.Phase_Events(Event.Get_Phase).Append (Event.all'Access);
+      UI.Phase_Events (Event.Get_Phase).Append (Event.all'Access);
    end Queue_Event;
 
    --  ------------------------------
@@ -233,13 +235,13 @@ package body ASF.Components.Core is
       --  After dispatching an event, it is freed but not removed
       --  from the event queue (the access will be cleared).
       loop
-         exit when Pos > UI.Phase_Events(Phase).Last_Index;
-         UI.Phase_Events(Phase).Update_Element (Pos, Broadcast'Access);
+         exit when Pos > UI.Phase_Events (Phase).Last_Index;
+         UI.Phase_Events (Phase).Update_Element (Pos, Broadcast'Access);
          Pos := Pos + 1;
       end loop;
 
       --  Now, clear the queue.
-      UI.Phase_Events(Phase).Clear;
+      UI.Phase_Events (Phase).Clear;
    end Broadcast;
 
    --  ------------------------------
@@ -248,14 +250,14 @@ package body ASF.Components.Core is
    procedure Clear_Events (UI : in out UIView) is
    begin
       for Phase in UI.Phase_Events'Range loop
-         for I in 0 .. UI.Phase_Events(Phase).Last_Index loop
+         for I in 0 .. UI.Phase_Events (Phase).Last_Index loop
             declare
-               Ev : Faces_Event_Access := UI.Phase_Events(Phase).Element (I);
+               Ev : Faces_Event_Access := UI.Phase_Events (Phase).Element (I);
             begin
                Free (Ev);
             end;
          end loop;
-         UI.Phase_Events(Phase).Clear;
+         UI.Phase_Events (Phase).Clear;
       end loop;
    end Clear_Events;
 

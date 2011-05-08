@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-apply -- Apply values phase
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,7 +45,7 @@ package body ASF.Lifecycles.Apply is
       Root.Process_Decodes (Context);
 
    exception
-      when E: others =>
+      when E : others =>
          Log.Error ("Error when applying values on view {0}: {1}: {2}", "?",
                     Exception_Name (E), Exception_Message (E));
          raise;

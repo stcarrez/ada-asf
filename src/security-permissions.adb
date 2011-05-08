@@ -48,6 +48,8 @@ package body Security.Permissions is
       Matched : Boolean := False;
       Result  : Access_Rule;
 
+      procedure Match (P : in Policy);
+
       procedure Match (P : in Policy) is
       begin
          if GNAT.Regexp.Match (URI, P.Pattern) then
@@ -198,6 +200,10 @@ package body Security.Permissions is
 
    procedure Set_Member (P     : in out Policy_Record;
                          Field : in Policy_Fields;
+                         Value : in Util.Beans.Objects.Object);
+
+   procedure Set_Member (P     : in out Policy_Record;
+                         Field : in Policy_Fields;
                          Value : in Util.Beans.Objects.Object) is
    begin
       case Field is
@@ -236,6 +242,8 @@ package body Security.Permissions is
 
       Reader : Util.Serialize.IO.XML.Parser;
       List   : aliased Policy_Vector_Mapper.Vector;
+
+      procedure Process (Policy : in Policy_Record);
 
       procedure Process (Policy : in Policy_Record) is
          Pol    : Security.Permissions.Policy;

@@ -105,6 +105,8 @@ package body ASF.Views.Nodes is
    function Get_Value (Attribute : Tag_Attribute;
                        UI        : UIComponent'Class) return EL.Objects.Object is
 
+      procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence);
+
       procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence) is
       begin
          Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
@@ -130,6 +132,8 @@ package body ASF.Views.Nodes is
    function Get_Value (Attribute : Tag_Attribute;
                        Context   : Faces_Context'Class) return EL.Objects.Object is
 
+      procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence);
+
       procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence) is
       begin
          Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
@@ -150,6 +154,8 @@ package body ASF.Views.Nodes is
 
    function Get_Value (Attribute : Tag_Attribute;
                        Context   : Facelet_Context'Class) return EL.Objects.Object is
+
+      procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence);
 
       procedure Handle_Exception (E : in Ada.Exceptions.Exception_Occurrence) is
       begin
@@ -176,11 +182,6 @@ package body ASF.Views.Nodes is
       else
          return EL.Expressions.Create_ValueExpression (EL.Objects.To_Object (Attribute.Value));
       end if;
-
---     exception
---        when E : others =>
---           Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
---           return EL.Expressions.Create_ValueExpression (V);
    end Get_Value_Expression;
 
    function Get_Method_Expression (Attribute : Tag_Attribute)
@@ -192,11 +193,6 @@ package body ASF.Views.Nodes is
          Error (Attribute, "Invalid method expression", "");
          raise Constraint_Error with "Invalid method expression";
       end if;
-
-      --     exception
-      --        when E : others =>
-      --           Error (Attribute, "Evaluation error: {0}", Ada.Exceptions.Exception_Message (E));
-      --           return EL.Expressions.Create_ValueExpression (V);
    end Get_Method_Expression;
 
    --  ------------------------------
@@ -405,6 +401,8 @@ package body ASF.Views.Nodes is
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
       UI : constant UIComponent_Access := Node.Factory.all;
+
+      procedure Process_Attribute (Attr : in Tag_Attribute_Access);
 
       procedure Process_Attribute (Attr : in Tag_Attribute_Access) is
       begin

@@ -48,6 +48,8 @@ package body ASF.Responses.Web is
       null;
    end Flush;
 
+   function To_Status_Code (Status : in Natural) return AWS.Messages.Status_Code;
+
    function To_Status_Code (Status : in Natural) return AWS.Messages.Status_Code is
       use AWS.Messages;
    begin

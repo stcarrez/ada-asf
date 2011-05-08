@@ -52,7 +52,7 @@ package body ASF.Lifecycles.Response is
       Controller.View_Handler.Render_View (Context, View);
 
    exception
-      when E: others =>
+      when E : others =>
          Log.Error ("Error when displaying view {0}: {1}: {2}", "?",
                     Exception_Name (E), Exception_Message (E));
          raise;

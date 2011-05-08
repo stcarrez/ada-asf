@@ -33,6 +33,24 @@ package body Security.Openid is
 
    Log : constant Util.Log.Loggers.Logger := Loggers.Create ("Security.Openid");
 
+   procedure Extract_Profile (Prefix  : in String;
+                              Request : in ASF.Requests.Request'Class;
+                              Result  : in out Authentication);
+
+   function Extract (From      : String;
+                     Start_Tag : String;
+                     End_Tag   : String) return String;
+
+   procedure Extract_Value (Into    : in out Unbounded_String;
+                            Request : in ASF.Requests.Request'Class;
+                            Name    : in String);
+
+   procedure Set_Result (Result  : in out Authentication;
+                         Status  : in Auth_Result;
+                         Message : in String);
+
+   function Get_Association_Query return String;
+
    --  ------------------------------
    --  Get the email address
    --  ------------------------------
@@ -50,7 +68,7 @@ package body Security.Openid is
    end Get_First_Name;
 
    --  ------------------------------
-   -- Get the user last name.
+   --  Get the user last name.
    --  ------------------------------
    function Get_Last_Name (Auth : in Authentication) return String is
    begin

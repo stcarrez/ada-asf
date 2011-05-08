@@ -44,6 +44,9 @@ package body ASF.Views.Nodes.Reader is
    procedure Push (Handler : in out Xhtml_Reader'Class);
    procedure Pop (Handler  : in out Xhtml_Reader'Class);
 
+   --  Freeze the current Text_Tag node, counting the number of elements it contains.
+   procedure Finish_Text_Node (Handler : in out Xhtml_Reader'Class);
+
    --  ------------------------------
    --  Push the current context when entering in an element.
    --  ------------------------------
@@ -519,7 +522,7 @@ package body ASF.Views.Nodes.Reader is
                           Namespace_URI : in Unicode.CES.Byte_Sequence := "";
                           Local_Name    : in Unicode.CES.Byte_Sequence := "";
                           Qname         : in Unicode.CES.Byte_Sequence := "") is
-     pragma Unreferenced (Local_Name);
+      pragma Unreferenced (Local_Name);
    begin
       if Handler.Current.Parent = null then
          Finish_Text_Node (Handler);
@@ -730,7 +733,7 @@ package body ASF.Views.Nodes.Reader is
       Parser.Context.Set_Function_Mapper (Parser.Functions'Unchecked_Access);
       Parser.Functions.Mapper := Context.Get_Function_Mapper;
       if Parser.Functions.Mapper = null then
-         LOG.Warn ("There is no function mapper");
+         Log.Warn ("There is no function mapper");
       end if;
       Sax.Readers.Reader (Parser).Parse (Input);
       Finish_Text_Node (Parser);

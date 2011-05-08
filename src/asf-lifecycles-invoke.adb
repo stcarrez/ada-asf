@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-invoke -- Invoke application phase
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Exceptions;
-with Ada.Tags;
 with ASF.Components.Root;
 with ASF.Components.Base;
 with ASF.Components.Core;
@@ -44,6 +43,8 @@ package body ASF.Lifecycles.Invoke is
       View : constant Components.Root.UIViewRoot := Context.Get_View_Root;
       Root : constant access Components.Base.UIComponent'Class := Components.Root.Get_Root (View);
 
+      procedure Process (Child : in Components.Base.UIComponent_Access);
+
       procedure Process (Child : in Components.Base.UIComponent_Access) is
       begin
          if Child.all in Components.Core.UIView'Class then
@@ -58,11 +59,10 @@ package body ASF.Lifecycles.Invoke is
          Process (Root.all'Unchecked_Access);
       else
          Process_Application_Children (Root.all);
---           Log.Error ("Root of view is a {0}", Ada.Tags.Expanded_Name (Root.all'Tag));
       end if;
 
    exception
-      when E: others =>
+      when E : others =>
          Log.Error ("Error when invoking application on view {0}: {1}: {2}", "?",
                     Exception_Name (E), Exception_Message (E));
          raise;

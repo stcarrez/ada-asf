@@ -2919,7 +2919,7 @@ if test "${with_ada_util+set}" = set; then :
 else
 
   echo "with \"util\"; project t is for Source_Dirs use (); end t;" > t.gpr
-  gnatmake -Pt >/dev/null 2>/dev/null
+  gnatmake -p -Pt >/dev/null 2>/dev/null
   if test $? -eq 0; then
     UTIL_DIR=
   else
@@ -2930,7 +2930,7 @@ else
 fi
 
 echo "with \"${UTIL_DIR}util\"; project t is for Source_Dirs use (); end t;" > t.gpr
-gnatmake -Pt >/dev/null 2>/dev/null
+gnatmake -p -Pt >/dev/null 2>/dev/null
 if test $? -ne 0 ; then
    rm -f t.gpr
    as_fn_error "Ada Utility library not found in ${UTIL_DIR}" "$LINENO" 5
@@ -2954,7 +2954,7 @@ if test "${with_ada_el+set}" = set; then :
 else
 
   echo "with \"el\"; project t is for Source_Dirs use (); end t;" > t.gpr
-  gnatmake -Pt >/dev/null 2>/dev/null
+  gnatmake -p -Pt >/dev/null 2>/dev/null
   if test $? -eq 0; then
     EL_DIR=
   else
@@ -2965,7 +2965,7 @@ else
 fi
 
 echo "with \"${EL_DIR}el\"; project t is for Source_Dirs use (); end t;" > t.gpr
-gnatmake -Pt >/dev/null 2>/dev/null
+gnatmake -p -Pt >/dev/null 2>/dev/null
 if test $? -ne 0 ; then
    rm -f t.gpr
    as_fn_error "Ada Expression Language library not found in ${EL_DIR}" "$LINENO" 5
@@ -2990,7 +2990,7 @@ if test "${with_aws+set}" = set; then :
 else
 
   echo "with \"aws\"; project t is for Source_Dirs use (); end t;" > t.gpr
-  gnatmake -Pt >/dev/null 2>/dev/null
+  gnatmake -p -Pt >/dev/null 2>/dev/null
   if test $? -eq 0; then
     AWS_DIR=
   else
@@ -3001,7 +3001,7 @@ else
 fi
 
 echo "with \"${AWS_DIR}aws\"; project t is for Source_Dirs use (); end t;" > t.gpr
-gnatmake -Pt >/dev/null 2>/dev/null
+gnatmake -p -Pt >/dev/null 2>/dev/null
 if test $? -ne 0 ; then
    rm -f t.gpr
    as_fn_error "Ada Web Server not found in ${AWS_DIR}" "$LINENO" 5

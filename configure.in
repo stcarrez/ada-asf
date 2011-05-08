@@ -63,7 +63,7 @@ AS_HELP_STRING([--with-ada-util=x], [Path for the Ada Utility library (code.goog
 ],
 [
   echo "with \"util\"; project t is for Source_Dirs use (); end t;" > t.gpr
-  gnatmake -Pt >/dev/null 2>/dev/null
+  gnatmake -p -Pt >/dev/null 2>/dev/null
   if test $? -eq 0; then
     UTIL_DIR=
   else
@@ -72,7 +72,7 @@ AS_HELP_STRING([--with-ada-util=x], [Path for the Ada Utility library (code.goog
   rm -f t.gpr
 ])
 echo "with \"${UTIL_DIR}util\"; project t is for Source_Dirs use (); end t;" > t.gpr
-gnatmake -Pt >/dev/null 2>/dev/null
+gnatmake -p -Pt >/dev/null 2>/dev/null
 if test $? -ne 0 ; then
    rm -f t.gpr
    AC_MSG_ERROR([Ada Utility library not found in ${UTIL_DIR}])
@@ -92,7 +92,7 @@ AS_HELP_STRING([--with-ada-el=x], [Path for the Ada Expression Language library 
 ],
 [
   echo "with \"el\"; project t is for Source_Dirs use (); end t;" > t.gpr
-  gnatmake -Pt >/dev/null 2>/dev/null
+  gnatmake -p -Pt >/dev/null 2>/dev/null
   if test $? -eq 0; then
     EL_DIR=
   else
@@ -101,7 +101,7 @@ AS_HELP_STRING([--with-ada-el=x], [Path for the Ada Expression Language library 
   rm -f t.gpr
 ])
 echo "with \"${EL_DIR}el\"; project t is for Source_Dirs use (); end t;" > t.gpr
-gnatmake -Pt >/dev/null 2>/dev/null
+gnatmake -p -Pt >/dev/null 2>/dev/null
 if test $? -ne 0 ; then
    rm -f t.gpr
    AC_MSG_ERROR([Ada Expression Language library not found in ${EL_DIR}])
@@ -122,7 +122,7 @@ AS_HELP_STRING([--with-aws=x], [Path for the Ada Web Server library (http://libr
 ],
 [
   echo "with \"aws\"; project t is for Source_Dirs use (); end t;" > t.gpr
-  gnatmake -Pt >/dev/null 2>/dev/null
+  gnatmake -p -Pt >/dev/null 2>/dev/null
   if test $? -eq 0; then
     AWS_DIR=
   else
@@ -131,7 +131,7 @@ AS_HELP_STRING([--with-aws=x], [Path for the Ada Web Server library (http://libr
   rm -f t.gpr
 ])
 echo "with \"${AWS_DIR}aws\"; project t is for Source_Dirs use (); end t;" > t.gpr
-gnatmake -Pt >/dev/null 2>/dev/null
+gnatmake -p -Pt >/dev/null 2>/dev/null
 if test $? -ne 0 ; then
    rm -f t.gpr
    AC_MSG_ERROR([Ada Web Server not found in ${AWS_DIR}])

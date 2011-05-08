@@ -65,7 +65,7 @@ rebuild: clean build
 
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
-configure.in Makefile.in install-sh distrib test.properties \
+configure.in Makefile.in install-sh distrib test.properties ChangeLog \
 asf.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src asfunit samples regtests web \
 bin obj lib
@@ -108,9 +108,7 @@ install:
 	${MKDIR} -p ${awadir}/web/js
 	${CP} asfunit/*.ad[bs] ${includedir}/asfunit
 	${CP} src/*.ad[bs] ${includedir}/asf
-	if test T${AWS_SRC_DIR} != T ; then \
-	   ${CP} ${AWS_SRC_DIR}/*.ad[bs] ${includedir}/asf ; \
-	fi
+	${CP} src/aws/*.ad[bs] ${includedir}/asf
 	${CP} distrib/asf.gpr ${projectdir}/asf.gpr
 	${CP} distrib/asfunit.gpr ${projectdir}/asfunit.gpr
 	${CP} lib/asf/*.ali ${alidir}/asf

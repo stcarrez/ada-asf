@@ -129,7 +129,7 @@ private
       Inserts : Util.Strings.String_Set.Set;
 
       --  The application
-        Application : access ASF.Applications.Main.Application'Class;
+      Application : access ASF.Applications.Main.Application'Class;
    end record;
 
 end ASF.Contexts.Facelets;

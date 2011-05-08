@@ -37,3 +37,5 @@ Documentation
    http://code.google.com/p/ada-asf/
 
 
+Ada Server Faces integrates the Javascript library jQuery licensed under
+MIT or GPL (See http://jquery.org/license/).

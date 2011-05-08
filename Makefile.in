@@ -32,7 +32,7 @@ build:
 # Build and run the unit tests
 test:	build
 	$(GNATMAKE) -p -Ptests
-	bin/asf_harness
+	bin/asf_harness -config test.properties
 
 # Not intended for manual invocation.
 # Invoked if automatic builds are enabled.
@@ -42,8 +42,13 @@ autobuild:
 	$(GNATMAKE) -gnatc -c -k  -P "$(GPRPATH)"
 
 # Clean the root project of all build products.
-clean:
-	$(GNATCLEAN) -P "$(GPRPATH)"
+clean:	clean_test
+	$(GNATCLEAN) -q -P "$(GPRPATH)"
+
+# Clean the files produced by the unit tests
+clean_test:
+	rm -rf regtests/result/*
+	$(GNATCLEAN) -q -Ptests
 
 # Clean root project and all imported projects too.
 clean_tree:
@@ -60,9 +65,9 @@ rebuild: clean build
 
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
-configure.in Makefile.in install-sh distrib \
+configure.in Makefile.in install-sh distrib test.properties \
 asf.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
-src asfunit samples regtests \
+src asfunit samples regtests web \
 bin obj lib
 
 dist:
@@ -84,7 +89,12 @@ dist:
 	done
 	-rm -f $(distdir)/bin/*
 	-rm -f $(distdir)/obj/*
+	-rm -f $(distdir)/obj/asf/*
+	-rm -f $(distdir)/obj/asfunit/*
 	-rm -f $(distdir)/lib/*
+	-rm -f $(distdir)/lib/asf/*
+	-rm -f $(distdir)/lib/asfunit/*
+	-rm -f $(distdir)/regtests/result/*
 	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)

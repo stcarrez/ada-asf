@@ -47,8 +47,7 @@ package body ASF.Clients.Tests is
       C     : ASF.Clients.Client;
       Reply : ASF.Clients.Response;
    begin
-      C.Do_Get (URL   => "http://www.google.com/",
-                Reply => Reply);
+      C.Do_Get (URL   => "http://www.google.com/", Reply => Reply);
       Log.Info ("Result: {0}", Reply.Get_Body);
    end Test_Http_Get;
 

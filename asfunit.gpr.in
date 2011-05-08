@@ -2,7 +2,7 @@ with "config";
 with "@UTIL_DIR@util";
 with "@UTIL_DIR@testutil";
 with "@EL_DIR@el";
-with "aws";
+with "@AWS_DIR@aws";
 with "asf";
 
 project AsfUnit is
@@ -21,6 +21,5 @@ project AsfUnit is
    package Binder renames Config.Binder;
    package Builder renames Config.Builder;
    package Compiler renames Config.Compiler;
-   package Linker renames Config.Linker;
 
 end AsfUnit;

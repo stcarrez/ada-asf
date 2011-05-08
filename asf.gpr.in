@@ -1,14 +1,12 @@
 with "config";
 with "@UTIL_DIR@util";
 with "@EL_DIR@el";
-with "aws";
+with "@AWS_DIR@aws";
 
 project Asf is
 
    Version := "@ASF_VERSION@";
    Library_Dir := "@ASF_LIBDIR@";
-
-   Asm_Src_Dir := "@UTIL_ASM_DIR@";
 
    type Server_Type is ("none", "aws");
    Server : Server_Type := external ("SERVER", "aws");
@@ -31,6 +29,5 @@ project Asf is
    package Binder renames Config.Binder;
    package Builder renames Config.Builder;
    package Compiler renames Config.Compiler;
-   package Linker renames Config.Linker;
 
 end Asf;

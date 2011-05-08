@@ -556,7 +556,7 @@ PACKAGE_URL=
 ac_unique_file="src/asf.ads"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-ASF_ASM_DIR
+AWS_DIR
 EL_DIR
 UTIL_DIR
 ASF_LIBDIR
@@ -632,6 +632,7 @@ ac_user_opts='
 enable_option_checking
 with_ada_util
 with_ada_el
+with_aws
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1257,6 +1258,8 @@ Optional Packages:
                           (code.google.com/p/ada-util)
   --with-ada-el=x         Path for the Ada Expression Language library
                           (code.google.com/p/ada-el)
+  --with-aws=x            Path for the Ada Web Server library
+                          (http://libre.adacore.com/libre/tools/aws/)
 
 Some influential environment variables:
   CC          C compiler command
@@ -2915,13 +2918,24 @@ if test "${with_ada_util+set}" = set; then :
 
 else
 
-  UTIL_DIR=../util/
+  echo "with \"util\"; project t is for Source_Dirs use (); end t;" > t.gpr
+  gnatmake -Pt >/dev/null 2>/dev/null
+  if test $? -eq 0; then
+    UTIL_DIR=
+  else
+    UTIL_DIR=../util/
+  fi;
+  rm -f t.gpr
 
 fi
 
-if test ! -f ${UTIL_DIR}/util.gpr; then
+echo "with \"${UTIL_DIR}util\"; project t is for Source_Dirs use (); end t;" > t.gpr
+gnatmake -Pt >/dev/null 2>/dev/null
+if test $? -ne 0 ; then
+   rm -f t.gpr
    as_fn_error "Ada Utility library not found in ${UTIL_DIR}" "$LINENO" 5
 fi
+rm -f t.gpr
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${UTIL_DIR}" >&5
 $as_echo "${UTIL_DIR}" >&6; }
 
@@ -2939,30 +2953,62 @@ if test "${with_ada_el+set}" = set; then :
 
 else
 
-  EL_DIR=../el/
+  echo "with \"el\"; project t is for Source_Dirs use (); end t;" > t.gpr
+  gnatmake -Pt >/dev/null 2>/dev/null
+  if test $? -eq 0; then
+    EL_DIR=
+  else
+    EL_DIR=../el/
+  fi;
+  rm -f t.gpr
 
 fi
 
-if test ! -f ${EL_DIR}/el.gpr; then
+echo "with \"${EL_DIR}el\"; project t is for Source_Dirs use (); end t;" > t.gpr
+gnatmake -Pt >/dev/null 2>/dev/null
+if test $? -ne 0 ; then
+   rm -f t.gpr
    as_fn_error "Ada Expression Language library not found in ${EL_DIR}" "$LINENO" 5
 fi
+rm -f t.gpr
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${EL_DIR}" >&5
 $as_echo "${EL_DIR}" >&6; }
 
 
-case "${host}" in
-  ## Intel 386 machines where we don't care about the manufacturer
-  i[3456]86-*-* )
-    src_asm='asm-x86'
-    ;;
+##########################################
+# Ada Web Server
+##########################################
 
-  *)
-    src_asm='asm-none'
-    ;;
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Ada Web Server library (http://libre.adacore.com/libre/tools/aws/)" >&5
+$as_echo_n "checking Ada Web Server library (http://libre.adacore.com/libre/tools/aws/)... " >&6; }
 
-esac
+# Check whether --with-aws was given.
+if test "${with_aws+set}" = set; then :
+  withval=$with_aws;
+  AWS_DIR=${withval}/
 
-ASF_ASM_DIR="src/$src_asm"
+else
+
+  echo "with \"aws\"; project t is for Source_Dirs use (); end t;" > t.gpr
+  gnatmake -Pt >/dev/null 2>/dev/null
+  if test $? -eq 0; then
+    AWS_DIR=
+  else
+    AWS_DIR=../aws/
+  fi;
+  rm -f t.gpr
+
+fi
+
+echo "with \"${AWS_DIR}aws\"; project t is for Source_Dirs use (); end t;" > t.gpr
+gnatmake -Pt >/dev/null 2>/dev/null
+if test $? -ne 0 ; then
+   rm -f t.gpr
+   as_fn_error "Ada Web Server not found in ${AWS_DIR}" "$LINENO" 5
+fi
+rm -f t.gpr
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${AWS_DIR}" >&5
+$as_echo "${AWS_DIR}" >&6; }
 
 
 ac_config_files="$ac_config_files Makefile asf.gpr tests.gpr samples.gpr asfunit.gpr"

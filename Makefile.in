@@ -1,12 +1,16 @@
 # You may edit this makefile as long as you keep these original 
 # target names defined.
-GNATMAKE=gnatmake
+MODE=debug
+GNATMAKE=gnatmake -XMODE=${MODE} -XPROCESSORS=4
 GNATCLEAN=gnatclean
 GPRPATH=asf.gpr
 
 distdir=ada-asf-@ASF_VERSION@
 
 DIST_FILE=ada-asf-@ASF_VERSION@.tar.gz
+
+MKDIR=mkdir
+CP=cp
 
 srcdir = .
 top_srcdir = @top_srcdir@
@@ -15,9 +19,20 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 top_builddir = .
 
+awadir=${prefix}/share/ada/awa
+includedir=${prefix}/share/ada/adainclude
+projectdir=${prefix}/share/ada/adainclude
+libdir=${prefix}/lib
+alidir=${prefix}/share/ada/adainclude
+
 # Build executables for all mains defined by the project.
 build:
 	$(GNATMAKE) -p -P "$(GPRPATH)"
+
+# Build and run the unit tests
+test:	build
+	$(GNATMAKE) -p -Ptests
+	bin/asf_harness
 
 # Not intended for manual invocation.
 # Invoked if automatic builds are enabled.
@@ -45,9 +60,9 @@ rebuild: clean build
 
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
-configure.in Makefile.in install-sh \
-asf.gpr.in tests.gpr.in samples.gpr.in config.gpr \
-src samples regtests \
+configure.in Makefile.in install-sh distrib \
+asf.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
+src asfunit samples regtests \
 bin obj lib
 
 dist:
@@ -69,6 +84,36 @@ dist:
 	done
 	-rm -f $(distdir)/bin/*
 	-rm -f $(distdir)/obj/*
+	-rm -f $(distdir)/lib/*
 	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)
+
+install:
+	$(MKDIR) -p ${includedir}/asf
+	$(MKDIR) -p ${includedir}/asfunit
+	$(MKDIR) -p ${projectdir}/
+	${MKDIR} -p ${alidir}/asf
+	${MKDIR} -p ${alidir}/asfunit
+	${MKDIR} -p ${awadir}/web/js
+	${CP} asfunit/*.ad[bs] ${includedir}/asfunit
+	${CP} src/*.ad[bs] ${includedir}/asf
+	if test T${AWS_SRC_DIR} != T ; then \
+	   ${CP} ${AWS_SRC_DIR}/*.ad[bs] ${includedir}/asf ; \
+	fi
+	${CP} distrib/asf.gpr ${projectdir}/asf.gpr
+	${CP} distrib/asfunit.gpr ${projectdir}/asfunit.gpr
+	${CP} lib/asf/*.ali ${alidir}/asf
+	${CP} lib/asfunit/*.ali ${alidir}/asfunit
+	${CP} lib/asf/libasf.a ${libdir}/
+	${CP} lib/asfunit/libasfunit.a ${libdir}/
+	${CP} web/js/* ${awadir}/web/js
+
+uninstall:
+	rm -rf ${includedir}/asf
+	rm -rf ${includedir}/asfunit
+	rm -f ${libdir}/libasf.a
+	rm -f ${libdir}/libasfunit.a
+	rm -f ${projectdir}/asf.gpr
+	rm -f ${projectdir}/asfunit.gpr
+	rm -rf ${awadir}/web

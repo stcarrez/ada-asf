@@ -1,0 +1,15 @@
+with "util";
+with "el";
+with "aws";
+
+project Asf is
+   Version := "0.1.0";
+
+   for Library_Name use "asf";
+   for Library_Dir use "/usr/lib";
+   for Library_Kind use "static";
+
+   for Source_Dirs use ("/usr/share/ada/adainclude/asf");
+   for Library_ALI_Dir use "/usr/share/ada/adainclude/asf";
+   for Externally_Built use "true";
+end Asf;

@@ -279,7 +279,7 @@ package body ASF.Contexts.Writer is
       Code : constant Unicode_Char := Character'Pos (Char);
    begin
       --  Tilde or less...
-      if Code < 16#A0# then
+--        if Code < 16#A0# then
          --  If "?" or over, no escaping is needed (this covers
          --  most of the Latin alphabet)
          if Code > 16#3F# or Code <= 16#20# then
@@ -293,26 +293,26 @@ package body ASF.Contexts.Writer is
          else
             Stream.Write (Char);
          end if;
-      else
-         declare
-            S : String (1 .. 5) := "&#00;";
-            C : Unicode_Char;
-         begin
-            C := Code and 16#0F#;
-            if C > 10 then
-               S (4) := Character'Val (C - 10 + Character'Pos ('A'));
-            else
-               S (4) := Character'Val (C + Character'Pos ('0'));
-            end if;
-            C := (Code / 16) and 16#0F#;
-            if C > 10 then
-               S (3) := Character'Val (C - 10 + Character'Pos ('A'));
-            else
-               S (3) := Character'Val (C + Character'Pos ('0'));
-            end if;
-            Stream.Write (S);
-         end;
-      end if;
+--        else
+--           declare
+--              S : String (1 .. 5) := "&#00;";
+--              C : Unicode_Char;
+--           begin
+--              C := Code and 16#0F#;
+--              if C > 10 then
+--                 S (4) := Character'Val (C - 10 + Character'Pos ('A'));
+--              else
+--                 S (4) := Character'Val (C + Character'Pos ('0'));
+--              end if;
+--              C := (Code / 16) and 16#0F#;
+--              if C > 10 then
+--                 S (3) := Character'Val (C - 10 + Character'Pos ('A'));
+--              else
+--                 S (3) := Character'Val (C + Character'Pos ('0'));
+--              end if;
+--              Stream.Write (S);
+--           end;
+--        end if;
    end Write_Escape;
 
    --  ------------------------------

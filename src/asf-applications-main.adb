@@ -267,6 +267,15 @@ package body ASF.Applications.Main is
    end Create;
 
    --  ------------------------------
+   --  Find the module with the given name
+   --  ------------------------------
+   function Find_Module (App : in Application;
+                         Name : in String) return ASF.Modules.Module_Access is
+   begin
+      return ASF.Modules.Find_By_Name (App.Modules, Name);
+   end Find_Module;
+
+   --  ------------------------------
    --  Register the module in the application
    --  ------------------------------
    procedure Register (App     : in out Application;

@@ -182,6 +182,10 @@ package ASF.Applications.Main is
    function Find (App  : in Application;
                   Name : in EL.Objects.Object) return access ASF.Converters.Converter'Class;
 
+   --  Find the module with the given name
+   function Find_Module (App  : in Application;
+                         Name : in String) return ASF.Modules.Module_Access;
+
    --  Register some functions
    generic
       with procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);

@@ -24,7 +24,7 @@ with ASF.Applications;
 with ASF.Events.Modules;
 
 limited with ASF.Applications.Main;
-private with Ada.Containers.Hashed_Maps;
+with Ada.Containers.Hashed_Maps;
 
 --  The <b>ASF.Modules</b> package defines simple pluggable modules in
 --  the web application.  A module is a software component that can be

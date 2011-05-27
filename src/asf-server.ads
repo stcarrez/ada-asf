@@ -37,6 +37,16 @@ package ASF.Server is
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class);
 
+   --  Get the current registry associated with the current request being processed
+   --  by the current thread.  Returns null if there is no current request.
+   function Current return ASF.Servlets.Servlet_Registry_Access;
+
+   --  Give access to the current request and response object to the <b>Process</b>
+   --  procedure.  If there is no current request for the thread, do nothing.
+   procedure Update_Context (Process : not null access
+                               procedure (Request  : in out Requests.Request'Class;
+                                          Response : in out Responses.Response'Class));
+
 private
 
    --  Binding to record the ASF applications and bind them to URI prefixes.
@@ -54,5 +64,17 @@ private
       Applications : Binding_Array_Access := null;
       Default      : ASF.Servlets.Servlet_Registry;
    end record;
+
+   type Request_Context is record
+      Application : ASF.Servlets.Servlet_Registry_Access;
+      Process     : access
+        procedure (Process : not null access
+                     procedure (Request  : in out Requests.Request'Class;
+                                Response : in out Responses.Response'Class));
+   end record;
+
+   --  Set the current registry.  This is called by <b>Service</b> once the
+   --  registry is identified from the URI.
+   procedure Set_Context (Context : in Request_Context);
 
 end ASF.Server;

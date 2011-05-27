@@ -18,7 +18,45 @@
 
 with Util.Strings;
 
+with Ada.Task_Attributes;
 package body ASF.Server is
+
+   Null_Context : constant Request_Context := Request_Context'(null, null);
+
+   package Task_Context is new Ada.Task_Attributes
+     (Request_Context, Null_Context);
+
+   --  ------------------------------
+   --  Get the current registry associated with the current request being processed
+   --  by the current thread.  Returns null if there is no current request.
+   --  ------------------------------
+   function Current return ASF.Servlets.Servlet_Registry_Access is
+   begin
+      return Task_Context.Value.Application;
+   end Current;
+
+   --  ------------------------------
+   --  Set the current registry.  This is called by <b>Service</b> once the
+   --  registry is identified from the URI.
+   --  ------------------------------
+   procedure Set_Context (Context : in Request_Context) is
+   begin
+      Task_Context.Set_Value (Context);
+   end Set_Context;
+
+   --  ------------------------------
+   --  Give access to the current request and response object to the <b>Process</b>
+   --  procedure.  If there is no current request for the thread, do nothing.
+   --  ------------------------------
+   procedure Update_Context (Process : not null access
+                               procedure (Request  : in out Requests.Request'Class;
+                                          Response : in out Responses.Response'Class)) is
+      Ctx : constant Request_Context := Task_Context.Value;
+   begin
+      if Ctx.Process /= null then
+         Ctx.Process (Process);
+      end if;
+   end Update_Context;
 
    --  ------------------------------
    --  Register the application to serve requests
@@ -55,6 +93,18 @@ package body ASF.Server is
       Slash_Pos  : constant Natural := Index (URI, '/', URI'First + 1);
       Apps       : constant Binding_Array_Access := Server.Applications;
       Prefix_End : Natural;
+
+      procedure Process (Process : not null access
+                           procedure (Request  : in out Requests.Request'Class;
+                                      Response : in out Responses.Response'Class));
+
+      procedure Process (Process : not null access
+                           procedure (Request  : in out Requests.Request'Class;
+                                      Response : in out Responses.Response'Class)) is
+      begin
+         Process (Request, Response);
+      end Process;
+
    begin
 
       if Apps = null then
@@ -73,10 +123,14 @@ package body ASF.Server is
       for I in Apps.all'Range loop
          if Apps (I).Base_URI.all = URI (URI'First .. Prefix_End) then
             declare
+               Req        : Request_Context;
                Context    : constant Servlet_Registry_Access := Apps (I).Context;
                Page       : constant String := URI (Prefix_End + 1 .. URI'Last);
                Dispatcher : constant Request_Dispatcher := Context.Get_Request_Dispatcher (Page);
             begin
+               Req.Process     := Process'Access;
+               Req.Application := Context;
+               Set_Context (Req);
                Forward (Dispatcher, Request, Response);
                case Response.Get_Status / 100 is
                   when 2 | 3 =>
@@ -86,11 +140,13 @@ package body ASF.Server is
                      Context.Send_Error_Page (Request, Response);
 
                end case;
+               Set_Context (Null_Context);
                return;
 
             exception
                when E : others =>
                   Context.Error (Request, Response, E);
+                  Set_Context (Null_Context);
                   return;
             end;
          end if;

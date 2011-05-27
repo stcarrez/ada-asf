@@ -31,7 +31,7 @@ package ASF.Modules.Beans is
    --  Register under the given name a function to create the bean instance when
    --  it is accessed for a first time.  The scope defines the scope of the bean.
    --  bean
-   procedure Register (Plugin  : in Module_Access;
+   procedure Register (Plugin  : in out Module'Class;
                        Name    : in String;
                        Handler : in Create_Bean_Access;
                        Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE);

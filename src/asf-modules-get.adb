@@ -16,7 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ASF.Contexts.Faces;
+with ASF.Server;
+with ASF.Servlets;
 with ASF.Applications.Main;
 
 --  ------------------------------
@@ -24,15 +25,20 @@ with ASF.Applications.Main;
 --  instance from the current application.
 --  ------------------------------
 function ASF.Modules.Get return Module_Type_Access is
-   use type ASF.Contexts.Faces.Faces_Context_Access;
+   use type ASF.Servlets.Servlet_Registry_Access;
 
-   Ctx : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
+   Ctx : constant ASF.Servlets.Servlet_Registry_Access := ASF.Server.Current;
 begin
    if Ctx = null then
       return null;
    end if;
+   if not (Ctx.all in ASF.Applications.Main.Application'Class) then
+      return null;
+   end if;
    declare
-      M : constant Module_Access := Ctx.Get_Application.Find_Module (Name);
+      A : constant ASF.Applications.Main.Application_Access
+        := ASF.Applications.Main.Application'Class (Ctx.all)'Access;
+      M : constant Module_Access := A.Find_Module (Name);
    begin
       if M = null then
          return null;

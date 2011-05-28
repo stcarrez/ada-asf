@@ -61,6 +61,9 @@ package ASF.Servlets is
 
    type Servlet_Registry_Access is access all Servlet_Registry'Class;
 
+   --  Get the servlet context associated with the filter chain.
+   function Get_Servlet_Context (Chain : in Filter_Chain) return Servlet_Registry_Access;
+
    --  The <b>Servlet</b> represents the component that will handle
    --  an HTTP request received by the server.
    --

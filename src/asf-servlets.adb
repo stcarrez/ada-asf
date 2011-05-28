@@ -555,6 +555,14 @@ package body ASF.Servlets is
       end if;
    end Do_Filter;
 
+   --  ------------------------------
+   --  Get the servlet context associated with the filter chain.
+   --  ------------------------------
+   function Get_Servlet_Context (Chain : in Filter_Chain) return Servlet_Registry_Access is
+   begin
+      return Chain.Servlet.Context;
+   end Get_Servlet_Context;
+
    procedure Free is
      new Ada.Unchecked_Deallocation (Filter_List, Filter_List_Access);
 

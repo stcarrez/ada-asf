@@ -122,4 +122,24 @@ package body ASF.Requests.Web is
       return AWS.Status.Peername (Req.Data.all);
    end Get_Remote_Addr;
 
+   --  ------------------------------
+   --  Get the number of parts included in the request.
+   --  ------------------------------
+   function Get_Part_Count (Req : in Request) return Natural is
+   begin
+      return 0;
+   end Get_Part_Count;
+
+   --  ------------------------------
+   --  Process the part at the given position and executes the <b>Process</b> operation
+   --  with the part object.
+   --  ------------------------------
+   procedure Process_Part (Req      : in out Request;
+                           Position : in Positive;
+                           Process  : not null access
+                             procedure (Data : in Part'Class)) is
+   begin
+      null;
+   end Process_Part;
+
 end ASF.Requests.Web;

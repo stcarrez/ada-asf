@@ -35,6 +35,32 @@ package ASF.Requests is
 
    use Ada.Strings.Unbounded;
 
+   --  ------------------------------
+   --  Multi part content
+   --  ------------------------------
+   --  The <b>Part</b> type describes a mime part received in a request.
+   --  The content is stored in a file and several operations are provided
+   --  to manage the content.
+   type Part is abstract new Ada.Finalization.Limited_Controlled with private;
+
+   --  Get the size of the mime part.
+   function Get_Size (Data : in Part) return Natural;
+
+   --  Get the content name submitted in the mime part.
+   function Get_Name (Data : in Part) return String;
+
+   --  Get the content type of the part.
+   function Get_Content_Type (Data : in Part) return String;
+
+   --  Get
+--     function Get_Stream (Data : in Part) return Util.Stream.Buffer;
+   procedure Save (Data : in Part;
+                   Path : in String);
+
+   --  ------------------------------
+   --  Request
+   --  ------------------------------
+   --  The <b>Request</b> type describes a web request that a servlet can process.
    type Request is abstract new Ada.Finalization.Limited_Controlled with private;
    type Request_Access is access all Request'Class;
 
@@ -333,6 +359,16 @@ package ASF.Requests is
    procedure Set_Path_Info (Req  : in out Request;
                             Path : in String);
 
+   --  Get the number of parts included in the request.
+   function Get_Part_Count (Req : in Request) return Natural is abstract;
+
+   --  Process the part at the given position and executes the <b>Process</b> operation
+   --  with the part object.
+   procedure Process_Part (Req      : in out Request;
+                           Position : in Positive;
+                           Process  : not null access
+                             procedure (Data : in Part'Class)) is abstract;
+
    --  Initialize the request object.
    overriding
    procedure Initialize (Req : in out Request);
@@ -370,6 +406,13 @@ private
       Servlet    : access ASF.Servlets.Servlet'Class;
       Principal  : ASF.Principals.Principal_Access := null;
       Info       : Request_Data_Access := null;
+   end record;
+
+   type Part is abstract new Ada.Finalization.Limited_Controlled with record
+      Path         : Unbounded_String;
+      Size         : Natural;
+      Name         : Unbounded_String;
+      Content_Type : Unbounded_String;
    end record;
 
 end ASF.Requests;

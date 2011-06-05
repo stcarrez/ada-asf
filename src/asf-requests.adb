@@ -23,6 +23,38 @@ with ASF.Servlets;
 package body ASF.Requests is
 
    --  ------------------------------
+   --  Get the size of the mime part.
+   --  ------------------------------
+   function Get_Size (Data : in Part) return Natural is
+   begin
+      return Data.Size;
+   end Get_Size;
+
+   --  ------------------------------
+   --  Get the content name submitted in the mime part.
+   --  ------------------------------
+   function Get_Name (Data : in Part) return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (Data.Name);
+   end Get_Name;
+
+   --  ------------------------------
+   --  Get the content type of the part.
+   --  ------------------------------
+   function Get_Content_Type (Data : in Part) return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (Data.Content_Type);
+   end Get_Content_Type;
+
+   --  Get
+   --     function Get_Stream (Data : in Part) return Util.Stream.Buffer;
+   procedure Save (Data : in Part;
+                   Path : in String) is
+   begin
+      null;
+   end Save;
+
+   --  ------------------------------
    --  Returns the value of the named attribute as an Object, or null if no attribute
    --  of the given name exists.
    --

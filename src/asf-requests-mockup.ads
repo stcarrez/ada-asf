@@ -123,6 +123,16 @@ package ASF.Requests.Mockup is
    --  Sets the peer address
    procedure Set_Remote_Addr (Req  : in out Request;
                               Addr : in String);
+
+   --  Get the number of parts included in the request.
+   function Get_Part_Count (Req : in Request) return Natural;
+
+   --  Process the part at the given position and executes the <b>Process</b> operation
+   --  with the part object.
+   procedure Process_Part (Req      : in out Request;
+                           Position : in Positive;
+                           Process  : not null access
+                             procedure (Data : in Part'Class));
 private
 
    type Request is new ASF.Requests.Request with record

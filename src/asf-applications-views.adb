@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Strings.Fixed;
 
+with Util.Files;
 with ASF.Contexts.Facelets;
 with ASF.Applications.Main;
 with ASF.Components.Base;
@@ -247,7 +248,7 @@ package body ASF.Applications.Views is
 
       Name : constant String := Module.Get_Name;
       URI  : constant String := Module.Get_URI;
-      Def  : constant String := To_String (Handler.Paths) & "/" & URI;
+      Def  : constant String := Util.Files.Compose_Path (To_String (Handler.Paths), URI);
       Dir  : constant String := Module.Get_Config (Name & ".web.dir", Def);
    begin
       ASF.Views.Facelets.Register_Module (Handler.Facelets, URI, Dir);

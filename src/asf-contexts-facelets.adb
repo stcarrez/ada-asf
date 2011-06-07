@@ -16,6 +16,9 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Directories;
+
+with Util.Files;
 with EL.Variables;
 with ASF.Applications.Main;
 with ASF.Views.Nodes.Facelets;
@@ -157,9 +160,10 @@ package body ASF.Contexts.Facelets is
    procedure Set_Relative_Path (Context  : in out Facelet_Context;
                                 Path     : in Unbounded_String;
                                 Previous : out Unbounded_String) is
+      File : constant String := To_String (Path);
    begin
       Previous := Context.Path;
-      Context.Path := Path;
+      Context.Path := To_Unbounded_String (Ada.Directories.Containing_Directory (File));
    end Set_Relative_Path;
 
    --  ------------------------------
@@ -180,7 +184,7 @@ package body ASF.Contexts.Facelets is
       if Path (Path'First) = '/' then
          return Path;
       else
-         return To_String (Context.Path) & Path;
+         return Util.Files.Compose (To_String (Context.Path), Path);
       end if;
    end Resolve_Path;
 

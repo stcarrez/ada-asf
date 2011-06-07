@@ -463,11 +463,12 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_Remote_User (Req : in Request) return String is
       use type ASF.Principals.Principal_Access;
+      Principal : constant ASF.Principals.Principal_Access := Req.Get_User_Principal;
    begin
-      if Req.Principal = null then
+      if Principal = null then
          return "";
       else
-         return Req.Principal.Get_Name;
+         return Principal.Get_Name;
       end if;
    end Get_Remote_User;
 
@@ -477,7 +478,17 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_User_Principal (Req : in Request) return ASF.Principals.Principal_Access is
    begin
-      return Req.Principal;
+      if not Req.Info.Session_Initialized then
+         --  Look if the session exist
+         if not Req.Has_Session then
+            return null;
+         end if;
+         Req.Info.Session_Initialized := True;
+      end if;
+      if not Req.Info.Session.Is_Valid then
+         return null;
+      end if;
+      return Req.Info.Session.Get_Principal;
    end Get_User_Principal;
 
    --  ------------------------------

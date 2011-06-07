@@ -404,7 +404,6 @@ private
       Attributes : Util.Beans.Objects.Maps.Map;
       Path_Info  : Unbounded_String;
       Servlet    : access ASF.Servlets.Servlet'Class;
-      Principal  : ASF.Principals.Principal_Access := null;
       Info       : Request_Data_Access := null;
    end record;
 

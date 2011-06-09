@@ -665,11 +665,34 @@ package body ASF.Servlets is
          raise Servlet_Error with "No servlet filter " & Name;
       end if;
       declare
-         Mapping : constant Mapping_Access := Registry.Find_Mapping (URI => Pattern);
+         Mapping : Mapping_Access := Registry.Find_Mapping (URI => Pattern);
+         Copy_Mapping : Mapping_Access;
       begin
-         if Mapping /= null then
-            Mapping.Append_Filter (Filter_Maps.Element (Pos));
+         if Mapping = null then
+            Log.Error ("No servlet mapping for URI {0}", Pattern);
+            return;
          end if;
+
+         --  SCz 2011-06-09: this is still not perfect.... If we have a servlet
+         --  mapping to some extension (*.html), and we want to install a filter
+         --  for a specific page, we have to create a new URI mapping for that specific
+         --  page so that it can have dedicated filters.
+         if Mapping.Map_Type = MAP_EXTENSION then
+            if Pattern'Length < 3 or else
+              Pattern (Pattern'First) /= '*' or else Pattern (Pattern'First + 1) /= '.' then
+               Registry.Add_Mapping (Pattern => Pattern,
+                                     Server  => Mapping.Servlet);
+               Copy_Mapping := Registry.Find_Mapping (URI => Pattern);
+               Copy_Mapping.Path_Pos := 1;
+               if Mapping.Filters /= null then
+                  for I in Mapping.Filters.all'Range loop
+                     Copy_Mapping.Append_Filter (Mapping.Filters (I));
+                  end loop;
+               end if;
+               Mapping := Copy_Mapping;
+            end if;
+         end if;
+         Mapping.Append_Filter (Filter_Maps.Element (Pos));
       end;
    end Add_Filter_Mapping;
 

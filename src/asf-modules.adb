@@ -18,13 +18,7 @@
 with Ada.IO_Exceptions;
 
 with Util.Files;
-with Util.Log.Loggers;
 package body ASF.Modules is
-
-   use Util.Log;
-
-   --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Modules");
 
    --  ------------------------------
    --  Receive an event from the event channel

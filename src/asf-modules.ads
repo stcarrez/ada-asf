@@ -18,6 +18,7 @@
 
 with Util.Strings;
 with Util.Events.Channels;
+with Util.Log.Loggers;
 
 with ASF.Beans;
 with ASF.Applications;
@@ -168,5 +169,10 @@ private
       Name_Map : Module_Maps.Map;
       URI_Map  : Module_Maps.Map;
    end record;
+
+   use Util.Log;
+
+   --  The logger (used by the generic Get function).
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Modules");
 
 end ASF.Modules;

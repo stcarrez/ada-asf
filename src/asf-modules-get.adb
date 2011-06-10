@@ -30,9 +30,11 @@ function ASF.Modules.Get return Module_Type_Access is
    Ctx : constant ASF.Servlets.Servlet_Registry_Access := ASF.Server.Current;
 begin
    if Ctx = null then
+      Log.Warn ("There is no servlet context");
       return null;
    end if;
    if not (Ctx.all in ASF.Applications.Main.Application'Class) then
+      Log.Warn ("The servlet context is not an application");
       return null;
    end if;
    declare

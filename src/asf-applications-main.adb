@@ -313,6 +313,16 @@ package body ASF.Applications.Main is
    end Add_Converter;
 
    --  ------------------------------
+   --  Register a binding library in the factory.
+   --  ------------------------------
+   procedure Add_Components (App      : in out Application;
+                             Bindings : in ASF.Factory.Factory_Bindings_Access) is
+   begin
+      ASF.Factory.Register (Factory  => App.Components,
+                            Bindings => Bindings);
+   end Add_Components;
+
+   --  ------------------------------
    --  Closes the application
    --  ------------------------------
    procedure Close (App : in out Application) is

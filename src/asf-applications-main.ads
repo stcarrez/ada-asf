@@ -160,6 +160,10 @@ package ASF.Applications.Main is
                             Name      : in String;
                             Converter : access ASF.Converters.Converter'Class);
 
+   --  Register a binding library in the factory.
+   procedure Add_Components (App      : in out Application;
+                             Bindings : in ASF.Factory.Factory_Bindings_Access);
+
    --  Closes the application
    procedure Close (App : in out Application);
 

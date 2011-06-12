@@ -18,6 +18,7 @@
 
 with ASF.Converters;
 with ASF.Validators;
+with ASF.Validators.Texts;
 with ASF.Components.Holders;
 package body ASF.Views.Nodes.Jsf is
 
@@ -141,6 +142,81 @@ package body ASF.Views.Nodes.Jsf is
            := Editable_Value_Holder'Class (Parent.all)'Access;
       begin
          VH.Add_Validator (Validator => V, Shared => True);
+      end;
+   end Build_Components;
+
+   --  ------------------------------
+   --  Length Validator Tag
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the Length_Validator Tag.  Verifies that the XML node defines
+   --  the <b>minimum</b> or the <b>maximum</b> or both attributes.
+   --  ------------------------------
+   function Create_Length_Validator_Tag_Node (Name       : Unbounded_String;
+                                              Line       : Views.Nodes.Line_Info;
+                                              Parent     : Views.Nodes.Tag_Node_Access;
+                                              Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                              return Views.Nodes.Tag_Node_Access is
+
+      use ASF.Views.Nodes;
+
+      Node : constant Length_Validator_Tag_Node_Access := new Length_Validator_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Node.Minimum := Find_Attribute (Attributes, "minimum");
+      Node.Maximum := Find_Attribute (Attributes, "maximum");
+      if Node.Minimum = null and Node.Maximum = null then
+         Node.Error ("Missing 'minimum' or 'maximum' attribute");
+      end if;
+      return Node.all'Access;
+   end Create_Length_Validator_Tag_Node;
+
+   --  ------------------------------
+   --  Build a <b>Length_Validator</b> validator and add it to the parent component.
+   --  This operation does not create any new UIComponent.
+   --  ------------------------------
+   overriding
+   procedure Build_Components (Node    : access Length_Validator_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class) is
+      use ASF.Components.Holders;
+      use type ASF.Validators.Validator_Access;
+
+      Min : Natural := 0;
+      Max : Natural := Natural'Last;
+   begin
+      if not (Parent.all in Editable_Value_Holder'Class) then
+         Node.Error ("Parent component is not an instance of Editable_Value_Holder");
+         return;
+      end if;
+
+      --  Get the minimum and maximum attributes.
+      begin
+         if Node.Minimum /= null then
+            Min := Natural (EL.Objects.To_Integer (Get_Value (Node.Minimum.all, Context)));
+         end if;
+         if Node.Maximum /= null then
+            Max := Natural (EL.Objects.To_Integer (Get_Value (Node.Maximum.all, Context)));
+         end if;
+
+      exception
+         when Constraint_Error =>
+            Node.Error ("Invalid minimum or maximum value");
+      end;
+      if Max < Min then
+         Node.Error ("Minimum ({0}) should be less than maximum ({1})",
+                     Natural'Image (Min), Natural'Image (Max));
+         return;
+      end if;
+
+      declare
+         VH : constant access Editable_Value_Holder'Class
+           := Editable_Value_Holder'Class (Parent.all)'Access;
+      begin
+         VH.Add_Validator (Validator => Validators.Texts.Create_Length_Validator (Minimum => Min,
+                                                                                  Maximum => Max),
+                           Shared => False);
       end;
    end Build_Components;
 

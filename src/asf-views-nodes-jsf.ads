@@ -81,6 +81,32 @@ package ASF.Views.Nodes.Jsf is
                                Context : in out Contexts.Facelets.Facelet_Context'Class);
 
    --  ------------------------------
+   --  Length Validator Tag
+   --  ------------------------------
+   --  The <b>Length_Validator_Tag_Node</b> is created in the facelet tree when
+   --  the <f:validateLength> element is found.  When building the component tree,
+   --  we have to find the <b>Validator</b> object and attach it to the
+   --  parent component.  The parent component must implement the <b>Editable_Value_Holder</b>
+   --  interface.
+   type Length_Validator_Tag_Node is new Views.Nodes.Tag_Node with private;
+   type Length_Validator_Tag_Node_Access is access all Length_Validator_Tag_Node'Class;
+
+   --  Create the Length_Validator Tag.  Verifies that the XML node defines
+   --  the <b>minimum</b> or the <b>maximum</b> or both attributes.
+   function Create_Length_Validator_Tag_Node (Name       : Unbounded_String;
+                                              Line       : Views.Nodes.Line_Info;
+                                              Parent     : Views.Nodes.Tag_Node_Access;
+                                              Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                              return Views.Nodes.Tag_Node_Access;
+
+   --  Build a <b>Length_Validator</b> validator and add it to the parent component.
+   --  This operation does not create any new UIComponent.
+   overriding
+   procedure Build_Components (Node    : access Length_Validator_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class);
+
+   --  ------------------------------
    --  Attribute Tag
    --  ------------------------------
    --  The <b>Attribute_Tag_Node</b> is created in the facelet tree when
@@ -114,6 +140,11 @@ private
 
    type Validator_Tag_Node is new Views.Nodes.Tag_Node with record
       Validator : EL.Objects.Object;
+   end record;
+
+   type Length_Validator_Tag_Node is new Views.Nodes.Tag_Node with record
+      Minimum : Tag_Attribute_Access;
+      Maximum : Tag_Attribute_Access;
    end record;
 
    type Attribute_Tag_Node is new Views.Nodes.Tag_Node with record

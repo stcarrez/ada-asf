@@ -42,12 +42,13 @@ package body ASF.Components.Core.Factory is
 
    use ASF.Views.Nodes;
 
-   URI           : aliased constant String := "http://java.sun.com/jsf/core";
-   ATTRIBUTE_TAG : aliased constant String := "attribute";
-   CONVERTER_TAG : aliased constant String := "converter";
-   PARAM_TAG     : aliased constant String := "param";
-   VALIDATOR_TAG : aliased constant String := "validator";
-   VIEW_TAG      : aliased constant String := "view";
+   URI                 : aliased constant String := "http://java.sun.com/jsf/core";
+   ATTRIBUTE_TAG       : aliased constant String := "attribute";
+   CONVERTER_TAG       : aliased constant String := "converter";
+   PARAM_TAG           : aliased constant String := "param";
+   VALIDATE_LENGTH_TAG : aliased constant String := "validateLength";
+   VALIDATOR_TAG       : aliased constant String := "validator";
+   VIEW_TAG            : aliased constant String := "view";
 
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => ATTRIBUTE_TAG'Access,
@@ -62,11 +63,15 @@ package body ASF.Components.Core.Factory is
                Component => Create_Parameter'Access,
                Tag       => Create_Component_Node'Access),
 
-         4 => (Name      => VALIDATOR_TAG'Access,
+         4 => (Name      => VALIDATE_LENGTH_TAG'Access,
+               Component => null,
+               Tag       => Views.Nodes.Jsf.Create_Length_Validator_Tag_Node'Access),
+
+         5 => (Name      => VALIDATOR_TAG'Access,
                Component => null,
                Tag       => Views.Nodes.Jsf.Create_Validator_Tag_Node'Access),
 
-         5 => (Name      => VIEW_TAG'Access,
+         6 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access)
         );

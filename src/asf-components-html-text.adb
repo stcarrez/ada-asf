@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -65,7 +65,7 @@ package body ASF.Components.Html.Text is
    --  ------------------------------
    overriding
    function Get_Converter (UI : in UIOutput)
-                           return access ASF.Converters.Converter'Class is
+                           return ASF.Converters.Converter_Access is
    begin
       return UI.Converter;
    end Get_Converter;
@@ -75,7 +75,8 @@ package body ASF.Components.Html.Text is
    --  ------------------------------
    overriding
    procedure Set_Converter (UI        : in out UIOutput;
-                            Converter : access ASF.Converters.Converter'Class) is
+                            Converter : in ASF.Converters.Converter_Access) is
+      use type ASF.Converters.Converter_Access;
    begin
       if Converter = null then
          UI.Converter := null;
@@ -89,6 +90,7 @@ package body ASF.Components.Html.Text is
    --  ------------------------------
    function Get_Formatted_Value (UI      : in UIOutput;
                                  Context : in Faces_Context'Class) return String is
+      use type ASF.Converters.Converter_Access;
       Value : constant EL.Objects.Object := UIOutput'Class (UI).Get_Value;
    begin
       if UI.Converter /= null then

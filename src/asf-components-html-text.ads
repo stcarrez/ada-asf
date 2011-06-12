@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,14 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with ASF.Components.Holders;
+with ASF.Converters;
 package ASF.Components.Html.Text is
 
    --  ------------------------------
    --  Output Component
    --  ------------------------------
-   type UIOutput is new UIHtmlComponent and Value_Holder with private;
+   type UIOutput is new UIHtmlComponent and Holders.Value_Holder with private;
 
    --  Get the local value of the component without evaluating
    --  the associated Value_Expression.
@@ -41,12 +43,12 @@ package ASF.Components.Html.Text is
    --  Get the converter that is registered on the component.
    overriding
    function Get_Converter (UI : in UIOutput)
-                           return access ASF.Converters.Converter'Class;
+                           return ASF.Converters.Converter_Access;
 
    --  Set the converter to be used on the component.
    overriding
    procedure Set_Converter (UI        : in out UIOutput;
-                            Converter : access ASF.Converters.Converter'Class);
+                            Converter : in ASF.Converters.Converter_Access);
 
    --  Get the value of the component and apply the To_String converter on it if there is one.
    function Get_Formatted_Value (UI      : in UIOutput;
@@ -81,9 +83,9 @@ package ASF.Components.Html.Text is
 
 private
 
-   type UIOutput is new UIHtmlComponent and Value_Holder with record
+   type UIOutput is new UIHtmlComponent and Holders.Value_Holder with record
       Value     : EL.Objects.Object;
-      Converter : access ASF.Converters.Converter'Class;
+      Converter : ASF.Converters.Converter_Access := null;
    end record;
 
    type UILabel is new UIOutput with null record;

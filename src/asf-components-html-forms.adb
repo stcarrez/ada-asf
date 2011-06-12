@@ -195,6 +195,7 @@ package body ASF.Components.Html.Forms is
    procedure Validate_Value (UI      : in out UIInput;
                              Value   : in EL.Objects.Object;
                              Context : in out Faces_Context'Class) is
+      use type ASF.Validators.Validator_Access;
    begin
       if EL.Objects.Is_Empty (Value) and UI.Is_Required (Context) and UI.Is_Valid then
          Add_Message (UI, "requiredMessage", "req", Context);
@@ -202,8 +203,15 @@ package body ASF.Components.Html.Forms is
       end if;
 
       if UI.Is_Valid and not EL.Objects.Is_Empty (Value) then
-         null;
+         for I in UI.Validators'Range loop
+            exit when UI.Validators (I).Validator = null;
+            UI.Validators (I).Validator.Validate (Context, UI, Value);
+         end loop;
       end if;
+
+   exception
+      when ASF.Validators.Invalid_Value =>
+         UI.Is_Valid := False;
    end Validate_Value;
 
    overriding

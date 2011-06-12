@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with ASF.Views.Nodes;
 with ASF.Contexts.Facelets;
+with ASF.Validators;
 
 --  The <b>ASF.Views.Nodes.Jsf</b> package implements various JSF Core Tag
 --  components which alter the component tree but don't need to create
@@ -73,12 +74,46 @@ package ASF.Views.Nodes.Jsf is
                                        Attributes : Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access;
 
+   --  Get the validator instance that corresponds to the validator tag.
+   --  Returns in <b>Validator</b> the instance if it exists and indicate
+   --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
+   procedure Get_Validator (Node      : in Validator_Tag_Node;
+                            Context   : in out Contexts.Facelets.Facelet_Context'Class;
+                            Validator : out Validators.Validator_Access;
+                            Shared    : out Boolean);
+
    --  Get the specified validator and add it to the parent component.
    --  This operation does not create any new UIComponent.
    overriding
    procedure Build_Components (Node    : access Validator_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class);
+
+   --  ------------------------------
+   --  Range Validator Tag
+   --  ------------------------------
+   --  The <b>Range_Validator_Tag_Node</b> is created in the facelet tree when
+   --  the <f:validateLongRange> element is found.
+   --  The parent component must implement the <b>Editable_Value_Holder</b>
+   --  interface.
+   type Range_Validator_Tag_Node is new Validator_Tag_Node with private;
+   type Range_Validator_Tag_Node_Access is access all Range_Validator_Tag_Node'Class;
+
+   --  Create the Range_Validator Tag
+   function Create_Range_Validator_Tag_Node (Name       : Unbounded_String;
+                                             Line       : Views.Nodes.Line_Info;
+                                             Parent     : Views.Nodes.Tag_Node_Access;
+                                             Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                             return Views.Nodes.Tag_Node_Access;
+
+   --  Get the validator instance that corresponds to the range validator.
+   --  Returns in <b>Validator</b> the validator instance if it exists and indicate
+   --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
+   overriding
+   procedure Get_Validator (Node      : in Range_Validator_Tag_Node;
+                            Context   : in out Contexts.Facelets.Facelet_Context'Class;
+                            Validator : out Validators.Validator_Access;
+                            Shared    : out Boolean);
 
    --  ------------------------------
    --  Length Validator Tag
@@ -88,7 +123,7 @@ package ASF.Views.Nodes.Jsf is
    --  we have to find the <b>Validator</b> object and attach it to the
    --  parent component.  The parent component must implement the <b>Editable_Value_Holder</b>
    --  interface.
-   type Length_Validator_Tag_Node is new Views.Nodes.Tag_Node with private;
+   type Length_Validator_Tag_Node is new Validator_Tag_Node with private;
    type Length_Validator_Tag_Node_Access is access all Length_Validator_Tag_Node'Class;
 
    --  Create the Length_Validator Tag.  Verifies that the XML node defines
@@ -99,12 +134,14 @@ package ASF.Views.Nodes.Jsf is
                                               Attributes : Views.Nodes.Tag_Attribute_Array_Access)
                                               return Views.Nodes.Tag_Node_Access;
 
-   --  Build a <b>Length_Validator</b> validator and add it to the parent component.
-   --  This operation does not create any new UIComponent.
+   --  Get the validator instance that corresponds to the validator tag.
+   --  Returns in <b>Validator</b> the instance if it exists and indicate
+   --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
    overriding
-   procedure Build_Components (Node    : access Length_Validator_Tag_Node;
-                               Parent  : in UIComponent_Access;
-                               Context : in out Contexts.Facelets.Facelet_Context'Class);
+   procedure Get_Validator (Node      : in Length_Validator_Tag_Node;
+                            Context   : in out Contexts.Facelets.Facelet_Context'Class;
+                            Validator : out Validators.Validator_Access;
+                            Shared    : out Boolean);
 
    --  ------------------------------
    --  Attribute Tag
@@ -142,7 +179,12 @@ private
       Validator : EL.Objects.Object;
    end record;
 
-   type Length_Validator_Tag_Node is new Views.Nodes.Tag_Node with record
+   type Length_Validator_Tag_Node is new Validator_Tag_Node with record
+      Minimum : Tag_Attribute_Access;
+      Maximum : Tag_Attribute_Access;
+   end record;
+
+   type Range_Validator_Tag_Node is new Validator_Tag_Node with record
       Minimum : Tag_Attribute_Access;
       Maximum : Tag_Attribute_Access;
    end record;

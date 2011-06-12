@@ -19,6 +19,7 @@
 with ASF.Converters;
 with ASF.Validators;
 with ASF.Validators.Texts;
+with ASF.Validators.Numbers;
 with ASF.Components.Holders;
 package body ASF.Views.Nodes.Jsf is
 
@@ -125,13 +126,15 @@ package body ASF.Views.Nodes.Jsf is
       use ASF.Components.Holders;
       use type ASF.Validators.Validator_Access;
 
-      V : constant Validators.Validator_Access := Context.Get_Validator (Node.Validator);
+      V      : Validators.Validator_Access;
+      Shared : Boolean;
    begin
       if not (Parent.all in Editable_Value_Holder'Class) then
          Node.Error ("Parent component is not an instance of Editable_Value_Holder");
          return;
       end if;
 
+      Validator_Tag_Node'Class (Node.all).Get_Validator (Context, V, Shared);
       if V = null then
          Node.Error ("Validator was not found");
          return;
@@ -141,9 +144,84 @@ package body ASF.Views.Nodes.Jsf is
          VH : constant access Editable_Value_Holder'Class
            := Editable_Value_Holder'Class (Parent.all)'Access;
       begin
-         VH.Add_Validator (Validator => V, Shared => True);
+         VH.Add_Validator (Validator => V, Shared => Shared);
       end;
    end Build_Components;
+
+   --  ------------------------------
+   --  Get the validator instance that corresponds to the validator tag.
+   --  Returns in <b>Validator</b> the instance if it exists and indicate
+   --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
+   --  ------------------------------
+   procedure Get_Validator (Node      : in Validator_Tag_Node;
+                            Context   : in out Contexts.Facelets.Facelet_Context'Class;
+                            Validator : out Validators.Validator_Access;
+                            Shared    : out Boolean) is
+   begin
+      Validator := Context.Get_Validator (Node.Validator);
+      Shared    := True;
+   end Get_Validator;
+
+   --  ------------------------------
+   --  Range Validator Tag
+   --  ------------------------------
+
+   --  Create the Range_Validator Tag
+   function Create_Range_Validator_Tag_Node (Name       : Unbounded_String;
+                                             Line       : Views.Nodes.Line_Info;
+                                             Parent     : Views.Nodes.Tag_Node_Access;
+                                             Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                             return Views.Nodes.Tag_Node_Access is
+
+      use ASF.Views.Nodes;
+
+      Node : constant Range_Validator_Tag_Node_Access := new Range_Validator_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Node.Minimum := Find_Attribute (Attributes, "minimum");
+      Node.Maximum := Find_Attribute (Attributes, "maximum");
+      if Node.Minimum = null and Node.Maximum = null then
+         Node.Error ("Missing 'minimum' or 'maximum' attribute");
+      end if;
+      return Node.all'Access;
+   end Create_Range_Validator_Tag_Node;
+
+   --  Get the validator instance that corresponds to the range validator.
+   --  Returns in <b>Validator</b> the validator instance if it exists and indicate
+   --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
+   overriding
+   procedure Get_Validator (Node      : in Range_Validator_Tag_Node;
+                            Context   : in out Contexts.Facelets.Facelet_Context'Class;
+                            Validator : out Validators.Validator_Access;
+                            Shared    : out Boolean) is
+      use type ASF.Validators.Validator_Access;
+
+      Min : Long_Long_Integer := Long_Long_Integer'First;
+      Max : Long_Long_Integer := Long_Long_Integer'Last;
+   begin
+      --  Get the minimum and maximum attributes.
+      begin
+         if Node.Minimum /= null then
+            Min := EL.Objects.To_Long_Long_Integer (Get_Value (Node.Minimum.all, Context));
+         end if;
+         if Node.Maximum /= null then
+            Max := EL.Objects.To_Long_Long_Integer (Get_Value (Node.Maximum.all, Context));
+         end if;
+
+      exception
+         when Constraint_Error =>
+            Node.Error ("Invalid minimum or maximum value");
+      end;
+      Shared := False;
+      if Max < Min then
+         Node.Error ("Minimum ({0}) should be less than maximum ({1})",
+                     Long_Long_Integer'Image (Min), Long_Long_Integer'Image (Max));
+         return;
+      end if;
+
+      Validator := Validators.Numbers.Create_Range_Validator (Minimum => Min,
+                                                              Maximum => Max);
+   end Get_Validator;
 
    --  ------------------------------
    --  Length Validator Tag
@@ -173,24 +251,21 @@ package body ASF.Views.Nodes.Jsf is
    end Create_Length_Validator_Tag_Node;
 
    --  ------------------------------
-   --  Build a <b>Length_Validator</b> validator and add it to the parent component.
-   --  This operation does not create any new UIComponent.
+   --  Get the validator instance that corresponds to the validator tag.
+   --  Returns in <b>Validator</b> the instance if it exists and indicate
+   --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
    --  ------------------------------
    overriding
-   procedure Build_Components (Node    : access Length_Validator_Tag_Node;
-                               Parent  : in UIComponent_Access;
-                               Context : in out Contexts.Facelets.Facelet_Context'Class) is
-      use ASF.Components.Holders;
+   procedure Get_Validator (Node      : in Length_Validator_Tag_Node;
+
+                            Context   : in out Contexts.Facelets.Facelet_Context'Class;
+                            Validator : out Validators.Validator_Access;
+                            Shared    : out Boolean) is
       use type ASF.Validators.Validator_Access;
 
       Min : Natural := 0;
       Max : Natural := Natural'Last;
    begin
-      if not (Parent.all in Editable_Value_Holder'Class) then
-         Node.Error ("Parent component is not an instance of Editable_Value_Holder");
-         return;
-      end if;
-
       --  Get the minimum and maximum attributes.
       begin
          if Node.Minimum /= null then
@@ -204,21 +279,16 @@ package body ASF.Views.Nodes.Jsf is
          when Constraint_Error =>
             Node.Error ("Invalid minimum or maximum value");
       end;
+      Shared := False;
       if Max < Min then
          Node.Error ("Minimum ({0}) should be less than maximum ({1})",
                      Natural'Image (Min), Natural'Image (Max));
          return;
       end if;
 
-      declare
-         VH : constant access Editable_Value_Holder'Class
-           := Editable_Value_Holder'Class (Parent.all)'Access;
-      begin
-         VH.Add_Validator (Validator => Validators.Texts.Create_Length_Validator (Minimum => Min,
-                                                                                  Maximum => Max),
-                           Shared => False);
-      end;
-   end Build_Components;
+      Validator := Validators.Texts.Create_Length_Validator (Minimum => Min,
+                                                             Maximum => Max);
+   end Get_Validator;
 
    --  ------------------------------
    --  Attribute Tag

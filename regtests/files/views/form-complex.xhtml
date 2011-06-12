@@ -1,0 +1,19 @@
+<h:form xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+	id="testOutput" styleClass="test" style="color: red;"
+	  value="Testing output as a span">
+  <h:inputText id='count' value='testing'>
+     <f:validateLongRange minimum='10' maximum='20'/>
+     <f:validateLongRange minimum='1' maximum='20'/>
+  </h:inputText>
+  <h:inputText id='name' value='testing'>
+     <f:validateLength minimum='1' maximum='20'/>
+  </h:inputText>
+  <h:inputSecret id='password' size='32' value='testing'>
+     <f:validateLength minimum='1' maximum='20'/>
+  </h:inputSecret>
+  <h:inputText id='email' value='testing'>
+     <f:validateLength minimum='0' maximum='40'/>
+  </h:inputText>
+  <h:commandButton id='ok' action='#{some_bean.run}' value='Go'/>
+</h:form>

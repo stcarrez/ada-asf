@@ -194,9 +194,20 @@ package body ASF.Contexts.Facelets is
    --  ------------------------------
    function Get_Converter (Context : in Facelet_Context;
                            Name    : in EL.Objects.Object)
-                           return access ASF.Converters.Converter'Class is
+                           return ASF.Converters.Converter_Access is
    begin
       return Facelet_Context'Class (Context).Get_Application.Find (Name);
    end Get_Converter;
+
+   --  ------------------------------
+   --  Get a validator from a name.
+   --  Returns the validator object or null if there is no validator.
+   --  ------------------------------
+   function Get_Validator (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return ASF.Validators.Validator_Access is
+   begin
+      return Facelet_Context'Class (Context).Get_Application.Find_Validator (Name);
+   end Get_Validator;
 
 end ASF.Contexts.Facelets;

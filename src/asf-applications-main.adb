@@ -305,11 +305,11 @@ package body ASF.Applications.Main is
    --  ------------------------------
    procedure Add_Converter (App       : in out Application;
                             Name      : in String;
-                            Converter : access ASF.Converters.Converter'Class) is
+                            Converter : in ASF.Converters.Converter_Access) is
    begin
       ASF.Factory.Register (Factory   => App.Components,
                             Name      => Name,
-                            Converter => Converter.all'Unchecked_Access);
+                            Converter => Converter);
    end Add_Converter;
 
    --  ------------------------------
@@ -523,10 +523,21 @@ package body ASF.Applications.Main is
    --  Returns null if no such converter exist.
    --  ------------------------------
    function Find (App  : in Application;
-                  Name : in EL.Objects.Object) return access ASF.Converters.Converter'Class is
+                  Name : in EL.Objects.Object) return ASF.Converters.Converter_Access is
    begin
       return ASF.Factory.Find (App.Components, Name);
    end Find;
+
+   --  ------------------------------
+   --  Find the validator instance that was registered under the given name.
+   --  Returns null if no such validator exist.
+   --  ------------------------------
+   function Find_Validator (App  : in Application;
+                            Name : in EL.Objects.Object)
+                            return ASF.Validators.Validator_Access is
+   begin
+      return ASF.Factory.Find (App.Components, Name);
+   end Find_Validator;
 
    --  ------------------------------
    --  Register some functions

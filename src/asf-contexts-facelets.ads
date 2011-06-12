@@ -23,7 +23,7 @@ with EL.Expressions;
 with EL.Functions;
 with ASF.Components.Base;
 with ASF.Converters;
---  with ASF.Validators;
+with ASF.Validators;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 limited with ASF.Applications.Main;
@@ -107,7 +107,13 @@ package ASF.Contexts.Facelets is
    --  Returns the converter object or null if there is no converter.
    function Get_Converter (Context : in Facelet_Context;
                            Name    : in EL.Objects.Object)
-                           return access ASF.Converters.Converter'Class;
+                           return ASF.Converters.Converter_Access;
+
+   --  Get a validator from a name.
+   --  Returns the validator object or null if there is no validator.
+   function Get_Validator (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return ASF.Validators.Validator_Access;
 
    --  Get the application associated with this facelet context.
    function Get_Application (Context : in Facelet_Context)

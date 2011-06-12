@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ with Ada.Strings.Unbounded;
 with ASF.Locales;
 with ASF.Factory;
 with ASF.Converters;
+with ASF.Validators;
 with ASF.Contexts.Faces;
 with ASF.Lifecycles;
 with ASF.Applications.Views;
@@ -158,7 +159,7 @@ package ASF.Applications.Main is
    --  the specified name in the XHTML files.
    procedure Add_Converter (App       : in out Application;
                             Name      : in String;
-                            Converter : access ASF.Converters.Converter'Class);
+                            Converter : in ASF.Converters.Converter_Access);
 
    --  Register a binding library in the factory.
    procedure Add_Components (App      : in out Application;
@@ -184,7 +185,13 @@ package ASF.Applications.Main is
    --  Find the converter instance that was registered under the given name.
    --  Returns null if no such converter exist.
    function Find (App  : in Application;
-                  Name : in EL.Objects.Object) return access ASF.Converters.Converter'Class;
+                  Name : in EL.Objects.Object) return ASF.Converters.Converter_Access;
+
+   --  Find the validator instance that was registered under the given name.
+   --  Returns null if no such validator exist.
+   function Find_Validator (App  : in Application;
+                            Name : in EL.Objects.Object)
+                            return ASF.Validators.Validator_Access;
 
    --  Find the module with the given name
    function Find_Module (App  : in Application;

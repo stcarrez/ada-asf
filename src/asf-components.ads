@@ -27,42 +27,14 @@ with Ada.Strings.Unbounded;
 with EL.Objects;
 with EL.Expressions;
 limited with ASF.Views.Nodes;
-limited with ASF.Converters;
 package ASF.Components is
 
    use Ada.Strings.Unbounded;
---     use ASF.Contexts.Faces;
 
    --  ------------------------------
    --  Attribute of a component
    --  ------------------------------
    type UIAttribute is private;
-
-   --  ------------------------------
-   --  Value Holder
-   --  ------------------------------
-   type Value_Holder is limited interface;
-
-   --  Get the local value of the component without evaluating
-   --  the associated Value_Expression.
-   function Get_Local_Value (Holder : in Value_Holder) return EL.Objects.Object is abstract;
-
-   --  Get the value of the component.  If the component has a local
-   --  value which is not null, returns it.  Otherwise, if we have a Value_Expression
-   --  evaluate and returns the value.
-   function Get_Value (Holder : in Value_Holder) return EL.Objects.Object is abstract;
-
-   --  Set the value of the component.
-   procedure Set_Value (Holder : in out Value_Holder;
-                        Value  : in EL.Objects.Object) is abstract;
-
-   --  Get the converter that is registered on the component.
-   function Get_Converter (Holder : in Value_Holder)
-                           return access ASF.Converters.Converter'Class is abstract;
-
-   --  Set the converter to be used on the component.
-   procedure Set_Converter (Holder    : in out Value_Holder;
-                            Converter : access ASF.Converters.Converter'Class) is abstract;
 
 private
 

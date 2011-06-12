@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 
 with ASF.Converters;
+with ASF.Validators;
+with ASF.Components.Holders;
 package body ASF.Views.Nodes.Jsf is
 
    use ASF;
@@ -61,9 +63,10 @@ package body ASF.Views.Nodes.Jsf is
    procedure Build_Components (Node    : access Converter_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class) is
-      use ASF.Components;
+      use ASF.Components.Holders;
+      use type ASF.Converters.Converter_Access;
 
-      Cvt : constant access Converters.Converter'Class := Context.Get_Converter (Node.Converter);
+      Cvt : constant Converters.Converter_Access := Context.Get_Converter (Node.Converter);
    begin
       if not (Parent.all in Value_Holder'Class) then
          Node.Error ("Parent component is not an instance of Value_Holder");
@@ -79,6 +82,65 @@ package body ASF.Views.Nodes.Jsf is
          VH : constant access Value_Holder'Class := Value_Holder'Class (Parent.all)'Access;
       begin
          VH.Set_Converter (Converter => Cvt);
+      end;
+   end Build_Components;
+
+   --  ------------------------------
+   --  Validator Tag
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the Validator Tag
+   --  ------------------------------
+   function Create_Validator_Tag_Node (Name       : Unbounded_String;
+                                       Line       : Views.Nodes.Line_Info;
+                                       Parent     : Views.Nodes.Tag_Node_Access;
+                                       Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                       return Views.Nodes.Tag_Node_Access is
+
+      use ASF.Views.Nodes;
+
+      Node : constant Validator_Tag_Node_Access := new Validator_Tag_Node;
+      Vid  : constant Tag_Attribute_Access := Find_Attribute (Attributes,
+                                                              "validatorId");
+   begin
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      if Vid = null then
+         Node.Error ("Missing 'validatorId' attribute");
+      else
+         Node.Validator := EL.Objects.To_Object (Vid.Value);
+      end if;
+      return Node.all'Access;
+   end Create_Validator_Tag_Node;
+
+   --  ------------------------------
+   --  Get the specified validator and add it to the parent component.
+   --  This operation does not create any new UIComponent.
+   --  ------------------------------
+   overriding
+   procedure Build_Components (Node    : access Validator_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class) is
+      use ASF.Components.Holders;
+      use type ASF.Validators.Validator_Access;
+
+      V : constant Validators.Validator_Access := Context.Get_Validator (Node.Validator);
+   begin
+      if not (Parent.all in Editable_Value_Holder'Class) then
+         Node.Error ("Parent component is not an instance of Editable_Value_Holder");
+         return;
+      end if;
+
+      if V = null then
+         Node.Error ("Validator was not found");
+         return;
+      end if;
+
+      declare
+         VH : constant access Editable_Value_Holder'Class
+           := Editable_Value_Holder'Class (Parent.all)'Access;
+      begin
+         VH.Add_Validator (Validator => V, Shared => True);
       end;
    end Build_Components;
 

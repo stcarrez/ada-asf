@@ -56,6 +56,31 @@ package ASF.Views.Nodes.Jsf is
                                Context : in out Contexts.Facelets.Facelet_Context'Class);
 
    --  ------------------------------
+   --  Validator Tag
+   --  ------------------------------
+   --  The <b>Validator_Tag_Node</b> is created in the facelet tree when
+   --  the <f:validateXXX> element is found.  When building the component tree,
+   --  we have to find the <b>Validator</b> object and attach it to the
+   --  parent component.  The parent component must implement the <b>Editable_Value_Holder</b>
+   --  interface.
+   type Validator_Tag_Node is new Views.Nodes.Tag_Node with private;
+   type Validator_Tag_Node_Access is access all Validator_Tag_Node'Class;
+
+   --  Create the Validator Tag
+   function Create_Validator_Tag_Node (Name       : Unbounded_String;
+                                       Line       : Views.Nodes.Line_Info;
+                                       Parent     : Views.Nodes.Tag_Node_Access;
+                                       Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                       return Views.Nodes.Tag_Node_Access;
+
+   --  Get the specified validator and add it to the parent component.
+   --  This operation does not create any new UIComponent.
+   overriding
+   procedure Build_Components (Node    : access Validator_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class);
+
+   --  ------------------------------
    --  Attribute Tag
    --  ------------------------------
    --  The <b>Attribute_Tag_Node</b> is created in the facelet tree when
@@ -85,6 +110,10 @@ private
 
    type Converter_Tag_Node is new Views.Nodes.Tag_Node with record
       Converter : EL.Objects.Object;
+   end record;
+
+   type Validator_Tag_Node is new Views.Nodes.Tag_Node with record
+      Validator : EL.Objects.Object;
    end record;
 
    type Attribute_Tag_Node is new Views.Nodes.Tag_Node with record

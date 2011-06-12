@@ -20,6 +20,7 @@ with Util.Beans.Objects;
 with Util.Log.Loggers;
 with Ada.Exceptions;
 with ASF.Utils;
+with ASF.Converters;
 with ASF.Components.Utils;
 with ASF.Events.Actions;
 with ASF.Applications.Main;
@@ -223,6 +224,29 @@ package body ASF.Components.Html.Forms is
                    EL.Objects.To_String (UI.Submitted_Value),
                    To_String (UI.Get_Client_Id), Ada.Exceptions.Exception_Name (E));
    end Process_Updates;
+
+   --  ------------------------------
+   --  Add the validator to be used on the component.  The ASF implementation limits
+   --  to 5 the number of validators that can be set on a component (See UIInput).
+   --  The validator instance will be freed when the editable value holder is deleted
+   --  unless <b>Shared</b> is true.
+   --  ------------------------------
+   overriding
+   procedure Add_Validator (UI        : in out UIInput;
+                            Validator : in ASF.Validators.Validator_Access;
+                            Shared    : in Boolean := False) is
+      use type ASF.Validators.Validator_Access;
+   begin
+      for I in UI.Validators'Range loop
+         if UI.Validators (I).Validator = null then
+            UI.Validators (I).Validator := Validator;
+            UI.Validators (I).Shared    := Shared;
+            return;
+         end if;
+      end loop;
+      Base.Log_Error (UI, "Too many validators added (max {0})",
+                      Positive'Image (UI.Validators'Length));
+   end Add_Validator;
 
    --  ------------------------------
    --  Button Component

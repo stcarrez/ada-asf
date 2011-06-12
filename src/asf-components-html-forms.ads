@@ -16,16 +16,23 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ASF.Components.Base;
+with ASF.Components.Holders;
 with ASF.Components.Html.Text;
+with ASF.Validators;
 with ASF.Events;
 with EL.Objects;
 with EL.Expressions;
 package ASF.Components.Html.Forms is
 
+   --  A UIComponent can have several validators.  To keep the implementation light and
+   --  simple, a fixed array is used.  Most components will have one or two validators.
+   --  Define the number of validators per component (UIInput).
+   MAX_VALIDATORS_PER_COMPONENT : constant Positive := 5;
+
    --  ------------------------------
    --  Input Component
    --  ------------------------------
-   type UIInput is new Text.UIOutput with private;
+   type UIInput is new Text.UIOutput and Holders.Editable_Value_Holder with private;
    type UIInput_Access is access all UIInput'Class;
 
    --  Create an UIInput secret component
@@ -73,6 +80,15 @@ package ASF.Components.Html.Forms is
    procedure Validate_Value (UI      : in out UIInput;
                              Value   : in EL.Objects.Object;
                              Context : in out Faces_Context'Class);
+
+   --  Add the validator to be used on the component.  The ASF implementation limits
+   --  to 5 the number of validators that can be set on a component (See UIInput).
+   --  The validator instance will be freed when the editable value holder is deleted
+   --  unless <b>Shared</b> is true.
+   overriding
+   procedure Add_Validator (UI        : in out UIInput;
+                            Validator : in ASF.Validators.Validator_Access;
+                            Shared    : in Boolean := False);
 
    --  ------------------------------
    --  Button Component
@@ -140,10 +156,18 @@ package ASF.Components.Html.Forms is
 
 private
 
-   type UIInput is new Text.UIOutput with record
+   type Validator is record
+      Validator : ASF.Validators.Validator_Access := null;
+      Shared    : Boolean := False;
+   end record;
+
+   type Validator_Array is array (1 .. MAX_VALIDATORS_PER_COMPONENT) of Validator;
+
+   type UIInput is new Text.UIOutput and Holders.Editable_Value_Holder with record
       Submitted_Value : EL.Objects.Object;
       Is_Valid        : Boolean;
       Is_Secret       : Boolean := False;
+      Validators      : Validator_Array;
    end record;
 
    type UICommand is new UIHtmlComponent with record

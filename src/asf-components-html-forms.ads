@@ -29,6 +29,9 @@ package ASF.Components.Html.Forms is
    --  Define the number of validators per component (UIInput).
    MAX_VALIDATORS_PER_COMPONENT : constant Positive := 5;
 
+   --  Message displayed when the submitted value is required but is empty.
+   REQUIRED_MESSAGE_ID          : constant String := "asf.faces.component.UIInput.REQUIRED";
+
    --  ------------------------------
    --  Input Component
    --  ------------------------------

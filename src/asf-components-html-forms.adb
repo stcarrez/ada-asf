@@ -201,7 +201,10 @@ package body ASF.Components.Html.Forms is
       use type ASF.Validators.Validator_Access;
    begin
       if EL.Objects.Is_Empty (Value) and UI.Is_Required (Context) and UI.Is_Valid then
-         UI.Add_Message (REQUIRED_MESSAGE_NAME, "req", Context);
+         UI.Add_Message (Name    => REQUIRED_MESSAGE_NAME,
+                         Default => REQUIRED_MESSAGE_ID,
+                         Arg1    => UI.Get_Label (Context),
+                         Context => Context);
          UI.Is_Valid := False;
       end if;
 

@@ -26,8 +26,10 @@
 
 with Ada.Finalization;
 with EL.Objects;
+with Util.Beans.Objects;
 with EL.Expressions;
 with ASF.Contexts.Faces;
+with ASF.Utils;
 limited with ASF.Views.Nodes;
 limited with ASF.Converters;
 limited with ASF.Events;
@@ -131,6 +133,11 @@ package ASF.Components.Base is
                             Def   : access ASF.Views.Nodes.Tag_Attribute;
                             Value : in EL.Objects.Object);
 
+   --  Get the <b>label</b> attribute from the component.  If the attribute is
+   --  empty, returns the client id.
+   function Get_Label (UI      : in UIComponent'Class;
+                       Context : in Faces_Context'Class) return Util.Beans.Objects.Object;
+
    --  Get the converter associated with the component
    function Get_Converter (UI      : in UIComponent;
                            Context : in Faces_Context'Class)
@@ -158,6 +165,38 @@ package ASF.Components.Base is
    procedure Add_Message (UI      : in UIComponent'Class;
                           Name    : in String;
                           Default : in String;
+                          Context : in out Faces_Context'Class);
+
+   --  Add a message for the component.  Look for the message attribute identified
+   --  by <b>Name</b> on the <b>UI</b> component.  Add this message in the faces context
+   --  and associated with the component client id.  Otherwise, add the default
+   --  message whose bundle key is identified by <b>default</b>.
+   procedure Add_Message (UI      : in UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Arg1    : in Util.Beans.Objects.Object;
+                          Context : in out Faces_Context'Class);
+
+   --  Add a message for the component.  Look for the message attribute identified
+   --  by <b>Name</b> on the <b>UI</b> component.  Add this message in the faces context
+   --  and associated with the component client id.  Otherwise, add the default
+   --  message whose bundle key is identified by <b>default</b>.
+   procedure Add_Message (UI      : in UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Arg1    : in Util.Beans.Objects.Object;
+                          Arg2    : in Util.Beans.Objects.Object;
+                          Context : in out Faces_Context'Class);
+
+   --  Add a message for the component.  Look for the message attribute identified
+   --  by <b>Name</b> on the <b>UI</b> component.  Add this message in the faces context
+   --  and associated with the component client id.  Otherwise, use the default
+   --  message whose bundle key is identified by <b>default</b>.  The message is
+   --  formatted with the arguments passed in <b>Args</b>.
+   procedure Add_Message (UI      : in UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Args    : in ASF.Utils.Object_Array;
                           Context : in out Faces_Context'Class);
 
    procedure Encode_Begin (UI      : in UIComponent;

@@ -29,6 +29,8 @@ with ASF.Components.Utils;
 
 with EL.Variables;
 with EL.Contexts.Default;
+with ASF.Applications.Messages;
+with ASF.Applications.Messages.Factory;
 package body ASF.Components.Base is
 
    use Util.Log;
@@ -227,7 +229,7 @@ package body ASF.Components.Base is
    --  ------------------------------
    function Is_Rendered (UI : UIComponent;
                          Context : Faces_Context'Class) return Boolean is
-      Attr : constant EL.Objects.Object := UI.Get_Attribute (Context, "rendered");
+      Attr : constant EL.Objects.Object := UI.Get_Attribute (Context, RENDERED_NAME);
    begin
       if EL.Objects.Is_Null (Attr) then
          return True;
@@ -373,6 +375,21 @@ package body ASF.Components.Base is
    end Set_Attribute;
 
    --  ------------------------------
+   --  Get the <b>label</b> attribute from the component.  If the attribute is
+   --  empty, returns the client id.
+   --  ------------------------------
+   function Get_Label (UI      : in UIComponent'Class;
+                       Context : in Faces_Context'Class) return Util.Beans.Objects.Object is
+      Result : constant Util.Beans.Objects.Object := UI.Get_Attribute (Context, LABEL_NAME);
+   begin
+      if not Util.Beans.Objects.Is_Null (Result) then
+         return Result;
+      else
+         return Util.Beans.Objects.To_Object (UI.Get_Client_Id);
+      end if;
+   end Get_Label;
+
+   --  ------------------------------
    --  Get the value expression
    --  ------------------------------
    function Get_Value_Expression (UI   : in UIComponent;
@@ -408,7 +425,7 @@ package body ASF.Components.Base is
                            Context : in Faces_Context'Class)
                            return access ASF.Converters.Converter'Class is
       Name : constant EL.Objects.Object
-        := UIComponent'Class (UI).Get_Attribute (Name    => "converter",
+        := UIComponent'Class (UI).Get_Attribute (Name    => CONVERTER_NAME,
                                                  Context => Context);
    begin
       return Context.Get_Converter (Name);
@@ -451,6 +468,69 @@ package body ASF.Components.Base is
       else
          Context.Add_Message (Client_Id => Id, Message => EL.Objects.To_String (Msg));
       end if;
+   end Add_Message;
+
+   --  ------------------------------
+   --  Add a message for the component.  Look for the message attribute identified
+   --  by <b>Name</b> on the <b>UI</b> component.  Add this message in the faces context
+   --  and associated with the component client id.  Otherwise, add the default
+   --  message whose bundle key is identified by <b>default</b>.
+   --  ------------------------------
+   procedure Add_Message (UI      : in UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Arg1    : in Util.Beans.Objects.Object;
+                          Context : in out Faces_Context'Class) is
+      Args : constant ASF.Utils.Object_Array (1 .. 1) := (1 => Arg1);
+   begin
+      UI.Add_Message (Name, Default, Args, Context);
+   end Add_Message;
+
+   --  ------------------------------
+   --  Add a message for the component.  Look for the message attribute identified
+   --  by <b>Name</b> on the <b>UI</b> component.  Add this message in the faces context
+   --  and associated with the component client id.  Otherwise, add the default
+   --  message whose bundle key is identified by <b>default</b>.
+   --  ------------------------------
+   procedure Add_Message (UI      : in UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Arg1    : in Util.Beans.Objects.Object;
+                          Arg2    : in Util.Beans.Objects.Object;
+                          Context : in out Faces_Context'Class) is
+      Args : constant ASF.Utils.Object_Array (1 .. 2) := (1 => Arg1, 2 => Arg2);
+   begin
+      UI.Add_Message (Name, Default, Args, Context);
+   end Add_Message;
+
+   --  ------------------------------
+   --  Add a message for the component.  Look for the message attribute identified
+   --  by <b>Name</b> on the <b>UI</b> component.  Add this message in the faces context
+   --  and associated with the component client id.  Otherwise, use the default
+   --  message whose bundle key is identified by <b>default</b>.  The message is
+   --  formatted with the arguments passed in <b>Args</b>.
+   --  ------------------------------
+   procedure Add_Message (UI      : in UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Args    : in ASF.Utils.Object_Array;
+                          Context : in out Faces_Context'Class) is
+      Id  : constant String := To_String (UI.Get_Client_Id);
+      Msg : constant EL.Objects.Object := UI.Get_Attribute (Name => Name, Context => Context);
+      Message : ASF.Applications.Messages.Message;
+   begin
+      if EL.Objects.Is_Null (Msg) then
+         Message := ASF.Applications.Messages.Factory.Get_Message (Context    => Context,
+                                                                   Message_Id => Default,
+                                                                   Args       => Args);
+      else
+         Message := ASF.Applications.Messages.Factory.Get_Message
+           (Context    => Context,
+            Message_Id => EL.Objects.To_String (Msg),
+            Args       => Args);
+      end if;
+      Context.Add_Message (Client_Id => Id,
+                           Message   => Message);
    end Add_Message;
 
    procedure Encode_Begin (UI      : in UIComponent;

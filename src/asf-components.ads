@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,34 @@ limited with ASF.Views.Nodes;
 package ASF.Components is
 
    use Ada.Strings.Unbounded;
+
+   --  Flag indicating whether or not this component should be rendered
+   --  (during Render Response Phase), or processed on any subsequent form submit.
+   --  The default value for this property is true.
+   RENDERED_NAME          : constant String := "rendered";
+
+   --  A localized user presentable name for the component.
+   LABEL_NAME             : constant String := "label";
+
+   --  Converter instance registered with the component.
+   CONVERTER_NAME         : constant String := "converter";
+
+   --  A ValueExpression enabled attribute that, if present, will be used as the text
+   --  of the converter message, replacing any message that comes from the converter.
+   CONVERTER_MESSAGE_NAME : constant String := "converterMessage";
+
+   --  A ValueExpression enabled attribute that, if present, will be used as the text
+   --  of the validator message, replacing any message that comes from the validator.
+   VALIDATOR_MESSAGE_NAME : constant String := "validatorMessage";
+
+   --  Flag indicating that the user is required to provide a submitted value for
+   --  the input component.
+   REQUIRED_NAME          : constant String := "required";
+
+   --  A ValueExpression enabled attribute that, if present, will be used as the
+   --  text of the validation message for the "required" facility, if the "required"
+   --  facility is used.
+   REQUIRED_MESSAGE_NAME  : constant String := "requiredMessage";
 
    --  ------------------------------
    --  Attribute of a component

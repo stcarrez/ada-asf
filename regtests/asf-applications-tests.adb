@@ -272,6 +272,22 @@ package body ASF.Applications.Tests is
       Request.Set_Parameter ("name", "122222222222222222222222222222222222222222");
       Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post-2.txt");
 
+      Assert_Matches (T, ".*<span class=.error.>Invalid email address</span>.*",
+                      Reply, "Invalid error message for email");
+
+      Assert_Matches (T, ".*<span class=.error.>Invalid name</span>.*",
+                      Reply, "Invalid error message for name");
+
+
+      Request.Set_Parameter ("email", "1dddddd");
+      Request.Set_Parameter ("password", "12333ddddddddddddddd");
+      Request.Set_Parameter ("name", "1222222222");
+      Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post-3.txt");
+
+      Assert_Matches (T, ".*Password: Validation Error: Length is greater than "
+                      & "allowable maximum of '10'.*",
+                      Reply, "Invalid error message for password");
+
    end Test_Form_Post_Validation_Error;
 
 end ASF.Applications.Tests;

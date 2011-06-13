@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
+with Util.Beans.Basic;
 with Util.Strings.Maps;
 with Util.Properties.Bundles;
 with ASF.Beans;
@@ -23,8 +25,16 @@ with ASF.Beans;
 --  The <b>ASF.Locales</b> package manages everything related to the locales.
 --  It allows to register bundles that contains localized messages and be able
 --  to use the in the facelet views.
-
 package ASF.Locales is
+
+   type Bundle is new Util.Properties.Bundles.Manager
+     and Util.Beans.Basic.Readonly_Bean with null record;
+   type Bundle_Access is access all Bundle;
+
+   --  Get the value identified by the name.
+   --  If the name cannot be found, the method should return the Null object.
+   function Get_Value (From : in Bundle;
+                       Name : in String) return Util.Beans.Objects.Object;
 
    type Factory is limited private;
 
@@ -41,6 +51,13 @@ package ASF.Locales is
                        Beans  : in out ASF.Beans.Bean_Factory;
                        Name   : in String;
                        Bundle : in String);
+
+   --  Load the resource bundle identified by the <b>Name</b> and for the given
+   --  <b>Locale</b>.
+   procedure Load_Bundle (Fac    : in out Factory;
+                          Name   : in String;
+                          Locale : in String;
+                          Result : out Bundle);
 
 private
 

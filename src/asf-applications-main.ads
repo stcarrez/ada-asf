@@ -202,6 +202,13 @@ package ASF.Applications.Main is
       with procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
    procedure Register_Functions (App : in out Application'Class);
 
+   --  Load the resource bundle identified by the <b>Name</b> and for the given
+   --  <b>Locale</b>.
+   procedure Load_Bundle (App    : in out Application;
+                          Name   : in String;
+                          Locale : in String;
+                          Bundle : out ASF.Locales.Bundle);
+
 private
 
    type Application_Factory is tagged limited null record;

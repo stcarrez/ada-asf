@@ -16,21 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with EL.Objects;
-with Util.Beans.Basic;
+
 with Ada.Strings.Unbounded;
 package body ASF.Locales is
 
    use Util.Properties.Bundles;
-
-   type Bundle is new Util.Properties.Bundles.Manager
-     and Util.Beans.Basic.Readonly_Bean with null record;
-   type Bundle_Access is access all Bundle;
-
-   --  Get the value identified by the name.
-   --  If the name cannot be found, the method should return the Null object.
-   function Get_Value (From : Bundle;
-                       Name : String) return EL.Objects.Object;
 
    type Locale_Binding is new ASF.Beans.Binding with record
       Loader  : Loader_Access;
@@ -80,6 +70,20 @@ package body ASF.Locales is
       ASF.Beans.Register (Beans, Name, L.all'Access);
    end Register;
 
+
+   --  Load the resource bundle identified by the <b>Name</b> and for the given
+   --  <b>Locale</b>.
+   procedure Load_Bundle (Fac    : in out Factory;
+                          Name   : in String;
+                          Locale : in String;
+                          Result : out Bundle) is
+   begin
+      Load_Bundle (Factory => Fac.Factory,
+                   Locale  => Locale,
+                   Name    => Name,
+                   Bundle  => Result);
+   end Load_Bundle;
+
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
@@ -97,13 +101,15 @@ package body ASF.Locales is
       Scope  := ASF.Beans.REQUEST_SCOPE;
    end Create;
 
+   --  ------------------------------
    --  Get the value identified by the name.
    --  If the name cannot be found, the method should return the Null object.
+   --  ------------------------------
    function Get_Value (From : Bundle;
-                       Name : String) return EL.Objects.Object is
+                       Name : String) return Util.Beans.Objects.Object is
       Value : constant String := From.Get (Name, Name);
    begin
-      return EL.Objects.To_Object (Value);
+      return Util.Beans.Objects.To_Object (Value);
    end Get_Value;
 
 end ASF.Locales;

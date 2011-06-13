@@ -548,6 +548,18 @@ package body ASF.Applications.Main is
    end Register_Functions;
 
    --  ------------------------------
+   --  Load the resource bundle identified by the <b>Name</b> and for the given
+   --  <b>Locale</b>.
+   --  ------------------------------
+   procedure Load_Bundle (App    : in out Application;
+                          Name   : in String;
+                          Locale : in String;
+                          Bundle : out ASF.Locales.Bundle) is
+   begin
+      ASF.Locales.Load_Bundle (App.Locales, Name, Locale, Bundle);
+   end Load_Bundle;
+
+   --  ------------------------------
    --  Finalizes the application, freeing the memory.
    --  ------------------------------
    overriding

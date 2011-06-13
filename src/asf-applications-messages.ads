@@ -54,7 +54,7 @@ package ASF.Applications.Messages is
 private
 
    type Message is record
-      Kind      : Severity;
+      Kind      : Severity := ERROR;
       Summary   : Ada.Strings.Unbounded.Unbounded_String;
       Detail    : Ada.Strings.Unbounded.Unbounded_String;
    end record;

@@ -22,6 +22,9 @@ with ASF.Contexts.Faces;
 --  The <b>ASF.Validators.Texts</b> defines various text oriented validators.
 package ASF.Validators.Texts is
 
+   MAXIMUM_MESSAGE_ID : constant String := "asf.validators.length.maximum";
+   MINIMUM_MESSAGE_ID : constant String := "asf.validators.length.minimum";
+
    --  ------------------------------
    --  Length_Validator
    --  ------------------------------

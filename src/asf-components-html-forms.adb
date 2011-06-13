@@ -34,11 +34,11 @@ package body ASF.Components.Html.Forms is
    FORM_ATTRIBUTE_NAMES   : Util.Strings.String_Set.Set;
 
    INPUT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
-
-   procedure Add_Message (UI      : in Base.UIComponent'Class;
-                          Name    : in String;
-                          Default : in String;
-                          Context : in out Faces_Context'Class);
+--
+--     procedure Add_Message (UI      : in Base.UIComponent'Class;
+--                            Name    : in String;
+--                            Default : in String;
+--                            Context : in out Faces_Context'Class);
 
    --  ------------------------------
    --  Input Component
@@ -147,19 +147,25 @@ package body ASF.Components.Html.Forms is
       end;
    end Process_Decodes;
 
-   procedure Add_Message (UI      : in Base.UIComponent'Class;
-                          Name    : in String;
-                          Default : in String;
-                          Context : in out Faces_Context'Class) is
-      Id  : constant String := To_String (UI.Get_Client_Id);
-      Msg : constant EL.Objects.Object := UI.Get_Attribute (Name => Name, Context => Context);
+   --  ------------------------------
+   --  Perform the component tree processing required by the <b>Process Validations</b>
+   --  phase of the request processing lifecycle for all facets of this component,
+   --  all children of this component, and this component itself, as follows:
+   --  <ul>
+   --    <li>If this component <b>rendered</b> property is false, skip further processing.
+   --    <li>Call the <b>Process_Validators</b> of all facets and children.
+   --  <ul>
+   --  ------------------------------
+   procedure Process_Validators (UI      : in out UIInput;
+                                 Context : in out Faces_Context'Class) is
    begin
-      if EL.Objects.Is_Null (Msg) then
-         Context.Add_Message (Client_Id => Id, Message => Default);
-      else
-         Context.Add_Message (Client_Id => Id, Message => EL.Objects.To_String (Msg));
+      --  Do not validate the component nor its children if the component is not rendered.
+      if not UI.Is_Rendered (Context) then
+         return;
       end if;
-   end Add_Message;
+
+      UIInput'Class (UI).Validate (Context);
+   end Process_Validators;
 
    --  ------------------------------
    --  Validate the submitted value.
@@ -172,6 +178,8 @@ package body ASF.Components.Html.Forms is
    procedure Validate (UI      : in out UIInput;
                        Context : in out Faces_Context'Class) is
    begin
+      Log.Info ("validating input field {0}", UI.Get_Client_Id);
+
       if not EL.Objects.Is_Null (UI.Submitted_Value) then
          UIInput'Class (UI).Validate_Value (UI.Submitted_Value, Context);
 
@@ -198,7 +206,7 @@ package body ASF.Components.Html.Forms is
       use type ASF.Validators.Validator_Access;
    begin
       if EL.Objects.Is_Empty (Value) and UI.Is_Required (Context) and UI.Is_Valid then
-         Add_Message (UI, "requiredMessage", "req", Context);
+         UI.Add_Message ("requiredMessage", "req", Context);
          UI.Is_Valid := False;
       end if;
 
@@ -226,7 +234,7 @@ package body ASF.Components.Html.Forms is
    exception
       when E : others =>
          UI.Is_Valid := False;
-         Add_Message (UI, "converterMessage", "convert", Context);
+         UI.Add_Message ("converterMessage", "convert", Context);
          Log.Info (Utils.Get_Line_Info (UI)
                    & ": Exception raised when updating value {0} for component {1}: {2}",
                    EL.Objects.To_String (UI.Submitted_Value),

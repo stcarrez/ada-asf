@@ -151,6 +151,15 @@ package ASF.Components.Base is
    function Get_Method_Expression (UI   : in UIComponent;
                                    Name : in String) return EL.Expressions.Method_Expression;
 
+   --  Add a message for the component.  Look for the message attribute identified
+   --  by <b>Name</b> on the <b>UI</b> component.  Add this message in the faces context
+   --  and associated with the component client id.  Otherwise, add the default
+   --  message whose bundle key is identified by <b>default</b>.
+   procedure Add_Message (UI      : in UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Context : in out Faces_Context'Class);
+
    procedure Encode_Begin (UI      : in UIComponent;
                            Context : in out Faces_Context'Class);
 

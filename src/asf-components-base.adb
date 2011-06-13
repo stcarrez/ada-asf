@@ -433,6 +433,26 @@ package body ASF.Components.Base is
       end if;
    end Convert_Value;
 
+   --  ------------------------------
+   --  Add a message for the component.  Look for the message attribute identified
+   --  by <b>Name</b> on the <b>UI</b> component.  Add this message in the faces context
+   --  and associated with the component client id.  Otherwise, add the default
+   --  message whose bundle key is identified by <b>default</b>.
+   --  ------------------------------
+   procedure Add_Message (UI      : in UIComponent'Class;
+                          Name    : in String;
+                          Default : in String;
+                          Context : in out Faces_Context'Class) is
+      Id  : constant String := To_String (UI.Get_Client_Id);
+      Msg : constant EL.Objects.Object := UI.Get_Attribute (Name => Name, Context => Context);
+   begin
+      if EL.Objects.Is_Null (Msg) then
+         Context.Add_Message (Client_Id => Id, Message => Default);
+      else
+         Context.Add_Message (Client_Id => Id, Message => EL.Objects.To_String (Msg));
+      end if;
+   end Add_Message;
+
    procedure Encode_Begin (UI      : in UIComponent;
                            Context : in out Faces_Context'Class) is
    begin

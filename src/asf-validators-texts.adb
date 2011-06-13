@@ -56,9 +56,15 @@ package body ASF.Validators.Texts is
          S : constant String := EL.Objects.To_String (Value);
       begin
          if S'Length > Valid.Maximum then
+            Component.Add_Message (Name    => "validatorMessage",
+                                   Default => MAXIMUM_MESSAGE_ID,
+                                   Context => Context);
             raise Invalid_Value;
          end if;
          if S'Length < Valid.Minimum then
+            Component.Add_Message (Name    => "validatorMessage",
+                                   Default => MINIMUM_MESSAGE_ID,
+                                   Context => Context);
             raise Invalid_Value;
          end if;
       end;

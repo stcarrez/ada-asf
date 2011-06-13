@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
+
 --  The <b>ASF.Validators.Texts</b> defines various text oriented validators.
 package body ASF.Validators.Texts is
 
@@ -56,14 +58,18 @@ package body ASF.Validators.Texts is
          S : constant String := EL.Objects.To_String (Value);
       begin
          if S'Length > Valid.Maximum then
-            Component.Add_Message (Name    => "validatorMessage",
+            Component.Add_Message (Name    => ASF.Components.VALIDATOR_MESSAGE_NAME,
                                    Default => MAXIMUM_MESSAGE_ID,
+                                   Arg1    => Util.Beans.Objects.To_Object (Valid.Maximum),
+                                   Arg2    => Component.Get_Label (Context),
                                    Context => Context);
             raise Invalid_Value;
          end if;
          if S'Length < Valid.Minimum then
-            Component.Add_Message (Name    => "validatorMessage",
+            Component.Add_Message (Name    => ASF.Components.VALIDATOR_MESSAGE_NAME,
                                    Default => MINIMUM_MESSAGE_ID,
+                                   Arg1    => Util.Beans.Objects.To_Object (Valid.Minimum),
+                                   Arg2    => Component.Get_Label (Context),
                                    Context => Context);
             raise Invalid_Value;
          end if;

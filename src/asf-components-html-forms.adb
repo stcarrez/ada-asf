@@ -34,11 +34,6 @@ package body ASF.Components.Html.Forms is
    FORM_ATTRIBUTE_NAMES   : Util.Strings.String_Set.Set;
 
    INPUT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
---
---     procedure Add_Message (UI      : in Base.UIComponent'Class;
---                            Name    : in String;
---                            Default : in String;
---                            Context : in out Faces_Context'Class);
 
    --  ------------------------------
    --  Input Component
@@ -59,7 +54,7 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    function Is_Required (UI      : in UIInput;
                          Context : in Faces_Context'Class) return Boolean is
-      Attr : constant EL.Objects.Object := UI.Get_Attribute (Name    => "required",
+      Attr : constant EL.Objects.Object := UI.Get_Attribute (Name    => REQUIRED_NAME,
                                                              Context => Context);
    begin
       if EL.Objects.Is_Null (Attr) then
@@ -206,7 +201,7 @@ package body ASF.Components.Html.Forms is
       use type ASF.Validators.Validator_Access;
    begin
       if EL.Objects.Is_Empty (Value) and UI.Is_Required (Context) and UI.Is_Valid then
-         UI.Add_Message ("requiredMessage", "req", Context);
+         UI.Add_Message (REQUIRED_MESSAGE_NAME, "req", Context);
          UI.Is_Valid := False;
       end if;
 
@@ -225,7 +220,7 @@ package body ASF.Components.Html.Forms is
    overriding
    procedure Process_Updates (UI      : in out UIInput;
                               Context : in out Faces_Context'Class) is
-      VE    : constant EL.Expressions.Value_Expression := UI.Get_Value_Expression ("value");
+      VE    : constant EL.Expressions.Value_Expression := UI.Get_Value_Expression (VALUE_NAME);
    begin
       if UI.Is_Valid then
          VE.Set_Value (Value => UI.Submitted_Value, Context => Context.Get_ELContext.all);
@@ -234,7 +229,7 @@ package body ASF.Components.Html.Forms is
    exception
       when E : others =>
          UI.Is_Valid := False;
-         UI.Add_Message ("converterMessage", "convert", Context);
+         UI.Add_Message (CONVERTER_MESSAGE_NAME, "convert", Context);
          Log.Info (Utils.Get_Line_Info (UI)
                    & ": Exception raised when updating value {0} for component {1}: {2}",
                    EL.Objects.To_String (UI.Submitted_Value),
@@ -273,7 +268,7 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    function Get_Value (UI    : in UICommand) return EL.Objects.Object is
    begin
-      return UI.Get_Attribute (UI.Get_Context.all, "value");
+      return UI.Get_Attribute (UI.Get_Context.all, VALUE_NAME);
    end Get_Value;
 
    --  ------------------------------
@@ -293,7 +288,7 @@ package body ASF.Components.Html.Forms is
                                    return EL.Expressions.Method_Expression is
       pragma Unreferenced (Context);
    begin
-      return UI.Get_Method_Expression (Name => "action");
+      return UI.Get_Method_Expression (Name => ACTION_NAME);
    end Get_Action_Expression;
 
    overriding

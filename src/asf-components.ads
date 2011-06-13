@@ -59,6 +59,11 @@ package ASF.Components is
    --  facility is used.
    REQUIRED_MESSAGE_NAME  : constant String := "requiredMessage";
 
+   --  The current value of the component.
+   VALUE_NAME             : constant String := "value";
+
+   ACTION_NAME            : constant String := "action";
+
    --  ------------------------------
    --  Attribute of a component
    --  ------------------------------

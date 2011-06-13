@@ -22,6 +22,9 @@ with ASF.Contexts.Faces;
 --  The <b>ASF.Validators.Numbers</b> defines various number oriented validators.
 package ASF.Validators.Numbers is
 
+   MAXIMUM_MESSAGE_ID : constant String := "asf.validators.range.maximum";
+   MINIMUM_MESSAGE_ID : constant String := "asf.validators.range.minimum";
+
    --  ------------------------------
    --  Range Validator
    --  ------------------------------

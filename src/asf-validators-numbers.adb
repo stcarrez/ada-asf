@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
 package body ASF.Validators.Numbers is
 
    --  ------------------------------
@@ -51,9 +52,19 @@ package body ASF.Validators.Numbers is
          N : constant Long_Long_Integer := EL.Objects.To_Long_Long_Integer (Value);
       begin
          if N > Valid.Maximum then
+            Component.Add_Message (Name    => ASF.Components.VALIDATOR_MESSAGE_NAME,
+                                   Default => MAXIMUM_MESSAGE_ID,
+                                   Arg1    => Util.Beans.Objects.To_Object (Valid.Maximum),
+                                   Arg2    => Component.Get_Label (Context),
+                                   Context => Context);
             raise Invalid_Value;
          end if;
          if N < Valid.Minimum then
+            Component.Add_Message (Name    => ASF.Components.VALIDATOR_MESSAGE_NAME,
+                                   Default => MINIMUM_MESSAGE_ID,
+                                   Arg1    => Util.Beans.Objects.To_Object (Valid.Minimum),
+                                   Arg2    => Component.Get_Label (Context),
+                                   Context => Context);
             raise Invalid_Value;
          end if;
       end;

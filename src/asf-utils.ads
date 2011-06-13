@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  html -- ASF HTML Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  asf-utils -- Various utility operations for ASF
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,12 @@
 -----------------------------------------------------------------------
 
 with Util.Strings;
+
+with Ada.Strings.Unbounded;
+
+with Util.Texts.Formats;
+with Util.Beans.Objects;
+
 package ASF.Utils is
 
    --  Add in the <b>names</b> set, the basic text attributes that can be set
@@ -30,5 +36,16 @@ package ASF.Utils is
    --  Add in the <b>names</b> set, the size attributes that can be set
    --  on HTML elements.
    procedure Set_Input_Attributes (Names : in out Util.Strings.String_Set.Set);
+
+   type Object_Array is array (Positive range <>) of Util.Beans.Objects.Object;
+
+   package Formats is
+     new Util.Texts.Formats (Stream     => Ada.Strings.Unbounded.Unbounded_String,
+                             Char       => Character,
+                             Input      => String,
+                             Value      => Util.Beans.Objects.Object,
+                             Value_List => Object_Array,
+                             Put        => Ada.Strings.Unbounded.Append,
+                             To_Input   => Util.Beans.Objects.To_String);
 
 end ASF.Utils;

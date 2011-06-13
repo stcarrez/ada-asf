@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 with EL.Objects;
 with ASF.Components.Core;
-with Util.Texts.Formats;
 with ASF.Utils;
 package body ASF.Components.Html.Text is
 
@@ -151,20 +150,10 @@ package body ASF.Components.Html.Text is
       end if;
    end Encode_End;
 
-   type Object_Array is array (Positive range <>) of EL.Objects.Object;
-
-   package Formats is
-     new Util.Texts.Formats (Stream => Ada.Strings.Unbounded.Unbounded_String,
-                               Char   => Character,
-                               Input  => String,
-                               Value  => EL.Objects.Object,
-                               Value_List => Object_Array,
-                               Put        => Ada.Strings.Unbounded.Append,
-                               To_Input   => EL.Objects.To_String);
-
    procedure Encode_Begin (UI      : in UIOutputFormat;
                            Context : in out Faces_Context'Class) is
       use ASF.Components.Core;
+      use ASF.Utils;
    begin
       if not UI.Is_Rendered (Context) then
          return;

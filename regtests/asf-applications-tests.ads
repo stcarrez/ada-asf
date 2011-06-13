@@ -18,8 +18,14 @@
 
 with AUnit.Test_Suites; use AUnit.Test_Suites;
 with AUnit.Test_Fixtures;
+with Util.Beans.Basic;
+with Util.Beans.Objects;
+with Util.Beans.Methods;
+with Ada.Strings.Unbounded;
 
 package ASF.Applications.Tests is
+
+   use Ada.Strings.Unbounded;
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
@@ -40,5 +46,37 @@ package ASF.Applications.Tests is
 
    --  Test an invalid HTTP request.
    procedure Test_Invalid_Request (T : in out Test);
+
+   --  Test a GET+POST request with submitted values and an action method called on the bean.
+   procedure Test_Form_Post (T : in out Test);
+
+   --  Test a POST request with an invalid submitted value
+   procedure Test_Form_Post_Validation_Error (T : in out Test);
+
+   type Form_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
+      Name     : Unbounded_String;
+      Password : Unbounded_String;
+      Email    : Unbounded_String;
+   end record;
+
+   --  Get the value identified by the name.
+   overriding
+   function Get_Value (From : in Form_Bean;
+                       Name : in String) return Util.Beans.Objects.Object;
+
+   --  Set the value identified by the name.
+   overriding
+   procedure Set_Value (From  : in out Form_Bean;
+                        Name  : in String;
+                        Value : in Util.Beans.Objects.Object);
+
+   --  This bean provides some methods that can be used in a Method_Expression
+   overriding
+   function Get_Method_Bindings (From : in Form_Bean)
+                                 return Util.Beans.Methods.Method_Binding_Array_Access;
+
+   --  Action to save the form
+   procedure Save (Data    : in out Form_Bean;
+                   Outcome : in out Unbounded_String);
 
 end ASF.Applications.Tests;

@@ -1,0 +1,21 @@
+<h:form xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+	id="formText">
+  <label for='name'>Name</label>
+    <h:message for='name' styleClass='error'/>
+    <h:inputText id='name' value='#{form.name}' validatorMessage='Invalid name'>
+       <f:validateLength minimum='1' maximum='20'/>
+    </h:inputText>
+  <label for='password'>Password</label>
+    <h:message for='password' styleClass='error'/>
+    <h:inputSecret id='password' size='32' value='#{form.password}' label='Password'>
+       <f:validateLength minimum='4' maximum='10'/>
+    </h:inputSecret>
+  <label for='email'>Email</label>
+    <h:message for='email' styleClass='error'/>
+    <h:inputText id='email' value='#{form.email}' validatorMessage='Invalid email address'
+     requiredMessage='Required'>
+       <f:validateLength minimum='3' maximum='40'/>
+    </h:inputText>
+  <h:commandButton id='ok' action='#{form.save}' value='Go'/>
+</h:form>

@@ -66,7 +66,7 @@ package body ASF.Servlets.Tests is
          Resp       : ASF.Responses.Mockup.Response;
          Result     : Unbounded_String;
       begin
-         Assert (T, Dispatcher.Mapping /= null, "No mapping found");
+         T.Assert (Dispatcher.Mapping /= null, "No mapping found");
 
          Req.Set_Request_URI ("test1");
          Req.Set_Method ("GET");

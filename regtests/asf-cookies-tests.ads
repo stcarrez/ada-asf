@@ -17,13 +17,13 @@
 -----------------------------------------------------------------------
 
 with AUnit.Test_Suites; use AUnit.Test_Suites;
-with AUnit.Test_Fixtures;
+with Util.Tests;
 
 package ASF.Cookies.Tests is
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
-   type Test is new AUnit.Test_Fixtures.Test_Fixture with null record;
+   type Test is new Util.Tests.Test with null record;
 
    --  Test creation of cookie
    procedure Test_Create_Cookie (T : in out Test);

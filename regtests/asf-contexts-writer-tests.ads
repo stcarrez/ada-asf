@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Writer Tests - Unit tests for ASF.Contexts.Writer
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 
 with AUnit.Test_Suites; use AUnit.Test_Suites;
-with AUnit.Test_Fixtures;
+with Util.Tests;
 with Util.Streams.Texts;
 package ASF.Contexts.Writer.Tests is
 
@@ -41,7 +41,7 @@ package ASF.Contexts.Writer.Tests is
                          Encoding     : in String;
                          Size         : in Natural);
 
-   type Test is new AUnit.Test_Fixtures.Test_Fixture with record
+   type Test is new Util.Tests.Test with record
       Writer : Test_Writer_Access;
    end record;
 

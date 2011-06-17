@@ -52,9 +52,9 @@ package body ASF.Cookies.Tests is
    procedure Test_Create_Cookie (T : in out Test) is
       C : constant Cookie := Create ("cookie", "value");
    begin
-      Assert_Equals (T, "cookie", Get_Name (C), "Invalid name");
-      Assert_Equals (T, "value", Get_Value (C), "Invalid value");
-      Assert (T, not Is_Secure (C), "Invalid is_secure");
+      T.Assert_Equals ("cookie", Get_Name (C), "Invalid name");
+      T.Assert_Equals ("value", Get_Value (C), "Invalid value");
+      T.Assert (not Is_Secure (C), "Invalid is_secure");
    end Test_Create_Cookie;
 
    --  ------------------------------
@@ -66,8 +66,8 @@ package body ASF.Cookies.Tests is
          S : constant String := To_Http_Header (C);
       begin
          Log.Info ("Cookie {0}: {1}", Get_Name (C), S);
-         Assert (T, S'Length > 0, "Invalid cookie length for: " & S);
-         Assert (T, Index (S, "=") > 0, "Invalid cookie format; " & S);
+         T.Assert (S'Length > 0, "Invalid cookie length for: " & S);
+         T.Assert (Index (S, "=") > 0, "Invalid cookie format; " & S);
       end Test_Cookie;
 
       procedure Test_Cookie (Name : in String; Value : in String) is
@@ -109,7 +109,7 @@ package body ASF.Cookies.Tests is
                S : constant String := To_Http_Header (C);
             begin
                if S'Length < 10 then
-                  Assert (T, S'Length > 10, "Invalid cookie generation");
+                  T.Assert (S'Length > 10, "Invalid cookie generation");
                end if;
             end;
          end loop;
@@ -138,16 +138,16 @@ package body ASF.Cookies.Tests is
          Util.Measures.Report (S     => Start,
                                Title => "Parsing of cookie " & Name);
 
-         Assert (T, C /= null, "Null value returned by Get_Cookies");
-         Assert_Equals (T, Count, C'Length, "Invalid count in result array");
+         T.Assert (C /= null, "Null value returned by Get_Cookies");
+         T.Assert_Equals (Count, C'Length, "Invalid count in result array");
          for I in C'Range loop
             Log.Debug ("Cookie: {0}={1}", Get_Name (C (I)), Get_Value (C (I)));
             if Name = Get_Name (C (I)) then
-               Assert_Equals (T, Value, Get_Value (C (I)), "Invalid cookie: " & Name);
+               T.Assert_Equals (Value, Get_Value (C (I)), "Invalid cookie: " & Name);
                Found := True;
             end if;
          end loop;
-         Assert (T, Found, "Cookie " & Name & " not found");
+         T.Assert (Found, "Cookie " & Name & " not found");
          Free (C);
       end Test_Parse;
 

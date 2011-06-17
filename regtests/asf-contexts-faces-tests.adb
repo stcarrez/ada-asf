@@ -51,22 +51,22 @@ package body ASF.Contexts.Faces.Tests is
       Ctx.Add_Message (Client_Id => "warn", Message => "msg3", Severity => WARN);
       Ctx.Add_Message (Client_Id => "error", Message => "msg3", Severity => ERROR);
       Ctx.Add_Message (Client_Id => "fatal", Message => "msg3", Severity => FATAL);
-      Assert (T, Ctx.Get_Maximum_Severity = FATAL, "Add message failed");
+      T.Assert (Ctx.Get_Maximum_Severity = FATAL, "Add message failed");
    end Test_Add_Message;
 
    procedure Test_Max_Severity (T : in out Test) is
       Ctx : Faces_Context;
    begin
-      Assert (T, Ctx.Get_Maximum_Severity = NONE, "Invalid max severity with no message");
+      T.Assert (Ctx.Get_Maximum_Severity = NONE, "Invalid max severity with no message");
 
       Ctx.Add_Message (Client_Id => "info", Message => "msg3", Severity => INFO);
-      Assert (T, Ctx.Get_Maximum_Severity = INFO, "Invalid max severity with info message");
+      T.Assert (Ctx.Get_Maximum_Severity = INFO, "Invalid max severity with info message");
 
       Ctx.Add_Message (Client_Id => "info", Message => "msg3", Severity => WARN);
-      Assert (T, Ctx.Get_Maximum_Severity = WARN, "Invalid max severity with warn message");
+      T.Assert (Ctx.Get_Maximum_Severity = WARN, "Invalid max severity with warn message");
 
       Ctx.Add_Message (Client_Id => "info", Message => "msg3", Severity => FATAL);
-      Assert (T, Ctx.Get_Maximum_Severity = FATAL, "Invalid max severity with warn message");
+      T.Assert (Ctx.Get_Maximum_Severity = FATAL, "Invalid max severity with warn message");
    end Test_Max_Severity;
 
    procedure Test_Get_Messages (T : in out Test) is
@@ -76,7 +76,7 @@ package body ASF.Contexts.Faces.Tests is
       declare
          Iter : constant Vectors.Cursor := Ctx.Get_Messages (Client_Id => "");
       begin
-         Assert (T, not Vectors.Has_Element (Iter), "Iterator should indicate no message");
+         T.Assert (not Vectors.Has_Element (Iter), "Iterator should indicate no message");
       end;
 
       Ctx.Add_Message (Client_Id => "info", Message => "msg1", Severity => INFO);
@@ -84,12 +84,12 @@ package body ASF.Contexts.Faces.Tests is
          Iter : constant Vectors.Cursor := Ctx.Get_Messages (Client_Id => "info");
          M    : Message;
       begin
-         Assert (T, Vectors.Has_Element (Iter), "Iterator should indicate a message");
+         T.Assert (Vectors.Has_Element (Iter), "Iterator should indicate a message");
 
          M := Vectors.Element (Iter);
          Assert_Equals (T, "msg1", Get_Summary (M), "Invalid message");
          Assert_Equals (T, "msg1", Get_Detail (M), "Invalid details");
-         Assert (T, INFO = Get_Severity (M), "Invalid severity");
+         T.Assert (INFO = Get_Severity (M), "Invalid severity");
       end;
    end Test_Get_Messages;
 

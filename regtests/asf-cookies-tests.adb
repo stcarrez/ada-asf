@@ -139,11 +139,11 @@ package body ASF.Cookies.Tests is
                                Title => "Parsing of cookie " & Name);
 
          T.Assert (C /= null, "Null value returned by Get_Cookies");
-         T.Assert_Equals (Count, C'Length, "Invalid count in result array");
+         Assert_Equals (T, Count, C'Length, "Invalid count in result array");
          for I in C'Range loop
             Log.Debug ("Cookie: {0}={1}", Get_Name (C (I)), Get_Value (C (I)));
             if Name = Get_Name (C (I)) then
-               T.Assert_Equals (Value, Get_Value (C (I)), "Invalid cookie: " & Name);
+               Assert_Equals (T, Value, Get_Value (C (I)), "Invalid cookie: " & Name);
                Found := True;
             end if;
          end loop;

@@ -48,6 +48,12 @@ package body ASF.Applications.Tests is
 
       Caller.Add_Test (Suite, "Test service HTTP POST+PROCESS_VALIDATION",
                        Test_Form_Post_Validation_Error'Access);
+
+      Caller.Add_Test (Suite, "Test AJAX bean method invocation",
+                       Test_Ajax_Action'Access);
+
+      Caller.Add_Test (Suite, "Test AJAX invalid requests",
+                       Test_Ajax_Action_Error'Access);
    end Add_Tests;
 
    package Save_Binding is
@@ -126,8 +132,7 @@ package body ASF.Applications.Tests is
                    Outcome : in out Unbounded_String) is
    begin
       Outcome := To_Unbounded_String ("success");
-
-
+      Data.Called := Data.Called + 1;
    end Save;
 
    --  ------------------------------
@@ -289,5 +294,56 @@ package body ASF.Applications.Tests is
                       Reply, "Invalid error message for password");
 
    end Test_Form_Post_Validation_Error;
+
+   --  ------------------------------
+   --  Test a POST request to invoke a bean method.
+   --  ------------------------------
+   procedure Test_Ajax_Action (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+   begin
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Do_Post (Request, Reply, "/ajax/form/save", "ajax-action-1.txt");
+
+      Assert_Equals (T, 1, Form.Called, "Save method was not called");
+   end Test_Ajax_Action;
+
+   --  ------------------------------
+   --  Test a POST request to invoke a bean method.
+   --  Verify that invalid requests raise an error.
+   --  ------------------------------
+   procedure Test_Ajax_Action_Error (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+   begin
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+
+      Do_Post (Request, Reply, "/ajax/", "ajax-error-1.txt");
+      Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid error response 1");
+
+      Do_Post (Request, Reply, "/ajax/a", "ajax-error-2.txt");
+      Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid error response 2");
+
+      Do_Post (Request, Reply, "/ajax/a/", "ajax-error-3.txt");
+      Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid error response 3");
+
+      Do_Post (Request, Reply, "/ajax//c", "ajax-error-4.txt");
+      Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid error response 4");
+
+      Do_Post (Request, Reply, "/ajax/form/savex", "ajax-error-5.txt");
+      Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid error response 5");
+
+      Do_Post (Request, Reply, "/ajax/formx/save", "ajax-error-6.txt");
+      Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid error response 6");
+
+   end Test_Ajax_Action_Error;
 
 end ASF.Applications.Tests;

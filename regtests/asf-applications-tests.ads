@@ -53,10 +53,18 @@ package ASF.Applications.Tests is
    --  Test a POST request with an invalid submitted value
    procedure Test_Form_Post_Validation_Error (T : in out Test);
 
+   --  Test a POST request to invoke a bean method.
+   procedure Test_Ajax_Action (T : in out Test);
+
+   --  Test a POST request to invoke a bean method.
+   --  Verify that invalid requests raise an error.
+   procedure Test_Ajax_Action_Error (T : in out Test);
+
    type Form_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
       Name     : Unbounded_String;
       Password : Unbounded_String;
       Email    : Unbounded_String;
+      Called   : Natural := 0;
    end record;
 
    --  Get the value identified by the name.

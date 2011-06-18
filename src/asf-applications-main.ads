@@ -182,6 +182,20 @@ package ASF.Applications.Main is
                        Request  : in out ASF.Requests.Request'Class;
                        Response : in out ASF.Responses.Response'Class);
 
+   --  Dispatch a bean action request.
+   --  1. Find the bean object identified by <b>Name</b>, create it if necessary.
+   --  2. Resolve the bean method identified by <b>Operation</b>.
+   --  3. If the method is an action method (see ASF.Events.Actions), call that method.
+   --  4. Using the outcome action result, decide using the navigation handler what
+   --     is the result view.
+   --  5. Render the result view resolved by the navigation handler.
+   procedure Dispatch (App       : in out Application;
+                       Name      : in String;
+                       Operation : in String;
+                       Request   : in out ASF.Requests.Request'Class;
+                       Response  : in out ASF.Responses.Response'Class;
+                       Prepare   : access procedure (Bean : access Util.Beans.Basic.Bean'Class));
+
    --  Find the converter instance that was registered under the given name.
    --  Returns null if no such converter exist.
    function Find (App  : in Application;

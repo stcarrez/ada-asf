@@ -26,6 +26,7 @@ with ASF.Components.Core;
 with ASF.Components.Core.Factory;
 with ASF.Components.Html.Factory;
 with ASF.Components.Utils.Factory;
+with ASF.Components.Root;
 with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
@@ -442,7 +443,7 @@ package body ASF.Applications.Main is
    procedure Execute_Lifecycle (App     : in Application;
                                 Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
    begin
-      App.Lifecycle.Execute (Context);
+      App.Lifecycle.Execute (Context => Context);
       App.Lifecycle.Render (Context);
    end Execute_Lifecycle;
 
@@ -497,6 +498,115 @@ package body ASF.Applications.Main is
       exception
          when E : others =>
             Log.Error ("Error when restoring view {0}: {1}: {2}", Page,
+                       Exception_Name (E), Exception_Message (E));
+            Contexts.Faces.Restore (Prev_Context);
+            raise;
+      end;
+      Contexts.Faces.Restore (Prev_Context);
+      Writer.Flush;
+
+      declare
+         C : Bean_Vectors.Cursor := Beans.First;
+      begin
+         while Bean_Vectors.Has_Element (C) loop
+            declare
+               Bean : constant Bean_Object := Bean_Vectors.Element (C);
+            begin
+               Request.Remove_Attribute (Name => Bean.Key);
+            end;
+            Bean_Vectors.Next (C);
+         end loop;
+      end;
+   end Dispatch;
+
+   --  ------------------------------
+   --  Dispatch a bean action request.
+   --  1. Find the bean object identified by <b>Name</b>, create it if necessary.
+   --  2. Resolve the bean method identified by <b>Operation</b>.
+   --  3. If the method is an action method (see ASF.Events.Actions), call that method.
+   --  4. Using the outcome action result, decide using the navigation handler what
+   --     is the result view.
+   --  5. Render the result view resolved by the navigation handler.
+   --  ------------------------------
+   procedure Dispatch (App       : in out Application;
+                       Name      : in String;
+                       Operation : in String;
+                       Request   : in out ASF.Requests.Request'Class;
+                       Response  : in out ASF.Responses.Response'Class;
+                       Prepare   : access procedure (Bean : access Util.Beans.Basic.Bean'Class)) is
+
+      use EL.Contexts.Default;
+      use EL.Variables;
+      use EL.Variables.Default;
+      use EL.Contexts;
+      use EL.Objects;
+      use Util.Beans.Basic;
+      use ASF.Applications.Views;
+      use Ada.Exceptions;
+
+      Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
+      Context        : aliased ASF.Contexts.Faces.Faces_Context;
+      ELContext      : aliased EL.Contexts.Default.Default_Context;
+      Variables      : aliased Default_Variable_Mapper;
+      Root_Resolver  : aliased Web_ELResolver;
+
+      Beans          : aliased Bean_Vectors.Vector;
+
+      Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
+
+      Prev_Context   : constant Contexts.Faces.Faces_Context_Access := Contexts.Faces.Current;
+   begin
+      Log.Info ("Dispatch {0} - {1}", Name, Operation);
+
+      Root_Resolver.Application := App'Unchecked_Access;
+      Root_Resolver.Request := Request'Unchecked_Access;
+      Root_Resolver.Beans := Beans'Unchecked_Access;
+      ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
+      ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
+
+      Context.Set_ELContext (ELContext'Unchecked_Access);
+      Context.Set_Response_Writer (Writer'Unchecked_Access);
+      Writer.Initialize ("text/html", "UTF-8", Output);
+
+      Context.Set_Request (Request'Unchecked_Access);
+      Context.Set_Response (Response'Unchecked_Access);
+      App.Set_Context (Context'Unchecked_Access);
+
+      declare
+         EL_Expr : constant String := "#{" & Name & "." & Operation & "}";
+         Root    : Components.Core.UIView_Access;
+         View    : Components.Root.UIViewRoot;
+         Expr    : EL.Expressions.Method_Expression;
+         Method  : EL.Expressions.Method_Info;
+         Outcome : Ada.Strings.Unbounded.Unbounded_String;
+      begin
+         --  Build a method expression and get a Method_Info to obtain the bean
+         --  instance and the method descriptor.
+         Expr := EL.Expressions.Create_Expression (Expr    => EL_Expr,
+                                                   Context => ELContext);
+
+         Method := Expr.Get_Method_Info (Context => ELContext);
+
+         --  If we have a prepare method and the bean provides a Set_Value method,
+         --  call the preparation method to fill the bean with some values.
+         if Prepare /= null and (Method.Object.all in Util.Beans.Basic.Bean'Class) then
+            Prepare (Bean => Util.Beans.Basic.Bean'Class (Method.Object.all)'Access);
+         end if;
+
+         --  Execute the specified method on the bean and get the outcome result string.
+         Outcome := To_Unbounded_String ("success");
+         ASF.Events.Actions.Action_Method.Execute (Method => Method,
+                                                   Param  => Outcome);
+         Root := new ASF.Components.Core.UIView;
+         ASF.Components.Root.Set_Root (UI   => View,
+                                       Root => Root,
+                                       Name => "ajax/" & Name & "/" & Operation);
+         Context.Set_View_Root (View => View);
+
+      exception
+         when E : others =>
+            Log.Error ("Error when executing action {0}: {1}: {2}",
+                       EL_Expr,
                        Exception_Name (E), Exception_Message (E));
             Contexts.Faces.Restore (Prev_Context);
             raise;

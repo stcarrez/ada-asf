@@ -115,7 +115,7 @@ package body ASF.Components.Html.Text is
       if Is_Null (Escape) or To_Boolean (Escape) then
          Writer.Write_Text (Value);
       else
-         Writer.Write_Text (Value);
+         Writer.Write (Value);
       end if;
       Writer.End_Optional_Element ("span");
    end Write_Output;

@@ -26,6 +26,7 @@ with Util.Files;
 with ASF.Streams;
 with ASF.Servlets.Faces;
 with ASF.Servlets.Files;
+with ASF.Servlets.Ajax;
 with ASF.Servlets.Measures;
 with ASF.Responses;
 with ASF.Responses.Tools;
@@ -45,6 +46,7 @@ package body ASF.Tests is
    Fact     : ASF.Applications.Main.Application_Factory;
    Faces    : aliased ASF.Servlets.Faces.Faces_Servlet;
    Files    : aliased ASF.Servlets.Files.File_Servlet;
+   Ajax     : aliased ASF.Servlets.Ajax.Ajax_Servlet;
    Dump     : aliased ASF.Filters.Dump.Dump_Filter;
    Measures : aliased ASF.Servlets.Measures.Measure_Servlet;
 
@@ -74,6 +76,7 @@ package body ASF.Tests is
       --  Register the servlets and filters
       App.Add_Servlet (Name => "faces", Server => Faces'Access);
       App.Add_Servlet (Name => "files", Server => Files'Access);
+      App.Add_Servlet (Name => "ajax", Server => Ajax'Access);
       App.Add_Servlet (Name => "measures", Server => Measures'Access);
       App.Add_Filter (Name => "dump", Filter => Dump'Access);
       App.Add_Filter (Name => "measures", Filter => Measures'Access);
@@ -84,13 +87,16 @@ package body ASF.Tests is
       App.Add_Mapping (Name => "files", Pattern => "*.js");
       App.Add_Mapping (Name => "files", Pattern => "*.properties");
       App.Add_Mapping (Name => "files", Pattern => "*.xhtml");
+      App.Add_Mapping (Name => "ajax", Pattern => "/ajax/*");
       App.Add_Mapping (Name => "measures", Pattern => "stats.xml");
 
       App.Add_Filter_Mapping (Name => "measures", Pattern => "*");
+      App.Add_Filter_Mapping (Name => "measures", Pattern => "/ajax/*");
       App.Add_Filter_Mapping (Name => "measures", Pattern => "*.html");
       App.Add_Filter_Mapping (Name => "measures", Pattern => "*.xhtml");
       App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
       App.Add_Filter_Mapping (Name => "dump", Pattern => "*.css");
+      App.Add_Filter_Mapping (Name => "dump", Pattern => "/ajax/*");
    end Initialize;
 
    --  ------------------------------

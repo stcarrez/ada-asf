@@ -191,7 +191,7 @@ package body ASF.Tests is
    --  ------------------------------
    --  Check that the response body contains the string
    --  ------------------------------
-   procedure Assert_Contains (T       : in AUnit.Assertions.Test'Class;
+   procedure Assert_Contains (T       : in Util.Tests.Test'Class;
                               Value   : in String;
                               Reply   : in out ASF.Responses.Mockup.Response;
                               Message : in String := "Test failed";
@@ -214,7 +214,7 @@ package body ASF.Tests is
    --  ------------------------------
    --  Check that the response body matches the regular expression
    --  ------------------------------
-   procedure Assert_Matches (T       : in AUnit.Assertions.Test'Class;
+   procedure Assert_Matches (T       : in Util.Tests.Test'Class;
                              Pattern : in String;
                              Reply   : in out ASF.Responses.Mockup.Response;
                              Message : in String := "Test failed";

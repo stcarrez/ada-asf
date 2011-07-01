@@ -21,6 +21,7 @@ with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Server;
 with ASF.Applications.Main;
+with Util.Tests;
 with AUnit.Assertions;
 
 with GNAT.Source_Info;
@@ -59,7 +60,7 @@ package ASF.Tests is
                      Response : in out ASF.Responses.Mockup.Response);
 
    --  Check that the response body contains the string
-   procedure Assert_Contains (T       : in AUnit.Assertions.Test'Class;
+   procedure Assert_Contains (T       : in Util.Tests.Test'Class;
                               Value   : in String;
                               Reply   : in out ASF.Responses.Mockup.Response;
                               Message : in String := "Test failed";
@@ -67,7 +68,7 @@ package ASF.Tests is
                               Line    : Natural := GNAT.Source_Info.Line);
 
    --  Check that the response body matches the regular expression
-   procedure Assert_Matches (T       : in AUnit.Assertions.Test'Class;
+   procedure Assert_Matches (T       : in Util.Tests.Test'Class;
                              Pattern : in String;
                              Reply   : in out ASF.Responses.Mockup.Response;
                              Message : in String := "Test failed";

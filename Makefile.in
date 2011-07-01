@@ -107,6 +107,7 @@ install:
 	${MKDIR} -p ${alidir}/asf
 	${MKDIR} -p ${alidir}/asfunit
 	${MKDIR} -p ${awadir}/web/js
+	${MKDIR} -p ${awadir}/web/js/jquery-ui
 	${CP} asfunit/*.ad[bs] ${includedir}/asfunit
 	${CP} src/*.ad[bs] ${includedir}/asf
 	${CP} src/aws/*.ad[bs] ${includedir}/asf
@@ -116,7 +117,8 @@ install:
 	${CP} lib/asfunit/*.ali ${alidir}/asfunit
 	${CP} lib/asf/libasf.a ${libdir}/
 	${CP} lib/asfunit/libasfunit.a ${libdir}/
-	${CP} web/js/* ${awadir}/web/js
+	${CP} web/js/*.js ${awadir}/web/js
+	${CP} web/js/jquery-ui/*.js ${awadir}/web/js/jquery-ui
 
 uninstall:
 	rm -rf ${includedir}/asf

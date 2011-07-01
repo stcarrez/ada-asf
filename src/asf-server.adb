@@ -21,7 +21,7 @@ with Util.Strings;
 with Ada.Task_Attributes;
 package body ASF.Server is
 
-   Null_Context : constant Request_Context := Request_Context'(null, null);
+   Null_Context : constant Request_Context := Request_Context'(null, null, null);
 
    package Task_Context is new Ada.Task_Attributes
      (Request_Context, Null_Context);
@@ -53,9 +53,7 @@ package body ASF.Server is
                                           Response : in out Responses.Response'Class)) is
       Ctx : constant Request_Context := Task_Context.Value;
    begin
-      if Ctx.Process /= null then
-         Ctx.Process (Process);
-      end if;
+      Process (Ctx.Request.all, Ctx.Response.all);
    end Update_Context;
 
    --  ------------------------------
@@ -93,18 +91,6 @@ package body ASF.Server is
       Slash_Pos  : constant Natural := Index (URI, '/', URI'First + 1);
       Apps       : constant Binding_Array_Access := Server.Applications;
       Prefix_End : Natural;
-
-      procedure Process (Process : not null access
-                           procedure (Request  : in out Requests.Request'Class;
-                                      Response : in out Responses.Response'Class));
-
-      procedure Process (Process : not null access
-                           procedure (Request  : in out Requests.Request'Class;
-                                      Response : in out Responses.Response'Class)) is
-      begin
-         Process (Request, Response);
-      end Process;
-
    begin
 
       if Apps = null then
@@ -128,7 +114,8 @@ package body ASF.Server is
                Page       : constant String := URI (Prefix_End + 1 .. URI'Last);
                Dispatcher : constant Request_Dispatcher := Context.Get_Request_Dispatcher (Page);
             begin
-               Req.Process     := Process'Access;
+               Req.Request     := Request'Unchecked_Access;
+               Req.Response    := Response'Unchecked_Access;
                Req.Application := Context;
                Set_Context (Req);
                Forward (Dispatcher, Request, Response);

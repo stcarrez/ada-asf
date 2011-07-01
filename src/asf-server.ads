@@ -67,10 +67,8 @@ private
 
    type Request_Context is record
       Application : ASF.Servlets.Servlet_Registry_Access;
-      Process     : access
-        procedure (Process : not null access
-                     procedure (Request  : in out Requests.Request'Class;
-                                Response : in out Responses.Response'Class));
+      Request     : ASF.Requests.Request_Access;
+      Response    : ASF.Responses.Response_Access;
    end record;
 
    --  Set the current registry.  This is called by <b>Service</b> once the

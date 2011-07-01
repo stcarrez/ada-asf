@@ -4,6 +4,7 @@ MODE=debug
 GNATMAKE=gnatmake -XMODE=${MODE} -XPROCESSORS=4
 GNATCLEAN=gnatclean
 GPRPATH=asf.gpr
+SVN=svn
 
 distdir=ada-asf-@ASF_VERSION@
 
@@ -109,8 +110,8 @@ install:
 	${CP} asfunit/*.ad[bs] ${includedir}/asfunit
 	${CP} src/*.ad[bs] ${includedir}/asf
 	${CP} src/aws/*.ad[bs] ${includedir}/asf
-	${CP} distrib/asf.gpr ${projectdir}/asf.gpr
-	${CP} distrib/asfunit.gpr ${projectdir}/asfunit.gpr
+	sed -e "s,INSTALL,${prefix},g" < distrib/asf.gpr > ${projectdir}/asf.gpr
+	sed -e "s,INSTALL,${prefix},g" < distrib/asfunit.gpr > ${projectdir}/asfunit.gpr
 	${CP} lib/asf/*.ali ${alidir}/asf
 	${CP} lib/asfunit/*.ali ${alidir}/asfunit
 	${CP} lib/asf/libasf.a ${libdir}/
@@ -125,3 +126,10 @@ uninstall:
 	rm -f ${projectdir}/asf.gpr
 	rm -f ${projectdir}/asfunit.gpr
 	rm -rf ${awadir}/web
+
+# prepare before releasing a new version of the package
+# (collect information about changes and SVN repository)
+prepare-release:
+	${SVN} update
+	${SVN} info > CHANGES
+	${SVN} log -v > ChangeLog

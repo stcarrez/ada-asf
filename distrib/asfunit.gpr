@@ -8,11 +8,11 @@ project Asfunit is
    Version := "0.1.0";
 
    for Library_Name use "asfunit";
-   for Library_Dir use "/usr/lib";
+   for Library_Dir use "INSTALL/lib";
    for Library_Kind use "static";
 
-   for Source_Dirs use ("/usr/share/ada/adainclude/asfunit");
-   for Library_ALI_Dir use "/usr/share/ada/adainclude/asfunit";
+   for Source_Dirs use ("INSTALL/share/ada/adainclude/asfunit");
+   for Library_ALI_Dir use "INSTALL/share/ada/adainclude/asfunit";
    for Externally_Built use "true";
 end Asfunit;
 

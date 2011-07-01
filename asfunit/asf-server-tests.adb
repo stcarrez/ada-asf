@@ -22,7 +22,8 @@ package body ASF.Server.Tests is
       C : Request_Context;
    begin
       C.Application := Context;
-      C.Process     := null;
+      C.Request     := null;
+      C.Response    := null;
       ASF.Server.Set_Context (C);
    end Set_Context;
 

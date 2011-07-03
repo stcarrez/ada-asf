@@ -63,6 +63,7 @@ package body ASF.Components.Html.Lists is
          Kind  : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
          Name  : constant String := UI.Get_Var;
          Bean  : access Util.Beans.Basic.Readonly_Bean'Class;
+         Is_Reverse : constant Boolean := UI.Get_Attribute ("reverse", Context, False);
          List  : Util.Beans.Basic.List_Bean_Access;
          Count : Natural;
       begin
@@ -82,14 +83,25 @@ package body ASF.Components.Html.Lists is
 
          List := Util.Beans.Basic.List_Bean'Class (Bean.all)'Unchecked_Access;
          Count := List.Get_Count;
-         for I in 1 .. Count loop
-            List.Set_Row_Index (I);
-            Value := List.Get_Row;
+         if Is_Reverse then
+            for I in reverse 1 .. Count loop
+               List.Set_Row_Index (I);
+               Value := List.Get_Row;
 
-            Context.Set_Attribute (Name, Value);
-            Log.Debug ("Set variable {0}", Name);
-            Base.UIComponent (UI).Encode_Children (Context);
-         end loop;
+               Context.Set_Attribute (Name, Value);
+               Log.Debug ("Set variable {0}", Name);
+               Base.UIComponent (UI).Encode_Children (Context);
+            end loop;
+         else
+            for I in 1 .. Count loop
+               List.Set_Row_Index (I);
+               Value := List.Get_Row;
+
+               Context.Set_Attribute (Name, Value);
+               Log.Debug ("Set variable {0}", Name);
+               Base.UIComponent (UI).Encode_Children (Context);
+            end loop;
+         end if;
       end;
    end Encode_Children;
 

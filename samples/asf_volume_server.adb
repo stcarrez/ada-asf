@@ -39,7 +39,7 @@ procedure Asf_Volume_Server is
    Files   : aliased ASF.Servlets.Files.File_Servlet;
    Dump    : aliased ASF.Filters.Dump.Dump_Filter;
    Bean    : aliased Volume.Compute_Bean;
-   Conv    : constant access Volume.Float_Converter := new Volume.Float_Converter;
+   Conv    : aliased Volume.Float_Converter;
    WS      : ASF.Server.Web.AWS_Container;
    C       : ASF.Applications.Config;
 begin
@@ -49,7 +49,9 @@ begin
 
    App.Initialize (C, Factory);
    App.Set_Global ("contextPath", CONTEXT_PATH);
-   App.Set_Global ("compute", Util.Beans.Objects.To_Object (Bean'Unchecked_Access));
+   App.Set_Global ("compute",
+                   Util.Beans.Objects.To_Object (Bean'Unchecked_Access,
+                                                 Util.Beans.Objects.STATIC));
 
    --  Register the servlets and filters
    App.Add_Servlet (Name => "faces", Server => Faces'Unchecked_Access);
@@ -61,7 +63,7 @@ begin
    App.Add_Mapping (Name => "files", Pattern => "*.css");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
 
-   App.Add_Converter (Name => "float", Converter => Conv.all'Unchecked_Access);
+   App.Add_Converter (Name => "float", Converter => Conv'Unchecked_Access);
 
    WS.Register_Application (CONTEXT_PATH, App'Unchecked_Access);
 

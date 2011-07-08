@@ -25,35 +25,62 @@ package body ASF.Beans is
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Beans");
 
    --  ------------------------------
-   --  Register under the given name a function to create the bean instance when
-   --  it is accessed for a first time.  The scope defines the scope of the bean.
-   --  bean
+   --  Register under the name identified by <b>Name</b> the class instance <b>Class</b>.
+   --  ------------------------------
+   procedure Register_Class (Factory : in out Bean_Factory;
+                             Name    : in String;
+                             Class   : in Class_Binding_Access) is
+   begin
+      Log.Info ("Register bean class {0}", Name);
+
+      Factory.Registry.Include (Name, Class);
+   end Register_Class;
+
+   --  ------------------------------
+   --  Register the bean identified by <b>Name</b> and associated with the class <b>Class</b>.
+   --  The class must have been registered by using the <b>Register</b> class operation.
+   --  The scope defines the scope of the bean.
    --  ------------------------------
    procedure Register (Factory : in out Bean_Factory;
                        Name    : in String;
-                       Handler : in Create_Bean_Access;
+                       Class   : in String;
                        Scope   : in Scope_Type := REQUEST_SCOPE) is
-      B : constant Simple_Binding_Access := new Simple_Binding '(Create => Handler,
-                                                                 Scope  => Scope);
    begin
-      Log.Info ("Register bean '{0}' in scope {1}", Name, Scope_Type'Image (Scope));
+      Log.Info ("Register bean '{0}' created by '{1}' in scope {2}",
+                Name, Class, Scope_Type'Image (Scope));
 
-      Register (Factory, Name, B.all'Access);
+      declare
+         Pos     : constant Registry_Maps.Cursor := Factory.Registry.Find (Class);
+         Binding : Bean_Binding;
+      begin
+         if not Registry_Maps.Has_Element (Pos) then
+            Log.Error ("Class '{0}' does not exist.  Cannot register bean '{1}'",
+                       Class, Name);
+            return;
+         end if;
+         Binding.Create := Registry_Maps.Element (Pos);
+         Binding.Scope  := Scope;
+         Factory.Map.Include (Ada.Strings.Unbounded.To_Unbounded_String (Name), Binding);
+      end;
    end Register;
 
    --  ------------------------------
-   --  Register under the given name a function to create the bean instance when
-   --  it is accessed for a first time.  The scope defines the scope of the bean.
-   --  bean
+   --  Register the bean identified by <b>Name</b> and associated with the class <b>Class</b>.
+   --  The class must have been registered by using the <b>Register</b> class operation.
+   --  The scope defines the scope of the bean.
    --  ------------------------------
    procedure Register (Factory : in out Bean_Factory;
                        Name    : in String;
-                       Bind    : in Binding_Access) is
+                       Class   : in Class_Binding_Access;
+                       Scope   : in Scope_Type := REQUEST_SCOPE) is
+      Binding : Bean_Binding;
    begin
-      Log.Info ("Register bean binding '{0}'", Name);
+      Log.Info ("Register bean '{0}' in scope {2}",
+                Name, Scope_Type'Image (Scope));
 
-      Factory.Map.Include (Key => To_Unbounded_String (Name),
-                           New_Item => Bind);
+      Binding.Create := Class;
+      Binding.Scope  := Scope;
+      Factory.Map.Include (Ada.Strings.Unbounded.To_Unbounded_String (Name), Binding);
    end Register;
 
    --  ------------------------------
@@ -61,13 +88,25 @@ package body ASF.Beans is
    --  ------------------------------
    procedure Register (Factory : in out Bean_Factory;
                        From    : in Bean_Factory) is
-      Pos : Bean_Maps.Cursor := Bean_Maps.First (From.Map);
    begin
-      while Bean_Maps.Has_Element (Pos) loop
-         Factory.Map.Include (Key      => Bean_Maps.Key (Pos),
-                              New_Item => Bean_Maps.Element (Pos));
-         Bean_Maps.Next (Pos);
-      end loop;
+      declare
+         Pos : Registry_Maps.Cursor := From.Registry.First;
+      begin
+         while Registry_Maps.Has_Element (Pos) loop
+            Factory.Registry.Include (Key      => Registry_Maps.Key (Pos),
+                                      New_Item => Registry_Maps.Element (Pos));
+            Registry_Maps.Next (Pos);
+         end loop;
+      end;
+      declare
+         Pos : Bean_Maps.Cursor := Bean_Maps.First (From.Map);
+      begin
+         while Bean_Maps.Has_Element (Pos) loop
+            Factory.Map.Include (Key      => Bean_Maps.Key (Pos),
+                                 New_Item => Bean_Maps.Element (Pos));
+            Bean_Maps.Next (Pos);
+         end loop;
+      end;
    end Register;
 
    --  ------------------------------
@@ -81,21 +120,15 @@ package body ASF.Beans is
    begin
       if Bean_Maps.Has_Element (Pos) then
          declare
-            B : constant Binding_Access := Bean_Maps.Element (Pos);
+            Binding : constant Bean_Binding := Bean_Maps.Element (Pos);
          begin
-            B.Create (Name, Result, Scope);
+            Binding.Create.Create (Name, Result);
+            Scope := Binding.Scope;
          end;
+      else
+         Result := null;
+         Scope := ANY_SCOPE;
       end if;
-   end Create;
-
-   procedure Create (Factory : in Simple_Binding;
-                     Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Scope   : out Scope_Type) is
-      pragma Unreferenced (Name);
-   begin
-      Result := Factory.Create.all;
-      Scope  := Factory.Scope;
    end Create;
 
 end ASF.Beans;

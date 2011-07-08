@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Strings;
 with Util.Events.Channels;
 with Util.Log.Loggers;
 
@@ -25,7 +24,10 @@ with ASF.Applications;
 with ASF.Events.Modules;
 
 limited with ASF.Applications.Main;
-with Ada.Containers.Hashed_Maps;
+with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada.Finalization;
+with Ada.Strings.Hash;
+with Ada.Strings.Unbounded;
 
 --  The <b>ASF.Modules</b> package defines simple pluggable modules in
 --  the web application.  A module is a software component that can be
@@ -39,13 +41,11 @@ with Ada.Containers.Hashed_Maps;
 --  modules to post easily events.
 package ASF.Modules is
 
-   type Name_Access is new Util.Strings.Name_Access;
-
    --  ------------------------------
    --  Module
    --  ------------------------------
    --  Binding definition.
-   type Module is tagged limited private;
+   type Module is new Ada.Finalization.Limited_Controlled with private;
    type Module_Access is access all Module'Class;
 
    --  Get the module name
@@ -90,22 +90,26 @@ package ASF.Modules is
    --  Register under the given name a function to create the bean instance when
    --  it is accessed for a first time.  The scope defines the scope of the bean.
    --  bean
-   procedure Register (Plugin  : in out Module;
-                       Name    : in String;
-                       Handler : in ASF.Beans.Create_Bean_Access;
-                       Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE);
+--     procedure Register (Plugin  : in out Module;
+--                         Name    : in String;
+--                         Handler : in ASF.Beans.Create_Bean_Access;
+--                         Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE);
 
    --  Register under the given name a function to create the bean instance when
    --  it is accessed for a first time.  The scope defines the scope of the bean.
    --  bean
    procedure Register (Plugin : in out Module;
                        Name    : in String;
-                       Bind    : in ASF.Beans.Binding_Access);
+                       Bind    : in ASF.Beans.Class_Binding_Access);
 
    --  Register all the definitions from the module into a main factory.
    --  This operation is called when the module is registered in the application.
    procedure Register_Factory (Plugin : in Module;
                                Into   : in out ASF.Beans.Bean_Factory);
+
+   --  Finalize the module.
+   overriding
+   procedure Finalize (Plugin : in out Module);
 
    --  ------------------------------
    --  Module Registry
@@ -135,14 +139,14 @@ package ASF.Modules is
 
 private
 
-   use Util.Strings;
+   use Ada.Strings.Unbounded;
 
    --  Map to find a module from its name or its URI
    package Module_Maps is new
-     Ada.Containers.Hashed_Maps (Key_Type        => Name_Access,
-                                 Element_Type    => Module_Access,
-                                 Hash            => Hash,
-                                 Equivalent_Keys => Equivalent_Keys);
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => String,
+                                            Element_Type    => Module_Access,
+                                            Hash            => Ada.Strings.Hash,
+                                            Equivalent_Keys => "=");
 
    --  Event channel subscriber
    type Module_Subscriber is new Util.Events.Channels.Subscriber with record
@@ -153,13 +157,13 @@ private
    procedure Receive_Event (Sub  : in out Module_Subscriber;
                             Item : in Util.Events.Event'Class);
 
-   type Module is tagged limited record
+   type Module is new Ada.Finalization.Limited_Controlled with record
       Registry   : Module_Registry_Access;
       Subscriber : aliased Module_Subscriber;
       App        : access ASF.Applications.Main.Application'Class := null;
       Channel    : Util.Events.Channels.Channel_Access;
-      Name       : Name_Access;
-      URI        : Name_Access;
+      Name       : Unbounded_String;
+      URI        : Unbounded_String;
       Config     : ASF.Applications.Config;
       Factory    : ASF.Beans.Bean_Factory;
    end record;

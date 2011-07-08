@@ -23,12 +23,10 @@ package body ASF.Modules.Beans is
    --  bean
    procedure Register (Plugin  : in out Module'Class;
                        Name    : in String;
-                       Handler : in Create_Bean_Access;
-                       Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE) is
+                       Handler : in Create_Bean_Access) is
       Binding : constant Module_Binding_Access
         := new Module_Binding '(Module  => Plugin'Unchecked_Access,
-                                Create  => Handler,
-                                Scope   => Scope);
+                                Create  => Handler);
    begin
       Plugin.Register (Name, Binding.all'Access);
    end Register;
@@ -40,12 +38,10 @@ package body ASF.Modules.Beans is
    --
    procedure Create (Factory : in Module_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Scope   : out ASF.Beans.Scope_Type) is
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access) is
       pragma Unreferenced (Name);
    begin
       Result := Factory.Create.all (Factory.Module);
-      Scope  := Factory.Scope;
    end Create;
 
 end ASF.Modules.Beans;

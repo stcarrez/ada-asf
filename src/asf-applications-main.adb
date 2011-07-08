@@ -248,13 +248,13 @@ package body ASF.Applications.Main is
    --  it is accessed for a first time.  The scope defines the scope of the bean.
    --  bean
    --  ------------------------------
-   procedure Register (App     : in out Application;
-                       Name    : in String;
-                       Handler : in Create_Bean_Access;
-                       Scope   : in Scope_Type := REQUEST_SCOPE) is
-   begin
-      ASF.Beans.Register (App.Factory, Name, Handler, Scope);
-   end Register;
+--     procedure Register (App     : in out Application;
+--                         Name    : in String;
+--                         Handler : in Create_Bean_Access;
+--                         Scope   : in Scope_Type := REQUEST_SCOPE) is
+--     begin
+--        ASF.Beans.Register (App.Factory, Name, Handler, Scope);
+--     end Register;
 
    --  ------------------------------
    --  Create a bean by using the create operation registered for the name

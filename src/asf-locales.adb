@@ -22,7 +22,7 @@ package body ASF.Locales is
 
    use Util.Properties.Bundles;
 
-   type Locale_Binding is new ASF.Beans.Binding with record
+   type Locale_Binding is new ASF.Beans.Class_Binding with record
       Loader  : Loader_Access;
       Scope   : ASF.Beans.Scope_Type;
       Name    : Util.Strings.Name_Access;
@@ -31,8 +31,7 @@ package body ASF.Locales is
 
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Scope   : out ASF.Beans.Scope_Type);
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access);
 
    --  ------------------------------
    --  Initialize the locale support by using the configuration properties.
@@ -86,8 +85,7 @@ package body ASF.Locales is
 
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Scope   : out ASF.Beans.Scope_Type) is
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access) is
       pragma Unreferenced (Name);
 
       B      : constant Bundle_Access := new Bundle;
@@ -98,7 +96,6 @@ package body ASF.Locales is
                    Name    => Factory.Name.all,
                    Bundle  => B.all);
       Result := B.all'Access;
-      Scope  := ASF.Beans.REQUEST_SCOPE;
    end Create;
 
    --  ------------------------------

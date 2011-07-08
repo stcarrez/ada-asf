@@ -133,10 +133,10 @@ package ASF.Applications.Main is
    --  Register under the given name a function to create the bean instance when
    --  it is accessed for a first time.  The scope defines the scope of the bean.
    --  bean
-   procedure Register (App     : in out Application;
-                       Name    : in String;
-                       Handler : in Create_Bean_Access;
-                       Scope   : in Scope_Type := REQUEST_SCOPE);
+--     procedure Register (App     : in out Application;
+--                         Name    : in String;
+--                         Handler : in Create_Bean_Access;
+--                         Scope   : in Scope_Type := REQUEST_SCOPE);
 
    --  Register the module in the application
    procedure Register (App     : in out Application;

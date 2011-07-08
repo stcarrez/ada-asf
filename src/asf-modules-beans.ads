@@ -33,16 +33,14 @@ package ASF.Modules.Beans is
    --  bean
    procedure Register (Plugin  : in out Module'Class;
                        Name    : in String;
-                       Handler : in Create_Bean_Access;
-                       Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE);
+                       Handler : in Create_Bean_Access);
 
 private
    --  ------------------------------
    --  Binding record
    --  ------------------------------
-   type Module_Binding is new ASF.Beans.Binding with record
+   type Module_Binding is new ASF.Beans.Class_Binding with record
       Module : Module_Access;
-      Scope  : ASF.Beans.Scope_Type;
       Create : Create_Bean_Access;
    end record;
    type Module_Binding_Access is access all Module_Binding;
@@ -50,6 +48,5 @@ private
    --
    procedure Create (Factory : in Module_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
-                     Result  : out Util.Beans.Basic.Readonly_Bean_Access;
-                     Scope   : out ASF.Beans.Scope_Type);
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access);
 end ASF.Modules.Beans;

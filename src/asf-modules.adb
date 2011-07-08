@@ -16,8 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.IO_Exceptions;
+with Ada.Unchecked_Deallocation;
 
 with Util.Files;
+with Util.Strings;
 package body ASF.Modules is
 
    --  ------------------------------
@@ -34,7 +36,7 @@ package body ASF.Modules is
    --  ------------------------------
    function Get_Name (Plugin : Module) return String is
    begin
-      return Plugin.Name.all;
+      return To_String (Plugin.Name);
    end Get_Name;
 
    --  ------------------------------
@@ -42,7 +44,7 @@ package body ASF.Modules is
    --  ------------------------------
    function Get_URI (Plugin : Module) return String is
    begin
-      return Plugin.URI.all;
+      return To_String (Plugin.URI);
    end Get_URI;
 
    --  ------------------------------
@@ -145,13 +147,14 @@ package body ASF.Modules is
    --  it is accessed for a first time.  The scope defines the scope of the bean.
    --  bean
    --  ------------------------------
-   procedure Register (Plugin  : in out Module;
-                       Name    : in String;
-                       Handler : in ASF.Beans.Create_Bean_Access;
-                       Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE) is
-   begin
-      ASF.Beans.Register (Plugin.Factory, Name, Handler, Scope);
-   end Register;
+--     procedure Register (Plugin  : in out Module;
+--                         Name    : in String;
+--                         Handler : in ASF.Beans.Create_Bean_Access;
+--                         Scope   : in ASF.Beans.Scope_Type := ASF.Beans.REQUEST_SCOPE) is
+--     begin
+--        --        ASF.Beans.Register (Plugin.Factory, Name, Handler, Scope);
+--        null;  --  SCz todo
+--     end Register;
 
    --  ------------------------------
    --  Register under the given name a function to create the bean instance when
@@ -160,9 +163,9 @@ package body ASF.Modules is
    --  ------------------------------
    procedure Register (Plugin : in out Module;
                        Name    : in String;
-                       Bind    : in ASF.Beans.Binding_Access) is
+                       Bind    : in ASF.Beans.Class_Binding_Access) is
    begin
-      ASF.Beans.Register (Plugin.Factory, Name, Bind);
+      ASF.Beans.Register_Class (Plugin.Factory, Name, Bind);
    end Register;
 
    --  ------------------------------
@@ -174,6 +177,18 @@ package body ASF.Modules is
    begin
       ASF.Beans.Register (Into, Plugin.Factory);
    end Register_Factory;
+
+   --  ------------------------------
+   --  Finalize the module.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Plugin : in out Module) is
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => Util.Events.Channels.Channel'Class,
+                                        Name   => Util.Events.Channels.Channel_Access);
+   begin
+      Free (Plugin.Channel);
+   end Finalize;
 
    --  ------------------------------
    --  Initialize the registry
@@ -200,12 +215,12 @@ package body ASF.Modules is
          raise Program_Error with "Module '" & Name & "' already registered";
       end if;
       Plugin.Registry := Registry;
-      Plugin.Name     := new String '(Name);
-      Plugin.URI      := new String '(URI);
+      Plugin.Name     := To_Unbounded_String (Name);
+      Plugin.URI      := To_Unbounded_String (URI);
       Plugin.Subscriber.Module := Plugin;
-      Plugin.Registry.Name_Map.Insert (Plugin.Name, Plugin);
+      Plugin.Registry.Name_Map.Insert (Name, Plugin);
       if URI /= "" then
-         Plugin.Registry.URI_Map.Insert (Plugin.URI, Plugin);
+         Plugin.Registry.URI_Map.Insert (URI, Plugin);
       end if;
 
       --  Load the module configuration file
@@ -243,8 +258,7 @@ package body ASF.Modules is
    --  ------------------------------
    function Find_By_Name (Registry : Module_Registry;
                           Name     : String) return Module_Access is
-      Key : constant Name_Access := Name'Unrestricted_Access;
-      Pos : constant Module_Maps.Cursor := Module_Maps.Find (Registry.Name_Map, Key);
+      Pos : constant Module_Maps.Cursor := Module_Maps.Find (Registry.Name_Map, Name);
    begin
       if Module_Maps.Has_Element (Pos) then
          return Module_Maps.Element (Pos);
@@ -257,8 +271,7 @@ package body ASF.Modules is
    --  ------------------------------
    function Find_By_URI (Registry : Module_Registry;
                          URI      : String) return Module_Access is
-      Key : constant Name_Access := URI'Unrestricted_Access;
-      Pos : constant Module_Maps.Cursor := Module_Maps.Find (Registry.URI_Map, Key);
+      Pos : constant Module_Maps.Cursor := Module_Maps.Find (Registry.URI_Map, URI);
    begin
       if Module_Maps.Has_Element (Pos) then
          return Module_Maps.Element (Pos);

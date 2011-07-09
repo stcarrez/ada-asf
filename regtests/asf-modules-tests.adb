@@ -48,6 +48,8 @@ package body ASF.Modules.Tests is
                        Test_Create_Application_Module'Access);
       Caller.Add_Test (Suite, "Test ASF.Applications.Main.Create",
                        Test_Create_Application_Module'Access);
+      Caller.Add_Test (Suite, "Test ASF.Navigations.Mappers",
+                       Test_Module_Navigation'Access);
    end Add_Tests;
 
    function Create_Form_Bean (Plugin : in Module_Access)
@@ -155,5 +157,40 @@ package body ASF.Modules.Tests is
       Check ("sessionForm", ASF.Beans.SESSION_SCOPE);
       Check ("requestForm", ASF.Beans.REQUEST_SCOPE);
    end Test_Create_Application_Module;
+
+   --  ------------------------------
+   --  Test module and navigation rules
+   --  ------------------------------
+   procedure Test_Module_Navigation (T : in out Test) is
+      use ASF.Beans;
+      use type Util.Beans.Basic.Readonly_Bean_Access;
+
+      procedure Check (Name : in String;
+                       Kind : in ASF.Beans.Scope_Type);
+
+      procedure Check (Name : in String;
+                       Kind : in ASF.Beans.Scope_Type) is
+         Value : Util.Beans.Objects.Object;
+         Bean  : Util.Beans.Basic.Readonly_Bean_Access;
+         Scope : ASF.Beans.Scope_Type;
+      begin
+         T.App.Create (Name   => To_Unbounded_String (Name),
+                       Result => Bean,
+                       Scope  => Scope);
+         T.Assert (Kind = Scope, "Invalid scope for " & Name);
+         T.Assert (Bean /= null, "Invalid bean object");
+         Value := Util.Beans.Objects.To_Object (Bean);
+         T.Assert (not Util.Beans.Objects.Is_Null (Value), "Invalid bean");
+      end Check;
+
+      M : aliased Module;
+   begin
+      Module_Register.Register (M, "ASF.Applications.Tests.Form_Bean", Create_Form_Bean'Access);
+      T.App.Register (M'Unchecked_Access, "test-navigations", "uri");
+
+      T.Assert (M.Find_Module ("test-navigations") /= null,
+                "Find_Module should not return a null value");
+
+   end Test_Module_Navigation;
 
 end ASF.Modules.Tests;

@@ -49,4 +49,7 @@ package ASF.Modules.Tests is
    --  Test creation of a module and registration in an application.
    procedure Test_Create_Application_Module (T : in out Test);
 
+   --  Test module and navigation rules
+   procedure Test_Module_Navigation (T : in out Test);
+
 end ASF.Modules.Tests;

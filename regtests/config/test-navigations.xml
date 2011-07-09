@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+    version="1.2">
+
+  <navigation-rule>
+    <from-view-id>/register.html</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/success.html</to-view-id>
+    </navigation-case>
+
+    <navigation-case>
+      <from-outcome>failure</from-outcome>
+      <to-view-id>/failure.html</to-view-id>
+    </navigation-case>
+
+    <navigation-case>
+      <from-action>#{register.submit}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/submit.html</to-view-id>
+    </navigation-case>
+
+    <navigation-case>
+      <from-action>#{register.renew}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/renew.html</to-view-id>
+    </navigation-case>
+
+    <navigation-case>
+      <to-view-id>/unknown.html</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+</faces-config>

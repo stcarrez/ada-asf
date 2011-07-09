@@ -20,13 +20,21 @@ with Util.Tests;
 with Util.Test_Caller;
 with Util.Log.Loggers;
 with Util.Measures;
+with Util.Beans.Basic;
+with Util.Beans.Objects;
+
 with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
+
+with ASF.Modules.Beans;
+with ASF.Applications.Tests;
 package body ASF.Modules.Tests is
 
 
    use Ada.Strings.Fixed;
    use Util.Tests;
+
+   package Module_Register is new ASF.Modules.Beans (Module, Module_Access);
 
    package Caller is new Util.Test_Caller (Test);
 
@@ -36,7 +44,45 @@ package body ASF.Modules.Tests is
                        Test_Create_Module'Access);
       Caller.Add_Test (Suite, "Test ASF.Modules.Find_Module",
                        Test_Find_Module'Access);
+      Caller.Add_Test (Suite, "Test ASF.Applications.Main.Register",
+                       Test_Create_Application_Module'Access);
+      Caller.Add_Test (Suite, "Test ASF.Applications.Main.Create",
+                       Test_Create_Application_Module'Access);
    end Add_Tests;
+
+   function Create_Form_Bean (Plugin : in Module_Access)
+                              return Util.Beans.Basic.Readonly_Bean_Access is
+      Result : ASF.Applications.Tests.Form_Bean_Access := new ASF.Applications.Tests.Form_Bean;
+   begin
+      return Result.all'Access;
+   end Create_Form_Bean;
+
+   --  ------------------------------
+   --  Initialize the test application
+   --  ------------------------------
+   procedure Set_Up (T : in out Test) is
+      Fact : ASF.Applications.Main.Application_Factory;
+      C    : ASF.Applications.Config;
+   begin
+      Log.Info ("Creating application");
+      T.App := new ASF.Applications.Main.Application;
+      C.Copy (Util.Tests.Get_Properties);
+      T.App.Initialize (C, Fact);
+      T.App.Register ("layoutMsg", "layout");
+   end Set_Up;
+
+   --  ------------------------------
+   --  Deletes the application object
+   --  ------------------------------
+   overriding
+   procedure Tear_Down (T : in out Test) is
+      procedure Free is
+         new Ada.Unchecked_Deallocation (Object => ASF.Applications.Main.Application'Class,
+                                         Name   => ASF.Applications.Main.Application_Access);
+   begin
+      Log.Info ("Releasing application");
+      Free (T.App);
+   end Tear_Down;
 
    --  ------------------------------
    --  Test creation of module
@@ -45,12 +91,14 @@ package body ASF.Modules.Tests is
       M : aliased Module;
       R : aliased Module_Registry;
    begin
-      Register (R'Unchecked_Access, M'Unchecked_Access, "test", "uri");
+      R.Config.Copy (Util.Tests.Get_Properties);
+      M.App := T.App;
+      Register (R'Unchecked_Access, M'Unchecked_Access, "empty", "uri");
 
-      T.Assert_Equals ("test", M.Get_Name, "Invalid module name");
+      T.Assert_Equals ("empty", M.Get_Name, "Invalid module name");
       T.Assert_Equals ("uri", M.Get_URI, "Invalid module uri");
 
-      T.Assert (Find_By_Name (R, "test") = M'Unchecked_Access, "Find_By_Name failed");
+      T.Assert (Find_By_Name (R, "empty") = M'Unchecked_Access, "Find_By_Name failed");
       T.Assert (Find_By_URI (R, "uri") = M'Unchecked_Access, "Find_By_URI failed");
    end Test_Create_Module;
 
@@ -59,12 +107,53 @@ package body ASF.Modules.Tests is
    --  ------------------------------
    procedure Test_Find_Module (T : in out Test) is
       M : aliased Module;
-      R : aliased Module_Registry;
    begin
-      Register (R'Unchecked_Access, M'Unchecked_Access, "test", "uri");
+      M.App := T.App;
+      T.App.Register (M'Unchecked_Access, "empty", "uri");
 
-      T.Assert (M.Find_Module ("test") /= null, "Find_Module should not return a null value");
+      T.Assert (M.Find_Module ("empty") /= null, "Find_Module should not return a null value");
       T.Assert (M.Find_Module ("toto") = null, "Find_Module should return null");
    end Test_Find_Module;
+
+   --  ------------------------------
+   --  Test creation of a module and registration in an application.
+   --  ------------------------------
+   procedure Test_Create_Application_Module (T : in out Test) is
+      use ASF.Beans;
+      use type Util.Beans.Basic.Readonly_Bean_Access;
+
+      procedure Check (Name : in String;
+                       Kind : in ASF.Beans.Scope_Type);
+
+      procedure Check (Name : in String;
+                       Kind : in ASF.Beans.Scope_Type) is
+         Value : Util.Beans.Objects.Object;
+         Bean  : Util.Beans.Basic.Readonly_Bean_Access;
+         Scope : ASF.Beans.Scope_Type;
+      begin
+         T.App.Create (Name   => To_Unbounded_String (Name),
+                       Result => Bean,
+                       Scope  => Scope);
+         T.Assert (Kind = Scope, "Invalid scope for " & Name);
+         T.Assert (Bean /= null, "Invalid bean object");
+         Value := Util.Beans.Objects.To_Object (Bean);
+         T.Assert (not Util.Beans.Objects.Is_Null (Value), "Invalid bean");
+      end Check;
+
+      M : aliased Module;
+
+   begin
+      Module_Register.Register (M, "ASF.Applications.Tests.Form_Bean", Create_Form_Bean'Access);
+      T.App.Register (M'Unchecked_Access, "test-module", "uri");
+
+      T.Assert (M.Find_Module ("test-module") /= null,
+                "Find_Module should not return a null value");
+      T.Assert (M.Find_Module ("toto") = null, "Find_Module should return null");
+
+      --  Check the 'regtests/config/test-module.xml' managed bean configuration.
+      Check ("applicationForm", ASF.Beans.APPLICATION_SCOPE);
+      Check ("sessionForm", ASF.Beans.SESSION_SCOPE);
+      Check ("requestForm", ASF.Beans.REQUEST_SCOPE);
+   end Test_Create_Application_Module;
 
 end ASF.Modules.Tests;

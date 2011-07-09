@@ -66,6 +66,7 @@ package ASF.Applications.Tests is
       Email    : Unbounded_String;
       Called   : Natural := 0;
    end record;
+   type Form_Bean_Access is access all Form_Bean'Class;
 
    --  Get the value identified by the name.
    overriding

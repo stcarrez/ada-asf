@@ -32,8 +32,8 @@ package ASF.Beans.Mappers is
    type Managed_Bean is record
       Name         : Util.Beans.Objects.Object;
       Class        : Util.Beans.Objects.Object;
-      Scope        : Util.Beans.Objects.Object;
---        Handler      : Navigation_Handler_Access;
+      Scope        : Scope_Type := REQUEST_SCOPE;
+      Factory      : access ASF.Beans.Bean_Factory;
    end record;
    type Managed_Bean_Access is access all Managed_Bean;
 

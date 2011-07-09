@@ -20,6 +20,9 @@ with Ada.Unchecked_Deallocation;
 
 with Util.Files;
 with Util.Strings;
+with Util.Serialize.IO.XML;
+
+with ASF.Modules.Reader;
 package body ASF.Modules is
 
    --  ------------------------------
@@ -206,6 +209,7 @@ package body ASF.Modules is
                        Plugin   : in Module_Access;
                        Name     : in String;
                        URI      : in String) is
+      Paths : constant String := Registry.Config.Get ("app.modules.dir", "./config");
    begin
       Log.Info ("Register module '{0}' under URI '{1}'", Name, URI);
 
@@ -224,9 +228,9 @@ package body ASF.Modules is
       end if;
 
       --  Load the module configuration file
+      Log.Debug ("Module search path: {0}", Paths);
       declare
          Base  : constant String := Name & ".properties";
-         Paths : constant String := Registry.Config.Get ("app.modules.dir", "./config");
          Path  : constant String := Util.Files.Find_File_Path (Base, Paths);
       begin
          Plugin.Config.Load_Properties (Path => Path, Prefix => Name & ".", Strip => True);
@@ -246,6 +250,19 @@ package body ASF.Modules is
          Plugin.Channel := Util.Events.Channels.Create (Name, Kind);
          Plugin.Channel.Subscribe (Plugin.Subscriber'Access);
       end;
+
+      --  Read the module XML configuration file if there is one.
+      declare
+         Base : constant String := Plugin.Config.Get ("config", Name & ".xml");
+         Path : constant String := Util.Files.Find_File_Path (Base, Paths);
+      begin
+         ASF.Modules.Reader.Read_Configuration (Plugin.all, Path);
+
+      exception
+         when Ada.IO_Exceptions.Name_Error =>
+            Log.Warn ("Module configuration file '{0}' does not exist", Path);
+      end;
+
    exception
       when Constraint_Error =>
          Log.Error ("Another module is already registered "

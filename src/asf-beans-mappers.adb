@@ -18,6 +18,8 @@
 
 package body ASF.Beans.Mappers is
 
+   Empty : constant Util.Beans.Objects.Object := Util.Beans.Objects.To_Object (String '(""));
+
    --  ------------------------------
    --  Set the field identified by <b>Field</b> with the <b>Value</b>.
    --  ------------------------------
@@ -33,10 +35,19 @@ package body ASF.Beans.Mappers is
             MBean.Class := Value;
 
          when FIELD_SCOPE =>
-            null;
-
-         when FIELD_MANAGED_BEAN =>
-            null;
+            declare
+               Scope : constant String := Util.Beans.Objects.To_String (Value);
+            begin
+               if Scope = "request" then
+                  MBean.Scope := REQUEST_SCOPE;
+               elsif Scope = "session" then
+                  MBean.Scope := SESSION_SCOPE;
+               elsif Scope = "application" then
+                  MBean.Scope := APPLICATION_SCOPE;
+               else
+                  MBean.Scope := REQUEST_SCOPE;
+               end if;
+            end;
 
          when FIELD_PROPERTY_NAME =>
             null;
@@ -46,6 +57,20 @@ package body ASF.Beans.Mappers is
 
          when FIELD_PROPERTY_CLASS =>
             null;
+
+         when FIELD_MANAGED_BEAN =>
+            declare
+               Name  : constant String := Util.Beans.Objects.To_String (MBean.Name);
+               Class : constant String := Util.Beans.Objects.To_String (MBean.Class);
+            begin
+               Register (Factory => MBean.Factory.all,
+                         Name    => Name,
+                         Class   => Class,
+                         Scope   => MBean.Scope);
+            end;
+            MBean.Name  := Empty;
+            MBean.Class := Empty;
+            MBean.Scope := REQUEST_SCOPE;
 
       end case;
    end Set_Member;
@@ -62,10 +87,12 @@ package body ASF.Beans.Mappers is
 
 begin
    --  <managed-bean> mapping
-   MBean_Mapping.Add_Mapping ("managed-bean-name", FIELD_NAME);
-   MBean_Mapping.Add_Mapping ("managed-bean-class", FIELD_CLASS);
-   MBean_Mapping.Add_Mapping ("managed-bean-scope", FIELD_SCOPE);
-   MBean_Mapping.Add_Mapping ("managed-property/property-name", FIELD_PROPERTY_NAME);
-   MBean_Mapping.Add_Mapping ("managed-property/value", FIELD_PROPERTY_VALUE);
-   MBean_Mapping.Add_Mapping ("managed-property/property-class", FIELD_PROPERTY_CLASS);
+   MBean_Mapping.Add_Mapping ("managed-bean", FIELD_MANAGED_BEAN);
+   MBean_Mapping.Add_Mapping ("managed-bean/managed-bean-name", FIELD_NAME);
+   MBean_Mapping.Add_Mapping ("managed-bean/managed-bean-class", FIELD_CLASS);
+   MBean_Mapping.Add_Mapping ("managed-bean/managed-bean-scope", FIELD_SCOPE);
+   MBean_Mapping.Add_Mapping ("managed-bean/managed-property/property-name", FIELD_PROPERTY_NAME);
+   MBean_Mapping.Add_Mapping ("managed-bean/managed-property/value", FIELD_PROPERTY_VALUE);
+   MBean_Mapping.Add_Mapping ("managed-bean/managed-property/property-class",
+                              FIELD_PROPERTY_CLASS);
 end ASF.Beans.Mappers;

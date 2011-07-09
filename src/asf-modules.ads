@@ -165,7 +165,7 @@ private
       Name       : Unbounded_String;
       URI        : Unbounded_String;
       Config     : ASF.Applications.Config;
-      Factory    : ASF.Beans.Bean_Factory;
+      Factory    : aliased ASF.Beans.Bean_Factory;
    end record;
 
    type Module_Registry is limited record

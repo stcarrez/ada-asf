@@ -284,6 +284,7 @@ package body ASF.Applications.Main is
                        Name    : in String;
                        URI     : in String := "") is
    begin
+      Module.Initialize (App'Unchecked_Access);
       ASF.Modules.Register (App.Modules'Unchecked_Access, Module, Name, URI);
       Module.Register_Factory (App.Factory);
 

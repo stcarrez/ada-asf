@@ -24,10 +24,10 @@ package body ASF.Modules.Beans is
    procedure Register (Plugin  : in out Module'Class;
                        Name    : in String;
                        Handler : in Create_Bean_Access) is
-      Binding : constant Module_Binding_Access
-        := new Module_Binding '(Module  => Plugin'Unchecked_Access,
-                                Create  => Handler);
+      Binding : constant Module_Binding_Access := new Module_Binding;
    begin
+      Binding.Module := Plugin'Unchecked_Access;
+      Binding.Create := Handler;
       Plugin.Register (Name, Binding.all'Access);
    end Register;
 

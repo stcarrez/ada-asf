@@ -25,7 +25,7 @@ package body ASF.Locales is
    type Locale_Binding is new ASF.Beans.Class_Binding with record
       Loader  : Loader_Access;
       Scope   : ASF.Beans.Scope_Type;
-      Name    : Util.Strings.Name_Access;
+      Name    : Ada.Strings.Unbounded.Unbounded_String;
    end record;
    type Locale_Binding_Access is access all Locale_Binding;
 
@@ -65,7 +65,7 @@ package body ASF.Locales is
    begin
       L.Loader := Fac.Factory'Unchecked_Access;
       L.Scope  := ASF.Beans.REQUEST_SCOPE;
-      L.Name   := new String '(Bundle);
+      L.Name   := Ada.Strings.Unbounded.To_Unbounded_String (Bundle);
       ASF.Beans.Register (Beans, Name, L.all'Access);
    end Register;
 
@@ -93,7 +93,7 @@ package body ASF.Locales is
    begin
       Load_Bundle (Factory => Factory.Loader.all,
                    Locale  => Locale,
-                   Name    => Factory.Name.all,
+                   Name    => Ada.Strings.Unbounded.To_String (Factory.Name),
                    Bundle  => B.all);
       Result := B.all'Access;
    end Create;

@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Unchecked_Deallocation;
 with Util.Log.Loggers;
 package body ASF.Beans is
 
@@ -33,7 +34,7 @@ package body ASF.Beans is
    begin
       Log.Info ("Register bean class {0}", Name);
 
-      Factory.Registry.Include (Name, Class);
+      Factory.Registry.Include (Name, Class_Binding_Ref.Create (Class));
    end Register_Class;
 
    --  ------------------------------
@@ -78,7 +79,7 @@ package body ASF.Beans is
       Log.Info ("Register bean '{0}' in scope {2}",
                 Name, Scope_Type'Image (Scope));
 
-      Binding.Create := Class;
+      Binding.Create := Class_Binding_Ref.Create (Class);
       Binding.Scope  := Scope;
       Factory.Map.Include (Ada.Strings.Unbounded.To_Unbounded_String (Name), Binding);
    end Register;
@@ -122,7 +123,7 @@ package body ASF.Beans is
          declare
             Binding : constant Bean_Binding := Bean_Maps.Element (Pos);
          begin
-            Binding.Create.Create (Name, Result);
+            Binding.Create.Value.Create (Name, Result);
             Scope := Binding.Scope;
          end;
       else

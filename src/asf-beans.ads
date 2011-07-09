@@ -20,6 +20,7 @@ with Ada.Strings.Hash;
 with Ada.Strings.Unbounded;
 
 with Util.Beans.Basic;
+with Util.Refs;
 
 with Ada.Containers.Hashed_Maps;
 with Ada.Containers.Indefinite_Hashed_Maps;
@@ -63,7 +64,7 @@ package ASF.Beans is
    --  Class Binding
    --  ------------------------------
    --  The <b>Class_Binding</b> provides an operation to create objects of a given class.
-   type Class_Binding is interface;
+   type Class_Binding is abstract new Util.Refs.Ref_Entity with null record;
    type Class_Binding_Access is access all Class_Binding'Class;
 
    procedure Create (Factory : in Class_Binding;
@@ -112,15 +113,20 @@ private
 
    use Ada.Strings.Unbounded;
 
+   package Class_Binding_Ref is
+     new Util.Refs.Indefinite_References (Element_Type   => Class_Binding'Class,
+                                          Element_Access => Class_Binding_Access);
+
    package Registry_Maps is new
      Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => String,
-                                            Element_Type => Class_Binding_Access,
+                                            Element_Type => Class_Binding_Ref.Ref,
                                             Hash         => Ada.Strings.Hash,
-                                            Equivalent_Keys => "=");
+                                            Equivalent_Keys => "=",
+                                            "=" => Class_Binding_Ref."=");
 
    type Bean_Binding is record
       Scope  : Scope_Type;
-      Create : Class_Binding_Access;
+      Create : Class_Binding_Ref.Ref;
    end record;
 
    package Bean_Maps is new

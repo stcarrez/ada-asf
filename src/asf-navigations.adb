@@ -107,6 +107,8 @@ package body ASF.Navigations is
             Iter      : Navigator_Vector.Cursor := Controller.Navigators.Last;
             Navigator : Navigation_Access := Navigator_Vector.Element (Iter);
          begin
+            Free (Navigator.Outcome);
+            Free (Navigator.Action);
             Free (Navigator);
             Controller.Navigators.Delete (Iter);
          end;
@@ -124,6 +126,7 @@ package body ASF.Navigations is
             Iter : Rule_Map.Cursor := Controller.Rules.First;
             Rule : Rule_Access := Rule_Map.Element (Iter);
          begin
+            Rule.Clear;
             Free (Rule);
             Controller.Rules.Delete (Iter);
          end;

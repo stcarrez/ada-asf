@@ -2,6 +2,7 @@ Version 0.2
   - Integrate jQuery UI 1.8.3 (MIT-License)
   - Implement JSF validation phase and validators
   - Add an AJAX servlet framework to invoke an action on a bean
+  - Configure modules by using XML configuration files
 
 Version 0.1     - May 2011
   - Base implementation of Java-like servlets, and JSF-like framework

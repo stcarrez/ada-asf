@@ -23,6 +23,7 @@ with Unicode;
 with Ada.Exceptions;
 with Ada.Strings.Fixed;
 with Util.Log.Loggers;
+with Util.Serialize.IO.XML;
 package body ASF.Views.Nodes.Reader is
 
    use Util.Log;
@@ -157,7 +158,7 @@ package body ASF.Views.Nodes.Reader is
                       Except  : Sax.Exceptions.Sax_Parse_Exception'Class) is
       pragma Warnings (Off, Handler);
    begin
-      Log.Warn ("{0}: {1}", To_String (Get_Locator (Except)), Get_Message (Except));
+      Log.Warn ("{0}: {1}", Util.Serialize.IO.XML.Get_Location (Except), Get_Message (Except));
    end Warning;
 
    --  ------------------------------
@@ -168,7 +169,7 @@ package body ASF.Views.Nodes.Reader is
                     Except  : in Sax.Exceptions.Sax_Parse_Exception'Class) is
       pragma Warnings (Off, Handler);
    begin
-      Log.Error ("{0}: {1}", To_String (Get_Locator (Except)), Get_Message (Except));
+      Log.Error ("{0}: {1}", Util.Serialize.IO.XML.Get_Location (Except), Get_Message (Except));
    end Error;
 
    --  ------------------------------
@@ -179,7 +180,7 @@ package body ASF.Views.Nodes.Reader is
                           Except  : in Sax.Exceptions.Sax_Parse_Exception'Class) is
       pragma Unreferenced (Handler);
    begin
-      Log.Error ("{0}: {1}", To_String (Get_Locator (Except)), Get_Message (Except));
+      Log.Error ("{0}: {1}", Util.Serialize.IO.XML.Get_Location (Except), Get_Message (Except));
    end Fatal_Error;
 
    --  ------------------------------

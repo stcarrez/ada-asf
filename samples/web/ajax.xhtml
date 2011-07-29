@@ -1,0 +1,34 @@
+<f:view contentType="text/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/themes/main.css"/>
+    <title>Volume Cylinder</title>
+</head>
+<body>
+  <div>
+     <h1>Compute the volume of a cylinder</h1>
+
+     <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/compute-form.html')">
+         Click compute-form
+     </div>
+     <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/json-response.html')">
+         Click json
+     </div>
+     <div>
+        <div id='item1' style='display: none'>Div is hidden</div>
+        <div id='item1' style='display: block'>Div is visible</div>
+        <div id='item3' style='display: block'>Div is visible</div>
+     </div>
+  </div>
+<script type="text/javascript" src="#{contextPath}/js/jquery-1.6.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/asf.js"></script>
+<script type="text/javascript">
+</script>
+</body>
+</html>
+</f:view>

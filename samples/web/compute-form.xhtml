@@ -1,0 +1,38 @@
+<ui:composition         xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html">
+
+     <h:form id='compute'>
+         <dl>
+	    <dt>Height</dt>
+	    <dd>
+	      <h:inputText id='height' size='10' value='#{compute.height}'>
+		<f:converter converterId="float" />
+	      </h:inputText>
+              <h:message for='height'/>
+	    </dd>
+	    <dt>Radius</dt>
+            <dd>
+                <h:inputText id='radius' size='10' value='#{compute.radius}'>
+                   <f:converter converterId="float"/>
+                </h:inputText>
+              <h:message for='radius'/>
+            </dd>
+            <dt>
+            </dt>
+            <dd>
+              <h:commandButton id='run' value='Compute' action="#{compute.run}"/>
+            </dd>
+        </dl>
+	</h:form>
+
+     <h:panelGroup rendered="#{not empty compute.volume}">
+         <h2>The cylinder volume is
+             <h:outputText value="#{compute.volume}">
+                <f:converter converterId="float"/>
+             </h:outputText>
+         </h2>
+     </h:panelGroup>
+</ui:composition>

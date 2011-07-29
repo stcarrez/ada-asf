@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.IO_Exceptions;
 with ASF.Server.Web;
 with ASF.Servlets;
 with ASF.Servlets.Faces;
@@ -30,6 +31,7 @@ with Volume;
 procedure Asf_Volume_Server is
 
    CONTEXT_PATH : constant String := "/volume";
+   CONFIG_PATH  : constant String := "samples.properties";
 
    Log     : Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Openid");
 
@@ -46,7 +48,14 @@ begin
    C.Set (ASF.Applications.VIEW_EXT, ".html");
    C.Set (ASF.Applications.VIEW_DIR, "samples/web");
    C.Set ("web.dir", "samples/web");
+   begin
+      C.Load_Properties (CONFIG_PATH);
 
+   exception
+      when Ada.IO_Exceptions.Name_Error =>
+         Log.Error ("Cannot read application configuration file {0}", CONFIG_PATH);
+
+   end;
    App.Initialize (C, Factory);
    App.Set_Global ("contextPath", CONTEXT_PATH);
    App.Set_Global ("compute",
@@ -61,7 +70,9 @@ begin
    --  Define servlet mappings
    App.Add_Mapping (Name => "faces", Pattern => "*.html");
    App.Add_Mapping (Name => "files", Pattern => "*.css");
+   App.Add_Mapping (Name => "files", Pattern => "*.js");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
+   App.Add_Filter_Mapping (Name => "dump", Pattern => "*.js");
 
    App.Add_Converter (Name => "float", Converter => Conv'Unchecked_Access);
 

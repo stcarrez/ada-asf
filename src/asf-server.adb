@@ -72,6 +72,9 @@ package body ASF.Server is
       Apps (Apps'Last).Context  := Context;
       Apps (Apps'Last).Base_URI := new String '(URI);
       Server.Applications := Apps;
+
+      --  Inform the servlet registry about the base URI.
+      Context.Register_Application (URI);
    end Register_Application;
 
    --  ------------------------------

@@ -308,6 +308,13 @@ package ASF.Servlets is
                                  Name    : in String)
                                  return Request_Dispatcher;
 
+   --  Returns the context path of the web application.
+   --  The context path is the portion of the request URI that is used to select the context
+   --  of the request.  The context path always comes first in a request URI.  The path starts
+   --  with a "/" character but does not end with a "/" character. For servlets in the default
+   --  (root) context, this method returns "".
+   function Get_Context_Path (Context : in Servlet_Registry) return String;
+
    --  Returns a String containing the value of the named context-wide initialization
    --  parameter, or null if the parameter does not exist.
    --
@@ -379,6 +386,13 @@ package ASF.Servlets is
                     Request  : in out Requests.Request'Class;
                     Response : in out Responses.Response'Class;
                     Ex       : in Ada.Exceptions.Exception_Occurrence);
+
+   --  Register the application represented by <b>Registry</b> under the base URI defined
+   --  by <b>URI</b>.  This is called by the Web container when the application is registered.
+   --  The default implementation keeps track of the base URI to implement the context path
+   --  operation.
+   procedure Register_Application (Registry : in out Servlet_Registry;
+                                   URI      : in String);
 
 private
 
@@ -486,6 +500,7 @@ private
       Mappings          : Mapping_Access := null;
       Extension_Mapping : Mapping_Access := null;
       Error_Pages       : Error_Maps.Map;
+      Context_Path      : Unbounded_String;
    end record;
 
 end ASF.Servlets;

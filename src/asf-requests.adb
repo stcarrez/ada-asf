@@ -435,15 +435,20 @@ package body ASF.Requests is
       return To_String (Req.Path_Info);
    end Get_Path_Info;
 
+   --  ------------------------------
    --  Returns the portion of the request URI that indicates the context of the
    --  request. The context path always comes first in a request URI. The path
    --  starts with a "/" character but does not end with a "/" character.
    --  For servlets in the default (root) context, this method returns "".
    --  The container does not decode this string.
+   --  ------------------------------
    function Get_Context_Path (Req : in Request) return String is
-      pragma Unreferenced (Req);
    begin
-      return "/";
+      if Req.Servlet = null then
+         return "/";
+      else
+         return Req.Servlet.Get_Servlet_Context.Get_Context_Path;
+      end if;
    end Get_Context_Path;
 
    --  Returns the query string that is contained in the request URL after the path.

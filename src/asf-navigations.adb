@@ -23,6 +23,7 @@ with Util.Log.Loggers;
 with Ada.Unchecked_Deallocation;
 with ASF.Applications.Main;
 with ASF.Navigations.Render;
+with ASF.Navigations.Redirect;
 package body ASF.Navigations is
 
    --  ------------------------------
@@ -227,18 +228,36 @@ package body ASF.Navigations is
                                   Outcome   : in String := "";
                                   Action    : in String := "";
                                   Condition : in String := "") is
-      pragma Unreferenced (Condition);
-
       C : constant Navigation_Access := Render.Create_Render_Navigator (To);
    begin
+      Handler.Add_Navigation_Case (C, From, Outcome, Action, Condition);
+   end Add_Navigation_Case;
+
+   --  ------------------------------
+   --  Add a navigation case to navigate from the view identifier by <b>From</b>
+   --  by using the navigation rule defined by <b>Navigator</b>.
+   --  Some optional conditions are evaluated:
+   --  The <b>Outcome</b> must match unless it is empty.
+   --  The <b>Action</b> must match unless it is empty.
+   --  The <b>Condition</b> expression must evaluate to True.
+   --  ------------------------------
+   procedure Add_Navigation_Case (Handler   : in out Navigation_Handler'Class;
+                                  Navigator : in Navigation_Access;
+                                  From      : in String;
+                                  Outcome   : in String := "";
+                                  Action    : in String := "";
+                                  Condition : in String := "") is
+      pragma Unreferenced (Condition);
+
+   begin
       if Outcome'Length > 0 then
-         C.Outcome := new String '(Outcome);
+         Navigator.Outcome := new String '(Outcome);
       end if;
       if Action'Length > 0 then
-         C.Action := new String '(Action);
+         Navigator.Action := new String '(Action);
       end if;
 
-      C.View_Handler := Handler.Application.Get_View_Handler;
+      Navigator.View_Handler := Handler.Application.Get_View_Handler;
       declare
          View : constant Unbounded_String := To_Unbounded_String (From);
          Pos  : constant Rule_Map.Cursor := Handler.Rules.Rules.Find (View);
@@ -252,7 +271,7 @@ package body ASF.Navigations is
             R := Rule_Map.Element (Pos);
          end if;
 
-         R.Navigators.Append (C);
+         R.Navigators.Append (Navigator);
       end;
    end Add_Navigation_Case;
 

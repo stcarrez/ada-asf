@@ -38,7 +38,7 @@ package ASF.Navigations.Mappers is
       Action       : Util.Beans.Objects.Object;
       To_View      : Util.Beans.Objects.Object;
       From_View    : Util.Beans.Objects.Object;
-      Redirect     : Util.Beans.Objects.Object;
+      Redirect     : Boolean := False;
       Condition    : Util.Beans.Objects.Object;
       Content      : Util.Beans.Objects.Object;
       Content_Type : Util.Beans.Objects.Object;

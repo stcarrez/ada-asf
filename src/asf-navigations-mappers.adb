@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with ASF.Navigations.Redirect;
+with ASF.Navigations.Render;
 package body ASF.Navigations.Mappers is
 
    use Util.Beans.Objects;
@@ -30,6 +32,8 @@ package body ASF.Navigations.Mappers is
    procedure Set_Member (N : in out Nav_Config;
                          Field : in Navigation_Case_Fields;
                          Value : in Util.Beans.Objects.Object) is
+      use ASF.Navigations.Redirect;
+      use ASF.Navigations.Render;
    begin
       case Field is
          when OUTCOME =>
@@ -45,7 +49,7 @@ package body ASF.Navigations.Mappers is
             N.From_View := Value;
 
          when REDIRECT =>
-            N.Redirect := Value;
+            N.Redirect := True;
 
          when CONDITION =>
             N.Condition := Value;
@@ -58,16 +62,26 @@ package body ASF.Navigations.Mappers is
             N.Content_Type := Value;
 
          when NAVIGATION_CASE =>
-            N.Handler.Add_Navigation_Case (From      => To_String (N.From_View),
-                                           To        => To_String (N.To_View),
-                                           Outcome   => To_String (N.Outcome),
-                                           Action    => To_String (N.Action),
-                                           Condition => To_String (N.Condition));
+            declare
+               Navigator : Navigation_Access;
+            begin
+               if N.Redirect then
+                  Navigator := Create_Redirect_Navigator (To_String (N.To_View));
+               else
+                  Navigator := Create_Render_Navigator (To_String (N.To_View));
+               end if;
+               N.Handler.Add_Navigation_Case (Navigator => Navigator,
+                                              From      => To_String (N.From_View),
+                                              Outcome   => To_String (N.Outcome),
+                                              Action    => To_String (N.Action),
+                                              Condition => To_String (N.Condition));
+            end;
             N.From_View := Empty;
             N.To_View   := Empty;
             N.Outcome   := Empty;
             N.Action    := Empty;
             N.Condition := Empty;
+            N.Redirect  := False;
 
       end case;
    end Set_Member;

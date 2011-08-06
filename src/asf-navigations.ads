@@ -88,6 +88,18 @@ package ASF.Navigations is
    procedure Navigate (Navigator : in Navigation_Case;
                        Context   : in out ASF.Contexts.Faces.Faces_Context'Class) is abstract;
 
+   --  Add a navigation case to navigate from the view identifier by <b>From</b>
+   --  by using the navigation rule defined by <b>Navigator</b>.
+   --  Some optional conditions are evaluated:
+   --  The <b>Outcome</b> must match unless it is empty.
+   --  The <b>Action</b> must match unless it is empty.
+   --  The <b>Condition</b> expression must evaluate to True.
+   procedure Add_Navigation_Case (Handler   : in out Navigation_Handler'Class;
+                                  Navigator : in Navigation_Access;
+                                  From      : in String;
+                                  Outcome   : in String := "";
+                                  Action    : in String := "";
+                                  Condition : in String := "");
 
 private
 

@@ -167,6 +167,9 @@ package body ASF.Responses.Web is
          AWS.Response.Set.Content_Type (D     => Resp.Data,
                                         Value => Resp.Get_Content_Type);
          Resp.Content.Flush;
+         if AWS.Response.Is_Empty (Resp.Data) then
+            AWS.Response.Set.Message_Body (Resp.Data, "");
+         end if;
       else
          AWS.Response.Set.Mode (D     => Resp.Data,
                                 Value => AWS.Response.Header);

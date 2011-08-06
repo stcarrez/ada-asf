@@ -19,17 +19,27 @@
 with ASF.Contexts.Faces;
 with ASF.Utils;
 package ASF.Applications.Messages.Factory is
---
---     function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
---                           Message_Id : in String) return Message;
+
+   --  Get a localized message.  The message identifier is composed of a resource bundle name
+   --  prefix and a bundle key.  The prefix and key are separated by the first '.'.
+   --  If the message identifier does not contain any prefix, the default bundle is "messages".
+   function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
+                         Message_Id : in String) return String;
+
+   --  Build a localized message.
+   function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
+                         Message_Id : in String) return Message;
 --
 --     function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
 --                           Message_Id : in String;
 --                           Param1     : in String) return Message;
 
-   --  Build a message
+   --  Build a localized message and format the message with some arguments.
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String;
                          Args       : in ASF.Utils.Object_Array) return Message;
+
+   --  Add a localized global message in the current faces context.
+   procedure Add_Message (Message_Id : in String);
 
 end ASF.Applications.Messages.Factory;

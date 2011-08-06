@@ -398,6 +398,15 @@ package body Security.Openid is
       Extract_Value (Result.Timezone, Request, Prefix & ".timezone");
       Extract_Value (Result.First_Name, Request, Prefix & ".firstname");
       Extract_Value (Result.Last_Name, Request, Prefix & ".lastname");
+
+      --  If the fullname is not specified, try to build one from the first_name and last_name.
+      if Length (Result.Full_Name) = 0 then
+         Append (Result.Full_Name, Result.First_Name);
+         if Length (Result.First_Name) > 0 and Length (Result.Last_Name) > 0 then
+            Append (Result.Full_Name, " ");
+            Append (Result.Full_Name, Result.Last_Name);
+         end if;
+      end if;
    end Extract_Profile;
 
    --  ------------------------------

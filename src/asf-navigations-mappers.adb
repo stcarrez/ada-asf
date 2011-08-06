@@ -107,6 +107,7 @@ begin
 --     Case_Mapping.Add_Mapping ("navigation-case/redirect/view-param/name", VIEW_PARAM_NAME);
 --     Case_Mapping.Add_Mapping ("navigation-case/redirect/view-param/value", VIEW_PARAM_VALUE);
 --     Case_Mapping.Add_Mapping ("navigation-case/redirect/include-view-params", INCLUDE_VIEW_PARAMS);
+   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/redirect", REDIRECT);
    Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/content", CONTENT);
    Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/content/@type", CONTENT_TYPE);
    Case_Mapping.Add_Mapping ("navigation-rule/navigation-case", NAVIGATION_CASE);

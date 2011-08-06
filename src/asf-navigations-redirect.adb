@@ -30,7 +30,8 @@ package body ASF.Navigations.Redirect is
    overriding
    procedure Navigate (Controller : in Redirect_Navigator;
                        Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
-      URI : constant String := To_String (Controller.View_Name);
+      View : constant String := To_String (Controller.View_Name);
+      URI  : constant String := Controller.View_Handler.Get_Redirect_URL (Context, View);
    begin
       Log.Debug ("Navigate by redirecting to {0}", URI);
       Context.Get_Response.Send_Redirect (Location => URI);

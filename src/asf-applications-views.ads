@@ -50,15 +50,26 @@ package ASF.Applications.Views is
    --  the view identifier.  If the view is a valid view, create the component tree
    --  representing that view.
    procedure Create_View (Handler : in out View_Handler;
-                           Name    : in String;
-                           Context : in out ASF.Contexts.Faces.Faces_Context'Class;
-                           View    : out ASF.Components.Root.UIViewRoot);
+                          Name    : in String;
+                          Context : in out ASF.Contexts.Faces.Faces_Context'Class;
+                          View    : out ASF.Components.Root.UIViewRoot);
 
    --  Render the view represented by the component tree.  The view is
    --  rendered using the context.
    procedure Render_View (Handler : in out View_Handler;
                           Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                           View    : in ASF.Components.Root.UIViewRoot);
+
+   --  Get the URL suitable for encoding and rendering the view specified by the <b>View</b>
+   --  identifier.
+   function Get_Action_URL (Handler : in View_Handler;
+                            Context : in ASF.Contexts.Faces.Faces_Context'Class;
+                            View    : in String) return String;
+
+   --  Get the URL for redirecting the user to the specified view.
+   function Get_Redirect_URL (Handler : in View_Handler;
+                              Context : in ASF.Contexts.Faces.Faces_Context'Class;
+                              View    : in String) return String;
 
    --  Closes the view handler
    procedure Close (Handler : in out View_Handler);

@@ -196,6 +196,37 @@ package body ASF.Applications.Views is
    end Render_View;
 
    --  ------------------------------
+   --  Get the URL suitable for encoding and rendering the view specified by the <b>View</b>
+   --  identifier.
+   --  ------------------------------
+   function Get_Action_URL (Handler : in View_Handler;
+                            Context : in ASF.Contexts.Faces.Faces_Context'Class;
+                            View    : in String) return String is
+      use Ada.Strings.Unbounded;
+
+      Pos          : constant Natural := Util.Strings.Rindex (View, '.');
+      Context_Path : constant String := Context.Get_Request.Get_Context_Path;
+   begin
+      if Pos > 0 and then View (Pos .. View'Last) = Handler.File_Ext then
+         return Context_Path & View (View'First .. Pos - 1) & To_String (Handler.View_Ext);
+      end if;
+      if Pos > 0 and then View (Pos .. View'Last) = Handler.View_Ext then
+         return Context_Path & View;
+      end if;
+      return Context_Path & View;
+   end Get_Action_URL;
+
+   --  ------------------------------
+   --  Get the URL for redirecting the user to the specified view.
+   --  ------------------------------
+   function Get_Redirect_URL (Handler : in View_Handler;
+                              Context : in ASF.Contexts.Faces.Faces_Context'Class;
+                              View    : in String) return String is
+   begin
+      return Handler.Get_Action_URL (Context, View);
+   end Get_Redirect_URL;
+
+   --  ------------------------------
    --  Initialize the view handler.
    --  ------------------------------
    procedure Initialize (Handler    : out View_Handler;

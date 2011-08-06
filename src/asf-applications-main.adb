@@ -574,12 +574,10 @@ package body ASF.Applications.Main is
       App.Set_Context (Context'Unchecked_Access);
 
       declare
-         EL_Expr : constant String := "#{" & Name & "." & Operation & "}";
-         Root    : Components.Core.UIView_Access;
-         View    : Components.Root.UIViewRoot;
-         Expr    : EL.Expressions.Method_Expression;
-         Method  : EL.Expressions.Method_Info;
-         Outcome : Ada.Strings.Unbounded.Unbounded_String;
+         EL_Expr   : constant String := "#{" & Name & "." & Operation & "}";
+         Expr      : EL.Expressions.Method_Expression;
+         Method    : EL.Expressions.Method_Info;
+         Outcome   : Ada.Strings.Unbounded.Unbounded_String;
       begin
          --  Build a method expression and get a Method_Info to obtain the bean
          --  instance and the method descriptor.
@@ -598,11 +596,34 @@ package body ASF.Applications.Main is
          Outcome := To_Unbounded_String ("success");
          ASF.Events.Actions.Action_Method.Execute (Method => Method,
                                                    Param  => Outcome);
-         Root := new ASF.Components.Core.UIView;
-         ASF.Components.Root.Set_Root (UI   => View,
-                                       Root => Root,
-                                       Name => "ajax/" & Name & "/" & Operation);
-         Context.Set_View_Root (View => View);
+
+         --  If the response was not produced by the action method, use the navigation handler
+         --  to decide what result view must be rendered for the response.
+         if not Context.Get_Response_Completed then
+            declare
+               Root      : constant Components.Core.UIView_Access := new Components.Core.UIView;
+               View      : Components.Root.UIViewRoot;
+               View_Name : constant String := "/ajax/" & Name & "/" & Operation;
+            begin
+               ASF.Components.Root.Set_Root (UI   => View,
+                                             Root => Root,
+                                             Name => View_Name);
+               Context.Set_View_Root (View => View);
+               App.Navigation.Handle_Navigation (Action  => Operation,
+                                                 Outcome => To_String (Outcome),
+                                                 Context => Context);
+
+               --  If the navigation indicates a view to render, render it.
+               if not Context.Get_Response_Completed then
+                  View := Context.Get_View_Root;
+                  if ASF.Components.Root.Get_View_Id (View) /= View_Name then
+                     App.Lifecycle.Render (Context);
+                  else
+                     Response.Set_Status (ASF.Responses.SC_OK);
+                  end if;
+               end if;
+            end;
+         end if;
 
       exception
          when E : others =>

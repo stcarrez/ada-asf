@@ -18,12 +18,46 @@
 var ASF = {};
 
 (function () {
+    /**
+     * Execute the AJAX response action represented by the JSON object <b>action</b>.
+     *
+     * @param node the current node
+     * @param action the JSON action object
+     */
     ASF.ExecuteOne = function(node, action) {
-        if (action.action === "show") {
-            $(action.data).show('slow');
+        if (action.action === "update") {
+	    $(action.id).html(action.data);
+
+        } else if (action.action === "show") {
+            $(action.id).show('slow');
+
         } else if (action.action === "hide") {
-            $(action.data).hide('slow');
-        }
+            $(action.id).hide('slow');
+
+        } else if (action.action === "delete") {
+	    $(action.id).remove();
+
+        } else if (action.action === "removeClass") {
+	    $(action.id).removeClass(action.data);
+
+        } else if (action.action === "addClass") {
+	    $(action.id).addClass(action.data);
+
+        } else if (action.action === "fadeIn") {
+            $(action.id).fadeIn('slow');
+
+        } else if (action.action === "fadeOut") {
+            $(action.id).fadeOut('slow');
+
+        } else if (action.action === "slideUp") {
+            $(action.id).slideUp('slow');
+
+        } else if (action.action === "slideDown") {
+            $(action.id).slideDown('slow');
+
+        } else if (action.action === "redirect") {
+            document.location = action.url;
+	}
     };
 
     ASF.Execute = function(node, data) {

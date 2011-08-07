@@ -71,10 +71,10 @@ package body ASF.Applications.Views.Tests is
 
             Rep.Read_Content (Content);
             Util.Files.Write_File (Result_File, Content);
---              Util.Tests.Assert_Equal_Files (T       => T,
---                                             Expect  => To_String (T.Expect),
---                                             Test    => Result_File,
---                                             Message => "Restore and render view");
+            Util.Tests.Assert_Equal_Files (T       => T,
+                                           Expect  => To_String (T.Expect),
+                                           Test    => Result_File,
+                                           Message => "Restore and render view");
          end;
       end loop;
    end Test_Load_Facelet;

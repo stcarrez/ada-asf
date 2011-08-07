@@ -16,9 +16,18 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Exceptions;
+
+with Util.Log.Loggers;
+with Util.Properties.Bundles;
+
 with ASF.Locales;
 with ASF.Applications.Main;
 package body ASF.Applications.Messages.Factory is
+
+   use Util.Log;
+
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Applications.Messages.Factory");
 
    --  ------------------------------
    --  Get a localized message.  The message identifier is composed of a resource bundle name
@@ -43,6 +52,11 @@ package body ASF.Applications.Messages.Factory is
                           Bundle => Bundle);
          return Bundle.Get (Message_Id, Message_Id);
       end if;
+
+   exception
+      when E : Util.Properties.Bundles.NO_BUNDLE =>
+         Log.Error ("Cannot localize {0}: {1}", Message_Id, Ada.Exceptions.Exception_Message (E));
+         return Message_Id;
    end Get_Message;
 
    --  ------------------------------

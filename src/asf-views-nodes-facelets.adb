@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-facelets -- Facelets composition nodes
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -141,13 +141,27 @@ package body ASF.Views.Nodes.Facelets is
       Old    : constant access VariableMapper'Class := Ctx.Get_Variable_Mapper;
       Mapper : aliased Default.Default_Variable_Mapper;
    begin
+      --  Chain the variable mapper with the previous one.
+      if Old /= null then
+         Mapper.Set_Next_Variable_Mapper (Old.all'Unchecked_Access);
+      end if;
+
       --  Set a variable mapper for the include context.
       --  The <ui:param> variables will be declared in that mapper.
       Ctx.all.Set_Variable_Mapper (Mapper'Unchecked_Access);
 
-      --  Build the children to take into account the <ui:param> nodes.
-      Node.Build_Children (Parent, Context);
-      Context.Include_Facelet (Source => Source, Parent => Parent);
+      begin
+         --  Build the children to take into account the <ui:param> nodes.
+         Node.Build_Children (Parent, Context);
+         Context.Include_Facelet (Source => Source, Parent => Parent);
+
+      exception
+         when E : others =>
+            Node.Error ("Exception {0} while including {1}",
+                        Ada.Exceptions.Exception_Message (E), Source);
+            Ctx.all.Set_Variable_Mapper (Old);
+            raise;
+      end;
       Ctx.all.Set_Variable_Mapper (Old);
    end Build_Components;
 
@@ -186,19 +200,33 @@ package body ASF.Views.Nodes.Facelets is
       Old    : constant access VariableMapper'Class := Ctx.Get_Variable_Mapper;
       Mapper : aliased Default.Default_Variable_Mapper;
    begin
+      --  Chain the variable mapper with the previous one.
+      if Old /= null then
+         Mapper.Set_Next_Variable_Mapper (Old.all'Unchecked_Access);
+      end if;
       Context.Push_Defines (Node);
+
       --  Set a variable mapper for the include context.
       --  The <ui:param> variables will be declared in that mapper.
       Ctx.all.Set_Variable_Mapper (Mapper'Unchecked_Access);
-      Node.Build_Children (Parent, Context);
-      if Node.Template /= null then
-         declare
-            Source : constant String := To_String (Get_Value (Node.Template.all, Context));
-         begin
-            Log.Info ("Include facelet {0}", Source);
-            Context.Include_Facelet (Source => Source, Parent => Parent);
-         end;
-      end if;
+      begin
+         Node.Build_Children (Parent, Context);
+         if Node.Template /= null then
+            declare
+               Source : constant String := To_String (Get_Value (Node.Template.all, Context));
+            begin
+               Log.Info ("Include facelet {0}", Source);
+               Context.Include_Facelet (Source => Source, Parent => Parent);
+            end;
+         end if;
+      exception
+         when E : others =>
+            Node.Error ("Exception {0} while expanding composition",
+                        Ada.Exceptions.Exception_Message (E));
+            Ctx.all.Set_Variable_Mapper (Old);
+            Context.Pop_Defines;
+            raise;
+      end;
       Ctx.all.Set_Variable_Mapper (Old);
       Context.Pop_Defines;
    end Build_Components;
@@ -246,7 +274,6 @@ package body ASF.Views.Nodes.Facelets is
             Context.Set_Relative_Path (Path     => To_Unbounded_String (File),
                                        Previous => Old);
             Define_Maps.Element (Pos).Build_Children (Parent, Context);
-            Context.Set_Relative_Path (Path => Old);
 
          exception
             when E : others =>
@@ -408,11 +435,15 @@ package body ASF.Views.Nodes.Facelets is
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
       pragma Unreferenced (Parent);
-
-      Value  : constant EL.Expressions.Value_Expression
-              := Get_Value_Expression (Node.Value.all);
    begin
-      Context.Set_Variable (Node.Var.Value, Value);
+      if Node.Value /= null and Node.Var /= null then
+         declare
+            Value  : constant EL.Expressions.Value_Expression
+              := Get_Value_Expression (Node.Value.all);
+         begin
+            Context.Set_Variable (Node.Var.Value, Value);
+         end;
+      end if;
    end Build_Components;
 
    --  ------------------------------

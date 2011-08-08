@@ -62,11 +62,12 @@ package body ASF.Locales is
                        Name   : in String;
                        Bundle : in String) is
       L : constant Locale_Binding_Access := new Locale_Binding;
+      P : ASF.Beans.Parameter_Bean_Ref.Ref;
    begin
       L.Loader := Fac.Factory'Unchecked_Access;
       L.Scope  := ASF.Beans.REQUEST_SCOPE;
       L.Name   := Ada.Strings.Unbounded.To_Unbounded_String (Bundle);
-      ASF.Beans.Register (Beans, Name, L.all'Access);
+      ASF.Beans.Register (Beans, Name, L.all'Access, P);
    end Register;
 
 

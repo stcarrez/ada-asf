@@ -20,6 +20,8 @@ package body ASF.Beans.Mappers is
 
    Empty : constant Util.Beans.Objects.Object := Util.Beans.Objects.To_Object (String '(""));
 
+   Empty_Params : ASF.Beans.Parameter_Bean_Ref.Ref;
+
    --  ------------------------------
    --  Set the field identified by <b>Field</b> with the <b>Value</b>.
    --  ------------------------------
@@ -50,13 +52,27 @@ package body ASF.Beans.Mappers is
             end;
 
          when FIELD_PROPERTY_NAME =>
-            null;
+            MBean.Prop_Name := Value;
 
          when FIELD_PROPERTY_VALUE =>
-            null;
+            MBean.Prop_Value := Value;
 
          when FIELD_PROPERTY_CLASS =>
             null;
+
+         when FIELD_PROPERTY =>
+            --  Create the parameter list only the first time a property is seen.
+            if MBean.Params.Is_Null then
+               MBean.Params := ASF.Beans.Parameter_Bean_Ref.Create (new ASF.Beans.Parameter_Bean);
+            end if;
+
+            --  Add the parameter.  The property value is parsed as an EL expression.
+            EL.Beans.Add_Parameter (MBean.Params.Value.Params,
+                                    Util.Beans.Objects.To_String (MBean.Prop_Name),
+                                    Util.Beans.Objects.To_String (MBean.Prop_Value),
+                                    MBean.Context.all);
+            MBean.Prop_Name  := Empty;
+            MBean.Prop_Value := Empty;
 
          when FIELD_MANAGED_BEAN =>
             declare
@@ -66,11 +82,13 @@ package body ASF.Beans.Mappers is
                Register (Factory => MBean.Factory.all,
                          Name    => Name,
                          Class   => Class,
+                         Params  => MBean.Params,
                          Scope   => MBean.Scope);
             end;
             MBean.Name  := Empty;
             MBean.Class := Empty;
             MBean.Scope := REQUEST_SCOPE;
+            MBean.Params := Empty_Params;
 
       end case;
    end Set_Member;
@@ -95,4 +113,5 @@ begin
    MBean_Mapping.Add_Mapping ("managed-bean/managed-property/value", FIELD_PROPERTY_VALUE);
    MBean_Mapping.Add_Mapping ("managed-bean/managed-property/property-class",
                               FIELD_PROPERTY_CLASS);
+   MBean_Mapping.Add_Mapping ("managed-bean/managed-property", FIELD_PROPERTY);
 end ASF.Beans.Mappers;

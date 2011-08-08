@@ -261,10 +261,11 @@ package body ASF.Applications.Main is
    --  ------------------------------
    procedure Create (App     : in Application;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
+                     Context : in EL.Contexts.ELContext'Class;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Scope   : out Scope_Type) is
    begin
-      ASF.Beans.Create (App.Factory, Name, Result, Scope);
+      ASF.Beans.Create (App.Factory, Name, Context, Result, Scope);
    end Create;
 
    --  ------------------------------
@@ -398,7 +399,7 @@ package body ASF.Applications.Main is
             end if;
          end if;
       end;
-      Resolver.Application.Create (Name, Bean, Scope);
+      Resolver.Application.Create (Name, Context, Bean, Scope);
       if Bean = null then
          return Resolver.Application.Get_Global (Name, Context);
          --           raise No_Variable

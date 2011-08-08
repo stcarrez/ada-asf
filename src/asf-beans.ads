@@ -22,6 +22,9 @@ with Ada.Strings.Unbounded;
 with Util.Beans.Basic;
 with Util.Refs;
 
+with EL.Beans;
+with EL.Contexts;
+
 with Ada.Containers.Hashed_Maps;
 with Ada.Containers.Indefinite_Hashed_Maps;
 private with Ada.Strings.Unbounded.Hash;
@@ -72,6 +75,21 @@ package ASF.Beans is
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access) is abstract;
 
    --  ------------------------------
+   --  Bean initialization
+   --  ------------------------------
+   --  After a bean object is created, it can be initialized with a set of values defined
+   --  by the <b>EL.Beans.Param_Value</b> type which holds the bean property name as well
+   --  as an EL expression that will be evaluated to get the property value.
+   type Parameter_Bean is new Util.Refs.Ref_Entity with record
+      Params : EL.Beans.Param_Vectors.Vector;
+   end record;
+   type Parameter_Bean_Access is access all Parameter_Bean;
+
+   package Parameter_Bean_Ref is
+     new Util.Refs.Indefinite_References (Element_Type   => Parameter_Bean,
+                                          Element_Access => Parameter_Bean_Access);
+
+   --  ------------------------------
    --  Bean Factory
    --  ------------------------------
    --  The registry maintains a list of creation bindings which allow to create
@@ -93,6 +111,7 @@ package ASF.Beans is
    procedure Register (Factory : in out Bean_Factory;
                        Name    : in String;
                        Class   : in String;
+                       Params  : in Parameter_Bean_Ref.Ref;
                        Scope   : in Scope_Type := REQUEST_SCOPE);
 
    --  Register the bean identified by <b>Name</b> and associated with the class <b>Class</b>.
@@ -101,11 +120,13 @@ package ASF.Beans is
    procedure Register (Factory : in out Bean_Factory;
                        Name    : in String;
                        Class   : in Class_Binding_Access;
+                       Params  : in Parameter_Bean_Ref.Ref;
                        Scope   : in Scope_Type := REQUEST_SCOPE);
 
    --  Create a bean by using the create operation registered for the name
    procedure Create (Factory : in Bean_Factory;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
+                     Context : in EL.Contexts.ELContext'Class;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Scope   : out Scope_Type);
 
@@ -117,16 +138,17 @@ private
      new Util.Refs.Indefinite_References (Element_Type   => Class_Binding'Class,
                                           Element_Access => Class_Binding_Access);
 
-   package Registry_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => String,
-                                            Element_Type => Class_Binding_Ref.Ref,
-                                            Hash         => Ada.Strings.Hash,
-                                            Equivalent_Keys => "=",
-                                            "=" => Class_Binding_Ref."=");
+   package Registry_Maps is
+     new Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => String,
+                                                Element_Type => Class_Binding_Ref.Ref,
+                                                Hash         => Ada.Strings.Hash,
+                                                Equivalent_Keys => "=",
+                                                "=" => Class_Binding_Ref."=");
 
    type Bean_Binding is record
       Scope  : Scope_Type;
       Create : Class_Binding_Ref.Ref;
+      Params : Parameter_Bean_Ref.Ref;
    end record;
 
    package Bean_Maps is new

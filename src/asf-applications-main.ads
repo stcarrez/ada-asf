@@ -152,6 +152,7 @@ package ASF.Applications.Main is
    --  Create a bean by using the create operation registered for the name
    procedure Create (App     : in Application;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
+                     Context : in EL.Contexts.ELContext'Class;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Scope   : out Scope_Type);
 

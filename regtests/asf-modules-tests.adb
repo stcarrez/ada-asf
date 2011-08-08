@@ -16,22 +16,20 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Tests;
 with Util.Test_Caller;
-with Util.Log.Loggers;
-with Util.Measures;
 with Util.Beans.Basic;
 with Util.Beans.Objects;
 
-with Ada.Strings.Fixed;
 with Ada.Unchecked_Deallocation;
+
+with EL.Contexts.Default;
 
 with ASF.Modules.Beans;
 with ASF.Applications.Tests;
 package body ASF.Modules.Tests is
 
 
-   use Ada.Strings.Fixed;
+--     use Ada.Strings.Fixed;
    use Util.Tests;
 
    package Module_Register is new ASF.Modules.Beans (Module, Module_Access);
@@ -132,14 +130,23 @@ package body ASF.Modules.Tests is
          Value : Util.Beans.Objects.Object;
          Bean  : Util.Beans.Basic.Readonly_Bean_Access;
          Scope : ASF.Beans.Scope_Type;
+         Context : EL.Contexts.Default.Default_Context;
       begin
-         T.App.Create (Name   => To_Unbounded_String (Name),
-                       Result => Bean,
-                       Scope  => Scope);
+         T.App.Create (Name    => To_Unbounded_String (Name),
+                       Context => Context,
+                       Result  => Bean,
+                       Scope   => Scope);
          T.Assert (Kind = Scope, "Invalid scope for " & Name);
          T.Assert (Bean /= null, "Invalid bean object");
          Value := Util.Beans.Objects.To_Object (Bean);
          T.Assert (not Util.Beans.Objects.Is_Null (Value), "Invalid bean");
+
+         --  Special test for the sessionForm bean which is initialized by configuration properties
+         if Name = "sessionForm" then
+            T.Assert_Equals ("John.Rambo@gmail.com",
+                             Util.Beans.Objects.To_String (Bean.Get_Value ("email")),
+                             "Session form not initialized");
+         end if;
       end Check;
 
       M : aliased Module;
@@ -164,24 +171,6 @@ package body ASF.Modules.Tests is
    procedure Test_Module_Navigation (T : in out Test) is
       use ASF.Beans;
       use type Util.Beans.Basic.Readonly_Bean_Access;
-
-      procedure Check (Name : in String;
-                       Kind : in ASF.Beans.Scope_Type);
-
-      procedure Check (Name : in String;
-                       Kind : in ASF.Beans.Scope_Type) is
-         Value : Util.Beans.Objects.Object;
-         Bean  : Util.Beans.Basic.Readonly_Bean_Access;
-         Scope : ASF.Beans.Scope_Type;
-      begin
-         T.App.Create (Name   => To_Unbounded_String (Name),
-                       Result => Bean,
-                       Scope  => Scope);
-         T.Assert (Kind = Scope, "Invalid scope for " & Name);
-         T.Assert (Bean /= null, "Invalid bean object");
-         Value := Util.Beans.Objects.To_Object (Bean);
-         T.Assert (not Util.Beans.Objects.Is_Null (Value), "Invalid bean");
-      end Check;
 
       M : aliased Module;
    begin

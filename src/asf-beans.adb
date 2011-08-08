@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Unchecked_Deallocation;
 with Util.Log.Loggers;
 package body ASF.Beans is
 
@@ -45,6 +44,7 @@ package body ASF.Beans is
    procedure Register (Factory : in out Bean_Factory;
                        Name    : in String;
                        Class   : in String;
+                       Params  : in Parameter_Bean_Ref.Ref;
                        Scope   : in Scope_Type := REQUEST_SCOPE) is
    begin
       Log.Info ("Register bean '{0}' created by '{1}' in scope {2}",
@@ -61,6 +61,7 @@ package body ASF.Beans is
          end if;
          Binding.Create := Registry_Maps.Element (Pos);
          Binding.Scope  := Scope;
+         Binding.Params := Params;
          Factory.Map.Include (Ada.Strings.Unbounded.To_Unbounded_String (Name), Binding);
       end;
    end Register;
@@ -73,6 +74,7 @@ package body ASF.Beans is
    procedure Register (Factory : in out Bean_Factory;
                        Name    : in String;
                        Class   : in Class_Binding_Access;
+                       Params  : in Parameter_Bean_Ref.Ref;
                        Scope   : in Scope_Type := REQUEST_SCOPE) is
       Binding : Bean_Binding;
    begin
@@ -81,6 +83,7 @@ package body ASF.Beans is
 
       Binding.Create := Class_Binding_Ref.Create (Class);
       Binding.Scope  := Scope;
+      Binding.Params := Params;
       Factory.Map.Include (Ada.Strings.Unbounded.To_Unbounded_String (Name), Binding);
    end Register;
 
@@ -115,8 +118,10 @@ package body ASF.Beans is
    --  ------------------------------
    procedure Create (Factory : in Bean_Factory;
                      Name    : in Unbounded_String;
+                     Context : in EL.Contexts.ELContext'Class;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Scope   : out Scope_Type) is
+      use type Util.Beans.Basic.Readonly_Bean_Access;
       Pos : constant Bean_Maps.Cursor := Factory.Map.Find (Name);
    begin
       if Bean_Maps.Has_Element (Pos) then
@@ -124,6 +129,16 @@ package body ASF.Beans is
             Binding : constant Bean_Binding := Bean_Maps.Element (Pos);
          begin
             Binding.Create.Value.Create (Name, Result);
+            if Result /= null and then not Binding.Params.Is_Null then
+               if Result.all in Util.Beans.Basic.Bean'Class then
+                  EL.Beans.Initialize (Util.Beans.Basic.Bean'Class (Result.all),
+                                       Binding.Params.Value.Params,
+                                       Context);
+               else
+                  Log.Warn ("Bean {0} cannot be set with pre-defined properties as it does "
+                            & "not implement the Bean interface", To_String (Name));
+               end if;
+            end if;
             Scope := Binding.Scope;
          end;
       else

@@ -18,6 +18,7 @@
 
 with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
+with EL.Contexts;
 
 package ASF.Beans.Mappers is
 
@@ -25,6 +26,7 @@ package ASF.Beans.Mappers is
                                 FIELD_CLASS,
                                 FIELD_SCOPE,
                                 FIELD_MANAGED_BEAN,
+                                FIELD_PROPERTY,
                                 FIELD_PROPERTY_NAME,
                                 FIELD_PROPERTY_VALUE,
                                 FIELD_PROPERTY_CLASS);
@@ -34,6 +36,10 @@ package ASF.Beans.Mappers is
       Class        : Util.Beans.Objects.Object;
       Scope        : Scope_Type := REQUEST_SCOPE;
       Factory      : access ASF.Beans.Bean_Factory;
+      Params       : ASF.Beans.Parameter_Bean_Ref.Ref;
+      Prop_Name    : Util.Beans.Objects.Object;
+      Prop_Value   : Util.Beans.Objects.Object;
+      Context      : EL.Contexts.ELContext_Access := null;
    end record;
    type Managed_Bean_Access is access all Managed_Bean;
 

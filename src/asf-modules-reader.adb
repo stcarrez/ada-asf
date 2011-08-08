@@ -28,9 +28,12 @@ with ASF.Beans.Mappers;
 --  and initializes the module.
 package body ASF.Modules.Reader is
 
+   --  ------------------------------
    --  Read the module configuration file and configure the components
-   procedure Read_Configuration (Plugin : in out Module'Class;
-                                 File   : in String) is
+   --  ------------------------------
+   procedure Read_Configuration (Plugin  : in out Module'Class;
+                                 File    : in String;
+                                 Context : in EL.Contexts.ELContext_Access) is
 
       procedure Add_Mapper (Mapper : in Util.Serialize.Mappers.Mapper_Access);
 
@@ -54,7 +57,9 @@ package body ASF.Modules.Reader is
       Add_Mapper (ASF.Servlets.Mappers.Get_Servlet_Mapper);
 
       --  Setup the managed bean context to read the <managed-bean> elements.
+      --  The ELContext is used for parsing EL expressions defined in property values.
       MBean.Factory := Plugin.Factory'Unchecked_Access;
+      MBean.Context := Context;
       ASF.Beans.Mappers.Config_Mapper.Set_Context (Ctx     => Reader,
                                                    Element => MBean'Unchecked_Access);
 

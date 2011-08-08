@@ -20,7 +20,8 @@ with Ada.Unchecked_Deallocation;
 
 with Util.Files;
 with Util.Strings;
-with Util.Serialize.IO.XML;
+
+with EL.Contexts.Default;
 
 with ASF.Modules.Reader;
 package body ASF.Modules is
@@ -255,8 +256,9 @@ package body ASF.Modules is
       declare
          Base : constant String := Plugin.Config.Get ("config", Name & ".xml");
          Path : constant String := Util.Files.Find_File_Path (Base, Paths);
+         Ctx  : aliased EL.Contexts.Default.Default_Context;
       begin
-         ASF.Modules.Reader.Read_Configuration (Plugin.all, Path);
+         ASF.Modules.Reader.Read_Configuration (Plugin.all, Path, Ctx'Unchecked_Access);
 
       exception
          when Ada.IO_Exceptions.Name_Error =>

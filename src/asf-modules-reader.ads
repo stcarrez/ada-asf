@@ -15,13 +15,15 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with EL.Contexts;
 
 --  The <b>ASF.Modules.Reader</b> package reads the module configuration files
 --  and initializes the module.
 package ASF.Modules.Reader is
 
    --  Read the module configuration file and configure the components
-   procedure Read_Configuration (Plugin : in out Module'Class;
-                                 File   : in String);
+   procedure Read_Configuration (Plugin  : in out Module'Class;
+                                 File    : in String;
+                                 Context : in EL.Contexts.ELContext_Access);
 
 end ASF.Modules.Reader;

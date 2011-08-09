@@ -22,6 +22,16 @@ with ASF.Applications.Messages.Vectors;
 --  and <b>h:messages</b> components.
 package ASF.Components.Html.Messages is
 
+   type Message_Mode is (SPAN_NO_STYLE, SPAN, LIST, TABLE);
+
+   --  Write a single message enclosed by the tag represented by <b>Tag</b>.
+   procedure Write_Message (UI           : in UIHtmlComponent'Class;
+                            Message      : in ASF.Applications.Messages.Message;
+                            Mode         : in Message_Mode;
+                            Show_Detail  : in Boolean;
+                            Show_Summary : in Boolean;
+                            Context      : in out Faces_Context'Class);
+
    --  ------------------------------
    --  UIMessage component
    --  ------------------------------
@@ -51,15 +61,6 @@ package ASF.Components.Html.Messages is
                          Context : in out Faces_Context'Class);
 
 private
-   type Message_Mode is (SPAN, LIST, TABLE);
-
-   --  Write a single message enclosed by the tag represented by <b>Tag</b>.
-   procedure Write_Message (UI           : in UIHtmlComponent'Class;
-                            Message      : in ASF.Applications.Messages.Message;
-                            Mode         : in Message_Mode;
-                            Show_Detail  : in Boolean;
-                            Show_Summary : in Boolean;
-                            Context      : in out Faces_Context'Class);
 
    --  Render a list of messages each of them being enclosed by the <b>Tag</b> element.
    procedure Write_Messages (UI       : in UIHtmlComponent'Class;

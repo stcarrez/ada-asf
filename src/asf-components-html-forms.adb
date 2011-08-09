@@ -78,42 +78,47 @@ package body ASF.Components.Html.Forms is
       end if;
    end Get_Value;
 
+   --  ------------------------------
+   --  Render the input element.
+   --  ------------------------------
+   procedure Render_Input (UI      : in UIInput;
+                           Context : in out Faces_Context'Class) is
+      Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+      Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
+   begin
+      Writer.Start_Element ("input");
+      if UI.Is_Secret then
+         Writer.Write_Attribute (Name => "type", Value => "password");
+      else
+         Writer.Write_Attribute (Name => "type", Value => "text");
+      end if;
+      Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
+      if not EL.Objects.Is_Null (Value) then
+         declare
+            Convert : constant access Converters.Converter'Class
+              := UIInput'Class (UI).Get_Converter;
+         begin
+            if Convert /= null and Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
+               Writer.Write_Attribute (Name  => "value",
+                                       Value => Convert.To_String (Value => Value,
+                                                                   Component => UI,
+                                                                   Context => Context));
+            else
+               Writer.Write_Attribute (Name => "value", Value => Value);
+            end if;
+         end;
+      end if;
+      UI.Render_Attributes (Context, INPUT_ATTRIBUTE_NAMES, Writer);
+      Writer.End_Element ("input");
+   end Render_Input;
+
    overriding
    procedure Encode_Begin (UI      : in UIInput;
                            Context : in out Faces_Context'Class) is
    begin
-      if not UI.Is_Rendered (Context) then
-         return;
+      if UI.Is_Rendered (Context) then
+         UI.Render_Input (Context);
       end if;
-      declare
-         Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
-         Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
-      begin
-         Writer.Start_Element ("input");
-         if UI.Is_Secret then
-            Writer.Write_Attribute (Name => "type", Value => "password");
-         else
-            Writer.Write_Attribute (Name => "type", Value => "text");
-         end if;
-         Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
-         if not EL.Objects.Is_Null (Value) then
-            declare
-               Convert : constant access Converters.Converter'Class
-                 := UIInput'Class (UI).Get_Converter;
-            begin
-               if Convert /= null and Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
-                  Writer.Write_Attribute (Name  => "value",
-                                          Value => Convert.To_String (Value => Value,
-                                                                      Component => UI,
-                                                                      Context => Context));
-               else
-                  Writer.Write_Attribute (Name => "value", Value => Value);
-               end if;
-            end;
-         end if;
-         UI.Render_Attributes (Context, INPUT_ATTRIBUTE_NAMES, Writer);
-         Writer.End_Element ("input");
-      end;
    end Encode_Begin;
 
    overriding

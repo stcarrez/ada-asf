@@ -51,6 +51,10 @@ package ASF.Components.Html.Forms is
    overriding
    function Get_Value (UI    : in UIInput) return EL.Objects.Object;
 
+   --  Render the input element.
+   procedure Render_Input (UI      : in UIInput;
+                           Context : in out Faces_Context'Class);
+
    overriding
    procedure Encode_Begin (UI      : in UIInput;
                            Context : in out Faces_Context'Class);

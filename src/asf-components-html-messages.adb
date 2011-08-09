@@ -52,6 +52,9 @@ package body ASF.Components.Html.Messages is
       Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
    begin
       case Mode is
+         when SPAN_NO_STYLE =>
+            Writer.Start_Element ("span");
+
          when SPAN =>
             Writer.Start_Element ("span");
             UI.Render_Attributes (Context, MSG_ATTRIBUTE_NAMES, Writer);
@@ -89,7 +92,7 @@ package body ASF.Components.Html.Messages is
          Writer.Write_Text (Get_Detail (Message));
       end if;
       case Mode is
-         when SPAN =>
+         when SPAN | SPAN_NO_STYLE =>
             Writer.End_Element ("span");
 
          when LIST =>

@@ -38,6 +38,7 @@ package body ASF.Components.Html.Factory is
    function Create_Input_Text return UIComponent_Access;
    function Create_Command return UIComponent_Access;
    function Create_Message return UIComponent_Access;
+   function Create_Messages return UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIOutput component
@@ -119,6 +120,14 @@ package body ASF.Components.Html.Factory is
       return new ASF.Components.Html.Messages.UIMessage;
    end Create_Message;
 
+   --  ------------------------------
+   --  Create an UIMessages component
+   --  ------------------------------
+   function Create_Messages return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Messages.UIMessages;
+   end Create_Messages;
+
    use ASF.Views.Nodes;
 
    URI                : aliased constant String := "http://java.sun.com/jsf/html";
@@ -129,6 +138,7 @@ package body ASF.Components.Html.Factory is
    LABEL_TAG          : aliased constant String := "label";
    LIST_TAG           : aliased constant String := "list";
    MESSAGE_TAG        : aliased constant String := "message";
+   MESSAGES_TAG       : aliased constant String := "messages";
    OUTPUT_FORMAT_TAG  : aliased constant String := "outputFormat";
    OUTPUT_LINK_TAG    : aliased constant String := "outputLink";
    OUTPUT_TEXT_TAG    : aliased constant String := "outputText";
@@ -156,16 +166,19 @@ package body ASF.Components.Html.Factory is
          7 => (Name      => MESSAGE_TAG'Access,
                Component => Create_Message'Access,
                Tag       => Create_Component_Node'Access),
-         8 => (Name      => OUTPUT_FORMAT_TAG'Access,
+         8 => (Name      => MESSAGES_TAG'Access,
+               Component => Create_Messages'Access,
+               Tag       => Create_Component_Node'Access),
+         9 => (Name      => OUTPUT_FORMAT_TAG'Access,
                Component => Create_Output_Format'Access,
                Tag       => Create_Component_Node'Access),
-         9 => (Name      => OUTPUT_LINK_TAG'Access,
+        10 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,
                Tag       => Create_Component_Node'Access),
-        10 => (Name      => OUTPUT_TEXT_TAG'Access,
+        11 => (Name      => OUTPUT_TEXT_TAG'Access,
                Component => Create_Output'Access,
                Tag       => Create_Component_Node'Access),
-        11 => (Name      => PANEL_GROUP_TAG'Access,
+        12 => (Name      => PANEL_GROUP_TAG'Access,
                Component => Create_PanelGroup'Access,
                Tag       => Create_Component_Node'Access)
         );

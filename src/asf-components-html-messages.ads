@@ -36,12 +36,39 @@ package ASF.Components.Html.Messages is
    procedure Encode_End (UI      : in UIMessage;
                          Context : in out Faces_Context'Class);
 
-   procedure Write_Messages (UI       : in UIMessage;
+   --  ------------------------------
+   --  UIMessages component
+   --  ------------------------------
+   --  The <b>h:messages</b> component renders the global messages.
+   type UIMessages is new UIHtmlComponent with private;
+
+   --  Encode the begining of the <b>h:messages</b> component.
+   procedure Encode_Begin (UI      : in UIMessages;
+                           Context : in out Faces_Context'Class);
+
+   --  Encode the end of the <b>h:messages</b> component.
+   procedure Encode_End (UI      : in UIMessages;
+                         Context : in out Faces_Context'Class);
+
+private
+   type Message_Mode is (SPAN, LIST, TABLE);
+
+   --  Write a single message enclosed by the tag represented by <b>Tag</b>.
+   procedure Write_Message (UI           : in UIHtmlComponent'Class;
+                            Message      : in ASF.Applications.Messages.Message;
+                            Mode         : in Message_Mode;
+                            Show_Detail  : in Boolean;
+                            Show_Summary : in Boolean;
+                            Context      : in out Faces_Context'Class);
+
+   --  Render a list of messages each of them being enclosed by the <b>Tag</b> element.
+   procedure Write_Messages (UI       : in UIHtmlComponent'Class;
+                             Mode     : in Message_Mode;
                              Context  : in out Faces_Context'Class;
                              Messages : in out ASF.Applications.Messages.Vectors.Cursor);
 
-private
-
    type UIMessage is new UIHtmlComponent with null record;
+
+   type UIMessages is new UIHtmlComponent with null record;
 
 end ASF.Components.Html.Messages;

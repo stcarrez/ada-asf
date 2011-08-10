@@ -26,7 +26,6 @@ with ASF.Applications.Tests;
 with Security.Openid.Tests;
 with Security.Permissions.Tests;
 with ASF.Clients.Tests;
-with ASF.Modules.Tests;
 package body ASF.Testsuite is
 
    Tests : aliased Test_Suite;
@@ -38,7 +37,6 @@ package body ASF.Testsuite is
       ASF.Contexts.Writer.Tests.Add_Tests (Ret);
       ASF.Contexts.Faces.Tests.Add_Tests (Ret);
       ASF.Views.Facelets.Tests.Add_Tests (Ret);
-      ASF.Modules.Tests.Add_Tests (Ret);
       ASF.Applications.Views.Tests.Add_Tests (Ret);
       ASF.Sessions.Tests.Add_Tests (Ret);
       ASF.Servlets.Tests.Add_Tests (Ret);

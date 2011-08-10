@@ -194,7 +194,7 @@ package body ASF.Applications.Main is
       App.Navigation := Factory.Create_Navigation_Handler;
 
       App.View.Initialize (App.Components'Unchecked_Access, Conf);
-      ASF.Modules.Initialize (App.Modules, Conf);
+--        ASF.Modules.Initialize (App.Modules, Conf);
       ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
 
       --  Initialize the lifecycle handler.
@@ -267,30 +267,6 @@ package body ASF.Applications.Main is
    begin
       ASF.Beans.Create (App.Factory, Name, Context, Result, Scope);
    end Create;
-
-   --  ------------------------------
-   --  Find the module with the given name
-   --  ------------------------------
-   function Find_Module (App : in Application;
-                         Name : in String) return ASF.Modules.Module_Access is
-   begin
-      return ASF.Modules.Find_By_Name (App.Modules, Name);
-   end Find_Module;
-
-   --  ------------------------------
-   --  Register the module in the application
-   --  ------------------------------
-   procedure Register (App     : in out Application;
-                       Module  : in ASF.Modules.Module_Access;
-                       Name    : in String;
-                       URI     : in String := "") is
-   begin
-      Module.Initialize (App'Unchecked_Access);
-      ASF.Modules.Register (App.Modules'Unchecked_Access, Module, Name, URI);
-      Module.Register_Factory (App.Factory);
-
-      App.View.Register_Module (Module);
-   end Register;
 
    --  ------------------------------
    --  Register a bundle and bind it to a facelet variable.
@@ -679,6 +655,14 @@ package body ASF.Applications.Main is
    begin
       Set_Functions (App.Functions);
    end Register_Functions;
+
+   --  ------------------------------
+   --  Register some bean definitions.
+   --  ------------------------------
+   procedure Register_Beans (App : in out Application'Class) is
+   begin
+      Set_Beans (App.Factory);
+   end Register_Beans;
 
    --  ------------------------------
    --  Load the resource bundle identified by the <b>Name</b> and for the given

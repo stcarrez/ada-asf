@@ -273,16 +273,16 @@ package body ASF.Applications.Views is
    --  ------------------------------
    --  Register a module
    --  ------------------------------
-   procedure Register_Module (Handler : in out View_Handler;
-                              Module  : in ASF.Modules.Module_Access) is
-      use Ada.Strings.Unbounded;
-
-      Name : constant String := Module.Get_Name;
-      URI  : constant String := Module.Get_URI;
-      Def  : constant String := Util.Files.Compose_Path (To_String (Handler.Paths), URI);
-      Dir  : constant String := Module.Get_Config (Name & ".web.dir", Def);
-   begin
-      ASF.Views.Facelets.Register_Module (Handler.Facelets, URI, Dir);
-   end Register_Module;
+--     procedure Register_Module (Handler : in out View_Handler;
+--                                Module  : in ASF.Modules.Module_Access) is
+--        use Ada.Strings.Unbounded;
+--
+--        Name : constant String := Module.Get_Name;
+--        URI  : constant String := Module.Get_URI;
+--        Def  : constant String := Util.Files.Compose_Path (To_String (Handler.Paths), URI);
+--        Dir  : constant String := Module.Get_Config (Name & ".web.dir", Def);
+--     begin
+--        ASF.Views.Facelets.Register_Module (Handler.Facelets, URI, Dir);
+--     end Register_Module;
 
 end ASF.Applications.Views;

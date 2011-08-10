@@ -33,7 +33,6 @@ with ASF.Lifecycles;
 with ASF.Applications.Views;
 with ASF.Navigations;
 with ASF.Beans;
-with ASF.Modules;
 with ASF.Requests;
 with ASF.Responses;
 with ASF.Servlets;
@@ -138,12 +137,6 @@ package ASF.Applications.Main is
 --                         Handler : in Create_Bean_Access;
 --                         Scope   : in Scope_Type := REQUEST_SCOPE);
 
-   --  Register the module in the application
-   procedure Register (App     : in out Application;
-                       Module  : in ASF.Modules.Module_Access;
-                       Name    : in String;
-                       URI     : in String := "");
-
    --  Register a bundle and bind it to a facelet variable.
    procedure Register (App    : in out Application;
                        Name   : in String;
@@ -208,14 +201,15 @@ package ASF.Applications.Main is
                             Name : in EL.Objects.Object)
                             return ASF.Validators.Validator_Access;
 
-   --  Find the module with the given name
-   function Find_Module (App  : in Application;
-                         Name : in String) return ASF.Modules.Module_Access;
-
    --  Register some functions
    generic
       with procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
    procedure Register_Functions (App : in out Application'Class);
+
+   --  Register some bean definitions.
+   generic
+      with procedure Set_Beans (Factory : in out ASF.Beans.Bean_Factory);
+   procedure Register_Beans (App : in out Application'Class);
 
    --  Load the resource bundle identified by the <b>Name</b> and for the given
    --  <b>Locale</b>.
@@ -234,7 +228,6 @@ private
       Lifecycle : ASF.Lifecycles.Lifecycle_Access;
       Factory : ASF.Beans.Bean_Factory;
       Locales : ASF.Locales.Factory;
-      Modules : aliased ASF.Modules.Module_Registry;
       Globals : aliased EL.Variables.Default.Default_Variable_Mapper;
       Conf    : Config;
 

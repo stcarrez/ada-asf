@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.views -- Ada Web Application
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ASF.Modules;
 with ASF.Components.Root;
 with ASF.Contexts.Faces;
 with ASF.Views.Facelets;
@@ -85,8 +84,8 @@ package ASF.Applications.Views is
                               Name    : in String) return String;
 
    --  Register a module
-   procedure Register_Module (Handler : in out View_Handler;
-                              Module  : in ASF.Modules.Module_Access);
+--     procedure Register_Module (Handler : in out View_Handler;
+--                                Module  : in ASF.Modules.Module_Access);
 
 private
 

@@ -37,6 +37,19 @@ package body ASF.Beans is
    end Register_Class;
 
    --  ------------------------------
+   --  Register under the name identified by <b>Name</b> a function to create a bean.
+   --  This is a simplified class registration.
+   --  ------------------------------
+   procedure Register_Class (Factory : in out Bean_Factory;
+                             Name    : in String;
+                             Handler : in Create_Bean_Access) is
+      Class : Default_Class_Binding_Access := new Default_Class_Binding;
+   begin
+      Class.Create := Handler;
+      Register_Class (Factory, Name, Class.all'Access);
+   end Register_Class;
+
+   --  ------------------------------
    --  Register the bean identified by <b>Name</b> and associated with the class <b>Class</b>.
    --  The class must have been registered by using the <b>Register</b> class operation.
    --  The scope defines the scope of the bean.
@@ -145,6 +158,17 @@ package body ASF.Beans is
          Result := null;
          Scope := ANY_SCOPE;
       end if;
+   end Create;
+
+   --  ------------------------------
+   --  Create a bean by using the registered create function.
+   --  ------------------------------
+   procedure Create (Factory : in Default_Class_Binding;
+                     Name    : in Ada.Strings.Unbounded.Unbounded_String;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access) is
+      pragma Unreferenced (Name);
+   begin
+      Result := Factory.Create.all;
    end Create;
 
 end ASF.Beans;

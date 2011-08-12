@@ -74,6 +74,10 @@ package ASF.Beans is
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access) is abstract;
 
+   --  Simplified bean creation.  A <b>Create_Bean_Access</b> function can be registered
+   --  as a simplified class binding to create bean instances.
+   type Create_Bean_Access is access function return Util.Beans.Basic.Readonly_Bean_Access;
+
    --  ------------------------------
    --  Bean initialization
    --  ------------------------------
@@ -100,6 +104,12 @@ package ASF.Beans is
    procedure Register_Class (Factory : in out Bean_Factory;
                              Name    : in String;
                              Class   : in Class_Binding_Access);
+
+   --  Register under the name identified by <b>Name</b> a function to create a bean.
+   --  This is a simplified class registration.
+   procedure Register_Class (Factory : in out Bean_Factory;
+                             Name    : in String;
+                             Handler : in Create_Bean_Access);
 
    --  Register all the definitions from a factory to a main factory.
    procedure Register (Factory : in out Bean_Factory;
@@ -144,6 +154,18 @@ private
                                                 Hash         => Ada.Strings.Hash,
                                                 Equivalent_Keys => "=",
                                                 "=" => Class_Binding_Ref."=");
+   --  ------------------------------
+   --  Default class binding record
+   --  ------------------------------
+   type Default_Class_Binding is new Class_Binding with record
+      Create : Create_Bean_Access;
+   end record;
+   type Default_Class_Binding_Access is access all Default_Class_Binding'Class;
+
+   --  Create a bean by using the registered create function.
+   procedure Create (Factory : in Default_Class_Binding;
+                     Name    : in Ada.Strings.Unbounded.Unbounded_String;
+                     Result  : out Util.Beans.Basic.Readonly_Bean_Access);
 
    type Bean_Binding is record
       Scope  : Scope_Type;

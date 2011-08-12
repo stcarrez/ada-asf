@@ -18,6 +18,7 @@
 with ASF.Contexts.Writer.Tests;
 with ASF.Views.Facelets.Tests;
 with ASF.Applications.Views.Tests;
+with ASF.Applications.Main.Tests;
 with ASF.Sessions.Tests;
 with ASF.Servlets.Tests;
 with ASF.Contexts.Faces.Tests;
@@ -37,6 +38,7 @@ package body ASF.Testsuite is
       ASF.Contexts.Writer.Tests.Add_Tests (Ret);
       ASF.Contexts.Faces.Tests.Add_Tests (Ret);
       ASF.Views.Facelets.Tests.Add_Tests (Ret);
+      ASF.Applications.Main.Tests.Add_Tests (Ret);
       ASF.Applications.Views.Tests.Add_Tests (Ret);
       ASF.Sessions.Tests.Add_Tests (Ret);
       ASF.Servlets.Tests.Add_Tests (Ret);

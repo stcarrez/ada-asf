@@ -89,6 +89,18 @@ package body ASF.Applications.Main is
    end Create_Navigation_Handler;
 
    --  ------------------------------
+   --  Create the permission manager.  The permission manager is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates a <b>Security.Permissions.Permission_Manager</b> object.
+   --  ------------------------------
+   function Create_Permission_Manager (App : in Application_Factory)
+                                       return Security.Permissions.Permission_Manager_Access is
+      pragma Unreferenced (App);
+   begin
+      return new Security.Permissions.Permission_Manager;
+   end Create_Permission_Manager;
+
+   --  ------------------------------
    --  Get the application view handler.
    --  ------------------------------
    function Get_View_Handler (App : access Application)
@@ -193,8 +205,10 @@ package body ASF.Applications.Main is
       --  Create the navigation handler.
       App.Navigation := Factory.Create_Navigation_Handler;
 
+      --  Create the permission manager.
+      App.Permissions := Factory.Create_Permission_Manager;
+
       App.View.Initialize (App.Components'Unchecked_Access, Conf);
---        ASF.Modules.Initialize (App.Modules, Conf);
       ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
 
       --  Initialize the lifecycle handler.
@@ -677,6 +691,20 @@ package body ASF.Applications.Main is
    end Load_Bundle;
 
    --  ------------------------------
+   --  Read the configuration file associated with the application.  This includes:
+   --  <ul>
+   --     <li>The servlet and filter mappings</li>
+   --     <li>The managed bean definitions</li>
+   --     <li>The navigation rules</li>
+   --  </ul>
+   --  ------------------------------
+   procedure Read_Configuration (App  : in out Application;
+                                 File : in String) is
+   begin
+      null;
+   end Read_Configuration;
+
+   --  ------------------------------
    --  Finalizes the application, freeing the memory.
    --  ------------------------------
    overriding
@@ -685,9 +713,13 @@ package body ASF.Applications.Main is
                                                         ASF.Navigations.Navigation_Handler_Access);
       procedure Free is new Ada.Unchecked_Deallocation (ASF.Lifecycles.Lifecycle'Class,
                                                         ASF.Lifecycles.Lifecycle_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Security.Permissions.Permission_Manager'Class,
+                                        Security.Permissions.Permission_Manager_Access);
    begin
       Free (App.Navigation);
       Free (App.Lifecycle);
+      Free (App.Permissions);
       ASF.Servlets.Servlet_Registry (App).Finalize;
    end Finalize;
 

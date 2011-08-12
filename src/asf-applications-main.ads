@@ -37,6 +37,7 @@ with ASF.Requests;
 with ASF.Responses;
 with ASF.Servlets;
 with ASF.Events.Actions;
+with Security.Permissions;
 package ASF.Applications.Main is
 
    use ASF.Beans;
@@ -66,6 +67,12 @@ package ASF.Applications.Main is
    --  It can be overriden to change the navigations associated with the application.
    function Create_Navigation_Handler (App : in Application_Factory)
                                        return ASF.Navigations.Navigation_Handler_Access;
+
+   --  Create the permission manager.  The permission manager is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates a <b>Security.Permissions.Permission_Manager</b> object.
+   function Create_Permission_Manager (App : in Application_Factory)
+                                       return Security.Permissions.Permission_Manager_Access;
 
    --  ------------------------------
    --  Application
@@ -218,6 +225,15 @@ package ASF.Applications.Main is
                           Locale : in String;
                           Bundle : out ASF.Locales.Bundle);
 
+   --  Read the configuration file associated with the application.  This includes:
+   --  <ul>
+   --     <li>The servlet and filter mappings</li>
+   --     <li>The managed bean definitions</li>
+   --     <li>The navigation rules</li>
+   --  </ul>
+   procedure Read_Configuration (App  : in out Application;
+                                 File : in String);
+
 private
 
    type Application_Factory is tagged limited null record;
@@ -241,6 +257,9 @@ private
 
       --  The navigation handler.
       Navigation      : ASF.Navigations.Navigation_Handler_Access := null;
+
+      --  The permission manager.
+      Permissions     : Security.Permissions.Permission_Manager_Access := null;
    end record;
 
 end ASF.Applications.Main;

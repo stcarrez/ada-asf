@@ -88,13 +88,17 @@ package body ASF.Servlets.Mappers is
    SMapper : aliased Servlet_Mapper.Mapper;
 
    --  ------------------------------
-   --  Get the mapper definition for the <b>context-param</b>, <b>filter-mapping</b>
-   --  <b>servlet-mapping</b> definitions.
+   --  Setup the XML parser to read the servlet and mapping rules <b>context-param</b>,
+   --  <b>filter-mapping</b> and <b>servlet-mapping</b>.
    --  ------------------------------
-   function Get_Servlet_Mapper return Util.Serialize.Mappers.Mapper_Access is
+   package body Reader_Config is
    begin
-      return SMapper'Access;
-   end Get_Servlet_Mapper;
+      Reader.Add_Mapping ("faces-config", SMapper'Access);
+      Reader.Add_Mapping ("module", SMapper'Access);
+      Reader.Add_Mapping ("web-app", SMapper'Access);
+      Config.Handler := Handler;
+      Servlet_Mapper.Set_Context (Reader, Config'Unchecked_Access);
+   end Reader_Config;
 
 begin
    SMapper.Add_Mapping ("filter-mapping", FILTER_MAPPING);

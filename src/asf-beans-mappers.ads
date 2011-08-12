@@ -18,6 +18,7 @@
 
 with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
+with Util.Serialize.IO.XML;
 with EL.Contexts;
 
 package ASF.Beans.Mappers is
@@ -31,11 +32,13 @@ package ASF.Beans.Mappers is
                                 FIELD_PROPERTY_VALUE,
                                 FIELD_PROPERTY_CLASS);
 
+   type Bean_Factory_Access is access all ASF.Beans.Bean_Factory;
+
    type Managed_Bean is record
       Name         : Util.Beans.Objects.Object;
       Class        : Util.Beans.Objects.Object;
       Scope        : Scope_Type := REQUEST_SCOPE;
-      Factory      : access ASF.Beans.Bean_Factory;
+      Factory      : Bean_Factory_Access  := null;
       Params       : ASF.Beans.Parameter_Bean_Ref.Ref;
       Prop_Name    : Util.Beans.Objects.Object;
       Prop_Value   : Util.Beans.Objects.Object;
@@ -48,13 +51,21 @@ package ASF.Beans.Mappers is
                          Field : in Managed_Bean_Fields;
                          Value : in Util.Beans.Objects.Object);
 
+   --  Setup the XML parser to read the managed bean definitions.
+   generic
+      Reader  : in out Util.Serialize.IO.XML.Parser;
+      Factory : in Bean_Factory_Access;
+      Context : in EL.Contexts.ELContext_Access;
+   package Reader_Config is
+      Config : aliased Managed_Bean;
+   end Reader_Config;
+
+private
+
    package Config_Mapper is
      new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Managed_Bean,
                                                Element_Type_Access => Managed_Bean_Access,
                                                Fields              => Managed_Bean_Fields,
                                                Set_Member          => Set_Member);
-
-   --  Get the mapper definition for the <b>managed-bean</b> definition.
-   function Get_Managed_Bean_Mapper return Util.Serialize.Mappers.Mapper_Access;
 
 end ASF.Beans.Mappers;

@@ -18,6 +18,7 @@
 
 with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
+with Util.Serialize.IO.XML;
 
 --  The <b>ASF.Navigations.Reader</b> package defines an XML mapper that can be used
 --  to read the XML navigation files.
@@ -53,13 +54,20 @@ package ASF.Navigations.Mappers is
                          Field : in Navigation_Case_Fields;
                          Value : in Util.Beans.Objects.Object);
 
-   package Case_Mapper is
+   --  Setup the XML parser to read the navigation rules.
+   generic
+      Reader  : in out Util.Serialize.IO.XML.Parser;
+      Handler : in Navigation_Handler_Access;
+   package Reader_Config is
+      Config : aliased Nav_Config;
+   end Reader_Config;
+
+private
+
+   package Navigation_Mapper is
      new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Nav_Config,
                                                Element_Type_Access => Nav_Config_Access,
                                                Fields              => Navigation_Case_Fields,
                                                Set_Member          => Set_Member);
-
-   --  Get the mapper definition for the <b>navigation-rule</b> definition.
-   function Get_Navigation_Mapper return Util.Serialize.Mappers.Mapper_Access;
 
 end ASF.Navigations.Mappers;

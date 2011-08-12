@@ -47,7 +47,7 @@ package body ASF.Beans.Mappers is
                elsif Scope = "application" then
                   MBean.Scope := APPLICATION_SCOPE;
                else
-                  MBean.Scope := REQUEST_SCOPE;
+                  raise Util.Serialize.Mappers.Field_Error with "Invalid scope: " & Scope;
                end if;
             end;
 
@@ -96,12 +96,17 @@ package body ASF.Beans.Mappers is
    MBean_Mapping : aliased Config_Mapper.Mapper;
 
    --  ------------------------------
-   --  Get the mapper definition for the <b>managed-bean</b> definition.
+   --  Setup the XML parser to read the managed bean definitions.
    --  ------------------------------
-   function Get_Managed_Bean_Mapper return Util.Serialize.Mappers.Mapper_Access is
+   package body Reader_Config is
    begin
-      return MBean_Mapping'Access;
-   end Get_Managed_Bean_Mapper;
+      Reader.Add_Mapping ("faces-config", MBean_Mapping'Access);
+      Reader.Add_Mapping ("module", MBean_Mapping'Access);
+      Reader.Add_Mapping ("web-app", MBean_Mapping'Access);
+      Config.Factory := Factory;
+      Config.Context := Context;
+      Config_Mapper.Set_Context (Reader, Config'Unchecked_Access);
+   end Reader_Config;
 
 begin
    --  <managed-bean> mapping

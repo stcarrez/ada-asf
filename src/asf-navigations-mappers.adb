@@ -86,30 +86,34 @@ package body ASF.Navigations.Mappers is
       end case;
    end Set_Member;
 
-   Case_Mapping        : aliased Case_Mapper.Mapper;
+   Mapping        : aliased Navigation_Mapper.Mapper;
 
    --  ------------------------------
-   --  Get the mapper definition for the <b>navigation-rule</b> definition.
+   --  Setup the XML parser to read the navigation rules.
    --  ------------------------------
-   function Get_Navigation_Mapper return Util.Serialize.Mappers.Mapper_Access is
+   package body Reader_Config is
    begin
-      return Case_Mapping'Access;
-   end Get_Navigation_Mapper;
+      Reader.Add_Mapping ("faces-config", Mapping'Access);
+      Reader.Add_Mapping ("module", Mapping'Access);
+      Reader.Add_Mapping ("web-app", Mapping'Access);
+      Config.Handler := Handler;
+      Navigation_Mapper.Set_Context (Reader, Config'Unchecked_Access);
+   end Reader_Config;
 
 begin
 
    --  <navigation-rule> mapping
-   Case_Mapping.Add_Mapping ("navigation-rule/from-view-id", FROM_VIEW_ID);
-   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/from-action", ACTION);
-   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/from-outcome", OUTCOME);
-   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/to-view-id", TO_VIEW);
-   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/if", CONDITION);
---     Case_Mapping.Add_Mapping ("navigation-case/redirect/view-param/name", VIEW_PARAM_NAME);
---     Case_Mapping.Add_Mapping ("navigation-case/redirect/view-param/value", VIEW_PARAM_VALUE);
---     Case_Mapping.Add_Mapping ("navigation-case/redirect/include-view-params", INCLUDE_VIEW_PARAMS);
-   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/redirect", REDIRECT);
-   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/content", CONTENT);
-   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case/content/@type", CONTENT_TYPE);
-   Case_Mapping.Add_Mapping ("navigation-rule/navigation-case", NAVIGATION_CASE);
+   Mapping.Add_Mapping ("navigation-rule/from-view-id", FROM_VIEW_ID);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case/from-action", ACTION);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case/from-outcome", OUTCOME);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case/to-view-id", TO_VIEW);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case/if", CONDITION);
+--     Mapping.Add_Mapping ("navigation-case/redirect/view-param/name", VIEW_PARAM_NAME);
+--     Mapping.Add_Mapping ("navigation-case/redirect/view-param/value", VIEW_PARAM_VALUE);
+--     Mapping.Add_Mapping ("navigation-case/redirect/include-view-params", INCLUDE_VIEW_PARAMS);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case/redirect", REDIRECT);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case/content", CONTENT);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case/content/@type", CONTENT_TYPE);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case", NAVIGATION_CASE);
 
 end ASF.Navigations.Mappers;

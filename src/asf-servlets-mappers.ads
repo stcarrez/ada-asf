@@ -18,6 +18,7 @@
 
 with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
+with Util.Serialize.IO.XML;
 
 --  The <b>ASF.Servlets.Mappers</b> package defines an XML mapper that can be used
 --  to read the servlet configuration files.
@@ -73,14 +74,21 @@ package ASF.Servlets.Mappers is
                          Field : in Servlet_Fields;
                          Value : in Util.Beans.Objects.Object);
 
+   --  Setup the XML parser to read the servlet and mapping rules <b>context-param</b>,
+   --  <b>filter-mapping</b> and <b>servlet-mapping</b>.
+   generic
+      Reader  : in out Util.Serialize.IO.XML.Parser;
+      Handler : in Servlet_Registry_Access;
+   package Reader_Config is
+      Config : aliased Servlet_Config;
+   end Reader_Config;
+
+private
+
    package Servlet_Mapper is
      new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Servlet_Config,
                                                Element_Type_Access => Servlet_Config_Access,
                                                Fields              => Servlet_Fields,
                                                Set_Member          => Set_Member);
-
-   --  Get the mapper definition for the <b>context-param</b>, <b>filter-mapping</b>
-   --  <b>servlet-mapping</b> definitions.
-   function Get_Servlet_Mapper return Util.Serialize.Mappers.Mapper_Access;
 
 end ASF.Servlets.Mappers;

@@ -18,6 +18,7 @@
 
 with Util.Beans.Objects;
 with Util.Log.Loggers;
+with Util.Serialize.IO.XML;
 
 with ASF.Streams;
 with ASF.Sessions;
@@ -30,6 +31,9 @@ with ASF.Components.Root;
 with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
+with ASF.Beans.Mappers;
+with ASF.Servlets.Mappers;
+with ASF.Navigations.Mappers;
 
 with EL.Expressions;
 with EL.Contexts.Default;
@@ -291,6 +295,27 @@ package body ASF.Applications.Main is
    begin
       ASF.Locales.Register (App.Locales, App.Factory, Name, Bundle);
    end Register;
+
+   --  ------------------------------
+   --  Register under the name identified by <b>Name</b> the class instance <b>Class</b>.
+   --  ------------------------------
+   procedure Register_Class (App     : in out Application;
+                             Name    : in String;
+                             Class   : in ASF.Beans.Class_Binding_Access) is
+   begin
+      ASF.Beans.Register_Class (App.Factory, Name, Class);
+   end Register_Class;
+
+   --  ------------------------------
+   --  Register under the name identified by <b>Name</b> a function to create a bean.
+   --  This is a simplified class registration.
+   --  ------------------------------
+   procedure Register_Class (App     : in out Application;
+                             Name    : in String;
+                             Handler : in ASF.Beans.Create_Bean_Access) is
+   begin
+      ASF.Beans.Register_Class (App.Factory, Name, Handler);
+   end Register_Class;
 
    --  ------------------------------
    --  Add a converter in the application.  The converter is referenced by
@@ -700,8 +725,32 @@ package body ASF.Applications.Main is
    --  ------------------------------
    procedure Read_Configuration (App  : in out Application;
                                  File : in String) is
+
+      Reader     : Util.Serialize.IO.XML.Parser;
+
+      Context : aliased EL.Contexts.Default.Default_Context;
+      Nav     : constant ASF.Navigations.Navigation_Handler_Access := App.Get_Navigation_Handler;
+
+      --  Setup the <b>Reader</b> to parse and build the configuration for managed beans,
+      --  navigation rules, servlet rules.  Each package instantiation creates a local variable
+      --  used while parsing the XML file.
+      package Bean_Config is
+        new ASF.Beans.Mappers.Reader_Config (Reader, App.Factory'Unchecked_Access,
+                                             Context'Unchecked_Access);
+      package Navigation_Config is
+        new ASF.Navigations.Mappers.Reader_Config (Reader, Nav);
+      package Servlet_Config is
+        new ASF.Servlets.Mappers.Reader_Config (Reader, App'Unchecked_Access);
+      pragma Warnings (Off, Bean_Config);
+      pragma Warnings (Off, Servlet_Config);
+      pragma Warnings (Off, Navigation_Config);
    begin
-      null;
+      Log.Info ("Reading module configuration file {0}", File);
+
+--        Util.Serialize.IO.Dump (Reader, AWA.Modules.Log);
+
+      --  Read the configuration file and record managed beans, navigation rules.
+      Reader.Parse (File);
    end Read_Configuration;
 
    --  ------------------------------

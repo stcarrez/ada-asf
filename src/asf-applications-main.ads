@@ -149,6 +149,17 @@ package ASF.Applications.Main is
                        Name   : in String;
                        Bundle : in String);
 
+   --  Register under the name identified by <b>Name</b> the class instance <b>Class</b>.
+   procedure Register_Class (App     : in out Application;
+                             Name    : in String;
+                             Class   : in ASF.Beans.Class_Binding_Access);
+
+   --  Register under the name identified by <b>Name</b> a function to create a bean.
+   --  This is a simplified class registration.
+   procedure Register_Class (App     : in out Application;
+                             Name    : in String;
+                             Handler : in ASF.Beans.Create_Bean_Access);
+
    --  Create a bean by using the create operation registered for the name
    procedure Create (App     : in Application;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
@@ -242,7 +253,7 @@ private
      and ASF.Events.Actions.Action_Listener with record
       View    : aliased ASF.Applications.Views.View_Handler;
       Lifecycle : ASF.Lifecycles.Lifecycle_Access;
-      Factory : ASF.Beans.Bean_Factory;
+      Factory : aliased ASF.Beans.Bean_Factory;
       Locales : ASF.Locales.Factory;
       Globals : aliased EL.Variables.Default.Default_Variable_Mapper;
       Conf    : Config;

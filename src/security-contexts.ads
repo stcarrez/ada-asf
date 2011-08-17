@@ -18,6 +18,7 @@
 
 with Ada.Finalization;
 
+with Util.Strings.Maps;
 with Security.Permissions;
 
 --  The security context provides contextual information for a security controller to
@@ -42,24 +43,26 @@ with Security.Permissions;
 --  </ul>
 package Security.Contexts is
 
+   Invalid_Context : exception;
+
    type Security_Context is new Ada.Finalization.Limited_Controlled with private;
    type Security_Context_Access is access all Security_Context'Class;
 
    --  Get the application associated with the current service operation.
-   function Get_User_Principal (Ctx : in Security_Context)
+   function Get_User_Principal (Context : in Security_Context)
                                 return Security.Permissions.Principal_Access;
 
    --  Check if the permission identified by <b>Permission</b> is allowed according to
    --  the current security context.  The result is cached in the security context and
    --  returned in <b>Result</b>.
-   procedure Has_Permission (Ctx        : in out Security_Context;
-                             Permission : in Security.Permissions.Permission_Type;
+   procedure Has_Permission (Context    : in out Security_Context;
+                             Permission : in Security.Permissions.Permission_Index;
                              Result     : out Boolean);
 
    --  Check if the permission identified by <b>Permission</b> is allowed according to
    --  the current security context.  The result is cached in the security context and
    --  returned in <b>Result</b>.
-   procedure Has_Permission (Ctx        : in out Security_Context;
+   procedure Has_Permission (Context    : in out Security_Context;
                              Permission : in String;
                              Result     : out Boolean);
 
@@ -68,17 +71,33 @@ package Security.Contexts is
    --  already has a security context, the new security context is installed, the old one
    --  being kept.
    overriding
-   procedure Initialize (Ctx : in out Security_Context);
+   procedure Initialize (Context : in out Security_Context);
 
    --  Finalize the security context releases any object.  The previous security context is
    --  restored to the current task attribute.
    overriding
-   procedure Finalize (Ctx : in out Security_Context);
+   procedure Finalize (Context : in out Security_Context);
 
    --  Set the current application and user context.
-   procedure Set_Context (Ctx       : in out Security_Context;
+   procedure Set_Context (Context   : in out Security_Context;
                           Manager   : in Security.Permissions.Permission_Manager_Access;
                           Principal : in Security.Permissions.Principal_Access);
+
+   --  Add a context information represented by <b>Value</b> under the name identified by
+   --  <b>Name</b> in the security context <b>Context</b>.
+   procedure Add_Context (Context   : in out Security_Context;
+                          Name      : in String;
+                          Value     : in String);
+
+   --  Get the context information registered under the name <b>Name</b> in the security
+   --  context <b>Context</b>.
+   --  Raises <b>Invalid_Context</b> if there is no such information.
+   function Get_Context (Context  : in Security_Context;
+                         Name     : in String) return String;
+
+   --  Returns True if a context information was registered under the name <b>Name</b>.
+   function Has_Context (Context : in Security_Context;
+                         Name    : in String) return Boolean;
 
    --  Get the current security context.
    --  Returns null if the current thread is not associated with any security context.
@@ -88,7 +107,7 @@ package Security.Contexts is
    --  Check if the permission identified by <b>Permission</b> is allowed according to
    --  the current security context.  The result is cached in the security context and
    --  returned in <b>Result</b>.
-   function Has_Permission (Permission : in Security.Permissions.Permission_Type) return Boolean;
+   function Has_Permission (Permission : in Security.Permissions.Permission_Index) return Boolean;
 
    --  Check if the permission identified by <b>Permission</b> is allowed according to
    --  the current security context.  The result is cached in the security context and
@@ -106,6 +125,7 @@ private
       Previous    : Security_Context_Access := null;
       Manager     : Security.Permissions.Permission_Manager_Access := null;
       Principal   : Security.Permissions.Principal_Access := null;
+      Context     : Util.Strings.Maps.Map;
    end record;
 
 end Security.Contexts;

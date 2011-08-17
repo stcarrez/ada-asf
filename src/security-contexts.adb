@@ -18,6 +18,8 @@
 
 with Ada.Task_Attributes;
 
+with Security.Controllers;
+
 package body Security.Contexts is
 
    package Task_Context is new Ada.Task_Attributes
@@ -26,10 +28,10 @@ package body Security.Contexts is
    --  ------------------------------
    --  Get the application associated with the current service operation.
    --  ------------------------------
-   function Get_User_Principal (Ctx : in Security_Context)
+   function Get_User_Principal (Context : in Security_Context)
                                 return Security.Permissions.Principal_Access is
    begin
-      return Ctx.Principal;
+      return Context.Principal;
    end Get_User_Principal;
 
    --  ------------------------------
@@ -37,11 +39,25 @@ package body Security.Contexts is
    --  the current security context.  The result is cached in the security context and
    --  returned in <b>Result</b>.
    --  ------------------------------
-   procedure Has_Permission (Ctx        : in out Security_Context;
-                             Permission : in Security.Permissions.Permission_Type;
+   procedure Has_Permission (Context    : in out Security_Context;
+                             Permission : in Security.Permissions.Permission_Index;
                              Result     : out Boolean) is
+      use type Security.Permissions.Controller_Access;
+      use type Security.Permissions.Permission_Manager_Access;
    begin
-      Result := False;
+      if Context.Manager = null then
+         Result := False;
+         return;
+      end if;
+      declare
+         C : constant Permissions.Controller_Access := Context.Manager.Get_Controller (Permission);
+      begin
+         if C = null then
+            Result := False;
+         else
+            Result := C.Has_Permission (Context);
+         end if;
+      end;
    end Has_Permission;
 
    --  ------------------------------
@@ -49,11 +65,12 @@ package body Security.Contexts is
    --  the current security context.  The result is cached in the security context and
    --  returned in <b>Result</b>.
    --  ------------------------------
-   procedure Has_Permission (Ctx        : in out Security_Context;
+   procedure Has_Permission (Context    : in out Security_Context;
                              Permission : in String;
                              Result     : out Boolean) is
+      Index : constant Permissions.Permission_Index := Permissions.Get_Permission_Index (Permission);
    begin
-      Result := False;
+      Security_Context'Class (Context).Has_Permission (Index, Result);
    end Has_Permission;
 
    --  ------------------------------
@@ -63,10 +80,10 @@ package body Security.Contexts is
    --  being kept.
    --  ------------------------------
    overriding
-   procedure Initialize (Ctx : in out Security_Context) is
+   procedure Initialize (Context : in out Security_Context) is
    begin
-      Ctx.Previous := Task_Context.Value;
-      Task_Context.Set_Value (Ctx'Unchecked_Access);
+      Context.Previous := Task_Context.Value;
+      Task_Context.Set_Value (Context'Unchecked_Access);
    end Initialize;
 
    --  ------------------------------
@@ -74,20 +91,58 @@ package body Security.Contexts is
    --  restored to the current task attribute.
    --  ------------------------------
    overriding
-   procedure Finalize (Ctx : in out Security_Context) is
+   procedure Finalize (Context : in out Security_Context) is
    begin
-      Task_Context.Set_Value (Ctx.Previous);
+      Task_Context.Set_Value (Context.Previous);
    end Finalize;
+
+   --  ------------------------------
+   --  Add a context information represented by <b>Value</b> under the name identified by
+   --  <b>Name</b> in the security context <b>Context</b>.
+   --  ------------------------------
+   procedure Add_Context (Context   : in out Security_Context;
+                          Name      : in String;
+                          Value     : in String) is
+   begin
+      Context.Context.Insert (Key      => Name,
+                              New_Item => Value);
+   end Add_Context;
+
+   --  ------------------------------
+   --  Get the context information registered under the name <b>Name</b> in the security
+   --  context <b>Context</b>.
+   --  Raises <b>Invalid_Context</b> if there is no such information.
+   --  ------------------------------
+   function Get_Context (Context  : in Security_Context;
+                         Name     : in String) return String is
+      Pos : constant Util.Strings.Maps.Cursor := Context.Context.Find (Name);
+   begin
+      if Util.Strings.Maps.Has_Element (Pos) then
+         return Util.Strings.Maps.Element (Pos);
+      else
+         raise Invalid_Context;
+      end if;
+   end Get_Context;
+
+   --  ------------------------------
+   --  Returns True if a context information was registered under the name <b>Name</b>.
+   --  ------------------------------
+   function Has_Context (Context : in Security_Context;
+                         Name    : in String) return Boolean is
+      use type Util.Strings.Maps.Cursor;
+   begin
+      return Context.Context.Find (Name) /= Util.Strings.Maps.No_Element;
+   end Has_Context;
 
    --  ------------------------------
    --  Set the current application and user context.
    --  ------------------------------
-   procedure Set_Context (Ctx       : in out Security_Context;
+   procedure Set_Context (Context   : in out Security_Context;
                           Manager   : in Security.Permissions.Permission_Manager_Access;
                           Principal : in Security.Permissions.Principal_Access) is
    begin
-      Ctx.Manager := Manager;
-      Ctx.Principal := Principal;
+      Context.Manager   := Manager;
+      Context.Principal := Principal;
    end Set_Context;
 
    --  ------------------------------
@@ -104,7 +159,7 @@ package body Security.Contexts is
    --  the current security context.  The result is cached in the security context and
    --  returned in <b>Result</b>.
    --  ------------------------------
-   function Has_Permission (Permission : in Security.Permissions.Permission_Type) return Boolean is
+   function Has_Permission (Permission : in Permissions.Permission_Index) return Boolean is
       Result : Boolean;
    begin
       Current.Has_Permission (Permission, Result);

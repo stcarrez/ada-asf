@@ -19,6 +19,9 @@
 with Security.Contexts;
 with Security.Permissions;
 
+with Util.Beans.Objects;
+with Util.Serialize.IO.XML;
+
 package Security.Controllers.Roles is
 
    --  ------------------------------
@@ -26,18 +29,42 @@ package Security.Controllers.Roles is
    --  ------------------------------
    --  The <b>Role_Controller</b> implements a simple role based permissions check.
    --  The permission is granted if the user has the role defined by the controller.
-   type Role_Controller is limited new Controller with record
-      Role : Security.Permissions.Permission_Type;
+   type Role_Controller (Count : Positive) is limited new Controller with record
+      Roles : Permissions.Role_Type_Array (1 .. Count);
    end record;
    type Role_Controller_Access is access all Role_Controller'Class;
 
    --  Returns true if the user associated with the security context <b>Context</b> has
-   --  the role defined in the <b>Handler</b>.
+   --  one of the role defined in the <b>Handler</b>.
    function Has_Permission (Handler : in Role_Controller;
                             Context : in Security.Contexts.Security_Context'Class)
                             return Boolean;
 
-   --  Create the role controller instance.
-   function Create_Role_Controller return Controller_Access;
+   type Controller_Config is record
+      Name    : Util.Beans.Objects.Object;
+      Roles   : Permissions.Role_Type_Array (1 .. Integer (Permissions.Role_Type'Last));
+      Count   : Natural := 0;
+      Manager : Security.Permissions.Permission_Manager_Access;
+   end record;
+
+   --  Setup the XML parser to read the <b>role-permission</b> description.  For example:
+   --
+   --  <security-role>
+   --    <role-name>admin</role-name>
+   --  </security-role>
+   --  <role-permission>
+   --     <name>create-workspace</name>
+   --     <role>admin</role>
+   --     <role>manager</role>
+   --  </role-permission>
+   --
+   --  This defines a permission <b>create-workspace</b> that will be granted if the
+   --  user has either the <b>admin</b> or the <b>manager</b> role.
+   generic
+      Reader  : in out Util.Serialize.IO.XML.Parser;
+      Manager : in Security.Permissions.Permission_Manager_Access;
+   package Reader_Config is
+      Config : aliased Controller_Config;
+   end Reader_Config;
 
 end Security.Controllers.Roles;

@@ -130,12 +130,12 @@ package body Security.Openid is
    --  ------------------------------
    --  Returns true if the given permission is stored in the user principal.
    --  ------------------------------
-   function Has_Permission (User       : in Principal;
-                            Permission : in Permissions.Permission_Type) return Boolean is
-      pragma Unreferenced (User, Permission);
+   function Has_Role (User : in Principal;
+                      Role : in Permissions.Role_Type) return Boolean is
+      pragma Unreferenced (User, Role);
    begin
       return True;
-   end Has_Permission;
+   end Has_Role;
 
    --  ------------------------------
    --  Get the principal name.

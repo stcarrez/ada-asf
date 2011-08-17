@@ -17,13 +17,14 @@
 -----------------------------------------------------------------------
 
 with Ada.Unchecked_Deallocation;
+with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada.Strings.Hash;
 
 with Util.Log.Loggers;
-with Util.Beans.Objects;
-with Util.Beans.Objects.Vectors;
-with Util.Serialize.IO.XML;
 with Util.Serialize.Mappers.Record_Mapper;
-with Util.Serialize.Mappers.Vector_Mapper;
+
+with Security.Contexts;
+with Security.Controllers.Roles;
 
 --  The <b>Security.Permissions</b> package defines the different permissions that can be
 --  checked by the access control manager.
@@ -38,15 +39,98 @@ package body Security.Permissions is
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("Security.Permissions");
 
+   --  A global map to translate a string to a permission index.
+   package Permission_Maps is
+     new Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => String,
+                                                Element_Type    => Permission_Index,
+                                                Hash            => Ada.Strings.Hash,
+                                                Equivalent_Keys => "=",
+                                                "="             => "=");
+
+   protected type Global_Index is
+      --  Get the permission index
+      function Get_Permission_Index (Name : in String) return Permission_Index;
+
+      --  Get the last permission index registered in the global permission map.
+      function Get_Last_Permission_Index return Permission_Index;
+
+      procedure Add_Permission (Name  : in String;
+                                Index : out Permission_Index);
+   private
+      Map        : Permission_Maps.Map;
+      Next_Index : Permission_Index := Permission_Index'First;
+   end Global_Index;
+
+   protected body Global_Index is
+      function Get_Permission_Index (Name : in String) return Permission_Index is
+         Pos : constant Permission_Maps.Cursor := Map.Find (Name);
+      begin
+         if Permission_Maps.Has_Element (Pos) then
+            return Permission_Maps.Element (Pos);
+         else
+            raise Invalid_Name with "There is no permission '" & Name & "'";
+         end if;
+      end Get_Permission_Index;
+
+      --  Get the last permission index registered in the global permission map.
+      function Get_Last_Permission_Index return Permission_Index is
+      begin
+         return Next_Index;
+      end Get_Last_Permission_Index;
+
+      procedure Add_Permission (Name  : in String;
+                                Index : out Permission_Index) is
+         Pos : constant Permission_Maps.Cursor := Map.Find (Name);
+      begin
+         if Permission_Maps.Has_Element (Pos) then
+            Index := Permission_Maps.Element (Pos);
+         else
+            Index := Next_Index;
+            Log.Info ("Creating permission index {1} for {0}",
+                      Name, Permission_Index'Image (Index));
+            Map.Insert (Name, Index);
+            Next_Index := Next_Index + 1;
+         end if;
+      end Add_Permission;
+
+   end Global_Index;
+
+   Permission_Indexes : Global_Index;
+
+   --  ------------------------------
+   --  Get the permission index associated with the name.
+   --  ------------------------------
+   function Get_Permission_Index (Name : in String) return Permission_Index is
+   begin
+      return Permission_Indexes.Get_Permission_Index (Name);
+   end Get_Permission_Index;
+
+   --  ------------------------------
+   --  Get the last permission index registered in the global permission map.
+   --  ------------------------------
+   function Get_Last_Permission_Index return Permission_Index is
+   begin
+      return Permission_Indexes.Get_Last_Permission_Index;
+   end Get_Last_Permission_Index;
+
+   --  ------------------------------
+   --  Add the permission name and allocate a unique permission index.
+   --  ------------------------------
+   procedure Add_Permission (Name  : in String;
+                             Index : out Permission_Index) is
+   begin
+      Permission_Indexes.Add_Permission (Name, Index);
+   end Add_Permission;
+
    --  ------------------------------
    --  Find the access rule of the policy that matches the given URI.
    --  Returns the No_Rule value (disable access) if no rule is found.
    --  ------------------------------
    function Find_Access_Rule (Manager : in Permission_Manager;
-                              URI     : in String) return Access_Rule is
+                              URI     : in String) return Access_Rule_Ref is
 
       Matched : Boolean := False;
-      Result  : Access_Rule;
+      Result  : Access_Rule_Ref;
 
       procedure Match (P : in Policy);
 
@@ -66,20 +150,43 @@ package body Security.Permissions is
             return Result;
          end if;
       end loop;
-      return No_Rule;
+      return Result;
    end Find_Access_Rule;
+
+   procedure Add_Permission (Manager    : in out Permission_Manager;
+                             Name       : in String;
+                             Permission : in Controller_Access) is
+      Index : Permission_Index;
+   begin
+      Log.Info ("Adding permission {0}", Name);
+
+      Add_Permission (Name, Index);
+      if Index >= Manager.Last_Index then
+         declare
+            Count : constant Permission_Index := Index + 32;
+            Perms : Controller_Access_Array_Access := new Controller_Access_Array (0 .. Count);
+         begin
+            if Manager.Permissions /= null then
+               Perms (Manager.Permissions'Range) := Manager.Permissions.all;
+            end if;
+            Manager.Permissions := Perms;
+            Manager.Last_Index := Count;
+         end;
+      end if;
+      Manager.Permissions (Index) := Permission;
+   end Add_Permission;
 
    --  ------------------------------
    --  Returns True if the user has the permission to access the given URI permission.
    --  ------------------------------
    function Has_Permission (Manager    : in Permission_Manager;
-                            User       : in Principal'Class;
+                            Context    : in Security_Context_Access;
                             Permission : in URI_Permission'Class) return Boolean is
       Name  : constant String_Ref := To_String_Ref (Permission.URI);
       Ref   : constant Rules_Ref.Ref := Manager.Cache.Get;
       Rules : constant Rules_Access := Ref.Value;
       Pos   : constant Rules_Maps.Cursor := Rules.Map.Find (Name);
-      Rule  : Access_Rule;
+      Rule  : Access_Rule_Ref;
    begin
       --  If the rule is not in the cache, search for the access rule that
       --  matches our URI.  Update the cache.  This cache update is thread-safe
@@ -98,11 +205,19 @@ package body Security.Permissions is
       end if;
 
       --  Check if the user has one of the required permission.
-      for I in Rule.Permissions'First .. Rule.Last loop
-         if User.Has_Permission (Rule.Permissions (I)) then
-            return True;
+      declare
+         P       : constant Access_Rule_Access := Rule.Value;
+         Granted : Boolean;
+      begin
+         if P /= null then
+            for I in P.Permissions'Range loop
+               Context.Has_Permission (P.Permissions (I), Granted);
+               if Granted then
+                  return True;
+               end if;
+            end loop;
          end if;
-      end loop;
+      end;
       return False;
    end Has_Permission;
 
@@ -114,41 +229,77 @@ package body Security.Permissions is
                             Permission : in Permission_Type) return Boolean is
       pragma Unreferenced (Manager);
    begin
-      return User.Has_Permission (Permission);
+      --        return User.Has_Permission (Permission);
+      return False;
    end Has_Permission;
 
    --  ------------------------------
-   --  Get the permission name.
+   --  Get the security controller associated with the permission index <b>Index</b>.
+   --  Returns null if there is no such controller.
    --  ------------------------------
-   function Get_Permission_Name (Manager    : in Permission_Manager;
-                                 Permission : in Permission_Type) return String is
+   function Get_Controller (Manager : in Permission_Manager'Class;
+                            Index   : in Permission_Index) return Controller_Access is
+   begin
+      if Index >= Manager.Last_Index then
+         return null;
+      else
+         return Manager.Permissions (Index);
+      end if;
+   end Get_Controller;
+
+   --  ------------------------------
+   --  Get the role name.
+   --  ------------------------------
+   function Get_Role_Name (Manager : in Permission_Manager;
+                           Role    : in Role_Type) return String is
       use type Ada.Strings.Unbounded.String_Access;
    begin
-      if Manager.Names (Permission) = null then
+      if Manager.Names (Role) = null then
          return "";
       else
-         return Manager.Names (Permission).all;
+         return Manager.Names (Role).all;
       end if;
-   end Get_Permission_Name;
+   end Get_Role_Name;
 
    --  ------------------------------
-   --  Create a permission
+   --  Find the role type associated with the role name identified by <b>Name</b>.
+   --  Raises <b>Invalid_Name</b> if there is no role type.
    --  ------------------------------
-   procedure Create_Permission (Manager    : in out Permission_Manager;
-                                Name       : in String;
-                                Permission : out Permission_Type) is
+   function Find_Role (Manager : in Permission_Manager;
+                       Name    : in String) return Role_Type is
+      use type Ada.Strings.Unbounded.String_Access;
    begin
-      Permission := Manager.Next_Permission;
-      Log.Info ("Permission {0} is {1}", Name, Permission_Type'Image (Permission));
+      Log.Debug ("Searching role {0}", Name);
 
-      if Manager.Next_Permission = Permission_Type'Last then
-         Log.Error ("Too many permissions allocated.  Number of permissions is {0}",
-                    Permission_Type'Image (Permission_Type'Last));
+      for I in Role_Type'First .. Manager.Next_Role loop
+         exit when Manager.Names (I) = null;
+         if Name = Manager.Names (I).all then
+            return I;
+         end if;
+      end loop;
+
+      Log.Debug ("Role {0} not found", Name);
+      raise Invalid_Name;
+   end Find_Role;
+
+   --  ------------------------------
+   --  Create a role
+   --  ------------------------------
+   procedure Create_Role (Manager : in out Permission_Manager;
+                          Name    : in String;
+                          Role    : out Role_Type) is
+   begin
+      Role := Manager.Next_Role;
+      Log.Info ("Role {0} is {1}", Name, Role_Type'Image (Role));
+
+      if Manager.Next_Role = Role_Type'Last then
+         Log.Error ("Too many roles allocated.  Number of roles is {0}",
+                    Role_Type'Image (Role_Type'Last));
       else
-         Manager.Next_Permission := Manager.Next_Permission + 1;
+         Manager.Next_Role := Manager.Next_Role + 1;
       end if;
-      Manager.Names (Permission) := new String '(Name);
-   end Create_Permission;
+      Manager.Names (Role) := new String '(Name);
+   end Create_Role;
 
    --  Grant the permission to access to the given <b>URI</b> to users having the <b>To</b>
    --  permissions.
@@ -171,38 +322,26 @@ package body Security.Permissions is
    --  ------------------------------
    --  Get or build a permission type for the given name.
    --  ------------------------------
-   procedure Build_Permission_Type (Manager   : in out Permission_Manager;
-                                    Name      : in String;
-                                    Result    : out Permission_Type) is
-      use type Ada.Strings.Unbounded.String_Access;
+   procedure Add_Role_Type (Manager   : in out Permission_Manager;
+                            Name      : in String;
+                            Result    : out Role_Type) is
    begin
-      for I in Permission_Type'First .. Manager.Next_Permission loop
-         exit when Manager.Names (I) = null;
-         if Name = Manager.Names (I).all then
-            Result := I;
-            return;
-         end if;
-      end loop;
-      Manager.Create_Permission (Name, Result);
-   end Build_Permission_Type;
+      Result := Manager.Find_Role (Name);
 
-   type Policy_Fields is (FIELD_ID, FIELD_ROLE, FIELD_URL_PATTERN);
+   exception
+      when Invalid_Name =>
+         Manager.Create_Role (Name, Result);
+   end Add_Role_Type;
 
-   type Policy_Record is record
-      Id       : Natural := 0;
-      Roles    : Util.Beans.Objects.Vectors.Vector;
-      Patterns : Util.Beans.Objects.Vectors.Vector;
-   end record;
-   type Policy_Record_Access is access all Policy_Record;
+   type Policy_Fields is (FIELD_ID, FIELD_PERMISSION, FIELD_URL_PATTERN, FIELD_POLICY);
 
-   package Policy_Record_Vector is new Ada.Containers.Vectors (Index_Type => Positive,
-                                                               Element_Type => Policy_Record);
-
-   procedure Set_Member (P     : in out Policy_Record;
+   procedure Set_Member (P     : in out Policy_Config;
                          Field : in Policy_Fields;
                          Value : in Util.Beans.Objects.Object);
 
-   procedure Set_Member (P     : in out Policy_Record;
+   procedure Process (Policy : in Policy_Config);
+
+   procedure Set_Member (P     : in out Policy_Config;
                          Field : in Policy_Fields;
                          Value : in Util.Beans.Objects.Object) is
    begin
@@ -210,27 +349,78 @@ package body Security.Permissions is
          when FIELD_ID =>
             P.Id := Util.Beans.Objects.To_Integer (Value);
 
-         when FIELD_ROLE =>
-            P.Roles.Append (Value);
+         when FIELD_PERMISSION =>
+            P.Permissions.Append (Value);
 
          when FIELD_URL_PATTERN =>
             P.Patterns.Append (Value);
 
+         when FIELD_POLICY =>
+            Process (P);
+            P.Id := 0;
+            P.Permissions.Clear;
+            P.Patterns.Clear;
+
       end case;
    end Set_Member;
 
+   procedure Process (Policy : in Policy_Config) is
+      Pol    : Security.Permissions.Policy;
+      Count  : constant Natural := Natural (Policy.Permissions.Length);
+      Rule   : constant Access_Rule_Ref := Access_Rule_Refs.Create (new Access_Rule (Count));
+      Iter   : Util.Beans.Objects.Vectors.Cursor := Policy.Permissions.First;
+      Pos    : Positive := 1;
+   begin
+      Pol.Rule := Rule;
+
+      --  Step 1: Initialize the list of permission index in Access_Rule from the permission names.
+      while Util.Beans.Objects.Vectors.Has_Element (Iter) loop
+         declare
+            Perm : constant Util.Beans.Objects.Object := Util.Beans.Objects.Vectors.Element (Iter);
+            Name : constant String := Util.Beans.Objects.To_String (Perm);
+         begin
+            Rule.Value.Permissions (Pos) := Get_Permission_Index (Name);
+            Pos := Pos + 1;
+
+         exception
+            when Invalid_Name =>
+               raise Util.Serialize.Mappers.Field_Error with "Invalid permission: " & Name;
+         end;
+         Util.Beans.Objects.Vectors.Next (Iter);
+      end loop;
+
+      --  Step 2: Create one policy for each URL pattern
+      Iter := Policy.Patterns.First;
+      while Util.Beans.Objects.Vectors.Has_Element (Iter) loop
+         declare
+            Pattern : constant Util.Beans.Objects.Object := Util.Beans.Objects.Vectors.Element (Iter);
+         begin
+            Pol.Id   := Policy.Id;
+            Pol.Pattern := GNAT.Regexp.Compile (Util.Beans.Objects.To_String (Pattern));
+            Policy.Manager.Policies.Append (Pol);
+         end;
+         Util.Beans.Objects.Vectors.Next (Iter);
+      end loop;
+   end Process;
+
    package Policy_Mapper is
-     new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Policy_Record,
-                                               Element_Type_Access => Policy_Record_Access,
+     new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Policy_Config,
+                                               Element_Type_Access => Policy_Config_Access,
                                                Fields              => Policy_Fields,
                                                Set_Member          => Set_Member);
 
-   package Policy_Vector_Mapper is
-     new Util.Serialize.Mappers.Vector_Mapper (Vectors        => Policy_Record_Vector,
-                                               Element_Mapper => Policy_Mapper);
-
    Policy_Mapping        : aliased Policy_Mapper.Mapper;
-   Policy_Vector_Mapping : aliased Policy_Vector_Mapper.Mapper;
+
+   --  ------------------------------
+   --  Setup the XML parser to read the servlet and mapping rules <b>context-param</b>,
+   --  <b>filter-mapping</b> and <b>servlet-mapping</b>.
+   --  ------------------------------
+   package body Reader_Config is
+   begin
+      Reader.Add_Mapping ("policy-rules", Policy_Mapping'Access);
+      Config.Manager := Manager;
+      Policy_Mapper.Set_Context (Reader, Config'Unchecked_Access);
+   end Reader_Config;
 
    --  ------------------------------
    --  Read the policy file
@@ -241,57 +431,16 @@ package body Security.Permissions is
       use Util;
 
       Reader : Util.Serialize.IO.XML.Parser;
-      List   : aliased Policy_Vector_Mapper.Vector;
 
-      procedure Process (Policy : in Policy_Record);
-
-      procedure Process (Policy : in Policy_Record) is
-         Pol    : Security.Permissions.Policy;
-         Iter   : Beans.Objects.Vectors.Cursor := Policy.Roles.First;
-      begin
-         --  Step 1: Initialize the list of permissions from the roles.
-         while Beans.Objects.Vectors.Has_Element (Iter) loop
-            declare
-               Role : constant Beans.Objects.Object := Beans.Objects.Vectors.Element (Iter);
-               Name : constant String := Beans.Objects.To_String (Role);
-               Perm : Permission_Type;
-            begin
-               Manager.Build_Permission_Type (Name, Perm);
-               if Pol.Rule.Last > Pol.Rule.Permissions'Last then
-                  Log.Error ("Too many roles defined for policy");
-               else
-                  Pol.Rule.Last := Pol.Rule.Last + 1;
-                  Pol.Rule.Permissions (Pol.Rule.Last) := Perm;
-               end if;
-            end;
-            Beans.Objects.Vectors.Next (Iter);
-         end loop;
-
-         --  Step 2: Create one policy for each URL pattern
-         Iter := Policy.Patterns.First;
-         while Beans.Objects.Vectors.Has_Element (Iter) loop
-            declare
-               Pattern : constant Beans.Objects.Object := Beans.Objects.Vectors.Element (Iter);
-            begin
-               Pol.Id   := Policy.Id;
-               Pol.Pattern := GNAT.Regexp.Compile (Beans.Objects.To_String (Pattern));
-               Manager.Policies.Append (Pol);
-            end;
-            Beans.Objects.Vectors.Next (Iter);
-         end loop;
-      end Process;
-
+      package Policy_Config is
+        new Reader_Config (Reader, Manager'Unchecked_Access);
+      package Role_Config is
+         new Security.Controllers.Roles.Reader_Config (Reader, Manager'Unchecked_Access);
    begin
       Log.Info ("Reading policy file {0}", File);
 
-      Reader.Add_Mapping ("policy-rules/policy", Policy_Vector_Mapping'Access);
-      Policy_Vector_Mapper.Set_Context (Reader, List'Unchecked_Access);
       Reader.Parse (File);
 
-      Log.Info ("Found {0} rules in {1}", Ada.Containers.Count_Type'Image (List.Length), File);
-      for I in 1 .. List.Last_Index loop
-         List.Query_Element (I, Process'Access);
-      end loop;
    end Read_Policy;
 
    --  ------------------------------
@@ -319,9 +468,21 @@ package body Security.Permissions is
       end loop;
    end Finalize;
 
+   package body Permission_ACL is
+      P : Permission_Index;
+
+      function Permission return Permission_Index is
+      begin
+         return P;
+      end Permission;
+
+   begin
+      Add_Permission (Name => Name, Index => P);
+   end Permission_ACL;
+
 begin
-   Policy_Mapping.Add_Mapping ("@id", FIELD_ID);
-   Policy_Mapping.Add_Mapping ("role", FIELD_ROLE);
-   Policy_Mapping.Add_Mapping ("url-pattern", FIELD_URL_PATTERN);
-   Policy_Vector_Mapping.Set_Mapping (Policy_Mapping'Access);
+   Policy_Mapping.Add_Mapping ("policy", FIELD_POLICY);
+   Policy_Mapping.Add_Mapping ("policy/@id", FIELD_ID);
+   Policy_Mapping.Add_Mapping ("policy/permission", FIELD_PERMISSION);
+   Policy_Mapping.Add_Mapping ("policy/url-pattern", FIELD_URL_PATTERN);
 end Security.Permissions;

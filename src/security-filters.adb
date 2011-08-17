@@ -21,6 +21,8 @@ with Ada.Strings.Unbounded;
 with Util.Log.Loggers;
 
 with ASF.Cookies;
+
+with Security.Contexts;
 package body Security.Filters is
 
    use Util.Log;
@@ -72,6 +74,7 @@ package body Security.Filters is
          end if;
       end Fetch_Cookie;
 
+      Context : aliased Security.Contexts.Security_Context;
    begin
       Request.Iterate_Cookies (Fetch_Cookie'Access);
 
@@ -95,12 +98,13 @@ package body Security.Filters is
 
       --  A permission manager is installed, check that the user can display the page.
       if F.Manager /= null then
+         Context.Set_Context (F.Manager, Auth.all'Access);
          declare
             URI  : constant String := Request.Get_Path_Info;
             Perm : constant URI_Permission (URI'Length)
               := URI_Permission '(Len => URI'Length, URI => URI);
          begin
-            if not F.Manager.Has_Permission (Auth.all, Perm) then
+            if not F.Manager.Has_Permission (Context'Unchecked_Access, Perm) then
                Log.Info ("Deny access on {0}", URI);
                Auth_Filter'Class (F).Do_Deny (Request, Response);
                return;

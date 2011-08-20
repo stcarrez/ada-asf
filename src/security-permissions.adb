@@ -379,7 +379,7 @@ package body Security.Permissions is
             Perm : constant Util.Beans.Objects.Object := Util.Beans.Objects.Vectors.Element (Iter);
             Name : constant String := Util.Beans.Objects.To_String (Perm);
          begin
-            Rule.Value.Permissions (Pos) := Get_Permission_Index (Name);
+            Rule.Value.all.Permissions (Pos) := Get_Permission_Index (Name);
             Pos := Pos + 1;
 
          exception

@@ -67,7 +67,7 @@ package body ASF.Beans.Mappers is
             end if;
 
             --  Add the parameter.  The property value is parsed as an EL expression.
-            EL.Beans.Add_Parameter (MBean.Params.Value.Params,
+            EL.Beans.Add_Parameter (MBean.Params.Value.all.Params,
                                     Util.Beans.Objects.To_String (MBean.Prop_Name),
                                     Util.Beans.Objects.To_String (MBean.Prop_Value),
                                     MBean.Context.all);

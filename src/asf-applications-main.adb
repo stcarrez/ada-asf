@@ -132,6 +132,15 @@ package body ASF.Applications.Main is
    end Get_Navigation_Handler;
 
    --  ------------------------------
+   --  Get the permission manager associated with this application.
+   --  ------------------------------
+   function Get_Permission_Manager (App : in Application)
+                                    return Security.Permissions.Permission_Manager_Access is
+   begin
+      return App.Permissions;
+   end Get_Permission_Manager;
+
+   --  ------------------------------
    --  Get the action event listener responsible for processing action
    --  events and triggering the navigation to the next view using the
    --  navigation handler.
@@ -183,7 +192,7 @@ package body ASF.Applications.Main is
    --  ------------------------------
    procedure Initialize (App     : in out Application;
                          Conf    : in Config;
-                         Factory : in Application_Factory'Class) is
+                         Factory : in out Application_Factory'Class) is
       use ASF.Components;
       use ASF.Views;
    begin

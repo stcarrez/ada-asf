@@ -86,8 +86,8 @@ package body Security.Permissions is
             Index := Permission_Maps.Element (Pos);
          else
             Index := Next_Index;
-            Log.Info ("Creating permission index {1} for {0}",
-                      Name, Permission_Index'Image (Index));
+            Log.Debug ("Creating permission index {1} for {0}",
+                       Name, Permission_Index'Image (Index));
             Map.Insert (Name, Index);
             Next_Index := Next_Index + 1;
          end if;
@@ -418,6 +418,7 @@ package body Security.Permissions is
    package body Reader_Config is
    begin
       Reader.Add_Mapping ("policy-rules", Policy_Mapping'Access);
+      Reader.Add_Mapping ("module", Policy_Mapping'Access);
       Config.Manager := Manager;
       Policy_Mapper.Set_Context (Reader, Config'Unchecked_Access);
    end Reader_Config;

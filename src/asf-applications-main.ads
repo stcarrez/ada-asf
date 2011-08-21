@@ -93,6 +93,10 @@ package ASF.Applications.Main is
    function Get_Navigation_Handler (App : in Application)
                                     return ASF.Navigations.Navigation_Handler_Access;
 
+   --  Get the permission manager associated with this application.
+   function Get_Permission_Manager (App : in Application)
+                                    return Security.Permissions.Permission_Manager_Access;
+
    --  Get the action event listener responsible for processing action
    --  events and triggering the navigation to the next view using the
    --  navigation handler.
@@ -110,7 +114,7 @@ package ASF.Applications.Main is
    --  Initialize the application
    procedure Initialize (App     : in out Application;
                          Conf    : in Config;
-                         Factory : in Application_Factory'Class);
+                         Factory : in out Application_Factory'Class);
 
    --  Finalizes the application, freeing the memory.
    overriding

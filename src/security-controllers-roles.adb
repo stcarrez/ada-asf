@@ -123,6 +123,7 @@ package body Security.Controllers.Roles is
    package body Reader_Config is
    begin
       Reader.Add_Mapping ("policy-rules", Mapper'Access);
+      Reader.Add_Mapping ("module", Mapper'Access);
       Config.Manager := Manager;
       Config_Mapper.Set_Context (Reader, Config'Unchecked_Access);
    end Reader_Config;

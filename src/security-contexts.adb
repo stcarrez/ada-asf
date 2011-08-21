@@ -28,11 +28,20 @@ package body Security.Contexts is
    --  ------------------------------
    --  Get the application associated with the current service operation.
    --  ------------------------------
-   function Get_User_Principal (Context : in Security_Context)
+   function Get_User_Principal (Context : in Security_Context'Class)
                                 return Security.Permissions.Principal_Access is
    begin
       return Context.Principal;
    end Get_User_Principal;
+
+   --  ------------------------------
+   --  Get the permission manager.
+   --  ------------------------------
+   function Get_Permission_Manager (Context : in Security_Context'Class)
+                                    return Security.Permissions.Permission_Manager_Access is
+   begin
+      return Context.Manager;
+   end Get_Permission_Manager;
 
    --  ------------------------------
    --  Check if the permission identified by <b>Permission</b> is allowed according to

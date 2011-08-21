@@ -49,8 +49,14 @@ package Security.Contexts is
    type Security_Context_Access is access all Security_Context'Class;
 
    --  Get the application associated with the current service operation.
-   function Get_User_Principal (Context : in Security_Context)
+   function Get_User_Principal (Context : in Security_Context'Class)
                                 return Security.Permissions.Principal_Access;
+   pragma Inline_Always (Get_User_Principal);
+
+   --  Get the permission manager.
+   function Get_Permission_Manager (Context : in Security_Context'Class)
+                                    return Security.Permissions.Permission_Manager_Access;
+   pragma Inline_Always (Get_Permission_Manager);
 
    --  Check if the permission identified by <b>Permission</b> is allowed according to
    --  the current security context.  The result is cached in the security context and

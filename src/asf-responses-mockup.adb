@@ -94,6 +94,19 @@ package body ASF.Responses.Mockup is
    end Read_Content;
 
    --  ------------------------------
+   --  Clear the response content.
+   --  This operation removes any content held in the output stream, clears the status,
+   --  removes any header in the response.
+   --  ------------------------------
+   procedure Clear (Resp : in out Response) is
+      Content : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      Resp.Read_Content (Content);
+      Resp.Status := SC_OK;
+      Resp.Headers.Clear;
+   end Clear;
+
+   --  ------------------------------
    --  Initialize the response mockup output stream.
    --  ------------------------------
    overriding

@@ -142,10 +142,9 @@ package body ASF.Tests is
    --  ------------------------------
    procedure Do_Req (Request  : in out ASF.Requests.Mockup.Request;
                      Response : in out ASF.Responses.Mockup.Response) is
-      Content : Unbounded_String;
    begin
       --  For the purpose of writing tests, clear the buffer before invoking the service.
-      Response.Read_Content (Content);
+      Response.Clear;
       Server.Service (Request  => Request,
                       Response => Response);
    end Do_Req;

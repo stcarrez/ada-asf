@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.responses.mockup -- ASF Response mockup
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,11 +29,6 @@ package ASF.Responses.Mockup is
    --  The response mockup implements a fake HTTP response object
    type Response is new ASF.Responses.Response with private;
 
-   --  Adds the specified cookie to the response. This method can be called multiple
-   --  times to set more than one cookie.
-   procedure Add_Cookie (Resp   : in out Response;
-                         Cookie : in String);
-
    --  Returns a boolean indicating whether the named response header has already
    --  been set.
    function Contains_Header (Resp : in Response;
@@ -57,6 +52,14 @@ package ASF.Responses.Mockup is
    procedure Add_Header (Resp  : in out Response;
                          Name  : in String;
                          Value : in String);
+
+   --  Returns the value of the specified response header as a String. If the response
+   --  did not include a header of the specified name, this method returns null.
+   --  If there are multiple headers with the same name, this method returns the
+   --  first head in the response. The header name is case insensitive. You can use
+   --  this method with any response header.
+   function Get_Header (Resp : in Response;
+                        Name : in String) return String;
 
    --  Get the content written to the mockup output stream.
    procedure Read_Content (Resp : in out Response;

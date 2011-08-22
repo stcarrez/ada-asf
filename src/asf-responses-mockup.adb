@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.responses -- ASF Requests
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,16 +19,6 @@
 --  The <b>ASF.Responses</b> package is an Ada implementation of
 --  the Java servlet response (JSR 315 5. The Response).
 package body ASF.Responses.Mockup is
-
-   --  ------------------------------
-   --  Adds the specified cookie to the response. This method can be called multiple
-   --  times to set more than one cookie.
-   --  ------------------------------
-   procedure Add_Cookie (Resp : in out Response;
-                         Cookie : in String) is
-   begin
-      null;
-   end Add_Cookie;
 
    --  ------------------------------
    --  Returns a boolean indicating whether the named response header has already
@@ -83,6 +73,24 @@ package body ASF.Responses.Mockup is
    begin
       Resp.Headers.Insert (Name, Value);
    end Add_Header;
+
+   --  ------------------------------
+   --  Returns the value of the specified response header as a String. If the response
+   --  did not include a header of the specified name, this method returns null.
+   --  If there are multiple headers with the same name, this method returns the
+   --  first head in the response. The header name is case insensitive. You can use
+   --  this method with any response header.
+   --  ------------------------------
+   function Get_Header (Resp : in Response;
+                        Name : in String) return String is
+      Pos : constant Util.Strings.Maps.Cursor := Resp.Headers.Find (Name);
+   begin
+      if Util.Strings.Maps.Has_Element (Pos) then
+         return Util.Strings.Maps.Element (Pos);
+      else
+         return "";
+      end if;
+   end Get_Header;
 
    --  ------------------------------
    --  Get the content written to the mockup output stream.

@@ -119,9 +119,10 @@ package body ASF.Applications.Tests is
       pragma Unreferenced (T);
 
       use type ASF.Applications.Main.Application_Access;
+      Fact     : ASF.Applications.Main.Application_Factory;
    begin
       if ASF.Tests.Get_Application = null then
-         ASF.Tests.Initialize (Util.Tests.Get_Properties);
+         ASF.Tests.Initialize (Util.Tests.Get_Properties, Factory => Fact);
       end if;
    end Set_Up;
 

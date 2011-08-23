@@ -43,7 +43,6 @@ package body ASF.Tests is
    Server   : access ASF.Server.Container;
 
    App      : ASF.Applications.Main.Application_Access := null;
-   Fact     : ASF.Applications.Main.Application_Factory;
    Faces    : aliased ASF.Servlets.Faces.Faces_Servlet;
    Files    : aliased ASF.Servlets.Files.File_Servlet;
    Ajax     : aliased ASF.Servlets.Ajax.Ajax_Servlet;
@@ -54,7 +53,8 @@ package body ASF.Tests is
    --  Initialize the awa test framework mockup.
    --  ------------------------------
    procedure Initialize (Props       : in Util.Properties.Manager;
-                         Application : in ASF.Applications.Main.Application_Access := null) is
+                         Application : in ASF.Applications.Main.Application_Access := null;
+                         Factory     : in out ASF.Applications.Main.Application_Factory'Class) is
       use type ASF.Applications.Main.Application_Access;
 
       C        : ASF.Applications.Config;
@@ -69,7 +69,7 @@ package body ASF.Tests is
       Server.Register_Application (CONTEXT_PATH, App.all'Access);
 
       C.Copy (Props);
-      App.Initialize (C, Fact);
+      App.Initialize (C, Factory);
       App.Register ("layoutMsg", "layout");
       App.Set_Global ("contextPath", CONTEXT_PATH);
 

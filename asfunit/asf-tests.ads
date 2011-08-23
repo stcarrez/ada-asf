@@ -33,7 +33,8 @@ package ASF.Tests is
    --  Initialize the asf test framework mockup.  If the application is not specified,
    --  a default ASF application is created.
    procedure Initialize (Props       : in Util.Properties.Manager;
-                         Application : in ASF.Applications.Main.Application_Access := null);
+                         Application : in ASF.Applications.Main.Application_Access := null;
+                         Factory     : in out ASF.Applications.Main.Application_Factory'Class);
 
    --  Get the server
    function Get_Server return access ASF.Server.Container;

@@ -39,3 +39,7 @@ Documentation
 
 Ada Server Faces integrates the Javascript library jQuery licensed under
 MIT or GPL (See http://jquery.org/license/).
+
+Ada Server Faces integrates a generated version of 960 grid system
+licensed under MIT or GPL (See http://960.gs/ and http://grids.heroku.com/
+for the CSS generator). 

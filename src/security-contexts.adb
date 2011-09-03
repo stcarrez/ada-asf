@@ -19,7 +19,6 @@
 with Ada.Task_Attributes;
 
 with Security.Controllers;
-
 package body Security.Contexts is
 
    package Task_Context is new Ada.Task_Attributes
@@ -77,7 +76,8 @@ package body Security.Contexts is
    procedure Has_Permission (Context    : in out Security_Context;
                              Permission : in String;
                              Result     : out Boolean) is
-      Index : constant Permissions.Permission_Index := Permissions.Get_Permission_Index (Permission);
+      Index : constant Permissions.Permission_Index
+        := Permissions.Get_Permission_Index (Permission);
    begin
       Security_Context'Class (Context).Has_Permission (Index, Result);
    end Has_Permission;
@@ -113,8 +113,8 @@ package body Security.Contexts is
                           Name      : in String;
                           Value     : in String) is
    begin
-      Context.Context.Insert (Key      => Name,
-                              New_Item => Value);
+      Context.Context.Include (Key      => Name,
+                               New_Item => Value);
    end Add_Context;
 
    --  ------------------------------

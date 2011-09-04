@@ -8,6 +8,7 @@ To build ASF, you will need:
  - Ada Util (http://code.google.com/p/ada-util)
  - Ada EL   (http://code.google.com/p/ada-el)
  - AWS      (http://libre.adacore.com/libre/tools/aws/)
+ - XML/Ada  (http://libre.adacore.com/libre/tools/xmlada/)
 
 Build with the following commands:
 

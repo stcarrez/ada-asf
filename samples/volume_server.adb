@@ -19,11 +19,13 @@
 with ASF.Server.Web;
 with ASF.Servlets;
 with Volume_Servlet;
+with Util.Log.Loggers;
 
 procedure Volume_Server is
    Compute : aliased Volume_Servlet.Servlet;
    App     : aliased ASF.Servlets.Servlet_Registry;
    WS      : ASF.Server.Web.AWS_Container;
+   Log     : Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Volume_Server");
 begin
    --  Register the servlets and filters
    App.Add_Servlet (Name => "compute", Server => Compute'Unchecked_Access);
@@ -32,6 +34,8 @@ begin
    App.Add_Mapping (Name => "compute", Pattern => "*.html");
 
    WS.Register_Application ("/volume", App'Unchecked_Access);
+
+   Log.Info ("Connect you browser to: http://localhost:8080/volume/compute.html");
 
    WS.Start;
 

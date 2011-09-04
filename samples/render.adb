@@ -54,11 +54,11 @@ begin
                Pos   : constant Natural := Index (Value, "=");
             begin
                if Pos > 0 then
-                  App.Set_Global (Name  => Value (1 .. Pos - 1),
+                  App.Set_Global (Name  => Value (Value'First .. Pos - 1),
                                   Value => To_Object (Value (Pos + 1 .. Value'Last)));
                else
-                  App.Set_Global (Name  => Value (1 .. Pos - 1),
-                                  Value => To_Object(True));
+                  App.Set_Global (Name  => Value (Value'First .. Pos - 1),
+                                  Value => To_Object (True));
                end if;
             end;
 
@@ -69,13 +69,19 @@ begin
 
    declare
       View_Name : constant String := Get_Argument;
+      Pos       : constant Natural := Index (View_Name, ".");
       Req       : ASF.Requests.Mockup.Request;
       Reply     : ASF.Responses.Mockup.Response;
       Content   : Ada.Strings.Unbounded.Unbounded_String;
    begin
+      if View_Name = "" or Pos = 0 then
+         Ada.Text_IO.Put_Line ("Usage: render [-DNAME=VALUE ] file");
+         Ada.Text_IO.Put_Line ("Example: render -DcontextPath=/test samples/web/ajax.xhtml");
+         return;
+      end if;
 
-      Req.Set_Path_Info (View_Name);
-      App.Dispatch (Page     => View_Name,
+      Req.Set_Path_Info (View_Name (View_Name'First .. Pos - 1));
+      App.Dispatch (Page     => View_Name (View_Name'First .. Pos - 1),
                     Request  => Req,
                     Response => Reply);
 

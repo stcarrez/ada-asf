@@ -34,6 +34,7 @@ with Util.Beans.Basic;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 
+with AWS.Net.SSL;
 with Security.Openid;
 with Security.Openid.Servlets;
 procedure Openid is
@@ -121,6 +122,12 @@ procedure Openid is
    --  Web application server
    WS           : ASF.Server.Web.AWS_Container;
 begin
+   if not AWS.Net.SSL.Is_Supported then
+      Log.Error ("SSL is not supported by AWS.");
+      Log.Error ("SSL is required for the OpenID connector to connect to OpenID providers.");
+      Log.Error ("Please, rebuild AWS with SSL support.");
+      return;
+   end if;
    begin
       C.Load_Properties (CONFIG_PATH);
 

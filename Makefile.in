@@ -68,7 +68,7 @@ rebuild: clean build
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
 configure.in Makefile.in install-sh distrib test.properties ChangeLog \
 asf.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
-src asfunit samples regtests web \
+src asfunit samples regtests web bundles \
 bin obj lib
 
 dist:

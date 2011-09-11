@@ -1878,7 +1878,7 @@ test -n "$target_alias" &&
 # Current release settings
 ASF_MAJOR_VERSION=0
 ASF_MINOR_VERSION=2
-ASF_MICRO_VERSION=0
+ASF_MICRO_VERSION=1-dev
 ASF_VERSION=$ASF_MAJOR_VERSION.$ASF_MINOR_VERSION.$ASF_MICRO_VERSION
 
 # checking for local tools

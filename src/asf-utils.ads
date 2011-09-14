@@ -37,6 +37,10 @@ package ASF.Utils is
    --  on HTML elements.
    procedure Set_Input_Attributes (Names : in out Util.Strings.String_Set.Set);
 
+   --  Add in the <b>names</b> set, the size attributes that can be set
+   --  on <textarea> elements.
+   procedure Set_Textarea_Attributes (Names : in out Util.Strings.String_Set.Set);
+
    type Object_Array is array (Positive range <>) of Util.Beans.Objects.Object;
 
    package Formats is

@@ -36,6 +36,7 @@ package body ASF.Components.Html.Factory is
    function Create_PanelGroup return UIComponent_Access;
    function Create_Form return UIComponent_Access;
    function Create_Input_Text return UIComponent_Access;
+   function Create_Input_Textarea return UIComponent_Access;
    function Create_Command return UIComponent_Access;
    function Create_Message return UIComponent_Access;
    function Create_Messages return UIComponent_Access;
@@ -105,6 +106,14 @@ package body ASF.Components.Html.Factory is
    end Create_Input_Text;
 
    --  ------------------------------
+   --  Create an UIInputTextarea component
+   --  ------------------------------
+   function Create_Input_Textarea return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Forms.UIInputTextarea;
+   end Create_Input_Textarea;
+
+   --  ------------------------------
    --  Create an UICommand component
    --  ------------------------------
    function Create_Command return UIComponent_Access is
@@ -135,6 +144,7 @@ package body ASF.Components.Html.Factory is
    FORM_TAG           : aliased constant String := "form";
    INPUT_SECRET_TAG   : aliased constant String := "inputSecret";
    INPUT_TEXT_TAG     : aliased constant String := "inputText";
+   INPUT_TEXTAREA_TAG : aliased constant String := "inputTextarea";
    LABEL_TAG          : aliased constant String := "label";
    LIST_TAG           : aliased constant String := "list";
    MESSAGE_TAG        : aliased constant String := "message";
@@ -157,28 +167,31 @@ package body ASF.Components.Html.Factory is
          4 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input_Text'Access,
                Tag       => Create_Component_Node'Access),
-         5 => (Name      => LABEL_TAG'Access,
+         5 => (Name      => INPUT_TEXTAREA_TAG'Access,
+               Component => Create_Input_Textarea'Access,
+               Tag       => Create_Component_Node'Access),
+         6 => (Name      => LABEL_TAG'Access,
                Component => Create_Label'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => LIST_TAG'Access,
+         7 => (Name      => LIST_TAG'Access,
                Component => Create_List'Access,
                Tag       => Create_Component_Node'Access),
-         7 => (Name      => MESSAGE_TAG'Access,
+         8 => (Name      => MESSAGE_TAG'Access,
                Component => Create_Message'Access,
                Tag       => Create_Component_Node'Access),
-         8 => (Name      => MESSAGES_TAG'Access,
+         9 => (Name      => MESSAGES_TAG'Access,
                Component => Create_Messages'Access,
                Tag       => Create_Component_Node'Access),
-         9 => (Name      => OUTPUT_FORMAT_TAG'Access,
+        10 => (Name      => OUTPUT_FORMAT_TAG'Access,
                Component => Create_Output_Format'Access,
                Tag       => Create_Component_Node'Access),
-        10 => (Name      => OUTPUT_LINK_TAG'Access,
+        11 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,
                Tag       => Create_Component_Node'Access),
-        11 => (Name      => OUTPUT_TEXT_TAG'Access,
+        12 => (Name      => OUTPUT_TEXT_TAG'Access,
                Component => Create_Output'Access,
                Tag       => Create_Component_Node'Access),
-        12 => (Name      => PANEL_GROUP_TAG'Access,
+        13 => (Name      => PANEL_GROUP_TAG'Access,
                Component => Create_PanelGroup'Access,
                Tag       => Create_Component_Node'Access)
         );

@@ -21,6 +21,8 @@ with ASF.Sessions;
 with ASF.Sessions.Factory;
 limited with ASF.Filters;
 
+with Security.Permissions;
+
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
@@ -432,6 +434,9 @@ private
 
       --  The position of the first character to build the path info part of the request.
       Path_Pos  : Natural := 0;
+
+      --  The security permission to check
+--        Permission         : Security.Permissions.Permission_Index;
    end record;
 
    overriding

@@ -106,6 +106,16 @@ package ASF.Components.Html.Forms is
    procedure Add_Validator (UI        : in out UIInput;
                             Validator : in ASF.Validators.Validator_Access;
                             Shared    : in Boolean := False);
+   --  ------------------------------
+   --  InputTextarea Component
+   --  ------------------------------
+   type UIInputTextarea is new UIInput with private;
+   type UIInputTextarea_Access is access all UIInputTextarea'Class;
+
+   --  Render the textarea element.
+   overriding
+   procedure Render_Input (UI      : in UIInputTextarea;
+                           Context : in out Faces_Context'Class);
 
    --  ------------------------------
    --  Button Component
@@ -185,6 +195,11 @@ private
       Is_Valid        : Boolean;
       Is_Secret       : Boolean := False;
       Validators      : Validator_Array;
+   end record;
+
+   type UIInputTextarea is new UIInput with record
+      Rows  : Natural;
+      Cols  : Natural;
    end record;
 
    type UICommand is new UIHtmlComponent with record

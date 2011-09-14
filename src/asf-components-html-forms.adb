@@ -35,6 +35,8 @@ package body ASF.Components.Html.Forms is
 
    INPUT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 
+   TEXTAREA_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
+
    --  ------------------------------
    --  Input Component
    --  ------------------------------
@@ -268,6 +270,35 @@ package body ASF.Components.Html.Forms is
    end Add_Validator;
 
    --  ------------------------------
+   --  Render the textarea element.
+   --  ------------------------------
+   overriding
+   procedure Render_Input (UI      : in UIInputTextarea;
+                           Context : in out Faces_Context'Class) is
+      Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+      Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
+   begin
+      Writer.Start_Element ("textarea");
+      Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
+      UI.Render_Attributes (Context, TEXTAREA_ATTRIBUTE_NAMES, Writer);
+      if not EL.Objects.Is_Null (Value) then
+         declare
+            Convert : constant access Converters.Converter'Class
+              := UIInput'Class (UI).Get_Converter;
+         begin
+            if Convert /= null and Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
+               Writer.Write_Text (Text => Convert.To_String (Value => Value,
+                                                             Component => UI,
+                                                             Context => Context));
+            else
+               Writer.Write_Text (Value => Value);
+            end if;
+         end;
+      end if;
+      Writer.End_Element ("textarea");
+   end Render_Input;
+
+   --  ------------------------------
    --  Button Component
    --  ------------------------------
 
@@ -470,4 +501,5 @@ begin
    ASF.Utils.Set_Interactive_Attributes (INPUT_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Interactive_Attributes (FORM_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Input_Attributes (INPUT_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Textarea_Attributes (TEXTAREA_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Forms;

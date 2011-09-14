@@ -45,6 +45,9 @@ package body ASF.Utils is
    DISABLED_ATTR      : aliased constant String := "disabled";
    READONLY_ATTR      : aliased constant String := "readonly";
 
+   ROWS_ATTR          : aliased constant String := "rows";
+   COLS_ATTR          : aliased constant String := "cols";
+
    --  ------------------------------
    --  Add in the <b>names</b> set, the basic text attributes that can be set
    --  on HTML elements (dir, lang, style, title).
@@ -92,5 +95,15 @@ package body ASF.Utils is
       Names.Insert (DISABLED_ATTR'Access);
       Names.Insert (READONLY_ATTR'Access);
    end Set_Input_Attributes;
+
+   --  ------------------------------
+   --  Add in the <b>names</b> set, the size attributes that can be set
+   --  on <textarea> elements.
+   --  ------------------------------
+   procedure Set_Textarea_Attributes (Names : in out Util.Strings.String_Set.Set) is
+   begin
+      Names.Insert (ROWS_ATTR'Access);
+      Names.Insert (COLS_ATTR'Access);
+   end Set_Textarea_Attributes;
 
 end ASF.Utils;

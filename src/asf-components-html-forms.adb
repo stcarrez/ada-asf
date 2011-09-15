@@ -119,7 +119,7 @@ package body ASF.Components.Html.Forms is
                            Context : in out Faces_Context'Class) is
    begin
       if UI.Is_Rendered (Context) then
-         UI.Render_Input (Context);
+         UIInput'Class (UI).Render_Input (Context);
       end if;
    end Encode_Begin;
 

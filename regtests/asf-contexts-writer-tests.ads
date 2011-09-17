@@ -23,7 +23,7 @@ package ASF.Contexts.Writer.Tests is
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
-   type Test_Writer is new ResponseWriter with record
+   type Test_Writer is new Response_Writer with record
       Response : Unbounded_String;
       Content  : aliased Util.Streams.Texts.Print_Stream;
    end record;

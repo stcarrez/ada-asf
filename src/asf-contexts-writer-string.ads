@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer.string -- A simple string writer
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ package ASF.Contexts.Writer.String is
    --  ------------------------------
    --  String Writer
    --  ------------------------------
-   type String_Writer is new ResponseWriter with private;
+   type String_Writer is new Response_Writer with private;
 
    overriding
    procedure Write (Stream : in out String_Writer;
@@ -34,7 +34,7 @@ package ASF.Contexts.Writer.String is
 
 private
 
-   type String_Writer is new ResponseWriter with record
+   type String_Writer is new Response_Writer with record
       Response : Unbounded_String;
    end record;
 

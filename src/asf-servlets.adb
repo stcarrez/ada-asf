@@ -672,6 +672,8 @@ package body ASF.Servlets is
       Key : constant Unbounded_String    := To_Unbounded_String (Name);
       Pos : constant Filter_Maps.Cursor := Registry.Filters.Find (Key);
    begin
+      Log.Info ("Add filter mapping {0} -> {1}", Pattern, Name);
+
       if not Filter_Maps.Has_Element (Pos) then
          Log.Error ("No servlet filter {0}", Name);
          raise Servlet_Error with "No servlet filter " & Name;

@@ -23,7 +23,7 @@ package body ASF.Components.Html is
 
    procedure Render_Attributes (UI      : in UIHtmlComponent;
                                 Context : in out Faces_Context'Class;
-                                Writer  : in ResponseWriter_Access) is
+                                Writer  : in Response_Writer_Access) is
       Style  : constant Object := UI.Get_Attribute (Context, "style");
       Class  : constant Object := UI.Get_Attribute (Context, "styleClass");
       Title  : constant Object := UI.Get_Attribute (Context, "title");
@@ -49,7 +49,7 @@ package body ASF.Components.Html is
    procedure Render_Attributes (UI      : in UIHtmlComponent;
                                 Context : in out Faces_Context'Class;
                                 Names   : in Util.Strings.String_Set.Set;
-                                Writer  : in ResponseWriter_Access) is
+                                Writer  : in Response_Writer_Access) is
 
       pragma Unreferenced (Context);
 

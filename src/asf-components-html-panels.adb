@@ -39,7 +39,7 @@ package body ASF.Components.Html.Panels is
          return;
       end if;
       declare
-         Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+         Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
          Tag    : constant String := UI.Get_Layout (Context);
       begin
          if Tag'Length > 0 then
@@ -55,7 +55,7 @@ package body ASF.Components.Html.Panels is
          return;
       end if;
       declare
-         Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+         Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
          Tag    : constant String := UI.Get_Layout (Context);
       begin
          if Tag'Length > 0 then

@@ -29,7 +29,7 @@ package body ASF.Contexts.Faces is
    --  Get the response writer to write the response stream.
    --  ------------------------------
    function Get_Response_Writer (Context : Faces_Context)
-                                 return ASF.Contexts.Writer.ResponseWriter_Access is
+                                 return ASF.Contexts.Writer.Response_Writer_Access is
    begin
       return Context.Writer;
    end Get_Response_Writer;
@@ -38,7 +38,7 @@ package body ASF.Contexts.Faces is
    --  Set the response writer to write to the response stream.
    --  ------------------------------
    procedure Set_Response_Writer (Context : in out Faces_Context;
-                                  Writer  : in ASF.Contexts.Writer.ResponseWriter_Access) is
+                                  Writer  : in ASF.Contexts.Writer.Response_Writer_Access) is
    begin
       Context.Writer := Writer;
    end Set_Response_Writer;

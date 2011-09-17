@@ -50,11 +50,11 @@ package ASF.Contexts.Faces is
 
    --  Get the response writer to write the response stream.
    function Get_Response_Writer (Context : Faces_Context)
-     return ASF.Contexts.Writer.ResponseWriter_Access;
+     return ASF.Contexts.Writer.Response_Writer_Access;
 
    --  Set the response writer to write to the response stream.
    procedure Set_Response_Writer (Context : in out Faces_Context;
-                                  Writer  : in ASF.Contexts.Writer.ResponseWriter_Access);
+                                  Writer  : in ASF.Contexts.Writer.Response_Writer_Access);
 
    --  Get the EL context for evaluating expressions.
    function Get_ELContext (Context : in Faces_Context)
@@ -188,7 +188,7 @@ private
 
    type Faces_Context is new Ada.Finalization.Limited_Controlled with record
       --  The response writer.
-      Writer   : ASF.Contexts.Writer.ResponseWriter_Access;
+      Writer   : ASF.Contexts.Writer.Response_Writer_Access;
 
       --  The expression context;
       Context  : EL.Contexts.ELContext_Access;

@@ -107,7 +107,7 @@ package body ASF.Components.Html.Text is
    procedure Write_Output (UI      : in UIOutput;
                            Context : in out Faces_Context'Class;
                            Value   : in String) is
-      Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
       Escape : constant Object := UI.Get_Attribute (Context, "escape");
    begin
       Writer.Start_Optional_Element ("span");
@@ -131,7 +131,7 @@ package body ASF.Components.Html.Text is
 
    procedure Encode_Begin (UI      : in UILabel;
                            Context : in out Faces_Context'Class) is
-      Writer : ResponseWriter_Access;
+      Writer : Response_Writer_Access;
    begin
       if UI.Is_Rendered (Context) then
          Writer := Context.Get_Response_Writer;
@@ -142,7 +142,7 @@ package body ASF.Components.Html.Text is
 
    procedure Encode_End (UI      : in UILabel;
                          Context : in out Faces_Context'Class) is
-      Writer : ResponseWriter_Access;
+      Writer : Response_Writer_Access;
    begin
       if UI.Is_Rendered (Context) then
          Writer := Context.Get_Response_Writer;

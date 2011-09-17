@@ -40,7 +40,7 @@ package body ASF.Components.Html.Links is
 
    procedure Encode_Begin (UI      : in UIOutputLink;
                            Context : in out Faces_Context'Class) is
-      Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
       Escape : constant Object := UI.Get_Attribute (Context, "escape");
    begin
       Writer.Start_Optional_Element ("span");

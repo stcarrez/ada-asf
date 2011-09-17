@@ -53,7 +53,7 @@ package body ASF.Contexts.Writer.Tests is
    overriding
    procedure Flush (Stream : in out Test_Writer) is
    begin
-      ResponseWriter (Stream).Flush;
+      Response_Writer (Stream).Flush;
       Stream.Content.Read (Into => Stream.Response);
    end Flush;
 

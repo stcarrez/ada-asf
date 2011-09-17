@@ -28,14 +28,14 @@ package ASF.Components.Html is
 
    procedure Render_Attributes (UI      : in UIHtmlComponent;
                                 Context : in out Faces_Context'Class;
-                                Writer  : in ResponseWriter_Access);
+                                Writer  : in Response_Writer_Access);
 
    --  Render the attributes which are defined on the component and which are
    --  in the list specified by <b>names</b>.
    procedure Render_Attributes (UI      : in UIHtmlComponent;
                                 Context : in out Faces_Context'Class;
                                 Names   : in Util.Strings.String_Set.Set;
-                                Writer  : in ResponseWriter_Access);
+                                Writer  : in Response_Writer_Access);
 
 private
 

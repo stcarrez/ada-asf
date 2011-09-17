@@ -85,7 +85,7 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    procedure Render_Input (UI      : in UIInput;
                            Context : in out Faces_Context'Class) is
-      Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
       Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
    begin
       Writer.Start_Element ("input");
@@ -275,7 +275,7 @@ package body ASF.Components.Html.Forms is
    overriding
    procedure Render_Input (UI      : in UIInputTextarea;
                            Context : in out Faces_Context'Class) is
-      Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
       Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
    begin
       Writer.Start_Element ("textarea");
@@ -382,7 +382,7 @@ package body ASF.Components.Html.Forms is
          return;
       end if;
       declare
-         Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+         Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
          Value  : constant EL.Objects.Object := UI.Get_Value;
       begin
          Writer.Start_Element ("input");
@@ -433,7 +433,7 @@ package body ASF.Components.Html.Forms is
          return;
       end if;
       declare
-         Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+         Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
          Id     : constant Unbounded_String := UI.Get_Client_Id;
       begin
          Writer.Start_Element ("form");
@@ -458,7 +458,7 @@ package body ASF.Components.Html.Forms is
          return;
       end if;
       declare
-         Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+         Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
       begin
          Writer.End_Element ("form");
       end;

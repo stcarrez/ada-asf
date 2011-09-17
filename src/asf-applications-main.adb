@@ -490,7 +490,7 @@ package body ASF.Applications.Main is
       use ASF.Applications.Views;
       use Ada.Exceptions;
 
-      Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
+      Writer         : aliased ASF.Contexts.Writer.Response_Writer;
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
@@ -570,7 +570,7 @@ package body ASF.Applications.Main is
       use ASF.Applications.Views;
       use Ada.Exceptions;
 
-      Writer         : aliased ASF.Contexts.Writer.ResponseWriter;
+      Writer         : aliased ASF.Contexts.Writer.Response_Writer;
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;

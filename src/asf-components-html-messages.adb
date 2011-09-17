@@ -49,7 +49,7 @@ package body ASF.Components.Html.Messages is
                             Show_Detail  : in Boolean;
                             Show_Summary : in Boolean;
                             Context      : in out Faces_Context'Class) is
-      Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
    begin
       case Mode is
          when SPAN_NO_STYLE =>
@@ -213,7 +213,7 @@ package body ASF.Components.Html.Messages is
             --  If we have some message, render them.
             if ASF.Applications.Messages.Vectors.Has_Element (Messages) then
                declare
-                  Writer : constant ResponseWriter_Access := Context.Get_Response_Writer;
+                  Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
                   Layout : constant String
                     := Util.Beans.Objects.To_String (UI.Get_Attribute (Context, "layout"));
                begin

@@ -21,11 +21,17 @@ package body ASF.Contexts.Writer is
 
    use Unicode;
 
-   procedure Write_Escape (Stream : in out ResponseWriter'Class;
+   --  Internal method to write a character on the response stream
+   --  and escape that character as necessary.  Unlike 'Write_Char',
+   --  this operation does not closes the current XML entity.
+   procedure Write_Escape (Stream : in out Response_Writer'Class;
                            Char   : in Character);
 
+   procedure Write_Escape (Stream : in out Response_Writer'Class;
+                           Char   : in Wide_Wide_Character);
+
    --  Close the current XML entity if an entity was started
-   procedure Close_Current (Stream : in out ResponseWriter'Class);
+   procedure Close_Current (Stream : in out Response_Writer'Class);
 
    --  ------------------------------
    --  Response Writer
@@ -35,7 +41,7 @@ package body ASF.Contexts.Writer is
    --  Initialize the response stream for the given content type and
    --  encoding.  An internal buffer is allocated for writing the stream.
    --  ------------------------------
-   procedure Initialize (Stream       : in out ResponseWriter;
+   procedure Initialize (Stream       : in out Response_Writer;
                          Content_Type : in String;
                          Encoding     : in String;
                          Output       : in ASF.Streams.Print_Stream) is
@@ -48,7 +54,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Flush the response stream and release the buffer.
    --  ------------------------------
-   procedure Finalize (Object : in out ResponseWriter) is
+   procedure Finalize (Object : in out Response_Writer) is
    begin
       Object.Flush;
    end Finalize;
@@ -56,7 +62,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Get the content type.
    --  ------------------------------
-   function Get_Content_Type (Stream : in ResponseWriter) return String is
+   function Get_Content_Type (Stream : in Response_Writer) return String is
    begin
       return To_String (Stream.Content_Type);
    end Get_Content_Type;
@@ -64,7 +70,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Get the character encoding.
    --  ------------------------------
-   function Get_Encoding (Stream : in ResponseWriter) return String is
+   function Get_Encoding (Stream : in Response_Writer) return String is
    begin
       return Stream.Encoding.Name.all;
    end Get_Encoding;
@@ -72,7 +78,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Close the current XML entity if an entity was started
    --  ------------------------------
-   procedure Close_Current (Stream : in out ResponseWriter'Class) is
+   procedure Close_Current (Stream : in out Response_Writer'Class) is
    begin
       if Stream.Close_Start then
          Stream.Write ('>');
@@ -83,7 +89,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Start an XML element with the given name.
    --  ------------------------------
-   procedure Start_Element (Stream : in out ResponseWriter;
+   procedure Start_Element (Stream : in out Response_Writer;
                             Name   : in String) is
    begin
       Close_Current (Stream);
@@ -95,7 +101,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Start an XML element with the given name.
    --  ------------------------------
-   procedure Start_Optional_Element (Stream : in out ResponseWriter;
+   procedure Start_Optional_Element (Stream : in out Response_Writer;
                                      Name   : in String) is
    begin
       Close_Current (Stream);
@@ -106,7 +112,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Closes an XML element of the given name.
    --  ------------------------------
-   procedure End_Element (Stream : in out ResponseWriter;
+   procedure End_Element (Stream : in out Response_Writer;
                           Name   : in String) is
    begin
       Close_Current (Stream);
@@ -118,7 +124,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Closes an XML element of the given name.
    --  ------------------------------
-   procedure End_Optional_Element (Stream : in out ResponseWriter;
+   procedure End_Optional_Element (Stream : in out Response_Writer;
                                    Name   : in String) is
    begin
       Close_Current (Stream);
@@ -136,7 +142,7 @@ package body ASF.Contexts.Writer is
    --  This is similar to calling <b>Start_Element</b>, <b>Write_Text</b>
    --  and <b>End_Element</b>.
    --  ------------------------------
-   procedure Write_Element (Stream   : in out ResponseWriter;
+   procedure Write_Element (Stream   : in out Response_Writer;
                             Name     : in String;
                             Content  : in String) is
    begin
@@ -145,7 +151,7 @@ package body ASF.Contexts.Writer is
       Stream.End_Element (Name);
    end Write_Element;
 
-   procedure Write_Wide_Element (Stream   : in out ResponseWriter;
+   procedure Write_Wide_Element (Stream   : in out Response_Writer;
                                  Name     : in String;
                                  Content  : in Wide_Wide_String) is
    begin
@@ -154,7 +160,16 @@ package body ASF.Contexts.Writer is
       Stream.End_Element (Name);
    end Write_Wide_Element;
 
-   procedure Write_Attribute (Stream : in out ResponseWriter;
+   procedure Write_Wide_Element (Stream   : in out Response_Writer;
+                                 Name     : in String;
+                                 Content  : in Unbounded_Wide_Wide_String) is
+   begin
+      Stream.Start_Element (Name);
+      Stream.Write_Wide_Text (Content);
+      Stream.End_Element (Name);
+   end Write_Wide_Element;
+
+   procedure Write_Attribute (Stream : in out Response_Writer;
                               Name   : in String;
                               Value  : in String) is
    begin
@@ -185,14 +200,14 @@ package body ASF.Contexts.Writer is
       end if;
    end Write_Attribute;
 
-   procedure Write_Attribute (Stream : in out ResponseWriter;
+   procedure Write_Attribute (Stream : in out Response_Writer;
                               Name   : in String;
                               Value  : in Unbounded_String) is
    begin
       Stream.Write_Attribute (Name, To_String (Value));
    end Write_Attribute;
 
-   procedure Write_Attribute (Stream : in out ResponseWriter;
+   procedure Write_Attribute (Stream : in out Response_Writer;
                               Name   : in String;
                               Value  : in EL.Objects.Object) is
       S : constant String := EL.Objects.To_String (Value);
@@ -200,37 +215,86 @@ package body ASF.Contexts.Writer is
       Stream.Write_Attribute (Name, S);
    end Write_Attribute;
 
+   procedure Write_Wide_Attribute (Stream : in out Response_Writer;
+                                   Name   : in String;
+                                   Value  : in Wide_Wide_String) is
+   begin
+      --  If we have an optional element, start it.
+      if Stream.Optional_Element_Size > 0 and not Stream.Optional_Element_Written then
+         Stream.Write ('<');
+         Stream.Write (Stream.Optional_Element (1 .. Stream.Optional_Element_Size));
+         Stream.Close_Start := True;
+         Stream.Optional_Element_Written := True;
+      end if;
+      if Stream.Close_Start then
+         Stream.Write (' ');
+         Stream.Write (Name);
+         Stream.Write ('=');
+         Stream.Write ('"');
+         for I in Value'Range loop
+            declare
+               C : constant Wide_Wide_Character := Value (I);
+            begin
+               if C = '"' then
+                  Stream.Write ("&quot;");
+               else
+                  Stream.Write_Escape (C);
+               end if;
+            end;
+         end loop;
+         Stream.Write ('"');
+      end if;
+   end Write_Wide_Attribute;
+
+   procedure Write_Wide_Attribute (Stream : in out Response_Writer;
+                                   Name   : in String;
+                                   Value  : in Unbounded_Wide_Wide_String) is
+   begin
+      Stream.Write_Wide_Attribute (Name, To_Wide_Wide_String (Value));
+   end Write_Wide_Attribute;
+
    --  ------------------------------
    --  Write a text escaping any character as necessary.
    --  ------------------------------
-   procedure Write_Text (Stream : in out ResponseWriter;
+   procedure Write_Text (Stream : in out Response_Writer;
                          Text   : in String) is
    begin
       for I in Text'Range loop
-         ResponseWriter'Class (Stream).Write_Char (Text (I));
+         Response_Writer'Class (Stream).Write_Char (Text (I));
       end loop;
    end Write_Text;
 
-   procedure Write_Text (Stream : in out ResponseWriter;
+   procedure Write_Text (Stream : in out Response_Writer;
                          Text   : in Unbounded_String) is
       Count : constant Natural := Length (Text);
    begin
       if Count > 0 then
          for I in 1 .. Count loop
-            ResponseWriter'Class (Stream).Write_Char (Element (Text, I));
+            Response_Writer'Class (Stream).Write_Char (Element (Text, I));
          end loop;
       end if;
    end Write_Text;
 
-   procedure Write_Wide_Text (Stream : in out ResponseWriter;
+   procedure Write_Wide_Text (Stream : in out Response_Writer;
                               Text   : in Wide_Wide_String) is
    begin
       for I in Text'Range loop
-         ResponseWriter'Class (Stream).Write_Wide_Char (Text (I));
+         Response_Writer'Class (Stream).Write_Wide_Char (Text (I));
       end loop;
    end Write_Wide_Text;
 
-   procedure Write_Text (Stream : in out ResponseWriter;
+   procedure Write_Wide_Text (Stream : in out Response_Writer;
+                              Text   : in Unbounded_Wide_Wide_String) is
+      Count : constant Natural := Length (Text);
+   begin
+      if Count > 0 then
+         for I in 1 .. Count loop
+            Response_Writer'Class (Stream).Write_Wide_Char (Element (Text, I));
+         end loop;
+      end if;
+   end Write_Wide_Text;
+
+   procedure Write_Text (Stream : in out Response_Writer;
                          Value  : in EL.Objects.Object) is
       use EL.Objects;
 
@@ -240,20 +304,20 @@ package body ASF.Contexts.Writer is
          when TYPE_BOOLEAN =>
             Close_Current (Stream);
             if To_Boolean (Value) then
-               ResponseWriter'Class (Stream).Write ("true");
+               Response_Writer'Class (Stream).Write ("true");
             else
-               ResponseWriter'Class (Stream).Write ("false");
+               Response_Writer'Class (Stream).Write ("false");
             end if;
 
          when TYPE_INTEGER | TYPE_FLOAT =>
             Close_Current (Stream);
-            ResponseWriter'Class (Stream).Write (To_String (Value));
+            Response_Writer'Class (Stream).Write (To_String (Value));
 
          when TYPE_STRING =>
-            ResponseWriter'Class (Stream).Write_Text (To_String (Value));
+            Response_Writer'Class (Stream).Write_Text (To_String (Value));
 
          when others =>
-            ResponseWriter'Class (Stream).Write_Wide_Text (To_Wide_Wide_String (Value));
+            Response_Writer'Class (Stream).Write_Wide_Text (To_Wide_Wide_String (Value));
 
       end case;
    end Write_Text;
@@ -262,7 +326,7 @@ package body ASF.Contexts.Writer is
    --  Write a character on the response stream and escape that character
    --  as necessary.
    --  ------------------------------
-   procedure Write_Char (Stream : in out ResponseWriter;
+   procedure Write_Char (Stream : in out Response_Writer;
                          Char   : in Character) is
    begin
       Close_Current (Stream);
@@ -274,16 +338,40 @@ package body ASF.Contexts.Writer is
    --  and escape that character as necessary.  Unlike 'Write_Char',
    --  this operation does not closes the current XML entity.
    --  ------------------------------
-   procedure Write_Escape (Stream : in out ResponseWriter'Class;
+   procedure Write_Escape (Stream : in out Response_Writer'Class;
                            Char   : in Character) is
       Code : constant Unicode_Char := Character'Pos (Char);
    begin
+      --  If "?" or over, no escaping is needed (this covers
+      --  most of the Latin alphabet)
+      if Code > 16#3F# or Code <= 16#20# then
+         Stream.Write (Char);
+      elsif Char = '<' then
+         Stream.Write ("&lt;");
+      elsif Char = '>' then
+         Stream.Write ("&gt;");
+      elsif Char = '&' then
+         Stream.Write ("&amp;");
+      else
+         Stream.Write (Char);
+      end if;
+   end Write_Escape;
+
+   --  ------------------------------
+   --  Internal method to write a character on the response stream
+   --  and escape that character as necessary.  Unlike 'Write_Char',
+   --  this operation does not closes the current XML entity.
+   --  ------------------------------
+   procedure Write_Escape (Stream : in out Response_Writer'Class;
+                           Char   : in Wide_Wide_Character) is
+      Code : constant Unicode_Char := Wide_Wide_Character'Pos (Char);
+   begin
       --  Tilde or less...
---        if Code < 16#A0# then
+      if Code < 16#A0# then
          --  If "?" or over, no escaping is needed (this covers
          --  most of the Latin alphabet)
          if Code > 16#3F# or Code <= 16#20# then
-            Stream.Write (Char);
+            Stream.Write (Character'Val (Code));
          elsif Char = '<' then
             Stream.Write ("&lt;");
          elsif Char = '>' then
@@ -291,35 +379,35 @@ package body ASF.Contexts.Writer is
          elsif Char = '&' then
             Stream.Write ("&amp;");
          else
-            Stream.Write (Char);
+            Stream.Write (Character'Val (Code));
          end if;
---        else
---           declare
---              S : String (1 .. 5) := "&#00;";
---              C : Unicode_Char;
---           begin
---              C := Code and 16#0F#;
---              if C > 10 then
---                 S (4) := Character'Val (C - 10 + Character'Pos ('A'));
---              else
---                 S (4) := Character'Val (C + Character'Pos ('0'));
---              end if;
---              C := (Code / 16) and 16#0F#;
---              if C > 10 then
---                 S (3) := Character'Val (C - 10 + Character'Pos ('A'));
---              else
---                 S (3) := Character'Val (C + Character'Pos ('0'));
---              end if;
---              Stream.Write (S);
---           end;
---        end if;
+      else
+         declare
+            S : String (1 .. 5) := "&#00;";
+            C : Unicode_Char;
+         begin
+            C := Code and 16#0F#;
+            if C > 10 then
+               S (4) := Character'Val (C - 10 + Character'Pos ('A'));
+            else
+               S (4) := Character'Val (C + Character'Pos ('0'));
+            end if;
+            C := (Code / 16) and 16#0F#;
+            if C > 10 then
+               S (3) := Character'Val (C - 10 + Character'Pos ('A'));
+            else
+               S (3) := Character'Val (C + Character'Pos ('0'));
+            end if;
+            Stream.Write (S);
+         end;
+      end if;
    end Write_Escape;
 
    --  ------------------------------
    --  Write a character on the response stream and escape that character
    --  as necessary.
    --  ------------------------------
-   procedure Write_Wide_Char (Stream : in out ResponseWriter;
+   procedure Write_Wide_Char (Stream : in out Response_Writer;
                               Char   : in Wide_Wide_Character) is
       Code : constant Unicode_Char := Wide_Wide_Character'Pos (Char);
    begin
@@ -352,7 +440,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Write a string on the stream.
    --  ------------------------------
-   procedure Write (Stream : in out ResponseWriter;
+   procedure Write (Stream : in out Response_Writer;
                     Item   : in Ada.Strings.Unbounded.Unbounded_String) is
    begin
       Close_Current (Stream);

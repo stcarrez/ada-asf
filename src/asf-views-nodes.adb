@@ -542,7 +542,7 @@ package body ASF.Views.Nodes is
    procedure Encode_All (Node    : in Text_Tag_Node;
                          Expr    : in Expression_Access_Array_Access;
                          Context : in Faces_Context'Class) is
-      Writer  : constant ASF.Contexts.Writer.ResponseWriter_Access
+      Writer  : constant ASF.Contexts.Writer.Response_Writer_Access
         := Context.Get_Response_Writer;
       Content : access constant Tag_Content := Node.Content'Access;
       Pos     : Natural := 1;

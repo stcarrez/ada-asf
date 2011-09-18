@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Streams.Texts;
+
 --  Implements a <b>ResponseWriter</b> that puts the result in a string.
 --  The response content can be retrieved after the response is rendered.
 package ASF.Contexts.Writer.String is
@@ -25,9 +27,7 @@ package ASF.Contexts.Writer.String is
    --  ------------------------------
    type String_Writer is new Response_Writer with private;
 
-   overriding
-   procedure Write (Stream : in out String_Writer;
-                    Buffer : in Ada.Streams.Stream_Element_Array);
+   procedure Initialize (Stream : in out String_Writer);
 
    --  Get the response
    function Get_Response (Stream : in String_Writer) return Unbounded_String;
@@ -35,7 +35,7 @@ package ASF.Contexts.Writer.String is
 private
 
    type String_Writer is new Response_Writer with record
-      Response : Unbounded_String;
+      Content  : aliased Util.Streams.Texts.Print_Stream;
    end record;
 
 end ASF.Contexts.Writer.String;

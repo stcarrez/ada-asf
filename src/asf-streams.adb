@@ -52,6 +52,15 @@ package body ASF.Streams is
    end Write;
 
    --  ------------------------------
+   --  Write a string on the stream.
+   --  ------------------------------
+   procedure Write (Stream : in out Print_Stream;
+                    Item   : in Ada.Strings.Wide_Wide_Unbounded.Unbounded_Wide_Wide_String) is
+   begin
+      Stream.Target.Write (Item);
+   end Write;
+
+   --  ------------------------------
    --  Write a raw character on the stream.
    --  ------------------------------
    procedure Write (Stream : in out Print_Stream;

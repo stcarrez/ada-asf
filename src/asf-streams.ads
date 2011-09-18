@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Streams;
 with Ada.Strings.Unbounded;
+with Ada.Strings.Wide_Wide_Unbounded;
 with Ada.Finalization;
 
 with Util.Streams;
@@ -48,6 +49,10 @@ package ASF.Streams is
    --  Write a string on the stream.
    procedure Write (Stream : in out Print_Stream;
                     Item   : in Ada.Strings.Unbounded.Unbounded_String);
+
+   --  Write a string on the stream.
+   procedure Write (Stream : in out Print_Stream;
+                    Item   : in Ada.Strings.Wide_Wide_Unbounded.Unbounded_Wide_Wide_String);
 
    --  Write a raw character on the stream.
    procedure Write (Stream : in out Print_Stream;

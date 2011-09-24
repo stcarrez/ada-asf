@@ -53,6 +53,7 @@ package body ASF.Applications.Views.Tests is
       Conf.Load_Properties ("regtests/view.properties");
       App.Initialize (Conf, App_Factory);
 
+      App.Set_Global ("function", "Test_Load_Facelet");
       for I in 1 .. 2 loop
          declare
             S : Util.Measures.Stamp;

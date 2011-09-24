@@ -1,0 +1,12 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+        xmlns:f="http://java.sun.com/jsf/core">
+  <ui:include src="include-comment.xhtml">
+     <ui:param name="comment" value="#{function}"/>
+  </ui:include>
+  <ui:include src="type-comment.xhtml">
+     <ui:param name="comment" value="#{function} and foo"/>
+  </ui:include>
+</ui:composition>
+

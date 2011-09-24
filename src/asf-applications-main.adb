@@ -265,7 +265,7 @@ package body ASF.Applications.Main is
                         Name : in Ada.Strings.Unbounded.Unbounded_String;
                         Context : in EL.Contexts.ELContext'Class)
                         return EL.Objects.Object is
-      Value : constant EL.Expressions.Value_Expression := App.Globals.Get_Variable (Name);
+      Value : constant EL.Expressions.Expression := App.Globals.Get_Variable (Name);
    begin
       return Value.Get_Value (Context);
    end Get_Global;

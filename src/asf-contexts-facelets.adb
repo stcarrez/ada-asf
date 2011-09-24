@@ -77,12 +77,12 @@ package body ASF.Contexts.Facelets is
    end Set_Attribute;
 
    --  ------------------------------
-   --  Set the attribute having given name with the value expression.
+   --  Set the attribute having given name with the expression.
    --  ------------------------------
    procedure Set_Variable (Context : in out Facelet_Context;
                            Name    : in Unbounded_String;
-                           Value   : in EL.Expressions.Value_Expression) is
-      Mapper : constant access EL.Variables.VariableMapper'Class
+                           Value   : in EL.Expressions.Expression) is
+      Mapper : constant access EL.Variables.Variable_Mapper'Class
         := Context.Context.Get_Variable_Mapper;
    begin
       if Mapper /= null then

@@ -174,6 +174,19 @@ package body ASF.Views.Nodes is
       end if;
    end Get_Value;
 
+   --  ------------------------------
+   --  Get the EL expression associated with the given tag attribute.
+   --  ------------------------------
+   function Get_Expression (Attribute : in Tag_Attribute)
+                            return EL.Expressions.Expression is
+   begin
+      if Attribute.Binding /= null then
+         return EL.Expressions.Expression (Attribute.Binding.all);
+      else
+         return EL.Expressions.Create_Expression (EL.Objects.To_Object (Attribute.Value));
+      end if;
+   end Get_Expression;
+
    function Get_Value_Expression (Attribute : Tag_Attribute)
                                   return EL.Expressions.Value_Expression is
    begin

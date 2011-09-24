@@ -138,7 +138,7 @@ package body ASF.Views.Nodes.Facelets is
 
       Ctx    : constant EL.Contexts.ELContext_Access := Context.Get_ELContext;
       Source : constant String := To_String (Get_Value (Node.Source.all, Context));
-      Old    : constant access VariableMapper'Class := Ctx.Get_Variable_Mapper;
+      Old    : constant access Variable_Mapper'Class := Ctx.Get_Variable_Mapper;
       Mapper : aliased Default.Default_Variable_Mapper;
    begin
       --  Chain the variable mapper with the previous one.
@@ -197,7 +197,7 @@ package body ASF.Views.Nodes.Facelets is
       use EL.Variables;
 
       Ctx    : constant EL.Contexts.ELContext_Access := Context.Get_ELContext;
-      Old    : constant access VariableMapper'Class := Ctx.Get_Variable_Mapper;
+      Old    : constant access Variable_Mapper'Class := Ctx.Get_Variable_Mapper;
       Mapper : aliased Default.Default_Variable_Mapper;
    begin
       --  Chain the variable mapper with the previous one.
@@ -438,8 +438,8 @@ package body ASF.Views.Nodes.Facelets is
    begin
       if Node.Value /= null and Node.Var /= null then
          declare
-            Value  : constant EL.Expressions.Value_Expression
-              := Get_Value_Expression (Node.Value.all);
+            Value  : constant EL.Expressions.Expression
+              := Get_Expression (Node.Value.all);
          begin
             Context.Set_Variable (Node.Var.Value, Value);
          end;

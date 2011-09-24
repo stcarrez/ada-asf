@@ -68,7 +68,7 @@ package body ASF.Contexts.Faces is
                             Name    : in String;
                             Value   : in EL.Objects.Object) is
       use EL.Variables;
-      Mapper : constant access VariableMapper'Class := Context.Context.Get_Variable_Mapper;
+      Mapper : constant access Variable_Mapper'Class := Context.Context.Get_Variable_Mapper;
    begin
       Mapper.Bind (Name, Value);
    end Set_Attribute;

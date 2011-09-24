@@ -65,10 +65,10 @@ package ASF.Contexts.Facelets is
                             Name    : in Unbounded_String;
                             Value   : in EL.Objects.Object);
 
-   --  Set the attribute having given name with the value expression.
+   --  Set the attribute having given name with the expression.
    procedure Set_Variable (Context : in out Facelet_Context;
                            Name    : in Unbounded_String;
-                           Value   : in EL.Expressions.Value_Expression);
+                           Value   : in EL.Expressions.Expression);
 
    --  Include the facelet from the given source file.
    --  The included views appended to the parent component tree.

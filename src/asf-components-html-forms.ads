@@ -192,7 +192,7 @@ private
 
    type UIInput is new Text.UIOutput and Holders.Editable_Value_Holder with record
       Submitted_Value : EL.Objects.Object;
-      Is_Valid        : Boolean;
+      Is_Valid        : Boolean := False;
       Is_Secret       : Boolean := False;
       Validators      : Validator_Array;
    end record;

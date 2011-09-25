@@ -230,10 +230,14 @@ package body ASF.Components.Html.Forms is
    overriding
    procedure Process_Updates (UI      : in out UIInput;
                               Context : in out Faces_Context'Class) is
-      VE    : constant EL.Expressions.Value_Expression := UI.Get_Value_Expression (VALUE_NAME);
    begin
       if UI.Is_Valid then
-         VE.Set_Value (Value => UI.Submitted_Value, Context => Context.Get_ELContext.all);
+         declare
+            VE    : constant EL.Expressions.Value_Expression
+              := UI.Get_Value_Expression (VALUE_NAME);
+         begin
+            VE.Set_Value (Value => UI.Submitted_Value, Context => Context.Get_ELContext.all);
+         end;
       end if;
 
    exception
@@ -471,6 +475,7 @@ package body ASF.Components.Html.Forms is
       Val : constant String := Context.Get_Parameter (To_String (Id));
    begin
       if Val /= "" then
+         Log.Debug ("Submission of form {0}", Id);
          UIForm'Class (UI).Set_Submitted;
       end if;
    end Decode;

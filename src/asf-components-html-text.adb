@@ -96,11 +96,22 @@ package body ASF.Components.Html.Text is
          return UI.Converter.To_String (Context   => Context,
                                         Component => UI,
                                         Value     => Value);
-      elsif not Is_Null (Value) then
-         return EL.Objects.To_String (Value);
-
       else
-         return "";
+         declare
+            Converter : constant access ASF.Converters.Converter'Class
+              := UI.Get_Converter (Context);
+         begin
+            if Converter /= null then
+               return Converter.To_String (Context   => Context,
+                                           Component => UI,
+                                           Value     => Value);
+            elsif not Is_Null (Value) then
+               return EL.Objects.To_String (Value);
+
+            else
+               return "";
+            end if;
+         end;
       end if;
    end Get_Formatted_Value;
 

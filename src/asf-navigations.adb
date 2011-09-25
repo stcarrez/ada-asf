@@ -189,6 +189,9 @@ package body ASF.Navigations is
       --  Execute the navigation action.
       if Navigator /= null then
          Navigator.Navigate (Context);
+      else
+         Log.Debug ("No navigation rule found for view {0}, action {1} and outcome {2}",
+                    Name, Action, Outcome);
       end if;
    end Handle_Navigation;
 
@@ -250,6 +253,8 @@ package body ASF.Navigations is
       pragma Unreferenced (Condition);
 
    begin
+      Log.Info ("Add navigation from {0} with outcome {1}", From, Outcome);
+
       if Outcome'Length > 0 then
          Navigator.Outcome := new String '(Outcome);
       end if;

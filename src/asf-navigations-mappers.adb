@@ -25,6 +25,19 @@ package body ASF.Navigations.Mappers is
    Empty : constant Util.Beans.Objects.Object := To_Object (String '(""));
 
    --  ------------------------------
+   --  Reset the navigation config before parsing a new rule.
+   --  ------------------------------
+   procedure Reset (N : in out Nav_Config) is
+   begin
+      N.From_View := Empty;
+      N.To_View   := Empty;
+      N.Outcome   := Empty;
+      N.Action    := Empty;
+      N.Condition := Empty;
+      N.Redirect  := False;
+   end Reset;
+
+   --  ------------------------------
    --  Save in the navigation config object the value associated with the given field.
    --  When the <b>NAVIGATION_CASE</b> field is reached, insert the new navigation rule
    --  that was collected in the navigation handler.
@@ -76,12 +89,7 @@ package body ASF.Navigations.Mappers is
                                               Action    => To_String (N.Action),
                                               Condition => To_String (N.Condition));
             end;
-            N.From_View := Empty;
-            N.To_View   := Empty;
-            N.Outcome   := Empty;
-            N.Action    := Empty;
-            N.Condition := Empty;
-            N.Redirect  := False;
+            Reset (N);
 
       end case;
    end Set_Member;
@@ -97,6 +105,7 @@ package body ASF.Navigations.Mappers is
       Reader.Add_Mapping ("module", Mapping'Access);
       Reader.Add_Mapping ("web-app", Mapping'Access);
       Config.Handler := Handler;
+      Reset (Config);
       Navigation_Mapper.Set_Context (Reader, Config'Unchecked_Access);
    end Reader_Config;
 

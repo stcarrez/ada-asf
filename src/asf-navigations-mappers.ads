@@ -64,6 +64,9 @@ package ASF.Navigations.Mappers is
 
 private
 
+   --  Reset the navigation config before parsing a new rule.
+   procedure Reset (N : in out Nav_Config);
+
    package Navigation_Mapper is
      new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Nav_Config,
                                                Element_Type_Access => Nav_Config_Access,

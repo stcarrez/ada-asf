@@ -29,10 +29,17 @@ package ASF.Applications.Messages.Factory is
    --  Build a localized message.
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String) return Message;
---
---     function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
---                           Message_Id : in String;
---                           Param1     : in String) return Message;
+
+   --  Build a localized message and format the message with one argument.
+   function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
+                         Message_Id : in String;
+                         Param1     : in String) return Message;
+
+   --  Build a localized message and format the message with two argument.
+   function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
+                         Message_Id : in String;
+                         Param1     : in String;
+                         Param2     : in String) return Message;
 
    --  Build a localized message and format the message with some arguments.
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;

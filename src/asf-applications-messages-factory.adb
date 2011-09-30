@@ -20,6 +20,7 @@ with Ada.Exceptions;
 
 with Util.Log.Loggers;
 with Util.Properties.Bundles;
+with Util.Beans.Objects;
 
 with ASF.Locales;
 with ASF.Applications.Main;
@@ -76,9 +77,32 @@ package body ASF.Applications.Messages.Factory is
    --     function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
    --                           Message_Id : in String) return Message;
    --
-   --     function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
-   --                           Message_Id : in String;
-   --                           Param1     : in String) return Message;
+
+   --  ------------------------------
+   --  Build a localized message and format the message with one argument.
+   --  ------------------------------
+   function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
+                         Message_Id : in String;
+                         Param1     : in String) return Message is
+      Args : ASF.Utils.Object_Array (1 .. 1);
+   begin
+      Args (1) := Util.Beans.Objects.To_Object (Param1);
+      return Get_Message (Context, Message_Id, Args);
+   end Get_Message;
+
+   --  ------------------------------
+   --  Build a localized message and format the message with two argument.
+   --  ------------------------------
+   function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
+                         Message_Id : in String;
+                         Param1     : in String;
+                         Param2     : in String) return Message is
+      Args : ASF.Utils.Object_Array (1 .. 2);
+   begin
+      Args (1) := Util.Beans.Objects.To_Object (Param1);
+      Args (2) := Util.Beans.Objects.To_Object (Param2);
+      return Get_Message (Context, Message_Id, Args);
+   end Get_Message;
 
    --  ------------------------------
    --  Build a localized message and format the message with some arguments.

@@ -105,6 +105,17 @@ package body ASF.Applications.Main is
    end Create_Permission_Manager;
 
    --  ------------------------------
+   --  Create the exception handler.  The exception handler is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates a <b>ASF.Contexts.Exceptions.Exception_Handler</b> object.
+   --  ------------------------------
+   function Create_Exception_Handler (App : in Application_Factory)
+                                      return ASF.Contexts.Exceptions.Exception_Handler_Access is
+   begin
+      return new ASF.Contexts.Exceptions.Exception_Handler;
+   end Create_Exception_Handler;
+
+   --  ------------------------------
    --  Get the application view handler.
    --  ------------------------------
    function Get_View_Handler (App : access Application)
@@ -146,7 +157,7 @@ package body ASF.Applications.Main is
    --  navigation handler.
    --  ------------------------------
    function Get_Action_Listener (App : in Application)
-                                 return ASF.Events.Actions.Action_Listener_Access is
+                                 return ASF.Events.Faces.Actions.Action_Listener_Access is
    begin
       return App.Action_Listener;
    end Get_Action_Listener;
@@ -158,7 +169,7 @@ package body ASF.Applications.Main is
    --  ------------------------------
    overriding
    procedure Process_Action (Listener : in Application;
-                             Event    : in ASF.Events.Actions.Action_Event'Class;
+                             Event    : in ASF.Events.Faces.Actions.Action_Event'Class;
                              Context  : in out Contexts.Faces.Faces_Context'Class) is
       Method  : constant EL.Expressions.Method_Expression := Event.Get_Method;
       Action  : constant String := Method.Get_Expression;
@@ -167,9 +178,9 @@ package body ASF.Applications.Main is
       Log.Info ("Execute bean action {0}", Action);
 
       begin
-         Events.Actions.Action_Method.Execute (Method  => Method,
-                                               Param   => Outcome,
-                                               Context => Context.Get_ELContext.all);
+         Events.Faces.Actions.Action_Method.Execute (Method  => Method,
+                                                     Param   => Outcome,
+                                                     Context => Context.Get_ELContext.all);
 
          Log.Info ("Action outcome is {0}", Outcome);
 
@@ -179,6 +190,7 @@ package body ASF.Applications.Main is
                        Ada.Exceptions.Exception_Name (E),
                        Ada.Exceptions.Exception_Message (E));
 
+            Context.Queue_Exception (E);
             Outcome := To_Unbounded_String ("failure");
       end;
 
@@ -619,8 +631,8 @@ package body ASF.Applications.Main is
 
          --  Execute the specified method on the bean and get the outcome result string.
          Outcome := To_Unbounded_String ("success");
-         ASF.Events.Actions.Action_Method.Execute (Method => Method,
-                                                   Param  => Outcome);
+         ASF.Events.Faces.Actions.Action_Method.Execute (Method => Method,
+                                                         Param  => Outcome);
 
          --  If the response was not produced by the action method, use the navigation handler
          --  to decide what result view must be rendered for the response.

@@ -29,6 +29,7 @@ with ASF.Factory;
 with ASF.Converters;
 with ASF.Validators;
 with ASF.Contexts.Faces;
+with ASF.Contexts.Exceptions;
 with ASF.Lifecycles;
 with ASF.Applications.Views;
 with ASF.Navigations;
@@ -36,7 +37,7 @@ with ASF.Beans;
 with ASF.Requests;
 with ASF.Responses;
 with ASF.Servlets;
-with ASF.Events.Actions;
+with ASF.Events.Faces.Actions;
 with Security.Permissions;
 package ASF.Applications.Main is
 
@@ -74,11 +75,17 @@ package ASF.Applications.Main is
    function Create_Permission_Manager (App : in Application_Factory)
                                        return Security.Permissions.Permission_Manager_Access;
 
+   --  Create the exception handler.  The exception handler is created during
+   --  the initialization phase of the application.  The default implementation
+   --  creates a <b>ASF.Contexts.Exceptions.Exception_Handler</b> object.
+   function Create_Exception_Handler (App : in Application_Factory)
+                                      return ASF.Contexts.Exceptions.Exception_Handler_Access;
+
    --  ------------------------------
    --  Application
    --  ------------------------------
    type Application is new ASF.Servlets.Servlet_Registry
-     and ASF.Events.Actions.Action_Listener with private;
+     and ASF.Events.Faces.Actions.Action_Listener with private;
    type Application_Access is access all Application'Class;
 
    --  Get the application view handler.
@@ -101,14 +108,14 @@ package ASF.Applications.Main is
    --  events and triggering the navigation to the next view using the
    --  navigation handler.
    function Get_Action_Listener (App : in Application)
-                                 return ASF.Events.Actions.Action_Listener_Access;
+                                 return ASF.Events.Faces.Actions.Action_Listener_Access;
 
    --  Process the action associated with the action event.  The action returns
    --  and outcome which is then passed to the navigation handler to navigate to
    --  the next view.
    overriding
    procedure Process_Action (Listener : in Application;
-                             Event    : in ASF.Events.Actions.Action_Event'Class;
+                             Event    : in ASF.Events.Faces.Actions.Action_Event'Class;
                              Context  : in out Contexts.Faces.Faces_Context'Class);
 
    --  Initialize the application
@@ -254,7 +261,7 @@ private
    type Application_Factory is tagged limited null record;
 
    type Application is new ASF.Servlets.Servlet_Registry
-     and ASF.Events.Actions.Action_Listener with record
+     and ASF.Events.Faces.Actions.Action_Listener with record
       View    : aliased ASF.Applications.Views.View_Handler;
       Lifecycle : ASF.Lifecycles.Lifecycle_Access;
       Factory : aliased ASF.Beans.Bean_Factory;
@@ -268,7 +275,7 @@ private
       Components : aliased ASF.Factory.Component_Factory;
 
       --  The action listener.
-      Action_Listener : ASF.Events.Actions.Action_Listener_Access;
+      Action_Listener : ASF.Events.Faces.Actions.Action_Listener_Access;
 
       --  The navigation handler.
       Navigation      : ASF.Navigations.Navigation_Handler_Access := null;

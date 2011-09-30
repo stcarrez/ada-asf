@@ -25,8 +25,13 @@ limited with ASF.Applications.Main;
 with ASF.Applications.Messages;
 with ASF.Applications.Messages.Vectors;
 with ASF.Contexts.Writer;
+with ASF.Contexts.Exceptions;
+with ASF.Events.Exceptions;
+
 with EL.Objects;
 with EL.Contexts;
+
+with Ada.Exceptions;
 with Ada.Strings.Unbounded;
 
 private with Ada.Finalization;
@@ -163,6 +168,32 @@ package ASF.Contexts.Faces is
    procedure Create_Unique_Id (Context : in out Faces_Context;
                                Id      : out Natural);
 
+   --  Set the exception handler that will receive unexpected exceptions and process them.
+   procedure Set_Exception_Handler (Context : in out Faces_Context;
+                                    Handler : in Exceptions.Exception_Handler_Access);
+
+   --  Get the exception handler.
+   function Get_Exception_Handler (Context : in Faces_Context)
+                                   return Exceptions.Exception_Handler_Access;
+
+   --  Queue an exception event to the exception handler associated with the context.
+   --  The exception event will be processed at the end of the current ASF phase.
+   procedure Queue_Exception (Context : in out Faces_Context;
+                              Ex      : in Ada.Exceptions.Exception_Occurrence);
+
+   --  Iterate over the exceptions that have been queued and execute the <b>Process</b>
+   --  procedure.  When the procedure returns True in <b>Remove</b, the exception event
+   --  is removed from the queue.  The procedure can update the faces context to add some
+   --  error message or redirect to an error page.
+   --
+   --  The application exception handler uses this procedure to process the exceptions.
+   --  The exception handler is called after each ASF phase.
+   procedure Iterate_Exception (Context : in out Faces_Context'Class;
+                                Process : not null access
+                                  procedure (Event   : in Events.Exceptions.Exception_Event'Class;
+                                             Remove  : out Boolean;
+                                             Context : in out Faces_Context'Class));
+
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    function Current return Faces_Context_Access;
@@ -177,6 +208,8 @@ package ASF.Contexts.Faces is
 private
 
    use ASF.Applications.Messages;
+
+   type Exception_Queue_Access is access ASF.Contexts.Exceptions.Exception_Queue;
 
    --  Map of messages associated with a component
    package Message_Maps is new
@@ -202,6 +235,10 @@ private
       --  The application
       Application : access ASF.Applications.Main.Application'Class;
 
+      --  The exception handler and exception queue.
+      Except_Handler     : Exceptions.Exception_Handler_Access;
+      Except_Queue       : Exception_Queue_Access;
+
       Render_Response    : Boolean := False;
       Response_Completed : Boolean := False;
 
@@ -213,5 +250,9 @@ private
 
       Root               : ASF.Components.Root.UIViewRoot;
    end record;
+
+   --  Release any storage held by this context.
+   overriding
+   procedure Finalize (Context : in out Faces_Context);
 
 end ASF.Contexts.Faces;

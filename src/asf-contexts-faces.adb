@@ -17,8 +17,11 @@
 -----------------------------------------------------------------------
 
 with EL.Variables;
-with ASF.Converters;
 with Ada.Task_Attributes;
+with Ada.Unchecked_Deallocation;
+
+with ASF.Converters;
+with ASF.Contexts.Exceptions.Iterate;
 with ASF.Applications.Main;
 package body ASF.Contexts.Faces is
 
@@ -324,6 +327,57 @@ package body ASF.Contexts.Faces is
    end Create_Unique_Id;
 
    --  ------------------------------
+   --  Set the exception handler that will receive unexpected exceptions and process them.
+   --  ------------------------------
+   procedure Set_Exception_Handler (Context : in out Faces_Context;
+                                    Handler : in Exceptions.Exception_Handler_Access) is
+   begin
+      Context.Except_Handler := Handler;
+   end Set_Exception_Handler;
+
+   --  ------------------------------
+   --  Get the exception handler.
+   --  ------------------------------
+   function Get_Exception_Handler (Context : in Faces_Context)
+                                   return Exceptions.Exception_Handler_Access is
+   begin
+      return Context.Except_Handler;
+   end Get_Exception_Handler;
+
+   --  ------------------------------
+   --  Queue an exception event to the exception handler associated with the context.
+   --  The exception event will be processed at the end of the current ASF phase.
+   --  ------------------------------
+   procedure Queue_Exception (Context : in out Faces_Context;
+                              Ex      : in Ada.Exceptions.Exception_Occurrence) is
+   begin
+      if Context.Except_Queue = null then
+         Context.Except_Queue := new ASF.Contexts.Exceptions.Exception_Queue;
+      end if;
+      Context.Except_Queue.Queue_Exception (Ex);
+   end Queue_Exception;
+
+   --  ------------------------------
+   --  Iterate over the exceptions that have been queued and execute the <b>Process</b>
+   --  procedure.  When the procedure returns True in <b>Remove</b, the exception event
+   --  is removed from the queue.  The procedure can update the faces context to add some
+   --  error message or redirect to an error page.
+   --
+   --  The application exception handler uses this procedure to process the exceptions.
+   --  The exception handler is called after each ASF phase.
+   --  ------------------------------
+   procedure Iterate_Exception (Context : in out Faces_Context'Class;
+                                Process : not null access
+                                  procedure (Event   : in Events.Exceptions.Exception_Event'Class;
+                                             Remove  : out Boolean;
+                                             Context : in out Faces_Context'Class)) is
+   begin
+      if Context.Except_Queue /= null then
+         ASF.Contexts.Exceptions.Iterate (Context.Except_Queue.all, Context, Process);
+      end if;
+   end Iterate_Exception;
+
+   --  ------------------------------
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    --  ------------------------------
@@ -349,5 +403,19 @@ package body ASF.Contexts.Faces is
    begin
       Task_Context.Set_Value (Context);
    end Restore;
+
+   --  ------------------------------
+   --  Release any storage held by this context.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Context : in out Faces_Context) is
+      procedure Free is
+         new Ada.Unchecked_Deallocation (Object => ASF.Contexts.Exceptions.Exception_Queue,
+                                         Name   => Exception_Queue_Access);
+   begin
+      if Context.Except_Queue /= null then
+         Free (Context.Except_Queue);
+      end if;
+   end Finalize;
 
 end ASF.Contexts.Faces;

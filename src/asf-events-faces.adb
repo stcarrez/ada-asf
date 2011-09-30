@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-package body ASF.Events is
+package body ASF.Events.Faces is
 
    --  ------------------------------
    --  Get the lifecycle phase where the event must be processed.
@@ -43,4 +43,4 @@ package body ASF.Events is
       return Event.Component;
    end Get_Component;
 
-end ASF.Events;
+end ASF.Events.Faces;

@@ -32,7 +32,7 @@ with ASF.Contexts.Faces;
 with ASF.Utils;
 limited with ASF.Views.Nodes;
 limited with ASF.Converters;
-limited with ASF.Events;
+limited with ASF.Events.Faces;
 package ASF.Components.Base is
 
    use ASF.Contexts.Faces;
@@ -259,12 +259,12 @@ package ASF.Components.Base is
    --  component is in charge of queueing events.  The event object
    --  will be freed after being dispatched.
    procedure Queue_Event (UI    : in out UIComponent;
-                          Event : not null access ASF.Events.Faces_Event'Class);
+                          Event : not null access ASF.Events.Faces.Faces_Event'Class);
 
    --  Broadcast the event to the event listeners installed on this component.
    --  Listeners are called in the order in which they were added.
    procedure Broadcast (UI      : in out UIComponent;
-                        Event   : not null access ASF.Events.Faces_Event'Class;
+                        Event   : not null access ASF.Events.Faces.Faces_Event'Class;
                         Context : in out Faces_Context'Class);
 
    type UIComponent_Array is array (Natural range <>) of UIComponent_Access;

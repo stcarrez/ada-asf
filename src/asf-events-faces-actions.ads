@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  asf-events-actions -- Actions Events
---  Copyright (C) 2010 Stephane Carrez
+--  asf-events-faces-actions -- Actions Events
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,15 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Events;
+
 with Ada.Strings.Unbounded;
 with EL.Expressions;
 with EL.Methods.Proc_1;
+
 with ASF.Contexts.Faces;
 with ASF.Components.Base;
-package ASF.Events.Actions is
+package ASF.Events.Faces.Actions is
 
    package Action_Method is
      new EL.Methods.Proc_1 (Param1_Type => Ada.Strings.Unbounded.Unbounded_String);
@@ -60,4 +63,4 @@ private
       Method : EL.Expressions.Method_Expression;
    end record;
 
-end ASF.Events.Actions;
+end ASF.Events.Faces.Actions;

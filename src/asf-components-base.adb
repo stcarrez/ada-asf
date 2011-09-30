@@ -17,14 +17,12 @@
 -----------------------------------------------------------------------
 
 with Util.Strings;
-with Util.Beans.Objects;
 with Util.Log.Loggers;
 
 with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with ASF.Converters;
-with ASF.Events;
 with ASF.Components.Utils;
 
 with EL.Variables;
@@ -663,7 +661,7 @@ package body ASF.Components.Base is
    --  will be freed after being dispatched.
    --  ------------------------------
    procedure Queue_Event (UI    : in out UIComponent;
-                          Event : not null access ASF.Events.Faces_Event'Class) is
+                          Event : not null access ASF.Events.Faces.Faces_Event'Class) is
    begin
       if UI.Parent = null then
          Log.Error ("The component tree does not have a UIView root component. Event ignored.");
@@ -677,7 +675,7 @@ package body ASF.Components.Base is
    --  Listeners are called in the order in which they were added.
    --  ------------------------------
    procedure Broadcast (UI      : in out UIComponent;
-                        Event   : not null access ASF.Events.Faces_Event'Class;
+                        Event   : not null access ASF.Events.Faces.Faces_Event'Class;
                         Context : in out Faces_Context'Class) is
       pragma Unreferenced (UI, Event, Context);
    begin

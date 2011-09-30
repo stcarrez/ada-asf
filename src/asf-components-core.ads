@@ -18,7 +18,7 @@
 with ASF.Views.Nodes;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
-with ASF.Events;
+with ASF.Events.Faces;
 with ASF.Lifecycles;
 private with Ada.Containers.Vectors;
 package ASF.Components.Core is
@@ -88,7 +88,7 @@ package ASF.Components.Core is
    --  processing lifecycle phase.  The event object
    --  will be freed after being dispatched.
    procedure Queue_Event (UI    : in out UIView;
-                          Event : not null access ASF.Events.Faces_Event'Class);
+                          Event : not null access ASF.Events.Faces.Faces_Event'Class);
 
    --  Broadcast the events after the specified lifecycle phase.
    --  Events that were queued will be freed.
@@ -167,7 +167,7 @@ private
 
    use ASF.Lifecycles;
 
-   type Faces_Event_Access is access all ASF.Events.Faces_Event'Class;
+   type Faces_Event_Access is access all ASF.Events.Faces.Faces_Event'Class;
 
    package Event_Vectors is new Ada.Containers.Vectors (Index_Type   => Natural,
                                                         Element_Type => Faces_Event_Access);

@@ -24,7 +24,7 @@ package body ASF.Components.Core is
    use EL.Objects;
 
    procedure Free is
-     new Ada.Unchecked_Deallocation (Object => ASF.Events.Faces_Event'Class,
+     new Ada.Unchecked_Deallocation (Object => ASF.Events.Faces.Faces_Event'Class,
                                      Name   => Faces_Event_Access);
 
    --  ------------------------------
@@ -198,7 +198,7 @@ package body ASF.Components.Core is
    --  will be freed after being dispatched.
    --  ------------------------------
    procedure Queue_Event (UI    : in out UIView;
-                          Event : not null access ASF.Events.Faces_Event'Class) is
+                          Event : not null access ASF.Events.Faces.Faces_Event'Class) is
    begin
       UI.Phase_Events (Event.Get_Phase).Append (Event.all'Access);
    end Queue_Event;

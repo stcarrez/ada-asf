@@ -19,7 +19,7 @@ with ASF.Components.Base;
 with ASF.Components.Holders;
 with ASF.Components.Html.Text;
 with ASF.Validators;
-with ASF.Events;
+with ASF.Events.Faces;
 with EL.Objects;
 with EL.Expressions;
 package ASF.Components.Html.Forms is
@@ -146,7 +146,7 @@ package ASF.Components.Html.Forms is
    --  Listeners are called in the order in which they were added.
    overriding
    procedure Broadcast (UI      : in out UICommand;
-                        Event   : not null access ASF.Events.Faces_Event'Class;
+                        Event   : not null access ASF.Events.Faces.Faces_Event'Class;
                         Context : in out Faces_Context'Class);
 
    --  ------------------------------

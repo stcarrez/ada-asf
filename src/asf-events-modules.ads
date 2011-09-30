@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ASF.Applications;
+
+with Util.Events;
 with Util.Beans.Basic;
 with Util.Beans.Objects;
 package ASF.Events.Modules is

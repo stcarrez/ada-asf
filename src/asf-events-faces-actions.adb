@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  asf-events -- ASF Events
+--  asf-events-faces-actions -- Actions Events
 --  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -15,9 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Util.Events;
 with ASF.Lifecycles;
-package body ASF.Events.Actions is
+package body ASF.Events.Faces.Actions is
 
    --  ------------------------------
    --  Get the method expression to invoke
@@ -40,4 +39,4 @@ package body ASF.Events.Actions is
       UI.Queue_Event (Ev.all'Access);
    end Post_Event;
 
-end ASF.Events.Actions;
+end ASF.Events.Faces.Actions;

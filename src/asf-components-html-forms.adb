@@ -22,7 +22,7 @@ with Ada.Exceptions;
 with ASF.Utils;
 with ASF.Converters;
 with ASF.Components.Utils;
-with ASF.Events.Actions;
+with ASF.Events.Faces.Actions;
 with ASF.Applications.Main;
 package body ASF.Components.Html.Forms is
 
@@ -347,8 +347,8 @@ package body ASF.Components.Html.Forms is
       begin
          Log.Info ("Check command input parameter {0} -> {1}", Id, Val);
          if Val /= "" then
-            ASF.Events.Actions.Post_Event (UI     => UI,
-                                           Method => UI.Get_Action_Expression (Context));
+            ASF.Events.Faces.Actions.Post_Event (UI     => UI,
+                                                 Method => UI.Get_Action_Expression (Context));
          end if;
 
       exception
@@ -363,11 +363,11 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    overriding
    procedure Broadcast (UI      : in out UICommand;
-                        Event   : not null access ASF.Events.Faces_Event'Class;
+                        Event   : not null access ASF.Events.Faces.Faces_Event'Class;
                         Context : in out Faces_Context'Class) is
       pragma Unreferenced (UI);
 
-      use ASF.Events.Actions;
+      use ASF.Events.Faces.Actions;
 
       App  : constant access Applications.Main.Application'Class := Context.Get_Application;
       Disp : constant Action_Listener_Access := App.Get_Action_Listener;

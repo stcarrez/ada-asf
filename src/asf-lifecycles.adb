@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 
 with Ada.Unchecked_Deallocation;
+
+with ASF.Contexts.Exceptions;
 package body ASF.Lifecycles is
 
    --  ------------------------------
@@ -63,12 +65,30 @@ package body ASF.Lifecycles is
    --  ------------------------------
    procedure Execute (Controller : in Lifecycle;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
+      use type ASF.Contexts.Exceptions.Exception_Handler_Access;
    begin
       for Phase in RESTORE_VIEW .. INVOKE_APPLICATION loop
          if Context.Get_Render_Response or Context.Get_Response_Completed then
             return;
          end if;
-         Controller.Controllers (Phase).Execute (Context);
+         begin
+            Controller.Controllers (Phase).Execute (Context);
+         exception
+            when E : others =>
+               Context.Queue_Exception (E);
+         end;
+
+         --  If exceptions have been raised and queued during the current phase, process them.
+         --  An exception handler could use them to redirect the current request to another
+         --  page or navigate to a specific view.
+         declare
+            Ex : constant ASF.Contexts.Exceptions.Exception_Handler_Access
+              := Context.Get_Exception_Handler;
+         begin
+            if Ex /= null then
+               Ex.Handle;
+            end if;
+         end;
       end loop;
    end Execute;
 

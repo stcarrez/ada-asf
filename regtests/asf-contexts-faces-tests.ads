@@ -30,4 +30,7 @@ package ASF.Contexts.Faces.Tests is
    procedure Test_Max_Severity (T : in out Test);
    procedure Test_Get_Messages (T : in out Test);
 
+   --  Test adding some exception in the faces context.
+   procedure Test_Queue_Exception (T : in out Test);
+
 end ASF.Contexts.Faces.Tests;

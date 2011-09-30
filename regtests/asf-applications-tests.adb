@@ -20,7 +20,7 @@ with Util.Tests;
 with Util.Test_Caller;
 
 with ASF.Tests;
-with ASF.Events.Actions;
+with ASF.Events.Faces.Actions;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Applications.Main;
@@ -57,9 +57,9 @@ package body ASF.Applications.Tests is
    end Add_Tests;
 
    package Save_Binding is
-     new ASF.Events.Actions.Action_Method.Bind (Bean   => Form_Bean,
-                                                Method => Save,
-                                                Name   => "save");
+     new ASF.Events.Faces.Actions.Action_Method.Bind (Bean   => Form_Bean,
+                                                      Method => Save,
+                                                      Name   => "save");
 
    Binding_Array : aliased constant Util.Beans.Methods.Method_Binding_Array
      := (Save_Binding.Proxy'Access,

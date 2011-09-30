@@ -16,27 +16,31 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Caller;
+with Ada.Exceptions;
+with Ada.IO_Exceptions;
 
+with Util.Test_Caller;
 with Util.Tests;
 
 package body ASF.Contexts.Faces.Tests is
 
    use Util.Tests;
 
-   package Caller is new AUnit.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test);
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
 
    begin
       --  To document what is tested, register the test methods for each
       --  operation that is tested.
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Faces.Add_Message",
-                                     Test_Add_Message'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Faces.Max_Severity",
-                                     Test_Max_Severity'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Contexts.Faces.Get_Message",
-                                     Test_Get_Messages'Access));
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Add_Message",
+                       Test_Add_Message'Access);
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Max_Severity",
+                       Test_Max_Severity'Access);
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Get_Message",
+                       Test_Get_Messages'Access);
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Queue_Exception",
+                       Test_Queue_Exception'Access);
    end Add_Tests;
 
    --  Test the faces message queue.
@@ -92,5 +96,59 @@ package body ASF.Contexts.Faces.Tests is
          T.Assert (INFO = Get_Severity (M), "Invalid severity");
       end;
    end Test_Get_Messages;
+
+   --  ------------------------------
+   --  Test adding some exception in the faces context.
+   --  ------------------------------
+   procedure Test_Queue_Exception (T : in out Test) is
+      procedure Raise_Exception (Depth : in Natural;
+                                 Excep : in Natural);
+      procedure Check_Exception (Event   : in Events.Exceptions.Exception_Event'Class;
+                                 Remove  : out Boolean;
+                                 Context : in out Faces_Context'Class);
+
+      Ctx : Faces_Context;
+      Cnt : Natural := 0;
+
+      procedure Raise_Exception (Depth : in Natural;
+                                 Excep : in Natural) is
+      begin
+         if Depth > 0 then
+            Raise_Exception (Depth - 1, Excep);
+         end if;
+         case Excep is
+            when 1 =>
+               raise Constraint_Error with "except code 1";
+
+            when 2 =>
+               raise Ada.IO_Exceptions.Name_Error;
+
+            when others =>
+               raise Program_Error with "Testing program error";
+         end case;
+      end Raise_Exception;
+
+      procedure Check_Exception (Event   : in Events.Exceptions.Exception_Event'Class;
+                                 Remove  : out Boolean;
+                                 Context : in out Faces_Context'Class) is
+      begin
+         Cnt    := Cnt + 1;
+         Remove := False;
+      end Check_Exception;
+
+   begin
+      --  Create some exceptions and queue them.
+      for I in 1 .. 3 loop
+         begin
+            Raise_Exception (3, I);
+         exception
+            when E : others =>
+               Ctx.Queue_Exception (E);
+         end;
+      end loop;
+
+      Ctx.Iterate_Exception (Check_Exception'Access);
+      Util.Tests.Assert_Equals (T, 3, Cnt, "3 exception should have been queued");
+   end Test_Queue_Exception;
 
 end ASF.Contexts.Faces.Tests;

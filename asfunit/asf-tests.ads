@@ -22,7 +22,6 @@ with ASF.Responses.Mockup;
 with ASF.Server;
 with ASF.Applications.Main;
 with Util.Tests;
-with AUnit.Assertions;
 
 with GNAT.Source_Info;
 

@@ -20,7 +20,6 @@ with GNAT.Regpat;
 
 with Ada.Strings.Unbounded;
 
-with Util.Tests;
 with Util.Files;
 
 with ASF.Streams;
@@ -48,6 +47,10 @@ package body ASF.Tests is
    Ajax     : aliased ASF.Servlets.Ajax.Ajax_Servlet;
    Dump     : aliased ASF.Filters.Dump.Dump_Filter;
    Measures : aliased ASF.Servlets.Measures.Measure_Servlet;
+
+   --  Save the response headers and content in a file
+   procedure Save_Response (Name     : in String;
+                            Response : in out ASF.Responses.Mockup.Response);
 
    --  ------------------------------
    --  Initialize the awa test framework mockup.
@@ -223,8 +226,8 @@ package body ASF.Tests is
 
       Stream  : ASF.Streams.Print_Stream := Reply.Get_Output_Stream;
       Content : Unbounded_String;
-      Regexp  : Pattern_Matcher := Compile (Expression => Pattern,
-                                            Flags      => Multiple_Lines);
+      Regexp  : constant Pattern_Matcher := Compile (Expression => Pattern,
+                                                     Flags      => Multiple_Lines);
    begin
       Reply.Read_Content (Content);
       Stream.Write (Content);

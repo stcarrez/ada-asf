@@ -29,6 +29,8 @@ package body ASF.Applications.Main.Tests is
 
    use Util.Tests;
 
+   function Create_Form_Bean return Util.Beans.Basic.Readonly_Bean_Access;
+
    package Caller is new Util.Test_Caller (Test);
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
@@ -65,7 +67,7 @@ package body ASF.Applications.Main.Tests is
    end Tear_Down;
 
    function Create_Form_Bean return Util.Beans.Basic.Readonly_Bean_Access is
-      Result : ASF.Applications.Tests.Form_Bean_Access := new ASF.Applications.Tests.Form_Bean;
+      Result : constant Applications.Tests.Form_Bean_Access := new Applications.Tests.Form_Bean;
    begin
       return Result.all'Access;
    end Create_Form_Bean;

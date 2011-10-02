@@ -16,11 +16,9 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Exceptions;
 with Ada.IO_Exceptions;
 
 with Util.Test_Caller;
-with Util.Tests;
 
 package body ASF.Contexts.Faces.Tests is
 
@@ -131,6 +129,7 @@ package body ASF.Contexts.Faces.Tests is
       procedure Check_Exception (Event   : in Events.Exceptions.Exception_Event'Class;
                                  Remove  : out Boolean;
                                  Context : in out Faces_Context'Class) is
+         pragma Unreferenced (Context, Event);
       begin
          Cnt    := Cnt + 1;
          Remove := False;

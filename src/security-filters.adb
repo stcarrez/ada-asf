@@ -21,6 +21,7 @@ with Ada.Strings.Unbounded;
 with Util.Log.Loggers;
 
 with ASF.Cookies;
+with ASF.Applications.Main;
 
 with Security.Contexts;
 package body Security.Filters is
@@ -29,6 +30,19 @@ package body Security.Filters is
 
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("Security.Filters");
+
+   --  ------------------------------
+   --  Called by the servlet container to indicate to a servlet that the servlet
+   --  is being placed into service.
+   --  ------------------------------
+   procedure Initialize (Server  : in out Auth_Filter;
+                         Context : in ASF.Servlets.Servlet_Registry'Class) is
+      use ASF.Applications.Main;
+   begin
+      if Context in Application'Class then
+         Server.Set_Permission_Manager (Application'Class (Context).Get_Permission_Manager);
+      end if;
+   end Initialize;
 
    --  ------------------------------
    --  Set the permission manager that must be used to verify the permission.

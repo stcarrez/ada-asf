@@ -35,6 +35,11 @@ package Security.Filters is
 
    type Auth_Filter is new ASF.Filters.Filter with private;
 
+   --  Called by the servlet container to indicate to a servlet that the servlet
+   --  is being placed into service.
+   procedure Initialize (Server  : in out Auth_Filter;
+                         Context : in ASF.Servlets.Servlet_Registry'Class);
+
    --  Set the permission manager that must be used to verify the permission.
    procedure Set_Permission_Manager (Filter  : in out Auth_Filter;
                                      Manager : in Security.Permissions.Permission_Manager_Access);

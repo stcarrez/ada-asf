@@ -1,0 +1,15 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:auth="http://code.google.com/p/ada-asf/auth"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testOutput" styleClass="test" style="color: red;">
+  <c:if test="#{auth:hasPermission('none')}">
+    This message must NOT be present
+  </c:if>
+  <c:if test="#{not auth:hasPermission('no-perm-defined')}">
+    <i>Some italic</i>
+    <c:if test="#{false}">
+       <b class='bold'>Some italic NOT present</b>
+    </c:if>
+    <b class='bold' id='bold'>Some bold</b>
+  </c:if>
+</p>

@@ -223,6 +223,7 @@ package body ASF.Applications.Main is
 
       ASF.Components.Utils.Factory.Set_Functions (App.Functions);
       ASF.Views.Nodes.Core.Set_Functions (App.Functions);
+      Security.Permissions.Set_Functions (App.Functions);
 
       --  Create the lifecycle handler.
       App.Lifecycle := Factory.Create_Lifecycle_Handler;

@@ -30,12 +30,20 @@ with Util.Serialize.IO.XML;
 
 with GNAT.Regexp;
 
+with EL.Functions;
+
 limited with Security.Controllers;
 limited with Security.Contexts;
 
 --  The <b>Security.Permissions</b> package defines the different permissions that can be
 --  checked by the access control manager.
 package Security.Permissions is
+
+   --  EL function name exposed by Set_Functions.
+   HAS_PERMISSION_FN  : constant String := "hasPermission";
+
+   --  URI for the EL functions exposed by the security package (See Set_Functions).
+   AUTH_NAMESPACE_URI : constant String := "http://code.google.com/p/ada-asf/auth";
 
    Invalid_Name : exception;
 
@@ -230,6 +238,12 @@ package Security.Permissions is
    package Reader_Config is
       Config : aliased Policy_Config;
    end Reader_Config;
+
+   --  Register a set of functions in the namespace
+   --  xmlns:fn="http://code.google.com/p/ada-asf/auth"
+   --  Functions:
+   --    hasPermission(NAME)   --  Returns True if the permission NAME is granted
+   procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
 
 private
 

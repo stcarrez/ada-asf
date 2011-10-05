@@ -169,10 +169,15 @@ package body Security.Contexts is
    --  returned in <b>Result</b>.
    --  ------------------------------
    function Has_Permission (Permission : in Permissions.Permission_Index) return Boolean is
-      Result : Boolean;
+      Result  : Boolean;
+      Context : constant Security_Context_Access := Current;
    begin
-      Current.Has_Permission (Permission, Result);
-      return Result;
+      if Context = null then
+         return False;
+      else
+         Context.Has_Permission (Permission, Result);
+         return Result;
+      end if;
    end Has_Permission;
 
    --  ------------------------------
@@ -181,10 +186,15 @@ package body Security.Contexts is
    --  returned in <b>Result</b>.
    --  ------------------------------
    function Has_Permission (Permission : in String) return Boolean is
-      Result : Boolean;
+      Result  : Boolean;
+      Context : constant Security_Context_Access := Current;
    begin
-      Current.Has_Permission (Permission, Result);
-      return Result;
+      if Context = null then
+         return False;
+      else
+         Context.Has_Permission (Permission, Result);
+         return Result;
+      end if;
    end Has_Permission;
 
 end Security.Contexts;

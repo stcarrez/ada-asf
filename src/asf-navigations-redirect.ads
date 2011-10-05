@@ -15,14 +15,23 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with EL.Expressions;
+with EL.Contexts;
 package ASF.Navigations.Redirect is
 
    --  ------------------------------
    --  Redirect page navigator
    --  ------------------------------
    --  The <b>Redirect_Navigator</b> handles the redirection rule for the navigation.
+   --  The redirection view can contain EL expressions that will be evaluated when the
+   --  redirect rule is executed.
    type Redirect_Navigator is new Navigation_Case with private;
    type Redirect_Navigator_Access is access all Redirect_Navigator'Class;
+
+   --  Get the redirection view.  Evaluate the EL expressions used in the view name.
+   function Get_Redirection (Controller : in Redirect_Navigator;
+                             Context    : in ASF.Contexts.Faces.Faces_Context'Class)
+                             return String;
 
    --  Navigate to the next page or action according to the controller's navigator.
    --  The navigator controller redirects the user to another page.
@@ -31,12 +40,14 @@ package ASF.Navigations.Redirect is
                        Context    : in out ASF.Contexts.Faces.Faces_Context'Class);
 
    --  Create a navigation case to redirect to another page.
-   function Create_Redirect_Navigator (To_View : in String) return Navigation_Access;
+   function Create_Redirect_Navigator (To_View : in String;
+                                       Context : in EL.Contexts.ELContext'Class)
+                                       return Navigation_Access;
 
 private
 
    type Redirect_Navigator is new Navigation_Case with record
-      View_Name    : Unbounded_String;
+      View_Expr  : EL.Expressions.Expression;
    end record;
 
 end ASF.Navigations.Redirect;

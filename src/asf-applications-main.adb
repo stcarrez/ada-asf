@@ -760,7 +760,7 @@ package body ASF.Applications.Main is
         new ASF.Beans.Mappers.Reader_Config (Reader, App.Factory'Unchecked_Access,
                                              Context'Unchecked_Access);
       package Navigation_Config is
-        new ASF.Navigations.Mappers.Reader_Config (Reader, Nav);
+        new ASF.Navigations.Mappers.Reader_Config (Reader, Nav, Context'Unchecked_Access);
       package Servlet_Config is
         new ASF.Servlets.Mappers.Reader_Config (Reader, App'Unchecked_Access);
       pragma Warnings (Off, Bean_Config);

@@ -20,6 +20,8 @@ with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
 with Util.Serialize.IO.XML;
 
+with EL.Contexts;
+
 --  The <b>ASF.Navigations.Reader</b> package defines an XML mapper that can be used
 --  to read the XML navigation files.
 package ASF.Navigations.Mappers is
@@ -43,6 +45,7 @@ package ASF.Navigations.Mappers is
       Condition    : Util.Beans.Objects.Object;
       Content      : Util.Beans.Objects.Object;
       Content_Type : Util.Beans.Objects.Object;
+      Context      : EL.Contexts.ELContext_Access;
       Handler      : Navigation_Handler_Access;
    end record;
    type Nav_Config_Access is access all Nav_Config;
@@ -58,6 +61,7 @@ package ASF.Navigations.Mappers is
    generic
       Reader  : in out Util.Serialize.IO.XML.Parser;
       Handler : in Navigation_Handler_Access;
+      Context : in EL.Contexts.ELContext_Access;
    package Reader_Config is
       Config : aliased Nav_Config;
    end Reader_Config;

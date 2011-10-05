@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 with Ada.Strings.Fixed;
 
-with Util.Files;
 with ASF.Contexts.Facelets;
 with ASF.Applications.Main;
 with ASF.Components.Base;
@@ -33,12 +32,6 @@ package body ASF.Applications.Views is
    end record;
 
    --  Include the definition having the given name.
---     overriding
---     procedure Include_Definition (Context : in out Facelet_Context;
---                                   Name    : in Ada.Strings.Unbounded.Unbounded_String;
---                                   Parent  : in UIComponent_Access);
-
-   --  Include the definition having the given name.
    overriding
    procedure Include_Facelet (Context : in out Facelet_Context;
                               Source  : in String;
@@ -48,27 +41,6 @@ package body ASF.Applications.Views is
    overriding
    function Get_Application (Context : in Facelet_Context)
                              return access ASF.Applications.Main.Application'Class;
-
-   --  ------------------------------
-   --  Include the definition having the given name.
-   --  ------------------------------
---     overriding
---     procedure Include_Definition (Context : in out Facelet_Context;
---                                   Name    : in Ada.Strings.Unbounded.Unbounded_String;
---                                   Parent  : in UIComponent_Access) is
---
---        use ASF.Views;
---
---        Tree : Facelets.Facelet;
---     begin
---        Facelets.Find_Facelet (Factory => Context.Facelets.all,
---                               Name    => Ada.Strings.Unbounded.To_String (Name),
---                               Result  => Tree);
---
---        Facelets.Build_View (View    => Tree,
---                             Context => Context,
---                             Root    => Parent);
---     end Include_Definition;
 
    --  ------------------------------
    --  Include the definition having the given name.
@@ -269,20 +241,5 @@ package body ASF.Applications.Views is
       Handler.View_Ext := To_Unbounded_String (From);
       Handler.File_Ext := To_Unbounded_String (Into);
    end Set_Extension_Mapping;
-
-   --  ------------------------------
-   --  Register a module
-   --  ------------------------------
---     procedure Register_Module (Handler : in out View_Handler;
---                                Module  : in ASF.Modules.Module_Access) is
---        use Ada.Strings.Unbounded;
---
---        Name : constant String := Module.Get_Name;
---        URI  : constant String := Module.Get_URI;
---        Def  : constant String := Util.Files.Compose_Path (To_String (Handler.Paths), URI);
---        Dir  : constant String := Module.Get_Config (Name & ".web.dir", Def);
---     begin
---        ASF.Views.Facelets.Register_Module (Handler.Facelets, URI, Dir);
---     end Register_Module;
 
 end ASF.Applications.Views;

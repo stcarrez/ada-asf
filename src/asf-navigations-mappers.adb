@@ -79,7 +79,7 @@ package body ASF.Navigations.Mappers is
                Navigator : Navigation_Access;
             begin
                if N.Redirect then
-                  Navigator := Create_Redirect_Navigator (To_String (N.To_View));
+                  Navigator := Create_Redirect_Navigator (To_String (N.To_View), N.Context.all);
                else
                   Navigator := Create_Render_Navigator (To_String (N.To_View));
                end if;
@@ -105,6 +105,7 @@ package body ASF.Navigations.Mappers is
       Reader.Add_Mapping ("module", Mapping'Access);
       Reader.Add_Mapping ("web-app", Mapping'Access);
       Config.Handler := Handler;
+      Config.Context := Context;
       Reset (Config);
       Navigation_Mapper.Set_Context (Reader, Config'Unchecked_Access);
    end Reader_Config;

@@ -318,4 +318,9 @@ private
       Last_Index   : Permission_Index := Permission_Index'First;
    end record;
 
+   --  EL function to check if the given permission name is granted by the current
+   --  security context.
+   function Has_Permission (Value : in Util.Beans.Objects.Object)
+                            return Util.Beans.Objects.Object;
+
 end Security.Permissions;

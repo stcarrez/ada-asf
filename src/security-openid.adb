@@ -352,7 +352,8 @@ package body Security.Openid is
       Append (Result, "&openid." & Axa & ".type.firstname=http://axschema.org/namePerson/first");
       Append (Result, "&openid." & Axa & ".type.lastname=http://axschema.org/namePerson/last");
       Append (Result, "&openid." & Axa & ".type.gender=http://axschema.org/person/gender");
-      Append (Result, "&openid." & Axa & ".required=email,fullname,language,firstname,lastname,gender");
+      Append (Result, "&openid." & Axa & ".required=email,fullname,language,firstname,"
+              & "lastname,gender");
       Append (Result, "&openid.ns.sreg=http://openid.net/extensions/sreg/1.1");
       Append (Result, "&openid.sreg.required=email,fullname,gender,country,nickname");
       Append (Result, "&openid.return_to=");

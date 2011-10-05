@@ -164,7 +164,8 @@ package body Security.Permissions is
       if Index >= Manager.Last_Index then
          declare
             Count : constant Permission_Index := Index + 32;
-            Perms : Controller_Access_Array_Access := new Controller_Access_Array (0 .. Count);
+            Perms : constant Controller_Access_Array_Access
+              := new Controller_Access_Array (0 .. Count);
          begin
             if Manager.Permissions /= null then
                Perms (Manager.Permissions'Range) := Manager.Permissions.all;
@@ -393,7 +394,8 @@ package body Security.Permissions is
       Iter := Policy.Patterns.First;
       while Util.Beans.Objects.Vectors.Has_Element (Iter) loop
          declare
-            Pattern : constant Util.Beans.Objects.Object := Util.Beans.Objects.Vectors.Element (Iter);
+            Pattern : constant Util.Beans.Objects.Object
+              := Util.Beans.Objects.Vectors.Element (Iter);
          begin
             Pol.Id   := Policy.Id;
             Pol.Pattern := GNAT.Regexp.Compile (Util.Beans.Objects.To_String (Pattern));
@@ -436,7 +438,9 @@ package body Security.Permissions is
       package Policy_Config is
         new Reader_Config (Reader, Manager'Unchecked_Access);
       package Role_Config is
-         new Security.Controllers.Roles.Reader_Config (Reader, Manager'Unchecked_Access);
+        new Security.Controllers.Roles.Reader_Config (Reader, Manager'Unchecked_Access);
+      pragma Warnings (Off, Policy_Config);
+      pragma Warnings (Off, Role_Config);
    begin
       Log.Info ("Reading policy file {0}", File);
 

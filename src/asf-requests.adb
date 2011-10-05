@@ -253,6 +253,24 @@ package body ASF.Requests is
       return Request'Class (Req).Get_Remote_Addr;
    end Get_Remote_Host;
 
+   --
+   procedure Compute_Locale (Req : in Request) is
+      H : constant String := Req.Get_Header ("Accept-Language");
+      P : Natural;
+      I : Positive := H'First;
+   begin
+      while I < H'Last loop
+         P := Util.Strings.Index (Source => H,
+                                  Char   => ';',
+                                  From   => I);
+         if P = 0 then
+            P := H'Last + 1;
+         end if;
+         Check_Locale (Req, H (I .. P - 1));
+         I := P + 1;
+      end loop;
+   end Compute_Locale;
+
    --  Returns the preferred Locale that the client will accept content in, based
    --  on the Accept-Language header. If the client request doesn't provide an
    --  Accept-Language header, this method returns the default locale for the server.

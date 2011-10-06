@@ -37,6 +37,7 @@ package Security.Filters is
 
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
+   overriding
    procedure Initialize (Server  : in out Auth_Filter;
                          Context : in ASF.Servlets.Servlet_Registry'Class);
 

@@ -194,8 +194,14 @@ package body ASF.Applications.Views is
    function Get_Redirect_URL (Handler : in View_Handler;
                               Context : in ASF.Contexts.Faces.Faces_Context'Class;
                               View    : in String) return String is
+      Pos : constant Natural := Util.Strings.Rindex (View, '?');
    begin
-      return Handler.Get_Action_URL (Context, View);
+      if Pos > 0 then
+         return Handler.Get_Action_URL (Context, View (View'First .. Pos - 1))
+           & View (Pos .. View'Last);
+      else
+         return Handler.Get_Action_URL (Context, View);
+      end if;
    end Get_Redirect_URL;
 
    --  ------------------------------

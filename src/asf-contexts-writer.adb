@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Strings.Transforms;
 with Unicode;
 package body ASF.Contexts.Writer is
 
@@ -446,5 +447,83 @@ package body ASF.Contexts.Writer is
       Close_Current (Stream);
       ASF.Streams.Print_Stream (Stream).Write (Item);
    end Write;
+
+   --  ------------------------------
+   --  Write the java scripts that have been queued by <b>Queue_Script</b>
+   --  ------------------------------
+   procedure Write_Scripts (Stream : in out Response_Writer) is
+   begin
+      if Length (Stream.Script_Queue) = 0 then
+         return;
+      end if;
+      Stream.Start_Element ("script");
+      Stream.Write_Attribute ("type", "text/javascript");
+      Close_Current (Stream);
+      Stream.Write (Stream.Script_Queue);
+      Stream.End_Element ("script");
+      Stream.Script_Queue := Ada.Strings.Unbounded.Null_Unbounded_String;
+   end Write_Scripts;
+
+   --  ------------------------------
+   --  Append the <b>Script</b> to the javascript buffer queue.  The <b>Script</b> is not escaped.
+   --  ------------------------------
+   procedure Queue_Script (Stream : in out Response_Writer;
+                           Script : in String) is
+   begin
+      Append (Stream.Script_Queue, Script);
+   end Queue_Script;
+
+   --  ------------------------------
+   --  Append the <b>Script</b> to the javascript buffer queue.  The <b>Script</b> is not escaped.
+   --  ------------------------------
+   procedure Queue_Script (Stream : in out Response_Writer;
+                           Script : in Ada.Strings.Unbounded.Unbounded_String) is
+   begin
+      Append (Stream.Script_Queue, Script);
+   end Queue_Script;
+
+   --  ------------------------------
+   --  Append the <b>Value</b> to the javascript buffer queue.  The value is escaped according
+   --  to Javascript escape rules.
+   --  ------------------------------
+   procedure Queue_Script (Stream : in out Response_Writer;
+                           Value  : in Util.Beans.Objects.Object) is
+      use Util.Beans.Objects;
+
+      Of_Type : constant Util.Beans.Objects.Data_Type := Util.Beans.Objects.Get_Type (Value);
+   begin
+      case Of_Type is
+         when TYPE_BOOLEAN =>
+            if To_Boolean (Value) then
+               Append (Stream.Script_Queue, "true");
+            else
+               Append (Stream.Script_Queue, "false");
+            end if;
+
+         when TYPE_INTEGER | TYPE_FLOAT =>
+            Append (Stream.Script_Queue, To_String (Value));
+
+         when TYPE_STRING =>
+            Util.Strings.Transforms.Escape_Javascript (Content => To_String (Value),
+                                                       Into    => Stream.Script_Queue);
+
+         when others =>
+            Util.Strings.Transforms.Escape_Javascript (Content => To_String (Value),
+                                                       Into    => Stream.Script_Queue);
+
+      end case;
+   end Queue_Script;
+
+   --  ------------------------------
+   --  Flush the response.
+   --  Before flusing the response, the javascript are also flushed
+   --  by calling <b>Write_Scripts</b>.
+   --  ------------------------------
+   overriding
+   procedure Flush (Stream : in out Response_Writer) is
+   begin
+      Stream.Write_Scripts;
+      ASF.Streams.Print_Stream (Stream).Flush;
+   end Flush;
 
 end ASF.Contexts.Writer;

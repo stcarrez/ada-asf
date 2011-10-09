@@ -29,6 +29,7 @@ with Ada.Streams;
 with Ada.Strings.Unbounded;
 with Ada.Strings.Wide_Wide_Unbounded;
 with EL.Objects;
+with Util.Beans.Objects;
 with ASF.Streams;
 package ASF.Contexts.Writer is
 
@@ -150,6 +151,35 @@ package ASF.Contexts.Writer is
    procedure Write (Stream : in out Response_Writer;
                     Item   : in Ada.Strings.Unbounded.Unbounded_String);
 
+
+   --  ------------------------------
+   --  Javascript Support
+   --  ------------------------------
+   --  To optimize the execution of Javascript page code, ASF components can queue some
+   --  javascript code and have it merged and executed in a single <script> command.
+
+   --  Write the java scripts that have been queued by <b>Queue_Script</b>
+   procedure Write_Scripts (Stream : in out Response_Writer);
+
+   --  Append the <b>Script</b> to the javascript buffer queue.  The <b>Script</b> is not escaped.
+   procedure Queue_Script (Stream : in out Response_Writer;
+                           Script : in String);
+
+   --  Append the <b>Script</b> to the javascript buffer queue.  The <b>Script</b> is not escaped.
+   procedure Queue_Script (Stream : in out Response_Writer;
+                           Script : in Ada.Strings.Unbounded.Unbounded_String);
+
+   --  Append the <b>Value</b> to the javascript buffer queue.  The value is escaped according
+   --  to Javascript escape rules.
+   procedure Queue_Script (Stream : in out Response_Writer;
+                           Value  : in Util.Beans.Objects.Object);
+
+   --  Flush the response.
+   --  Before flusing the response, the javascript are also flushed
+   --  by calling <b>Write_Scripts</b>.
+   overriding
+   procedure Flush (Stream : in out Response_Writer);
+
 private
 
    use Ada.Streams;
@@ -169,6 +199,9 @@ private
 
       --  The content type.
       Content_Type : Unbounded_String;
+
+      --  The javascript that has been queued by <b>Queue_Script</b>.
+      Script_Queue : Unbounded_String;
 
       --  An optional element to write in the stream.
       Optional_Element         : String (1 .. 32);

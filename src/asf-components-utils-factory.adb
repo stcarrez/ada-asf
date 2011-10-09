@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
 
 with ASF.Components.Core;
 with ASF.Views.Nodes;
+with ASF.Components.Utils.Flush;
+with ASF.Components.Utils.Scripts;
+with ASF.Components.Utils.Escapes;
 with Util.Strings.Transforms; use Util.Strings;
 package body ASF.Components.Utils.Factory is
 
@@ -25,6 +28,9 @@ package body ASF.Components.Utils.Factory is
 
    function Create_View return UIComponent_Access;
    function Create_Parameter return UIComponent_Access;
+   function Create_Flush return UIComponent_Access;
+   function Create_Script return UIComponent_Access;
+   function Create_Escape return UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIView component
@@ -42,17 +48,53 @@ package body ASF.Components.Utils.Factory is
       return new ASF.Components.Core.UIParameter;
    end Create_Parameter;
 
+   --  ------------------------------
+   --  Create a UIFlush component
+   --  ------------------------------
+   function Create_Flush return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.Flush.UIFlush;
+   end Create_Flush;
+
+   --  ------------------------------
+   --  Create a UIScript component
+   --  ------------------------------
+   function Create_Script return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.Scripts.UIScript;
+   end Create_Script;
+
+   --  ------------------------------
+   --  Create a UIEscape component
+   --  ------------------------------
+   function Create_Escape return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.Escapes.UIEscape;
+   end Create_Escape;
+
    use ASF.Views.Nodes;
 
    URI        : aliased constant String := "http://code.google.com/p/ada-asf/util";
-   VIEW_TAG   : aliased constant String := "view";
+   ESCAPE_TAG : aliased constant String := "escape";
+   FLUSH_TAG  : aliased constant String := "flush";
    PARAM_TAG  : aliased constant String := "param";
+   SCRIPT_TAG : aliased constant String := "script";
+   VIEW_TAG   : aliased constant String := "view";
 
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => PARAM_TAG'Access,
+     := (1 => (Name      => ESCAPE_TAG'Access,
+               Component => Create_Escape'Access,
+               Tag       => Create_Component_Node'Access),
+         2 => (Name      => FLUSH_TAG'Access,
+               Component => Create_Flush'Access,
+               Tag       => Create_Component_Node'Access),
+         3 => (Name      => PARAM_TAG'Access,
                Component => Create_Parameter'Access,
                Tag       => Create_Component_Node'Access),
-         2 => (Name      => VIEW_TAG'Access,
+         4 => (Name      => SCRIPT_TAG'Access,
+               Component => Create_Script'Access,
+               Tag       => Create_Component_Node'Access),
+         5 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access)
         );

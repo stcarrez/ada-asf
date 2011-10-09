@@ -220,6 +220,8 @@ package body ASF.Applications.Main is
                             Bindings => Nodes.Core.Definition);
       ASF.Factory.Register (Factory  => App.Components,
                             Bindings => Nodes.Facelets.Definition);
+      ASF.Factory.Register (Factory  => App.Components,
+                            Bindings => Utils.Factory.Definition);
 
       ASF.Components.Utils.Factory.Set_Functions (App.Functions);
       ASF.Views.Nodes.Core.Set_Functions (App.Functions);

@@ -20,6 +20,8 @@ with ASF.Contexts.Faces;
 with ASF.Requests;
 package body ASF.Beans.Params is
 
+   Bean : aliased Param_Bean;
+
    --  ------------------------------
    --  Get the request parameter identified by the given name.
    --  Returns Null_Object if the request does not define such parameter.
@@ -46,5 +48,13 @@ package body ASF.Beans.Params is
          end if;
       end;
    end Get_Value;
+
+   --  ------------------------------
+   --  Return the Param_Bean instance.
+   --  ------------------------------
+   function Instance return Util.Beans.Objects.Object is
+   begin
+      return Util.Beans.Objects.To_Object (Bean'Access, Util.Beans.Objects.STATIC);
+   end Instance;
 
 end ASF.Beans.Params;

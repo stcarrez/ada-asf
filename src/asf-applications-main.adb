@@ -32,6 +32,8 @@ with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
 with ASF.Beans.Mappers;
+with ASF.Beans.Params;
+with ASF.Beans.Headers;
 with ASF.Servlets.Mappers;
 with ASF.Navigations.Mappers;
 
@@ -420,6 +422,14 @@ package body ASF.Applications.Main is
    begin
       if Base /= null then
          return Base.Get_Value (Key);
+      end if;
+
+      if Key = "param" then
+         return ASF.Beans.Params.Instance;
+      end if;
+
+      if Key = "header" then
+         return ASF.Beans.Headers.Instance;
       end if;
 
       Result := Resolver.Request.Get_Attribute (Key);

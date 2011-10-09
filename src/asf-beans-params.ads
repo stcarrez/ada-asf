@@ -34,6 +34,9 @@ package ASF.Beans.Params is
    function Get_Value (Bean : in Param_Bean;
                        Name : in String) return Util.Beans.Objects.Object;
 
+   --  Return the Param_Bean instance.
+   function Instance return Util.Beans.Objects.Object;
+
 private
 
    type Param_Bean is new Util.Beans.Basic.Readonly_Bean with null record;

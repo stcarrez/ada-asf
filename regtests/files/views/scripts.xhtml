@@ -1,0 +1,23 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <util:script>
+       <c:if test="#{1 == 1}">
+         AJAX.Update('container', 'get-image');
+       </c:if>
+       <c:if test="#{1 == 2}">
+         AJAX.Update('container', 'get-image-invalid');
+       </c:if>
+    </util:script>
+
+    <div id='container'>
+      <util:script>
+      var i = 1;
+      var j = 2;
+      </util:script>
+    </div>
+
+    <util:flush/>
+  </body>
+</html>

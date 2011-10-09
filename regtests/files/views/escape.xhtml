@@ -1,0 +1,21 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <util:script>
+       var value = "<util:escape>
+   <p>This is a paragraph</p>
+   <div id="test">&amp;</div>
+    </util:escape>";
+    </util:script>
+
+    <div id='container'>
+      <util:script>
+      var i = 1;
+      var j = 2;
+      </util:script>
+    </div>
+
+    <util:flush/>
+  </body>
+</html>

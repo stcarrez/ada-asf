@@ -1,0 +1,10 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <p>#{param['file-name']}</p>
+    <c:if test="#{empty param['none']}">
+    <b>#{param['file-name']}</b>
+    </c:if>
+  </body>
+</html>

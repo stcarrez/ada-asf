@@ -2,6 +2,8 @@ Version 0.3     -
   - New component <h:inputTextarea>
   - Implement a JSF exception handler framework
   - New date converter to format dates in a localized format
+  - New components <util:escape>, <util:script>, <util:flush>
+  - Provide pre-defined beans in ASF contexts: param, header
 
 Version 0.2     - Sep 2011
   - Integrate jQuery UI 1.8.3 (MIT-License)

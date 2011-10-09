@@ -64,6 +64,8 @@ package body ASF.Applications.Views.Tests is
 
             Req.Set_Method ("GET");
             Req.Set_Path_Info (View_Name);
+            Req.Set_Parameter ("file-name", To_String (T.Name));
+            Req.Set_Header ("file", To_String (T.Name));
             App.Dispatch (Page     => View_Name,
                           Request  => Req,
                           Response => Rep);

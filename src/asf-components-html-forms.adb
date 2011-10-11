@@ -22,8 +22,10 @@ with Ada.Exceptions;
 with ASF.Utils;
 with ASF.Converters;
 with ASF.Components.Utils;
+with ASF.Components.Root;
 with ASF.Events.Faces.Actions;
 with ASF.Applications.Main;
+with ASF.Applications.Views;
 package body ASF.Components.Html.Forms is
 
    use Util.Log;
@@ -421,12 +423,16 @@ package body ASF.Components.Html.Forms is
       UI.Is_Submitted := True;
    end Set_Submitted;
 
+   --  ------------------------------
    --  Get the action URL to set on the HTML form
+   --  ------------------------------
    function Get_Action (UI      : in UIForm;
                         Context : in Faces_Context'Class) return String is
-      pragma Unreferenced (UI, Context);
+      App          : constant ASF.Contexts.Faces.Application_Access := Context.Get_Application;
+      View_Handler : constant access Applications.Views.View_Handler'Class := App.Get_View_Handler;
+      View         : constant ASF.Components.Root.UIViewRoot := Context.Get_View_Root;
    begin
-      return "";
+      return View_Handler.Get_Action_URL (Context, ASF.Components.Root.Get_View_Id (View));
    end Get_Action;
 
    overriding

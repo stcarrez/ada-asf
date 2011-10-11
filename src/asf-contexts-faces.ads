@@ -49,6 +49,8 @@ package ASF.Contexts.Faces is
 
    use Ada.Strings.Unbounded;
 
+   type Application_Access is access all ASF.Applications.Main.Application'Class;
+
    type Faces_Context is tagged limited private;
 
    type Faces_Context_Access is access all Faces_Context'Class;
@@ -154,7 +156,7 @@ package ASF.Contexts.Faces is
 
    --  Get the application associated with this faces context.
    function Get_Application (Context : in Faces_Context)
-                             return access ASF.Applications.Main.Application'Class;
+                             return Application_Access;
 
    --  Get the component view root.
    function Get_View_Root (Context : in Faces_Context)
@@ -199,8 +201,8 @@ package ASF.Contexts.Faces is
    function Current return Faces_Context_Access;
 
    --  Set the current faces context in the per-thread/task attribute.
-   procedure Set_Current (Context     : Faces_Context_Access;
-                          Application : access ASF.Applications.Main.Application'Class);
+   procedure Set_Current (Context     : in Faces_Context_Access;
+                          Application : in Application_Access);
 
    --  Restore the previous faces context.
    procedure Restore (Context : in Faces_Context_Access);
@@ -233,7 +235,7 @@ private
       Response : ASF.Responses.Response_Access;
 
       --  The application
-      Application : access ASF.Applications.Main.Application'Class;
+      Application : Application_Access;
 
       --  The exception handler and exception queue.
       Except_Handler     : Exceptions.Exception_Handler_Access;

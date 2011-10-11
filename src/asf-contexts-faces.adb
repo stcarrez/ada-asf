@@ -294,7 +294,7 @@ package body ASF.Contexts.Faces is
    --  Get the application associated with this faces context.
    --  ------------------------------
    function Get_Application (Context : in Faces_Context)
-                             return access ASF.Applications.Main.Application'Class is
+                             return Application_Access is
    begin
       return Context.Application;
    end Get_Application;
@@ -389,8 +389,8 @@ package body ASF.Contexts.Faces is
    --  ------------------------------
    --  Set the current faces context in the per-thread/task attribute.
    --  ------------------------------
-   procedure Set_Current (Context     : Faces_Context_Access;
-                          Application : access ASF.Applications.Main.Application'Class) is
+   procedure Set_Current (Context     : in Faces_Context_Access;
+                          Application : in Application_Access) is
    begin
       Context.Application := Application;
       Task_Context.Set_Value (Context);

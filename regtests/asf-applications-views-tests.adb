@@ -49,8 +49,11 @@ package body ASF.Applications.Views.Tests is
       Result_File : constant String := To_String (T.Result);
       Conf        : Applications.Config;
       App_Factory : Applications.Main.Application_Factory;
+      Dir         : constant String := "regtests/files";
+      Path        : constant String := Util.Tests.Get_Path (Dir);
    begin
       Conf.Load_Properties ("regtests/view.properties");
+      Conf.Set ("view.dir", Path);
       App.Initialize (Conf, App_Factory);
 
       App.Set_Global ("function", "Test_Load_Facelet");
@@ -126,7 +129,7 @@ package body ASF.Applications.Views.Tests is
               and then Simple /= ".svn" then
                Tst := new Test;
                Tst.Name := To_Unbounded_String (Dir & "/" & Simple);
-               Tst.File := To_Unbounded_String (File_Path);
+               Tst.File := To_Unbounded_String ("views/" & Simple);
                Tst.Expect := To_Unbounded_String (Expect_Path & "/" & Simple);
                Tst.Result := To_Unbounded_String (Result_Path & "/" & Simple);
                Suite.Add_Test (Tst);

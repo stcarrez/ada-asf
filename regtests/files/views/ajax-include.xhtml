@@ -1,0 +1,10 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util"
+      xmlns:ajax="http://code.google.com/p/ada-asf/ajax">
+  <body>
+    <ajax:include id='container' src='/views/form.xhtml' async='true'/>
+    <ajax:include id='container' src='/views/form.xhtml' async='false'/>
+    <util:flush/>
+  </body>
+</html>

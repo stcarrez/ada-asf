@@ -42,6 +42,12 @@ package body ASF.Applications.Views is
    function Get_Application (Context : in Facelet_Context)
                              return access ASF.Applications.Main.Application'Class;
 
+   --  Compose a URI path with two components.  Unlike the Ada.Directories.Compose,
+   --  and Util.Files.Compose the path separator must be a URL path separator (ie, '/').
+   --  ------------------------------
+   function Compose (Directory : in String;
+                     Name      : in String) return String;
+
    --  ------------------------------
    --  Include the definition having the given name.
    --  ------------------------------
@@ -168,6 +174,24 @@ package body ASF.Applications.Views is
    end Render_View;
 
    --  ------------------------------
+   --  Compose a URI path with two components.  Unlike the Ada.Directories.Compose,
+   --  and Util.Files.Compose the path separator must be a URL path separator (ie, '/').
+   --  ------------------------------
+   function Compose (Directory : in String;
+                     Name      : in String) return String is
+   begin
+      if Directory'Length = 0 then
+         return Name;
+      elsif Directory (Directory'Last) = '/' and Name (Name'First) = '/' then
+         return Directory & Name (Name'First + 1 .. Name'Last);
+      elsif Directory (Directory'Last) = '/' or Name (Name'First) = '/' then
+         return Directory & Name;
+      else
+         return Directory & "/" & Name;
+      end if;
+   end Compose;
+
+   --  ------------------------------
    --  Get the URL suitable for encoding and rendering the view specified by the <b>View</b>
    --  identifier.
    --  ------------------------------
@@ -180,12 +204,13 @@ package body ASF.Applications.Views is
       Context_Path : constant String := Context.Get_Request.Get_Context_Path;
    begin
       if Pos > 0 and then View (Pos .. View'Last) = Handler.File_Ext then
-         return Context_Path & View (View'First .. Pos - 1) & To_String (Handler.View_Ext);
+         return Compose (Context_Path,
+                         View (View'First .. Pos - 1) & To_String (Handler.View_Ext));
       end if;
       if Pos > 0 and then View (Pos .. View'Last) = Handler.View_Ext then
-         return Context_Path & View;
+         return Compose (Context_Path, View);
       end if;
-      return Context_Path & View;
+      return Compose (Context_Path, View);
    end Get_Action_URL;
 
    --  ------------------------------

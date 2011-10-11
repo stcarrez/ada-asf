@@ -27,6 +27,7 @@ with ASF.Components.Core;
 with ASF.Components.Core.Factory;
 with ASF.Components.Html.Factory;
 with ASF.Components.Utils.Factory;
+with ASF.Components.Ajax.Factory;
 with ASF.Components.Root;
 with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
@@ -224,6 +225,8 @@ package body ASF.Applications.Main is
                             Bindings => Nodes.Facelets.Definition);
       ASF.Factory.Register (Factory  => App.Components,
                             Bindings => Utils.Factory.Definition);
+      ASF.Factory.Register (Factory  => App.Components,
+                            Bindings => Ajax.Factory.Definition);
 
       ASF.Components.Utils.Factory.Set_Functions (App.Functions);
       ASF.Views.Nodes.Core.Set_Functions (App.Functions);

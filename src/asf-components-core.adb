@@ -94,18 +94,36 @@ package body ASF.Components.Core is
    end Create_UIText;
 
    --  ------------------------------
+   --  Get the content type returned by the view.
+   --  ------------------------------
+   function Get_Content_Type (UI      : in UIView;
+                              Context : in Faces_Context'Class) return String is
+   begin
+      if Util.Beans.Objects.Is_Null (UI.Content_Type) then
+         return UI.Get_Attribute (Name => "contentType", Context => Context);
+      else
+         return Util.Beans.Objects.To_String (UI.Content_Type);
+      end if;
+   end Get_Content_Type;
+
+   --  ------------------------------
+   --  Set the content type returned by the view.
+   --  ------------------------------
+   procedure Set_Content_Type (UI     : in out UIView;
+                               Value  : in String) is
+   begin
+      UI.Content_Type := Util.Beans.Objects.To_Object (Value);
+   end Set_Content_Type;
+
+   --  ------------------------------
    --  Encode the begining of the view.  Set the response content type.
    --  ------------------------------
    overriding
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class) is
-      Content_Type : constant Util.Beans.Objects.Object
-        := UI.Get_Attribute (Context => Context,
-                             Name    => "contentType");
+      Content_Type : constant String := UI.Get_Content_Type (Context => Context);
    begin
-      if not Util.Beans.Objects.Is_Null (Content_Type) then
-         Context.Get_Response.Set_Content_Type (Util.Beans.Objects.To_String (Content_Type));
-      end if;
+      Context.Get_Response.Set_Content_Type (Content_Type);
    end Encode_Begin;
 
    --  ------------------------------

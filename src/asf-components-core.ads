@@ -20,6 +20,7 @@ with ASF.Components.Base;
 with ASF.Contexts.Faces;
 with ASF.Events.Faces;
 with ASF.Lifecycles;
+with Util.Beans.Objects;
 private with Ada.Containers.Vectors;
 package ASF.Components.Core is
 
@@ -39,6 +40,14 @@ package ASF.Components.Core is
    --  ------------------------------
    type UIView is new UIComponentBase with private;
    type UIView_Access is access all UIView'Class;
+
+   --  Get the content type returned by the view.
+   function Get_Content_Type (UI      : in UIView;
+                              Context : in Faces_Context'Class) return String;
+
+   --  Set the content type returned by the view.
+   procedure Set_Content_Type (UI     : in out UIView;
+                               Value  : in String);
 
    --  Encode the begining of the view.  Set the response content type.
    overriding
@@ -175,6 +184,7 @@ private
    type Event_Queues is array (Phase_Type) of Event_Vectors.Vector;
 
    type UIView is new UIComponentBase with record
+      Content_Type : Util.Beans.Objects.Object;
       Phase_Events : Event_Queues;
    end record;
 

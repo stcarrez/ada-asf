@@ -378,6 +378,23 @@ package body ASF.Contexts.Faces is
    end Iterate_Exception;
 
    --  ------------------------------
+   --  Returns True if the current request is an AJAX request.
+   --  ------------------------------
+   function Is_Ajax_Request (Context : in Faces_Context'Class) return Boolean is
+   begin
+      return Context.Ajax;
+   end Is_Ajax_Request;
+
+   --  ------------------------------
+   --  Set the Ajax request status.
+   --  ------------------------------
+   procedure Set_Ajax_Request (Context : in out Faces_Context'Class;
+                               Status  : in Boolean) is
+   begin
+      Context.Ajax := Status;
+   end Set_Ajax_Request;
+
+   --  ------------------------------
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    --  ------------------------------

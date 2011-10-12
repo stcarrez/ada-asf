@@ -196,6 +196,13 @@ package ASF.Contexts.Faces is
                                              Remove  : out Boolean;
                                              Context : in out Faces_Context'Class));
 
+   --  Returns True if the current request is an AJAX request.
+   function Is_Ajax_Request (Context : in Faces_Context'Class) return Boolean;
+
+   --  Set the Ajax request status.
+   procedure Set_Ajax_Request (Context : in out Faces_Context'Class;
+                               Status  : in Boolean);
+
    --  Get the current faces context.  The faces context is saved
    --  in a per-thread/task attribute.
    function Current return Faces_Context_Access;
@@ -251,6 +258,9 @@ private
       Max_Severity       : Severity := NONE;
 
       Root               : ASF.Components.Root.UIViewRoot;
+
+      --  True if the view is processed as part of an AJAX request.
+      Ajax               : Boolean := False;
    end record;
 
    --  Release any storage held by this context.

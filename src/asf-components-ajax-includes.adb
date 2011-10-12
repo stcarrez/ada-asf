@@ -61,7 +61,8 @@ package body ASF.Components.Ajax.Includes is
       end if;
       declare
          App    : constant ASF.Contexts.Faces.Application_Access := Context.Get_Application;
-         View_Handler : constant access ASF.Applications.Views.View_Handler'Class := App.Get_View_Handler;
+         View_Handler : constant access ASF.Applications.Views.View_Handler'Class
+           := App.Get_View_Handler;
          Id     : constant Ada.Strings.Unbounded.Unbounded_String := UI.Get_Client_Id;
          Layout : constant String := UIInclude'Class (UI).Get_Layout (Context);
          Async  : constant Boolean := UI.Get_Attribute (Name    => ASYNC_ATTR_NAME,
@@ -90,15 +91,19 @@ package body ASF.Components.Ajax.Includes is
             declare
                View         : constant ASF.Components.Root.UIViewRoot := Context.Get_View_Root;
                Include_View : ASF.Components.Root.UIViewRoot;
+               Is_Ajax      : constant Boolean := Context.Is_Ajax_Request;
             begin
+               Context.Set_Ajax_Request (True);
                View_Handler.Restore_View (Page, Context, Include_View);
                Context.Set_View_Root (Include_View);
                View_Handler.Render_View (Context, Include_View);
                Context.Set_View_Root (View);
+               Context.Set_Ajax_Request (Is_Ajax);
 
             exception
                when others =>
                   Context.Set_View_Root (View);
+                  Context.Set_Ajax_Request (Is_Ajax);
                   raise;
             end;
          end if;

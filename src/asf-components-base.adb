@@ -24,6 +24,7 @@ with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with ASF.Converters;
 with ASF.Components.Utils;
+with ASF.Components.Core;
 
 with EL.Variables;
 with EL.Contexts.Default;
@@ -789,16 +790,30 @@ package body ASF.Components.Base is
       end if;
       if UI.First_Child = null then
          Root := null;
-      elsif UI.First_Child.Next = null then
+      elsif UI.First_Child.Next = null
+        and then UI.First_Child.all in ASF.Components.Core.UIView'Class then
          Root := UI.First_Child;
          Root.Parent    := null;
          UI.First_Child := null;
          UI.Last_Child  := null;
       else
-         Root := new UIComponent;
-         Root.First_Child := UI.First_Child;
-         Root.Last_Child  := UI.Last_Child;
-         Root.Parent    := null;
+         declare
+            View  : constant ASF.Components.Core.UIView_Access := new ASF.Components.Core.UIView;
+            Child : UIComponent_Access := UI.First_Child;
+         begin
+            View.Set_Content_Type ("text/html");
+
+            Root := View.all'Access;
+            Root.First_Child := UI.First_Child;
+            Root.Last_Child  := UI.Last_Child;
+            Root.Parent      := null;
+
+            --  Reparent the children.
+            while Child /= null loop
+               Child.Parent := Root;
+               Child := Child.Next;
+            end loop;
+         end;
          UI.First_Child := null;
          UI.Last_Child  := null;
       end if;

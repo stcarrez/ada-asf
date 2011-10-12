@@ -398,6 +398,10 @@ package body ASF.Components.Html.Forms is
             Writer.Write_Attribute (Name => "value", Value => Value);
          end if;
          UI.Render_Attributes (Context, INPUT_ATTRIBUTE_NAMES, Writer);
+         if Context.Is_Ajax_Request then
+            Writer.Write_Attribute (Name  => "onclick",
+                                    Value => "return ASF.Submit(this);");
+         end if;
          Writer.End_Element ("input");
       end;
    end Encode_Begin;

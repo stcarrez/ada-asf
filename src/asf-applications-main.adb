@@ -542,6 +542,7 @@ package body ASF.Applications.Main is
       Context.Set_Response_Writer (Writer'Unchecked_Access);
       Writer.Initialize ("text/html", "UTF-8", Output);
 
+      Context.Set_Ajax_Request (Request.Is_Ajax_Request);
       Context.Set_Request (Request'Unchecked_Access);
       Context.Set_Response (Response'Unchecked_Access);
       App.Set_Context (Context'Unchecked_Access);

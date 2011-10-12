@@ -17,21 +17,21 @@
 -----------------------------------------------------------------------
 
 with Ada.Strings.Fixed;
-with Ada.Text_Io.Editing;
+with Ada.Text_IO.Editing;
 
-with ASF.Events.Actions;
+with ASF.Events.Faces.Actions;
 package body Volume is
 
    use Ada.Strings.Unbounded;
 
    Pic : constant Ada.Text_IO.Editing.Picture := Ada.Text_IO.Editing.To_Picture ("ZZZZZ9.99");
 
-   package Float_Output is new Ada.Text_IO.Editing.Decimal_Output(My_Float);
+   package Float_Output is new Ada.Text_IO.Editing.Decimal_Output (My_Float);
 
    package Run_Binding is
-     new ASF.Events.Actions.Action_Method.Bind (Bean   => Compute_Bean,
-                                                Method => Run,
-                                                Name   => "run");
+     new ASF.Events.Faces.Actions.Action_Method.Bind (Bean   => Compute_Bean,
+                                                      Method => Run,
+                                                      Name   => "run");
 
    Binding_Array : aliased constant Util.Beans.Methods.Method_Binding_Array
      := (Run_Binding.Proxy'Unchecked_Access, Run_Binding.Proxy'Unchecked_Access);
@@ -42,6 +42,7 @@ package body Volume is
    overriding
    function Get_Method_Bindings (From : in Compute_Bean)
                                  return Util.Beans.Methods.Method_Binding_Array_Access is
+      pragma Unreferenced (From);
    begin
       return Binding_Array'Unchecked_Access;
    end Get_Method_Bindings;
@@ -63,19 +64,19 @@ package body Volume is
    --  Get the value identified by the name.
    --  ------------------------------
    function Get_Value (From : Compute_Bean;
-                       Name : String) return EL.Objects.Object is
+                       Name : String) return Util.Beans.Objects.Object is
    begin
       if Name = "radius" and From.Radius >= 0.0 then
-         return EL.Objects.To_Object (Float (From.Radius));
+         return Util.Beans.Objects.To_Object (Float (From.Radius));
 
       elsif Name = "height" and From.Height >= 0.0 then
-         return EL.Objects.To_Object (Float (From.Height));
+         return Util.Beans.Objects.To_Object (Float (From.Height));
 
       elsif Name = "volume" and From.Volume >= 0.0 then
-         return EL.Objects.To_Object (Float (From.Volume));
+         return Util.Beans.Objects.To_Object (Float (From.Volume));
 
       else
-         return EL.Objects.Null_Object;
+         return Util.Beans.Objects.Null_Object;
       end if;
    end Get_Value;
 
@@ -84,12 +85,12 @@ package body Volume is
    --  ------------------------------
    procedure Set_Value (From  : in out Compute_Bean;
                         Name  : in String;
-                        Value : in EL.Objects.Object) is
+                        Value : in Util.Beans.Objects.Object) is
    begin
       if Name = "radius" then
-         From.Radius := My_Float (EL.Objects.To_Float (Value));
+         From.Radius := My_Float (Util.Beans.Objects.To_Float (Value));
       elsif Name = "height" then
-         From.Height := My_Float (EL.Objects.To_Float (Value));
+         From.Height := My_Float (Util.Beans.Objects.To_Float (Value));
       end if;
    end Set_Value;
 
@@ -101,10 +102,10 @@ package body Volume is
    function To_String (Convert   : in Float_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;
-                       Value     : in EL.Objects.Object) return String is
+                       Value     : in Util.Beans.Objects.Object) return String is
       pragma Unreferenced (Convert, Context, Component);
 
-      F : constant My_Float := My_Float (EL.Objects.To_Float (Value));
+      F : constant My_Float := My_Float (Util.Beans.Objects.To_Float (Value));
       R : constant String   := Float_Output.Image (F, Pic);
    begin
       return Ada.Strings.Fixed.Trim (R, Ada.Strings.Both);
@@ -117,10 +118,10 @@ package body Volume is
    function To_Object (Convert   : in Float_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;
-                       Value     : in String) return EL.Objects.Object is
+                       Value     : in String) return Util.Beans.Objects.Object is
       pragma Unreferenced (Convert, Context, Component);
    begin
-      return EL.Objects.To_Object (Float (My_Float'Value (Value)));
+      return Util.Beans.Objects.To_Object (Float (My_Float'Value (Value)));
    end To_Object;
 
 end Volume;

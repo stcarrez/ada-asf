@@ -19,8 +19,6 @@ with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 with Util.Beans.Basic;
 with Util.Beans.Methods;
-with EL.Objects;
-with EL.Methods;
 
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
@@ -37,12 +35,12 @@ package Volume is
 
    --  Get the value identified by the name.
    function Get_Value (From : Compute_Bean;
-                       Name : String) return EL.Objects.Object;
+                       Name : String) return Util.Beans.Objects.Object;
 
    --  Set the value identified by the name.
    procedure Set_Value (From  : in out Compute_Bean;
                         Name  : in String;
-                        Value : in EL.Objects.Object);
+                        Value : in Util.Beans.Objects.Object);
 
    --  Compute the volume of the cylinder.
    procedure Run (From    : in out Compute_Bean;
@@ -59,12 +57,12 @@ package Volume is
    function To_String (Convert   : in Float_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;
-                       Value     : in EL.Objects.Object) return String;
+                       Value     : in Util.Beans.Objects.Object) return String;
 
    overriding
    function To_Object (Convert   : in Float_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;
-                       Value     : in String) return EL.Objects.Object;
+                       Value     : in String) return Util.Beans.Objects.Object;
 
 end Volume;

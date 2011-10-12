@@ -18,6 +18,8 @@
 with Ada.Unchecked_Deallocation;
 with ASF.Servlets;
 
+with Util.Strings;
+
 --  The <b>ASF.Requests</b> package is an Ada implementation of
 --  the Java servlet request (JSR 315 3. The Request).
 package body ASF.Requests is
@@ -270,6 +272,31 @@ package body ASF.Requests is
 --           I := P + 1;
 --        end loop;
 --     end Compute_Locale;
+
+   --
+   procedure Compute_Locale (Req : in Request) is
+      H    : constant String := Req.Get_Header ("Accept-Language");
+      P    : Natural;
+      I    : Positive := H'First;
+      Last : Natural := Util.Strings.Index (H, ';');
+   begin
+      --  Limited calculation of the locale.
+      if Last = 0 then
+         Last := H'Last;
+      else
+         Last := Last - 1;
+      end if;
+      while I <= Last loop
+         P := Util.Strings.Index (Source => H,
+                                  Char   => ',',
+                                  From   => I);
+         if P = 0 or P > Last then
+            P := Last + 1;
+         end if;
+--           Check_Locale (Req, H (I .. P - 1));
+         I := P + 1;
+      end loop;
+   end Compute_Locale;
 
    --  Returns the preferred Locale that the client will accept content in, based
    --  on the Accept-Language header. If the client request doesn't provide an
@@ -648,6 +675,15 @@ package body ASF.Requests is
    begin
       Req.Path_Info := To_Unbounded_String (Path);
    end Set_Path_Info;
+
+   --  ------------------------------
+   --  Returns True if the request is an AJAX request.
+   --  ------------------------------
+   function Is_Ajax_Request (Req : in Request) return Boolean is
+      Header : constant String := Request'Class (Req).Get_Header ("X-Requested-With");
+   begin
+      return Header'Length > 0;
+   end Is_Ajax_Request;
 
    --  ------------------------------
    --  Initialize the request object.

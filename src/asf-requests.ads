@@ -369,6 +369,9 @@ package ASF.Requests is
                            Process  : not null access
                              procedure (Data : in Part'Class)) is abstract;
 
+   --  Returns True if the request is an AJAX request.
+   function Is_Ajax_Request (Req : in Request) return Boolean;
+
    --  Initialize the request object.
    overriding
    procedure Initialize (Req : in out Request);

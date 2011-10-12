@@ -67,7 +67,7 @@ var ASF = {};
             }
         }
     };
-    
+
     /**
      * Update the target container with the content of the AJAX GET request
      * on the given URL.  The target parameter is optional.
@@ -107,7 +107,62 @@ var ASF = {};
             });
         }
     };
- 
-    
+
+    /**
+     * Submit the current form.  The <b>node</b> element refers to the element being clicked.
+     * From that element, we can identify the form to submit.  The element to refresh upon
+     * the form submit is an outer element that should have the <b>asf-container</b> class.
+     * If not such element as parent node, the parent node of the form is used.
+     *
+     * After the form is submitted, the response is executed if it is a JSON response.
+     * If the response is an HTML content, the container element is refreshed with it.
+     *
+     * @param node the current element
+     * @param url the URL to fetch using an HTTP GET
+     * @param target the optional target element
+     */
+    ASF.Submit = function(node) {
+        /* Find the form and container to update */
+        var f = $(node).closest("form");
+        var d = $(f);
+        if (!d.is('.asf-container')) {
+            d = d.parent('.asf-container');
+        }
+        if (d.length == 0) {
+            d = $(f).parent();
+        }
+        if (d.length > 0) {
+            var params;
+            var params = $(f).serialize();
+            var url = $(f).attr('action');
+
+            if (node.tagName == 'a' || node.tagName == 'A') {
+                params = node.id + "=1&" + $(f).serialize();
+            } else {
+                params = node.name + "=1&" + $(f).serialize();
+            }
+            /* Perform the HTTP POST */
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: params,
+                context: document.body,
+                success: function(data, status, jqXHDR) {
+                    var contentType = jqXHDR.getResponseHeader('Content-type');
+                    if (contentType == null) {
+                        contentType = "text/html";
+                    }
+                    if (contentType.match(/^text\/(html|xml)(;.*)?$/i)) {
+                        d.html(jqXHDR.responseText);
+
+                    } else if (contentType.match(/^application\/json(;.*)?$/i)) {
+                        ASF.Execute(node, data);
+                    }
+               }
+            });
+        }
+        return false;
+    };
+
 })();
 

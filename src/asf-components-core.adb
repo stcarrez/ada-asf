@@ -217,8 +217,15 @@ package body ASF.Components.Core is
    --  ------------------------------
    procedure Queue_Event (UI    : in out UIView;
                           Event : not null access ASF.Events.Faces.Faces_Event'Class) is
+      use type Base.UIComponent_Access;
+
+      Parent : constant Base.UIComponent_Access := UI.Get_Parent;
    begin
-      UI.Phase_Events (Event.Get_Phase).Append (Event.all'Access);
+      if Parent /= null then
+         Parent.Queue_Event (Event);
+      else
+         UI.Phase_Events (Event.Get_Phase).Append (Event.all'Access);
+      end if;
    end Queue_Event;
 
    --  ------------------------------

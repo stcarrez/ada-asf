@@ -269,7 +269,7 @@ package body ASF.Views.Nodes.Facelets is
       else
          Found := True;
          declare
-            File : constant String := ASF.Views.Nodes.File (Node.Get_Line_Info);
+            File : constant String := ASF.Views.File (Node.Get_Line_Info);
          begin
             Context.Set_Relative_Path (Path     => To_Unbounded_String (File),
                                        Previous => Old);

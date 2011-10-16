@@ -94,7 +94,7 @@ private
    type Facelet is record
       Root        : ASF.Views.Nodes.Tag_Node_Access;
       Path        : Unbounded_String;
-      File        : String_Access;
+      File        : ASF.Views.File_Info_Access;
       Modify_Time : Ada.Calendar.Time;
    end record;
 

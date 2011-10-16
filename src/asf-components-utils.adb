@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-util -- ASF Util Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +15,16 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with ASF.Views;
 with ASF.Views.Nodes;
 package body ASF.Components.Utils is
 
-   function Get_Line_Info (UI : in Base.UIComponent'Class) return Views.Nodes.Line_Info;
+   function Get_Line_Info (UI : in Base.UIComponent'Class) return Views.Line_Info;
 
    --  ------------------------------
    --  Get the line information where the component is defined.
    --  ------------------------------
-   function Get_Line_Info (UI : in Base.UIComponent'Class) return Views.Nodes.Line_Info is
+   function Get_Line_Info (UI : in Base.UIComponent'Class) return Views.Line_Info is
       Tag : constant access ASF.Views.Nodes.Tag_Node'Class := UI.Get_Tag;
    begin
       if Tag /= null then

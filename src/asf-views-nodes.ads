@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -102,19 +102,6 @@ package ASF.Views.Nodes is
                     Message   : in String;
                     Param1    : in String;
                     Param2    : in String := "");
-
-   --  ------------------------------
-   --  Source line information
-   --  ------------------------------
-   type Line_Info is private;
-
-   --  Get the line number
-   function Line (Info : Line_Info) return Natural;
-   pragma Inline (Line);
-
-   --  Get the source file
-   function File (Info : Line_Info) return String;
-   pragma Inline (File);
 
    --  ------------------------------
    --  XHTML node
@@ -235,12 +222,6 @@ package ASF.Views.Nodes is
                                    return Tag_Node_Access;
 
 private
-
-   type Line_Info is record
-      Line   : Natural := 0;
-      Column : Natural := 0;
-      File   : Util.Strings.Name_Access := null;
-   end record;
 
    type Cursor is record
       Node : Tag_Node_Access;

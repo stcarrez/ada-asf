@@ -719,7 +719,7 @@ package body ASF.Views.Nodes.Reader is
    --  argument in one of the SAX callbacks. This has undefined behavior.
    --  ------------------------------
    procedure Parse (Parser  : in out Xhtml_Reader;
-                    Name    : in Util.Strings.Name_Access;
+                    Name    : in ASF.Views.File_Info_Access;
                     Input   : in out Input_Sources.Input_Source'Class;
                     Factory : access ASF.Factory.Component_Factory;
                     Context : in EL.Contexts.ELContext_Access) is

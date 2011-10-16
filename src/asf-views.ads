@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views -- Views
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,5 +28,40 @@
 --  and attributes represented by <b>Tag_Attribute</b>.  In a sense, this
 --  is very close to an XML DOM tree.
 package ASF.Views is
+
+   --  ------------------------------
+   --  Source line information
+   --  ------------------------------
+   type File_Info (<>) is limited private;
+   type File_Info_Access is access all File_Info;
+
+   --  Create a <b>File_Info</b> record to identify the file whose path is <b>Path</b>
+   --  and whose relative path portion starts at <b>Relative_Position</b>.
+   function Create_File_Info (Path              : in String;
+                              Relative_Position : in Natural) return File_Info_Access;
+
+   type Line_Info is private;
+
+   --  Get the line number
+   function Line (Info : in Line_Info) return Natural;
+   pragma Inline (Line);
+
+   --  Get the source file
+   function File (Info : in Line_Info) return String;
+   pragma Inline (File);
+
+private
+   type File_Info (Length : Natural) is limited record
+      Path         : String (1 .. Length);
+      Relative_Pos : Natural;
+   end record;
+
+   NO_FILE : aliased File_Info := File_Info '(Length => 0, Path => "", Relative_Pos => 0);
+
+   type Line_Info is record
+      Line   : Natural := 0;
+      Column : Natural := 0;
+      File   : File_Info_Access := NO_FILE'Access;
+   end record;
 
 end ASF.Views;

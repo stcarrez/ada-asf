@@ -243,26 +243,6 @@ package body ASF.Views.Nodes is
    end Find_Attribute;
 
    --  ------------------------------
-   --  Source line information
-   --  ------------------------------
-
-   --  ------------------------------
-   --  Get the line number
-   --  ------------------------------
-   function Line (Info : Line_Info) return Natural is
-   begin
-      return Info.Line;
-   end Line;
-
-   --  ------------------------------
-   --  Get the source file
-   --  ------------------------------
-   function File (Info : Line_Info) return String is
-   begin
-      return Info.File.all;
-   end File;
-
-   --  ------------------------------
    --  XHTML node
    --  ------------------------------
 
@@ -295,7 +275,7 @@ package body ASF.Views.Nodes is
            & L (L'First + 1 .. L'Last)
            & ':' & C (C'First + 1 .. C'Last);
       else
-         return Node.Line.File.all
+         return Node.Line.File.Path
            & ':' & L (L'First + 1 .. L'Last)
            & ':' & C (C'First + 1 .. C'Last);
       end if;

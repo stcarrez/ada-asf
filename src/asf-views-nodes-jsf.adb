@@ -34,7 +34,7 @@ package body ASF.Views.Nodes.Jsf is
    --  Create the Converter Tag
    --  ------------------------------
    function Create_Converter_Tag_Node (Name       : Unbounded_String;
-                                       Line       : Views.Nodes.Line_Info;
+                                       Line       : Views.Line_Info;
                                        Parent     : Views.Nodes.Tag_Node_Access;
                                        Attributes : Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access is
@@ -95,7 +95,7 @@ package body ASF.Views.Nodes.Jsf is
    --  Create the Validator Tag
    --  ------------------------------
    function Create_Validator_Tag_Node (Name       : Unbounded_String;
-                                       Line       : Views.Nodes.Line_Info;
+                                       Line       : Views.Line_Info;
                                        Parent     : Views.Nodes.Tag_Node_Access;
                                        Attributes : Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access is
@@ -168,7 +168,7 @@ package body ASF.Views.Nodes.Jsf is
 
    --  Create the Range_Validator Tag
    function Create_Range_Validator_Tag_Node (Name       : Unbounded_String;
-                                             Line       : Views.Nodes.Line_Info;
+                                             Line       : Views.Line_Info;
                                              Parent     : Views.Nodes.Tag_Node_Access;
                                              Attributes : Views.Nodes.Tag_Attribute_Array_Access)
                                              return Views.Nodes.Tag_Node_Access is
@@ -232,7 +232,7 @@ package body ASF.Views.Nodes.Jsf is
    --  the <b>minimum</b> or the <b>maximum</b> or both attributes.
    --  ------------------------------
    function Create_Length_Validator_Tag_Node (Name       : Unbounded_String;
-                                              Line       : Views.Nodes.Line_Info;
+                                              Line       : Views.Line_Info;
                                               Parent     : Views.Nodes.Tag_Node_Access;
                                               Attributes : Views.Nodes.Tag_Attribute_Array_Access)
                                               return Views.Nodes.Tag_Node_Access is
@@ -298,7 +298,7 @@ package body ASF.Views.Nodes.Jsf is
    --  Create the Attribute Tag
    --  ------------------------------
    function Create_Attribute_Tag_Node (Name       : Unbounded_String;
-                                       Line       : Views.Nodes.Line_Info;
+                                       Line       : Views.Line_Info;
                                        Parent     : Views.Nodes.Tag_Node_Access;
                                        Attributes : Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access is

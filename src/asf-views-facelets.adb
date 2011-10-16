@@ -20,6 +20,7 @@ with Ada.Strings.Fixed;
 with Ada.Exceptions;
 with Ada.Directories;
 with Ada.IO_Exceptions;
+with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes.Reader;
 with Input_Sources.File;
 with Sax.Readers;
@@ -33,6 +34,10 @@ package body ASF.Views.Facelets is
 
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Views.Facelets");
+
+   procedure Free is
+      new Ada.Unchecked_Deallocation (Object => ASF.Views.File_Info,
+                                      Name   => ASF.Views.File_Info_Access);
 
    --  Find in the factory for the facelet with the given name.
    procedure Find (Factory : in out Facelet_Factory;
@@ -177,10 +182,10 @@ package body ASF.Views.Facelets is
       begin
          if Facelet_Maps.Has_Element (Pos) then
             Result := Element (Pos);
-            if Modification_Time (Result.File.all) > Result.Modify_Time then
+            if Modification_Time (Result.File.Path) > Result.Modify_Time then
                Result.Root := null;
                Log.Info ("Ignoring cache because file '{0}' was modified",
-                         Result.File.all);
+                         Result.File.Path);
             end if;
          end if;
       end;
@@ -203,8 +208,9 @@ package body ASF.Views.Facelets is
       Reader : Xhtml_Reader;
       Read   : File_Input;
       Path   : constant String := Find_Facelet_Path (Factory, Name);
+      RPos   : constant Natural := Path'Length - Name'Length;
       Ctx    : aliased EL.Contexts.Default.Default_Context;
-      File   : String_Access := new String '(Path);
+      File   : File_Info_Access := Create_File_Info (Path, RPos);
       Mtime  : Ada.Calendar.Time;
    begin
       Log.Info ("Loading facelet: '{0}'", Path);
@@ -220,12 +226,12 @@ package body ASF.Views.Facelets is
       Set_Ignore_White_Spaces (Reader, Factory.Ignore_White_Spaces);
       Set_Escape_Unknown_Tags (Reader, Factory.Escape_Unknown_Tags);
       Set_Ignore_Empty_Lines (Reader, Factory.Ignore_Empty_Lines);
-      Parse (Reader, File.all'Access,
+      Parse (Reader, File,
              Read, Factory.Factory, Ctx'Unchecked_Access);
       Close (Read);
 
       Result := Facelet '(Root => Get_Root (Reader),
-                          File => File.all'Access,
+                          File => File,
                           Modify_Time => Mtime,
                           Path => To_Unbounded_String (Containing_Directory (Path) & '/'));
    exception

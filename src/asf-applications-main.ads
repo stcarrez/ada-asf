@@ -39,6 +39,9 @@ with ASF.Responses;
 with ASF.Servlets;
 with ASF.Events.Faces.Actions;
 with Security.Permissions;
+
+with ASF.Beans.Mappers;
+with Util.Serialize.IO.XML;
 package ASF.Applications.Main is
 
    use ASF.Beans;
@@ -122,6 +125,21 @@ package ASF.Applications.Main is
    procedure Initialize (App     : in out Application;
                          Conf    : in Config;
                          Factory : in out Application_Factory'Class);
+
+   --  Initialize the servlets provided by the application.
+   --  This procedure is called by <b>Initialize</b>.
+   --  It should register the application servlets.
+   procedure Initialize_Servlets (App : in out Application);
+
+   --  Initialize the filters provided by the application.
+   --  This procedure is called by <b>Initialize</b>.
+   --  It should register the application filters.
+   procedure Initialize_Filters (App : in out Application);
+
+   --  Initialize the ASF components provided by the application.
+   --  This procedure is called by <b>Initialize</b>.
+   --  It should register the component factories used by the application.
+   procedure Initialize_Components (App : in out Application);
 
    --  Finalizes the application, freeing the memory.
    overriding
@@ -246,15 +264,6 @@ package ASF.Applications.Main is
                           Name   : in String;
                           Locale : in String;
                           Bundle : out ASF.Locales.Bundle);
-
-   --  Read the configuration file associated with the application.  This includes:
-   --  <ul>
-   --     <li>The servlet and filter mappings</li>
-   --     <li>The managed bean definitions</li>
-   --     <li>The navigation rules</li>
-   --  </ul>
-   procedure Read_Configuration (App  : in out Application;
-                                 File : in String);
 
 private
 

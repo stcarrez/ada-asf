@@ -18,7 +18,6 @@
 
 with Util.Beans.Objects;
 with Util.Log.Loggers;
-with Util.Serialize.IO.XML;
 
 with ASF.Streams;
 with ASF.Sessions;
@@ -32,7 +31,6 @@ with ASF.Components.Root;
 with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
-with ASF.Beans.Mappers;
 with ASF.Beans.Params;
 with ASF.Beans.Headers;
 with ASF.Servlets.Mappers;
@@ -208,13 +206,65 @@ package body ASF.Applications.Main is
    procedure Initialize (App     : in out Application;
                          Conf    : in Config;
                          Factory : in out Application_Factory'Class) is
-      use ASF.Components;
-      use ASF.Views;
+      App_Access : constant Application_Access := App'Unchecked_Access;
    begin
       App.Conf := Conf;
       App.Set_Init_Parameters (Params => Conf);
 
       App.Action_Listener := App'Unchecked_Access;
+
+      --  Create the lifecycle handler.
+      App.Lifecycle := Factory.Create_Lifecycle_Handler;
+
+      --  Create the navigation handler.
+      App.Navigation := Factory.Create_Navigation_Handler;
+
+      --  Create the permission manager.
+      App.Permissions := Factory.Create_Permission_Manager;
+
+      App.View.Initialize (App.Components'Unchecked_Access, Conf);
+      ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
+
+      --  Initialize the lifecycle handler.
+      App.Lifecycle.Initialize (App_Access);
+
+      --  Initialize the navigation handler.
+      App.Navigation.Initialize (App_Access);
+
+      Application'Class (App).Initialize_Servlets;
+      Application'Class (App).Initialize_Filters;
+      Application'Class (App).Initialize_Components;
+   end Initialize;
+
+   --  ------------------------------
+   --  Initialize the servlets provided by the application.
+   --  This procedure is called by <b>Initialize</b>.
+   --  It should register the application servlets.
+   --  ------------------------------
+   procedure Initialize_Servlets (App : in out Application) is
+   begin
+      null;
+   end Initialize_Servlets;
+
+   --  ------------------------------
+   --  Initialize the filters provided by the application.
+   --  This procedure is called by <b>Initialize</b>.
+   --  It should register the application filters.
+   --  ------------------------------
+   procedure Initialize_Filters (App : in out Application) is
+   begin
+      null;
+   end Initialize_Filters;
+
+   --  ------------------------------
+   --  Initialize the ASF components provided by the application.
+   --  This procedure is called by <b>Initialize</b>.
+   --  It should register the component factories used by the application.
+   --  ------------------------------
+   procedure Initialize_Components (App : in out Application) is
+      use ASF.Components;
+      use ASF.Views;
+   begin
       ASF.Factory.Register (Factory  => App.Components,
                             Bindings => Core.Factory.Definition);
       ASF.Factory.Register (Factory  => App.Components,
@@ -231,25 +281,8 @@ package body ASF.Applications.Main is
       ASF.Components.Utils.Factory.Set_Functions (App.Functions);
       ASF.Views.Nodes.Core.Set_Functions (App.Functions);
       Security.Permissions.Set_Functions (App.Functions);
+   end Initialize_Components;
 
-      --  Create the lifecycle handler.
-      App.Lifecycle := Factory.Create_Lifecycle_Handler;
-
-      --  Create the navigation handler.
-      App.Navigation := Factory.Create_Navigation_Handler;
-
-      --  Create the permission manager.
-      App.Permissions := Factory.Create_Permission_Manager;
-
-      App.View.Initialize (App.Components'Unchecked_Access, Conf);
-      ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
-
-      --  Initialize the lifecycle handler.
-      App.Lifecycle.Initialize (App'Unchecked_Access);
-
-      --  Initialize the navigation handler.
-      App.Navigation.Initialize (App'Unchecked_Access);
-   end Initialize;
 
    --  ------------------------------
    --  Get the configuration parameter;
@@ -752,44 +785,6 @@ package body ASF.Applications.Main is
    begin
       ASF.Locales.Load_Bundle (App.Locales, Name, Locale, Bundle);
    end Load_Bundle;
-
-   --  ------------------------------
-   --  Read the configuration file associated with the application.  This includes:
-   --  <ul>
-   --     <li>The servlet and filter mappings</li>
-   --     <li>The managed bean definitions</li>
-   --     <li>The navigation rules</li>
-   --  </ul>
-   --  ------------------------------
-   procedure Read_Configuration (App  : in out Application;
-                                 File : in String) is
-
-      Reader     : Util.Serialize.IO.XML.Parser;
-
-      Context : aliased EL.Contexts.Default.Default_Context;
-      Nav     : constant ASF.Navigations.Navigation_Handler_Access := App.Get_Navigation_Handler;
-
-      --  Setup the <b>Reader</b> to parse and build the configuration for managed beans,
-      --  navigation rules, servlet rules.  Each package instantiation creates a local variable
-      --  used while parsing the XML file.
-      package Bean_Config is
-        new ASF.Beans.Mappers.Reader_Config (Reader, App.Factory'Unchecked_Access,
-                                             Context'Unchecked_Access);
-      package Navigation_Config is
-        new ASF.Navigations.Mappers.Reader_Config (Reader, Nav, Context'Unchecked_Access);
-      package Servlet_Config is
-        new ASF.Servlets.Mappers.Reader_Config (Reader, App'Unchecked_Access);
-      pragma Warnings (Off, Bean_Config);
-      pragma Warnings (Off, Servlet_Config);
-      pragma Warnings (Off, Navigation_Config);
-   begin
-      Log.Info ("Reading module configuration file {0}", File);
-
---        Util.Serialize.IO.Dump (Reader, AWA.Modules.Log);
-
-      --  Read the configuration file and record managed beans, navigation rules.
-      Reader.Parse (File);
-   end Read_Configuration;
 
    --  ------------------------------
    --  Finalizes the application, freeing the memory.

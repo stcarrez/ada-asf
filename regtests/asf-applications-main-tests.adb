@@ -25,6 +25,7 @@ with Ada.Unchecked_Deallocation;
 with EL.Contexts.Default;
 
 with ASF.Applications.Tests;
+with ASF.Applications.Main.Configs;
 package body ASF.Applications.Main.Tests is
 
    use Util.Tests;
@@ -78,7 +79,7 @@ package body ASF.Applications.Main.Tests is
    procedure Test_Read_Configuration (T : in out Test) is
       Path : constant String := Util.Tests.Get_Test_Path ("config/empty.xml");
    begin
-      T.App.Read_Configuration (Path);
+      ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
 
    end Test_Read_Configuration;
 
@@ -119,7 +120,7 @@ package body ASF.Applications.Main.Tests is
 
    begin
       T.App.Register_Class ("ASF.Applications.Tests.Form_Bean", Create_Form_Bean'Access);
-      T.App.Read_Configuration (Path);
+      ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
 
       --  Check the 'regtests/config/test-module.xml' managed bean configuration.
       Check ("applicationForm", ASF.Beans.APPLICATION_SCOPE);

@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Strings.Transforms;
+with Ada.Strings.Fixed;
 package body ASF.Views.Nodes.Core is
 
    --  ------------------------------
@@ -262,13 +263,19 @@ package body ASF.Views.Nodes.Core is
    end Definition;
 
    --  Function names
-   CAPITALIZE_FN    : aliased constant String := "capitalize";
-   TO_UPPER_CASE_FN : aliased constant String := "toUpperCase";
-   TO_LOWER_CASE_FN : aliased constant String := "toLowerCase";
+   CAPITALIZE_FN       : aliased constant String := "capitalize";
+   TO_UPPER_CASE_FN    : aliased constant String := "toUpperCase";
+   TO_LOWER_CASE_FN    : aliased constant String := "toLowerCase";
+   SUBSTRING_AFTER_FN  : aliased constant String := "substringAfter";
+   SUBSTRING_BEFORE_FN : aliased constant String := "substringBefore";
 
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object;
    function To_Upper_Case (Value : EL.Objects.Object) return EL.Objects.Object;
    function To_Lower_Case (Value : EL.Objects.Object) return EL.Objects.Object;
+   function Substring_Before (Value : in EL.Objects.Object;
+                              Token : in EL.Objects.Object) return EL.Objects.Object;
+   function Substring_After (Value : in EL.Objects.Object;
+                             Token : in EL.Objects.Object) return EL.Objects.Object;
 
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object is
       S : constant String := EL.Objects.To_String (Value);
@@ -289,6 +296,38 @@ package body ASF.Views.Nodes.Core is
    end To_Lower_Case;
 
    --  ------------------------------
+   --  Return the substring before the token string
+   --  ------------------------------
+   function Substring_Before (Value : in EL.Objects.Object;
+                              Token : in EL.Objects.Object) return EL.Objects.Object is
+      S   : constant String := EL.Objects.To_String (Value);
+      T   : constant String := EL.Objects.To_String (Token);
+      Pos : constant Natural := Ada.Strings.Fixed.Index (S, T);
+   begin
+      if Pos = 0 then
+         return EL.Objects.Null_Object;
+      else
+         return EL.Objects.To_Object (S (S'First .. Pos - 1));
+      end if;
+   end Substring_Before;
+
+   --  ------------------------------
+   --  Return the substring after the token string
+   --  ------------------------------
+   function Substring_After (Value : in EL.Objects.Object;
+                              Token : in EL.Objects.Object) return EL.Objects.Object is
+      S   : constant String := EL.Objects.To_String (Value);
+      T   : constant String := EL.Objects.To_String (Token);
+      Pos : constant Natural := Ada.Strings.Fixed.Index (S, T);
+   begin
+      if Pos = 0 then
+         return EL.Objects.Null_Object;
+      else
+         return EL.Objects.To_Object (S (Pos + T'Length .. S'Last));
+      end if;
+   end Substring_After;
+
+   --  ------------------------------
    --  Register a set of functions in the namespace
    --  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
    --  Functions:
@@ -306,6 +345,12 @@ package body ASF.Views.Nodes.Core is
       Mapper.Set_Function (Name      => TO_UPPER_CASE_FN,
                            Namespace => URI,
                            Func      => To_Upper_Case'Access);
+      Mapper.Set_Function (Name      => SUBSTRING_BEFORE_FN,
+                           Namespace => URI,
+                           Func      => Substring_Before'Access);
+      Mapper.Set_Function (Name      => SUBSTRING_AFTER_FN,
+                           Namespace => URI,
+                           Func      => Substring_After'Access);
    end Set_Functions;
 
 end ASF.Views.Nodes.Core;

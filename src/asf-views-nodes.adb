@@ -282,6 +282,15 @@ package body ASF.Views.Nodes is
    end Get_Line_Info;
 
    --  ------------------------------
+   --  Get the relative path name of the XHTML file in which this tag is defined.
+   --  ------------------------------
+   function Get_File_Name (Node : in Tag_Node) return String is
+      File : constant File_Info_Access := Node.Line.File;
+   begin
+      return File.Path (File.Relative_Pos .. File.Path'Last);
+   end Get_File_Name;
+
+   --  ------------------------------
    --  Get the node attribute with the given name.
    --  Returns null if the node does not have such attribute.
    --  ------------------------------

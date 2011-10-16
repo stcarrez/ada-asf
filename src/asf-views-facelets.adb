@@ -208,7 +208,7 @@ package body ASF.Views.Facelets is
       Reader : Xhtml_Reader;
       Read   : File_Input;
       Path   : constant String := Find_Facelet_Path (Factory, Name);
-      RPos   : constant Natural := Path'Length - Name'Length;
+      RPos   : constant Natural := Path'Length - Name'Length + 1;
       Ctx    : aliased EL.Contexts.Default.Default_Context;
       File   : File_Info_Access := Create_File_Info (Path, RPos);
       Mtime  : Ada.Calendar.Time;

@@ -124,6 +124,9 @@ package ASF.Views.Nodes is
    --  Get the line information as a string.
    function Get_Line_Info (Node : Tag_Node) return String;
 
+   --  Get the relative path name of the XHTML file in which this tag is defined.
+   function Get_File_Name (Node : in Tag_Node) return String;
+
    --  Append a child tag node.
    procedure Append_Tag (Node  : in Tag_Node_Access;
                          Child : in Tag_Node_Access);

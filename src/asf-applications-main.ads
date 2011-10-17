@@ -126,6 +126,16 @@ package ASF.Applications.Main is
                          Conf    : in Config;
                          Factory : in out Application_Factory'Class);
 
+   --  Initialize the ASF components provided by the application.
+   --  This procedure is called by <b>Initialize</b>.
+   --  It should register the component factories used by the application.
+   procedure Initialize_Components (App : in out Application);
+
+   --  Initialize the application configuration properties.  Properties defined in <b>Conf</b>
+   --  are expanded by using the EL expression resolver.
+   procedure Initialize_Config (App  : in out Application;
+                                Conf : in Config);
+
    --  Initialize the servlets provided by the application.
    --  This procedure is called by <b>Initialize</b>.
    --  It should register the application servlets.
@@ -135,11 +145,6 @@ package ASF.Applications.Main is
    --  This procedure is called by <b>Initialize</b>.
    --  It should register the application filters.
    procedure Initialize_Filters (App : in out Application);
-
-   --  Initialize the ASF components provided by the application.
-   --  This procedure is called by <b>Initialize</b>.
-   --  It should register the component factories used by the application.
-   procedure Initialize_Components (App : in out Application);
 
    --  Finalizes the application, freeing the memory.
    overriding

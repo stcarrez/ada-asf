@@ -33,11 +33,10 @@ with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
 with ASF.Beans.Params;
 with ASF.Beans.Headers;
-with ASF.Servlets.Mappers;
-with ASF.Navigations.Mappers;
 
 with EL.Expressions;
 with EL.Contexts.Default;
+with EL.Contexts.Properties;
 
 with Ada.Exceptions;
 with Ada.Containers.Indefinite_Vectors;
@@ -112,6 +111,7 @@ package body ASF.Applications.Main is
    --  ------------------------------
    function Create_Exception_Handler (App : in Application_Factory)
                                       return ASF.Contexts.Exceptions.Exception_Handler_Access is
+      pragma Unreferenced (App);
    begin
       return new ASF.Contexts.Exceptions.Exception_Handler;
    end Create_Exception_Handler;
@@ -208,8 +208,6 @@ package body ASF.Applications.Main is
                          Factory : in out Application_Factory'Class) is
       App_Access : constant Application_Access := App'Unchecked_Access;
    begin
-      App.Conf := Conf;
-      App.Set_Init_Parameters (Params => Conf);
 
       App.Action_Listener := App'Unchecked_Access;
 
@@ -222,8 +220,15 @@ package body ASF.Applications.Main is
       --  Create the permission manager.
       App.Permissions := Factory.Create_Permission_Manager;
 
-      App.View.Initialize (App.Components'Unchecked_Access, Conf);
-      ASF.Locales.Initialize (App.Locales, App.Factory, Conf);
+      Application'Class (App).Initialize_Components;
+
+      Application'Class (App).Initialize_Config (Conf);
+
+      --  App.Conf := Conf;
+      App.Set_Init_Parameters (Params => App.Conf);
+
+      App.View.Initialize (App.Components'Unchecked_Access, App.Conf);
+      ASF.Locales.Initialize (App.Locales, App.Factory, App.Conf);
 
       --  Initialize the lifecycle handler.
       App.Lifecycle.Initialize (App_Access);
@@ -233,7 +238,6 @@ package body ASF.Applications.Main is
 
       Application'Class (App).Initialize_Servlets;
       Application'Class (App).Initialize_Filters;
-      Application'Class (App).Initialize_Components;
    end Initialize;
 
    --  ------------------------------
@@ -283,6 +287,120 @@ package body ASF.Applications.Main is
       Security.Permissions.Set_Functions (App.Functions);
    end Initialize_Components;
 
+   --  ------------------------------
+   --  Initialize the application configuration properties.  Properties defined in <b>Conf</b>
+   --  are expanded by using the EL expression resolver.
+   --  ------------------------------
+   procedure Initialize_Config (App  : in out Application;
+                                Conf : in Config) is
+
+      function Expand (Value   : in String;
+                       Context : in EL.Contexts.ELContext'Class) return EL.Objects.Object;
+
+      --  Copy the property identified by <b>Name</b> into the application config properties.
+      --  The value passed in <b>Item</b> is expanded if it contains an EL expression.
+      procedure Process (Name, Item : in Util.Properties.Value);
+
+      type Local_Resolver is new EL.Contexts.Properties.Property_Resolver with null record;
+
+      --  Get the value associated with a base object and a given property.
+      overriding
+      function Get_Value (Resolver : in Local_Resolver;
+                          Context  : in EL.Contexts.ELContext'Class;
+                          Base     : access Util.Beans.Basic.Readonly_Bean'Class;
+                          Name     : in Unbounded_String) return EL.Objects.Object;
+
+      --  Get the value associated with a base object and a given property.
+      overriding
+      function Get_Value (Resolver : in Local_Resolver;
+                          Context  : in EL.Contexts.ELContext'Class;
+                          Base     : access Util.Beans.Basic.Readonly_Bean'Class;
+                          Name     : in Unbounded_String) return EL.Objects.Object is
+         pragma Unreferenced (Resolver);
+      begin
+         if Base /= null then
+            return Base.Get_Value (To_String (Name));
+
+         elsif App.Conf.Exists (Name) then
+            return Util.Beans.Objects.To_Object (String '(App.Conf.Get (Name)));
+
+         elsif Conf.Exists (Name) then
+            declare
+               Value  : constant String := Conf.Get (Name);
+            begin
+               if Util.Strings.Index (Value, '{') = 0 or Util.Strings.Index (Value, '}') = 0 then
+                  return Util.Beans.Objects.To_Object (Value);
+               end if;
+
+               return Expand (Value, Context);
+            end;
+
+         else
+            return Util.Beans.Objects.Null_Object;
+         end if;
+      end Get_Value;
+
+      Recursion : Natural := 10;
+
+      --  ------------------------------
+      --  Expand (recursively) the EL expression defined in <b>Value</b> by using
+      --  the context.  The recursion is provided by the above context resolver which
+      --  invokes <b>Expand</b> if it detects that a value is a possible EL expression.
+      --  ------------------------------
+      function Expand (Value   : in String;
+                       Context : in EL.Contexts.ELContext'Class) return EL.Objects.Object is
+         Expr   : EL.Expressions.Expression;
+         Result : Util.Beans.Objects.Object;
+      begin
+         if Recursion = 0 then
+            Log.Error ("Too many level of recursion when evaluating expression: {0}", Value);
+            return Util.Beans.Objects.Null_Object;
+         end if;
+
+         Recursion := Recursion - 1;
+         Expr := EL.Expressions.Create_Expression (Value, Context);
+         Result := Expr.Get_Value (Context);
+         Recursion := Recursion + 1;
+         return Result;
+
+      exception
+         when others =>
+            Recursion := Recursion + 1;
+            return Util.Beans.Objects.To_Object (Value);
+      end Expand;
+
+      Resolver : aliased Local_Resolver;
+      Context  : aliased EL.Contexts.Default.Default_Context;
+
+      --  ------------------------------
+      --  Copy the property identified by <b>Name</b> into the application config properties.
+      --  The value passed in <b>Item</b> is expanded if it contains an EL expression.
+      --  ------------------------------
+      procedure Process (Name, Item : in Util.Properties.Value) is
+         use Ada.Strings;
+      begin
+         if Unbounded.Index (Item, "{") = 0 or Unbounded.Index (Item, "{") = 0 then
+            Log.Debug ("Adding config {0} = {1}", Name, Item);
+
+            App.Conf.Set (Name, Item);
+         else
+            declare
+               Value : constant Util.Beans.Objects.Object := Expand (To_String (Item), Context);
+               Val   : constant Unbounded_String := Util.Beans.Objects.To_Unbounded_String (Value);
+            begin
+               Log.Debug ("Adding config {0} = {1}", Name, Val);
+               App.Conf.Set (Name, Val);
+            end;
+         end if;
+      end Process;
+
+   begin
+      Resolver.Set_Properties (Conf);
+      Context.Set_Resolver (Resolver'Unchecked_Access);
+      Context.Set_Function_Mapper (App.Functions'Unchecked_Access);
+
+      Conf.Iterate (Process'Access);
+   end Initialize_Config;
 
    --  ------------------------------
    --  Get the configuration parameter;
@@ -435,7 +553,7 @@ package body ASF.Applications.Main is
                        Base     : access Util.Beans.Basic.Readonly_Bean'Class;
                        Name     : Unbounded_String) return EL.Objects.Object;
    overriding
-   procedure Set_Value (Resolver : in Web_ELResolver;
+   procedure Set_Value (Resolver : in out Web_ELResolver;
                         Context  : in EL.Contexts.ELContext'Class;
                         Base     : access Util.Beans.Basic.Bean'Class;
                         Name     : in Unbounded_String;
@@ -498,7 +616,7 @@ package body ASF.Applications.Main is
 
    --  Set the value associated with a base object and a given property.
    overriding
-   procedure Set_Value (Resolver : in Web_ELResolver;
+   procedure Set_Value (Resolver : in out Web_ELResolver;
                         Context  : in EL.Contexts.ELContext'Class;
                         Base     : access Util.Beans.Basic.Bean'Class;
                         Name     : in Unbounded_String;

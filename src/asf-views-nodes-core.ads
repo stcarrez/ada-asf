@@ -33,6 +33,8 @@ with ASF.Factory;
 with EL.Functions;
 package ASF.Views.Nodes.Core is
 
+   FN_URI : constant String := "http://java.sun.com/jsp/jstl/functions";
+
    --  Tag factory for nodes defined in this package.
    function Definition return ASF.Factory.Factory_Bindings_Access;
 

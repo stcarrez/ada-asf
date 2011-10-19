@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-core -- Core nodes
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Strings.Transforms;
+with Util.Files;
+
 with Ada.Strings.Fixed;
 package body ASF.Views.Nodes.Core is
 
@@ -264,6 +266,7 @@ package body ASF.Views.Nodes.Core is
 
    --  Function names
    CAPITALIZE_FN       : aliased constant String := "capitalize";
+   COMPOSE_PATH_FN     : aliased constant String := "composePath";
    TO_UPPER_CASE_FN    : aliased constant String := "toUpperCase";
    TO_LOWER_CASE_FN    : aliased constant String := "toLowerCase";
    SUBSTRING_AFTER_FN  : aliased constant String := "substringAfter";
@@ -276,6 +279,8 @@ package body ASF.Views.Nodes.Core is
                               Token : in EL.Objects.Object) return EL.Objects.Object;
    function Substring_After (Value : in EL.Objects.Object;
                              Token : in EL.Objects.Object) return EL.Objects.Object;
+   function Compose_Path (Paths : in EL.Objects.Object;
+                          Dir   : in EL.Objects.Object) return EL.Objects.Object;
 
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object is
       S : constant String := EL.Objects.To_String (Value);
@@ -328,29 +333,47 @@ package body ASF.Views.Nodes.Core is
    end Substring_After;
 
    --  ------------------------------
+   --  Expand the search paths <b>Paths</b> into a new search path which adds the
+   --  directory component <b>Dir</b>.  Example:
+   --    Paths= /usr;/usr/local;/opt
+   --    Dir  = bin
+   --    Result= /usr/bin;/usr/local/bin;/opt/bin
+   --  ------------------------------
+   function Compose_Path (Paths : in EL.Objects.Object;
+                          Dir   : in EL.Objects.Object) return EL.Objects.Object is
+      P   : constant String := EL.Objects.To_String (Paths);
+      D   : constant String := EL.Objects.To_String (Dir);
+      R   : constant String := Util.Files.Compose_Path (P, D);
+   begin
+      return EL.Objects.To_Object (R);
+   end Compose_Path;
+
+   --  ------------------------------
    --  Register a set of functions in the namespace
    --  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
    --  Functions:
    --    capitalize, toUpperCase, toLowerCase
    --  ------------------------------
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
-      URI : constant String := "http://java.sun.com/jsp/jstl/functions";
    begin
       Mapper.Set_Function (Name      => CAPITALIZE_FN,
-                           Namespace => URI,
+                           Namespace => FN_URI,
                            Func      => Capitalize'Access);
       Mapper.Set_Function (Name      => TO_LOWER_CASE_FN,
-                           Namespace => URI,
+                           Namespace => FN_URI,
                            Func      => To_Lower_Case'Access);
       Mapper.Set_Function (Name      => TO_UPPER_CASE_FN,
-                           Namespace => URI,
+                           Namespace => FN_URI,
                            Func      => To_Upper_Case'Access);
       Mapper.Set_Function (Name      => SUBSTRING_BEFORE_FN,
-                           Namespace => URI,
+                           Namespace => FN_URI,
                            Func      => Substring_Before'Access);
       Mapper.Set_Function (Name      => SUBSTRING_AFTER_FN,
-                           Namespace => URI,
+                           Namespace => FN_URI,
                            Func      => Substring_After'Access);
+      Mapper.Set_Function (Name      => COMPOSE_PATH_FN,
+                           Namespace => FN_URI,
+                           Func      => Compose_Path'Access);
    end Set_Functions;
 
 end ASF.Views.Nodes.Core;

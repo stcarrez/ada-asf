@@ -37,6 +37,8 @@ with ASF.Beans.Headers;
 with EL.Expressions;
 with EL.Contexts.Default;
 with EL.Contexts.Properties;
+with EL.Functions.Namespaces;
+with EL.Utils;
 
 with Ada.Exceptions;
 with Ada.Containers.Indefinite_Vectors;
@@ -294,112 +296,17 @@ package body ASF.Applications.Main is
    procedure Initialize_Config (App  : in out Application;
                                 Conf : in Config) is
 
-      function Expand (Value   : in String;
-                       Context : in EL.Contexts.ELContext'Class) return EL.Objects.Object;
-
-      --  Copy the property identified by <b>Name</b> into the application config properties.
-      --  The value passed in <b>Item</b> is expanded if it contains an EL expression.
-      procedure Process (Name, Item : in Util.Properties.Value);
-
-      type Local_Resolver is new EL.Contexts.Properties.Property_Resolver with null record;
-
-      --  Get the value associated with a base object and a given property.
-      overriding
-      function Get_Value (Resolver : in Local_Resolver;
-                          Context  : in EL.Contexts.ELContext'Class;
-                          Base     : access Util.Beans.Basic.Readonly_Bean'Class;
-                          Name     : in Unbounded_String) return EL.Objects.Object;
-
-      --  Get the value associated with a base object and a given property.
-      overriding
-      function Get_Value (Resolver : in Local_Resolver;
-                          Context  : in EL.Contexts.ELContext'Class;
-                          Base     : access Util.Beans.Basic.Readonly_Bean'Class;
-                          Name     : in Unbounded_String) return EL.Objects.Object is
-         pragma Unreferenced (Resolver);
-      begin
-         if Base /= null then
-            return Base.Get_Value (To_String (Name));
-
-         elsif App.Conf.Exists (Name) then
-            return Util.Beans.Objects.To_Object (String '(App.Conf.Get (Name)));
-
-         elsif Conf.Exists (Name) then
-            declare
-               Value  : constant String := Conf.Get (Name);
-            begin
-               if Util.Strings.Index (Value, '{') = 0 or Util.Strings.Index (Value, '}') = 0 then
-                  return Util.Beans.Objects.To_Object (Value);
-               end if;
-
-               return Expand (Value, Context);
-            end;
-
-         else
-            return Util.Beans.Objects.Null_Object;
-         end if;
-      end Get_Value;
-
-      Recursion : Natural := 10;
-
-      --  ------------------------------
-      --  Expand (recursively) the EL expression defined in <b>Value</b> by using
-      --  the context.  The recursion is provided by the above context resolver which
-      --  invokes <b>Expand</b> if it detects that a value is a possible EL expression.
-      --  ------------------------------
-      function Expand (Value   : in String;
-                       Context : in EL.Contexts.ELContext'Class) return EL.Objects.Object is
-         Expr   : EL.Expressions.Expression;
-         Result : Util.Beans.Objects.Object;
-      begin
-         if Recursion = 0 then
-            Log.Error ("Too many level of recursion when evaluating expression: {0}", Value);
-            return Util.Beans.Objects.Null_Object;
-         end if;
-
-         Recursion := Recursion - 1;
-         Expr := EL.Expressions.Create_Expression (Value, Context);
-         Result := Expr.Get_Value (Context);
-         Recursion := Recursion + 1;
-         return Result;
-
-      exception
-         when others =>
-            Recursion := Recursion + 1;
-            return Util.Beans.Objects.To_Object (Value);
-      end Expand;
-
-      Resolver : aliased Local_Resolver;
+      NS_Mapper : aliased EL.Functions.Namespaces.NS_Function_Mapper;
       Context  : aliased EL.Contexts.Default.Default_Context;
 
-      --  ------------------------------
-      --  Copy the property identified by <b>Name</b> into the application config properties.
-      --  The value passed in <b>Item</b> is expanded if it contains an EL expression.
-      --  ------------------------------
-      procedure Process (Name, Item : in Util.Properties.Value) is
-         use Ada.Strings;
-      begin
-         if Unbounded.Index (Item, "{") = 0 or Unbounded.Index (Item, "{") = 0 then
-            Log.Debug ("Adding config {0} = {1}", Name, Item);
-
-            App.Conf.Set (Name, Item);
-         else
-            declare
-               Value : constant Util.Beans.Objects.Object := Expand (To_String (Item), Context);
-               Val   : constant Unbounded_String := Util.Beans.Objects.To_Unbounded_String (Value);
-            begin
-               Log.Debug ("Adding config {0} = {1}", Name, Val);
-               App.Conf.Set (Name, Val);
-            end;
-         end if;
-      end Process;
-
    begin
-      Resolver.Set_Properties (Conf);
-      Context.Set_Resolver (Resolver'Unchecked_Access);
-      Context.Set_Function_Mapper (App.Functions'Unchecked_Access);
-
-      Conf.Iterate (Process'Access);
+      NS_Mapper.Set_Namespace (Prefix => "fn",
+                               URI    => ASF.Views.Nodes.Core.FN_URI);
+      NS_Mapper.Set_Function_Mapper (App.Functions'Unchecked_Access);
+      Context.Set_Function_Mapper (NS_Mapper'Unchecked_Access);
+      EL.Utils.Expand (Source => Conf,
+                       Into   => App.Conf,
+                       Context => Context);
    end Initialize_Config;
 
    --  ------------------------------

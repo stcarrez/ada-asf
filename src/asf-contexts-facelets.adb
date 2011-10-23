@@ -19,10 +19,17 @@
 with Ada.Directories;
 
 with Util.Files;
+with Util.Log.Loggers;
+
 with EL.Variables;
 with ASF.Applications.Main;
 with ASF.Views.Nodes.Facelets;
 package body ASF.Contexts.Facelets is
+
+   use Util.Log;
+
+   --  The logger
+   Log : constant Loggers.Logger := Loggers.Create ("ASF.Contexts.Facelets");
 
    --  ------------------------------
    --  Get the EL context for evaluating expressions.
@@ -158,12 +165,13 @@ package body ASF.Contexts.Facelets is
    --  Set the path to resolve relative facelet paths and get the previous path.
    --  ------------------------------
    procedure Set_Relative_Path (Context  : in out Facelet_Context;
-                                Path     : in Unbounded_String;
+                                Path     : in String;
                                 Previous : out Unbounded_String) is
-      File : constant String := To_String (Path);
    begin
+      Log.Debug ("Set facelet relative path: {0}", Path);
+
       Previous := Context.Path;
-      Context.Path := To_Unbounded_String (Ada.Directories.Containing_Directory (File));
+      Context.Path := To_Unbounded_String (Ada.Directories.Containing_Directory (Path));
    end Set_Relative_Path;
 
    --  ------------------------------
@@ -172,6 +180,8 @@ package body ASF.Contexts.Facelets is
    procedure Set_Relative_Path (Context  : in out Facelet_Context;
                                 Path     : in Unbounded_String) is
    begin
+      Log.Debug ("Set facelet relative path: {0}", Path);
+
       Context.Path := Path;
    end Set_Relative_Path;
 
@@ -184,6 +194,7 @@ package body ASF.Contexts.Facelets is
       if Path (Path'First) = '/' then
          return Path;
       else
+         Log.Debug ("Resolve {0} with context {1}", Path, To_String (Context.Path));
          return Util.Files.Compose (To_String (Context.Path), Path);
       end if;
    end Resolve_Path;

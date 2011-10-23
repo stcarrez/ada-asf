@@ -40,6 +40,9 @@ package ASF.Views is
    function Create_File_Info (Path              : in String;
                               Relative_Position : in Natural) return File_Info_Access;
 
+   --  Get the relative path name
+   function Relative_Path (File : in File_Info) return String;
+
    type Line_Info is private;
 
    --  Get the line number

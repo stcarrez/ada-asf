@@ -75,6 +75,8 @@ package body ASF.Views.Facelets is
       Res   : Facelet;
       Fname : constant Unbounded_String := To_Unbounded_String (Name);
    begin
+      Log.Debug ("Find facelet {0}", Name);
+
       Find (Factory, Fname, Res);
       if Res.Root = null then
          Load (Factory, Name, Context, Res);
@@ -86,6 +88,7 @@ package body ASF.Views.Facelets is
       end if;
       Result.Root := Res.Root;
       Result.Path := Res.Path;
+      Result.File := Res.File;
    end Find_Facelet;
 
    --  ------------------------------
@@ -97,7 +100,8 @@ package body ASF.Views.Facelets is
       Old : Unbounded_String;
    begin
       if View.Root /= null then
-         Context.Set_Relative_Path (Path => View.Path, Previous => Old);
+         Context.Set_Relative_Path (Path     => ASF.Views.Relative_Path (View.File.all),
+                                    Previous => Old);
          View.Root.Build_Children (Parent => Root, Context => Context);
          Context.Set_Relative_Path (Path => Old);
       end if;
@@ -213,7 +217,8 @@ package body ASF.Views.Facelets is
       File   : File_Info_Access := Create_File_Info (Path, RPos);
       Mtime  : Ada.Calendar.Time;
    begin
-      Log.Info ("Loading facelet: '{0}'", Path);
+      Log.Info ("Loading facelet: '{0}' - {1} - {2}", Path, Name,
+               Natural'Image (File.Relative_Pos));
 
       Ctx.Set_Function_Mapper (Context.Get_Function_Mapper);
       Mtime  := Modification_Time (Path);

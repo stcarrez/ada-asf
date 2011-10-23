@@ -92,7 +92,7 @@ package ASF.Contexts.Facelets is
 
    --  Set the path to resolve relative facelet paths and get the previous path.
    procedure Set_Relative_Path (Context  : in out Facelet_Context;
-                                Path     : in Unbounded_String;
+                                Path     : in String;
                                 Previous : out Unbounded_String);
 
    --  Set the path to resolve relative facelet paths.

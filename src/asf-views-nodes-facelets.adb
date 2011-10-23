@@ -271,7 +271,7 @@ package body ASF.Views.Nodes.Facelets is
          declare
             File : constant String := Node.Get_File_Name;
          begin
-            Context.Set_Relative_Path (Path     => To_Unbounded_String (File),
+            Context.Set_Relative_Path (Path     => File,
                                        Previous => Old);
             Define_Maps.Element (Pos).Build_Children (Parent, Context);
 

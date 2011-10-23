@@ -35,6 +35,14 @@ package body ASF.Views is
    end Create_File_Info;
 
    --  ------------------------------
+   --  Get the relative path name
+   --  ------------------------------
+   function Relative_Path (File : in File_Info) return String is
+   begin
+      return File.Path (File.Relative_Pos .. File.Path'Last);
+   end Relative_Path;
+
+   --  ------------------------------
    --  Get the line number
    --  ------------------------------
    function Line (Info : Line_Info) return Natural is

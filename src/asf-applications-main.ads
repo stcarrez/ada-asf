@@ -40,8 +40,6 @@ with ASF.Servlets;
 with ASF.Events.Faces.Actions;
 with Security.Permissions;
 
-with ASF.Beans.Mappers;
-with Util.Serialize.IO.XML;
 package ASF.Applications.Main is
 
    use ASF.Beans;
@@ -134,7 +132,7 @@ package ASF.Applications.Main is
    --  Initialize the application configuration properties.  Properties defined in <b>Conf</b>
    --  are expanded by using the EL expression resolver.
    procedure Initialize_Config (App  : in out Application;
-                                Conf : in Config);
+                                Conf : in out Config);
 
    --  Initialize the servlets provided by the application.
    --  This procedure is called by <b>Initialize</b>.

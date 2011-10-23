@@ -20,6 +20,8 @@ with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
 with Util.Serialize.IO.XML;
 
+with EL.Contexts;
+
 --  The <b>ASF.Servlets.Mappers</b> package defines an XML mapper that can be used
 --  to read the servlet configuration files.
 --
@@ -53,7 +55,7 @@ package ASF.Servlets.Mappers is
    --  is populated by calls through the <b>Set_Member</b> procedure.  The data is
    --  collected and when the end of an element (FILTER_MAPPING, SERVLET_MAPPING, CONTEXT_PARAM)
    --  is reached, the definition is updated in the servlet registry.
-   type Servlet_Config is record
+   type Servlet_Config is limited record
       Filter_Name      : Util.Beans.Objects.Object;
       Servlet_Name     : Util.Beans.Objects.Object;
       URL_Pattern      : Util.Beans.Objects.Object;
@@ -64,6 +66,7 @@ package ASF.Servlets.Mappers is
       Error_Code       : Util.Beans.Objects.Object;
       Location         : Util.Beans.Objects.Object;
       Handler          : Servlet_Registry_Access;
+      Context          : EL.Contexts.ELContext_Access;
    end record;
    type Servlet_Config_Access is access all Servlet_Config;
 
@@ -79,6 +82,7 @@ package ASF.Servlets.Mappers is
    generic
       Reader  : in out Util.Serialize.IO.XML.Parser;
       Handler : in Servlet_Registry_Access;
+      Context : in EL.Contexts.ELContext_Access;
    package Reader_Config is
       Config : aliased Servlet_Config;
    end Reader_Config;

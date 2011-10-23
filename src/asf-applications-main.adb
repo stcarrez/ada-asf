@@ -36,7 +36,6 @@ with ASF.Beans.Headers;
 
 with EL.Expressions;
 with EL.Contexts.Default;
-with EL.Contexts.Properties;
 with EL.Functions.Namespaces;
 with EL.Utils;
 
@@ -224,7 +223,8 @@ package body ASF.Applications.Main is
 
       Application'Class (App).Initialize_Components;
 
-      Application'Class (App).Initialize_Config (Conf);
+      App.Conf := Conf;
+      Application'Class (App).Initialize_Config (App.Conf);
 
       --  App.Conf := Conf;
       App.Set_Init_Parameters (Params => App.Conf);
@@ -294,10 +294,10 @@ package body ASF.Applications.Main is
    --  are expanded by using the EL expression resolver.
    --  ------------------------------
    procedure Initialize_Config (App  : in out Application;
-                                Conf : in Config) is
+                                Conf : in out Config) is
 
       NS_Mapper : aliased EL.Functions.Namespaces.NS_Function_Mapper;
-      Context  : aliased EL.Contexts.Default.Default_Context;
+      Context   : aliased EL.Contexts.Default.Default_Context;
 
    begin
       NS_Mapper.Set_Namespace (Prefix => "fn",
@@ -305,7 +305,7 @@ package body ASF.Applications.Main is
       NS_Mapper.Set_Function_Mapper (App.Functions'Unchecked_Access);
       Context.Set_Function_Mapper (NS_Mapper'Unchecked_Access);
       EL.Utils.Expand (Source => Conf,
-                       Into   => App.Conf,
+                       Into   => Conf,
                        Context => Context);
    end Initialize_Config;
 

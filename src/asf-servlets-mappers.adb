@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with EL.Utils;
+
 package body ASF.Servlets.Mappers is
 
    --  ------------------------------
@@ -50,7 +52,7 @@ package body ASF.Servlets.Mappers is
             N.Param_Name := Value;
 
          when PARAM_VALUE =>
-            N.Param_Value := Value;
+            N.Param_Value := EL.Utils.Eval (To_String (Value), N.Context.all);
 
          when MIME_TYPE =>
             N.Mime_Type := Value;
@@ -97,6 +99,7 @@ package body ASF.Servlets.Mappers is
       Reader.Add_Mapping ("module", SMapper'Access);
       Reader.Add_Mapping ("web-app", SMapper'Access);
       Config.Handler := Handler;
+      Config.Context := Context;
       Servlet_Mapper.Set_Context (Reader, Config'Unchecked_Access);
    end Reader_Config;
 

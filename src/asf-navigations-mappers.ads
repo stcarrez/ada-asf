@@ -36,7 +36,7 @@ package ASF.Navigations.Mappers is
    --  is populated by calls through the <b>Set_Member</b> procedure.  The data is
    --  collected and when the end of the navigation case element is reached,
    --  the new navigation case is inserted in the navigation handler.
-   type Nav_Config is record
+   type Nav_Config is limited record
       Outcome      : Util.Beans.Objects.Object;
       Action       : Util.Beans.Objects.Object;
       To_View      : Util.Beans.Objects.Object;

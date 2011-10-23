@@ -16,12 +16,13 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with EL.Contexts;
+with EL.Contexts.Default;
+with EL.Contexts.Properties;
 
 with ASF.Contexts.Faces;
+with ASF.Applications.Main;
 
 with Util.Serialize.IO.XML;
-with ASF.Applications.Main;
 package ASF.Applications.Main.Configs is
 
    --  Read the configuration file associated with the application.  This includes:
@@ -34,11 +35,14 @@ package ASF.Applications.Main.Configs is
                                  File : in String);
 
    --  Setup the XML parser to read the managed bean definitions.
+   --  By instantiating this package, the <b>Reader</b> gets populated with the XML mappings
+   --  to read the servlet, managed beans and navigation rules.
    generic
       Reader  : in out Util.Serialize.IO.XML.Parser;
       App     : in ASF.Contexts.Faces.Application_Access;
-      Context : in EL.Contexts.ELContext_Access;
+      Context : in EL.Contexts.Default.Default_Context_Access;
    package Reader_Config is
+      Prop_Context : aliased EL.Contexts.Properties.Property_Resolver;
    end Reader_Config;
 
    --  Create the configuration parameter definition instance.

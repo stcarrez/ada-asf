@@ -20,12 +20,21 @@ with ASF.Components.Html;
 with ASF.Contexts.Faces;
 package ASF.Components.Ajax.Includes is
 
+   --  @attribute
+   --  Defines whether the inclusion is asynchronous or not.
+   --  When true, an AJAX call will be made by the client browser to fetch the content.
+   --  When false, the view is included in the current component tree.
    ASYNC_ATTR_NAME  : constant String := "async";
 
+   --  @attribute
+   --  Defines the HTML container element that will contain the included view.
    LAYOUT_ATTR_NAME : constant String := "layout";
 
+   --  @attribute
+   --  Defines the view name to include.
    SRC_ATTR_NAME    : constant String := "src";
 
+   --  @tag include
    --  The <b>ajax:include</b> component allows to include
    type UIInclude is new ASF.Components.Html.UIHtmlComponent with private;
 

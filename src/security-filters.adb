@@ -120,8 +120,8 @@ package body Security.Filters is
          begin
             if not F.Manager.Has_Permission (Context'Unchecked_Access, Perm) then
                Log.Info ("Deny access on {0}", URI);
-               Auth_Filter'Class (F).Do_Deny (Request, Response);
-               return;
+--                 Auth_Filter'Class (F).Do_Deny (Request, Response);
+--                 return;
             end if;
          end;
       end if;

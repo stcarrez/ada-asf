@@ -204,7 +204,7 @@ var ASF = {};
                     if (title != null) {
                         $(div).attr('title', title);
                     }
-                    $(div).dialog({ autoOpen: true, show: "blind", hide: "explode" });
+                    $(div).dialog({ autoOpen: true, show: "blind", hide: "explode", minWidth: 400 });
 
                 } else if (contentType.match(/^application\/json(;.*)?$/i)) {
                     ASF.Execute(node, data);

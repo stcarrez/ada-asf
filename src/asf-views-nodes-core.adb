@@ -18,6 +18,7 @@
 with Util.Strings.Transforms;
 with Util.Files;
 
+with Ada.Exceptions;
 with Ada.Strings.Fixed;
 package body ASF.Views.Nodes.Core is
 
@@ -208,6 +209,11 @@ package body ASF.Views.Nodes.Core is
                          Context : Facelet_Context'Class) return Boolean is
    begin
       return EL.Objects.To_Boolean (Get_Value (Node.Condition.all, Context));
+
+   exception
+      when E : others =>
+            Node.Error ("Exception: {0}", Ada.Exceptions.Exception_Message (E));
+            return False;
    end Is_Selected;
 
    --  ------------------------------

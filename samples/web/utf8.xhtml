@@ -1,0 +1,45 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                template="/WEB-INF/layouts/layout.xhtml">
+    <ui:param name="title" value="#{samplesMsg.openid_title}" />
+
+    <!-- Main page body -->
+    <ui:define name="pageBody">
+
+       <div id='awa-content'>
+          <table>
+<tr>
+<td>0x8140 to 0xa0fe</td>
+<td>Reserved for user-defined characters 造字</td>
+</tr>
+<tr>
+<td>0xa140 to 0xa3bf</td>
+<td>"Graphical characters" 圖形碼</td>
+</tr>
+<tr>
+<td>0xa3c0 to 0xa3fe</td>
+<td>Reserved, <i>not</i> for user-defined characters</td>
+</tr>
+<tr>
+<td>0xa440 to 0xc67e</td>
+<td>Frequently used characters 常用字</td>
+</tr>
+<tr>
+<td>0xc6a1 to 0xc8fe</td>
+<td>Reserved for user-defined characters</td>
+</tr>
+<tr>
+<td>0xc940 to 0xf9d5</td>
+<td>Less frequently used characters 次常用字</td>
+</tr>
+<tr>
+<td>0xf9d6 to 0xfefe</td>
+<td>Reserved for user-defined characters</td>
+</tr>
+</table>
+	</div>
+    </ui:define>
+
+</ui:composition>

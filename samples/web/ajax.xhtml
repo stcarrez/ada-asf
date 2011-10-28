@@ -2,7 +2,8 @@
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:c="http://java.sun.com/jstl/core"
-	xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
         xmlns:h="http://java.sun.com/jsf/html">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -12,6 +13,8 @@
 <body>
   <div>
      <h1>Compute the volume of a cylinder</h1>
+
+      <ajax:include id='container' src='compute-form'/>
 
      <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/compute-form.html')">
          Click compute-form

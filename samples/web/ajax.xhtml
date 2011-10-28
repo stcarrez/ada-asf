@@ -1,37 +1,54 @@
-<f:view contentType="text/html"
-        xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:c="http://java.sun.com/jstl/core"
-        xmlns:u="http://code.google.com/p/ada-asf/util"
-        xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
-        xmlns:h="http://java.sun.com/jsf/html">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/themes/main.css"/>
-    <title>Volume Cylinder</title>
-</head>
-<body>
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/layout.xhtml">
+    <ui:param name="title" value="Volume Cylinder" />
+    <ui:param name="pageStyle" value="sample-ajax"/>
+    <!-- Main page body -->
+    <ui:define name="pageBody">
   <div>
-     <h1>Compute the volume of a cylinder</h1>
+      <h1>Compute the volume of a cylinder</h1>
+      <p>Shows the <tt>&amp;lt;ajax:include&gt;&lt;/ajax:include&gt;</tt> form</p>
+      <div class='sample'>
+          <ajax:include id='container' src='compute-form'/>
+      </div>
 
-      <ajax:include id='container' src='compute-form'/>
+      <h1>AJAX Form open</h1>
+      <p>Shows the <tt>ASF.Update</tt> javascript operation</p>
+      <div class='sample'>
+          <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/compute-form.html')">
+              Click compute-form
+          </div>
+      </div>
 
-     <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/compute-form.html')">
-         Click compute-form
-     </div>
-     <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/json-response.html')">
-         Click json
-     </div>
-     <div>
-        <div id='item1' style='display: none'>Div is hidden</div>
-        <div id='item1' style='display: block'>Div is visible</div>
-        <div id='item3' style='display: block'>Div is visible</div>
-     </div>
+      <h1>AJAX JSON Response</h1>
+      <p>Shows the <tt>ASF.Update</tt> javascript with a JSON response</p>
+      <div class='sample'>
+          <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/json-response.html')">
+              Click here to trigger the json response
+          </div>
+          <div>
+              <div id='item1' style='display: none'>Div is hidden</div>
+              <div id='item2' style='display: block'>Div is visible</div>
+              <div id='item3' style='display: block'>Div is visible</div>
+          </div>
+      </div>
+
+
+      <h1>Dialog box</h1>
+      <p>Shows the <tt>ASF.Update</tt> javascript with a JSON response</p>
+      <div class='sample'>
+          <div class='asf-container'
+               onclick="return ASF.OpenDialog(this, 'computeDialog', '#{contextPath}/compute-form.html');">
+              Click here to trigger the json response
+          </div>
+      </div>
   </div>
-<script type="text/javascript" src="#{contextPath}/js/jquery-1.6.js"></script>
-<script type="text/javascript" src="#{contextPath}/js/asf.js"></script>
-<script type="text/javascript">
-</script>
-</body>
-</html>
-</f:view>
+        <script type="text/javascript" src="#{contextPath}/js/jquery-1.6.js"></script>
+        <script type="text/javascript" src="#{contextPath}/js/asf.js"></script>
+        <script type="text/javascript">
+        </script>
+    </ui:define>
+</ui:composition>

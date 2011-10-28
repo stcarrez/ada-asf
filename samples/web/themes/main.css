@@ -9,7 +9,6 @@ html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fiel
 body {
   font-family: Arial, sans-serif;
   font-size: 12px;
-  padding: 10px;
   background-color: #e0ecec;
 }
 
@@ -56,4 +55,38 @@ dt {
 dd {
   float: left;
   padding: 5px;
+}
+#content {
+    float: left;
+    clear: both;
+    margin-top: 10px;
+}
+#nav {
+    width: 100%;
+    padding: 0;
+}
+#nav ul {
+    list-style-type: none;
+    float: left;
+}
+#nav li {
+    float: left;
+    font-size: 13px;
+    margin-right: 5px;
+}
+#nav li a, #nav li a:visited {
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 15px;
+    text-decoration: none;
+    color: #616243;
+    font-weight: bold;
+}
+.sample-compute #nav #nav-compute a {
+    background-color: #ccc;
+    color: #f0f0f0;
+    font-weight: bold;
 }

@@ -1,0 +1,32 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/layout.xhtml">
+    <ui:param name="title" value="Ada Server Faces Examples" />
+    <ui:param name="pageStyle" value=""/>
+    <!-- Main page body -->
+    <ui:define name="pageBody">
+
+        <div id='index'>
+            <dl>
+                <dt><a href="compute.html" title="Volume computation">Volume computation</a></dt>
+                <dd>
+                    Shows simple forms display, form submission and validation
+                </dd>
+
+                <dt><a href="utf8.html" title="UTF-8 page">UTF-8 display</a></dt>
+                <dd>
+                    Displays a page which contains UTF-8 characters (Chineese, French, ...)
+                </dd>
+
+                <dt><a href="ajax.html" title="AJAX examples">AJAX support</a></dt>
+                <dd>
+                    Shows various AJAX interactions
+                </dd>
+
+            </dl>
+        </div>
+    </ui:define>
+</ui:composition>

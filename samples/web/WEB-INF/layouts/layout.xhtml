@@ -3,12 +3,13 @@
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:c="http://java.sun.com/jstl/core"
-	xmlns:u="http://code.google.com/p/ada-asf/util"
+	    xmlns:u="http://code.google.com/p/ada-asf/util"
         xmlns:h="http://java.sun.com/jsf/html">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/main.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/redmond/jquery-ui-1.8.13.custom.css"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/samples.css"/>
     <ui:insert name="pageHeader"/>
     <title>#{title}</title>
@@ -28,7 +29,9 @@
     </ul>
   </div>
 </div>
+
 <div id='awa-page'>
+    <ui:include src="header.xhtml"/>
     <ui:insert name="pageBody"/>
     <div id="awa-clfooter"></div>
 </div>
@@ -44,6 +47,16 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.position.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.mouse.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.draggable.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.resizable.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.sortable.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.dialog.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/asf.js"></script>
+
 <ui:insert name="pageScript"/>
 <!--DEV_START-->
 <ui:debug/>

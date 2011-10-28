@@ -1,3 +1,7 @@
+h1 {
+    clear: both;
+    padding-top: 15px;
+}
 #awa-content h3 {
 	padding-bottom: 40px;
 	padding-top: 40px;
@@ -47,4 +51,77 @@ div.openid-retry {
 	float: left;
 	clear: both;
 	padding-top: 30px;
+}
+#content {
+    float: left;
+    clear: both;
+    margin-top: 10px;
+}
+#nav {
+    margin-top: 40px;
+    float: left;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #bcd;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px 6px;
+}
+#nav ul {
+    list-style-type: none;
+    float: left;
+}
+#nav li {
+    float: left;
+    font-size: 13px;
+    margin-right: 5px;
+}
+#nav li a, #nav li a:visited {
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 15px;
+    text-decoration: none;
+    color: #616243;
+    font-weight: bold;
+}
+.sample-compute #nav #nav-compute a,
+.sample-ajax #nav #nav-ajax a,
+.sample-utf8 #nav #nav-utf8 a {
+    background-color: #ccc;
+    color: #f0f0f0;
+    font-weight: bold;
+}
+
+#container, .asf-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+div.sample {
+    float: left;
+    clear: both;
+    width: 500px;
+    border: 1px solid #bcd;
+    background-color: #ffffff;
+    padding: 10px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px 6px;
+}
+#item1 {
+    background-color: #ddd;
+}
+
+#index {
+    padding-left: 5%;
+}
+#index dt {
+    clear: both;
+    padding-top: 20px;
+}
+#index dd {
+    clear: both;
+    padding-left: 20px;
 }

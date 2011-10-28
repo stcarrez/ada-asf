@@ -33,6 +33,8 @@ body.awa {
 }
 #awa-hdr {
   position: absolute;
+    padding: 0;
+    margin: 0;
   width: 100%;
   height: 40px;
   background-color: #9BCFBA;

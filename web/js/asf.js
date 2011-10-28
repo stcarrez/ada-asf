@@ -125,8 +125,8 @@ var ASF = {};
         /* Find the form and container to update */
         var f = $(node).closest("form");
         var d = $(f);
-        if (!d.is('.asf-container')) {
-            d = d.parent('.asf-container');
+        if (!d.is('.asf-container,ui-dialog-content')) {
+            d = d.closest('.asf-container,.ui-dialog-content');
         }
         if (d.length == 0) {
             d = $(f).parent();
@@ -161,6 +161,56 @@ var ASF = {};
                }
             });
         }
+        return false;
+    };
+
+    /**
+     * Open a dialog box and fetch the dialog content from the given URI.
+     *
+     * @param node the current element
+     * @param id the dialog id
+     * @param url the URL to fetch using an HTTP GET
+     * @param target the optional target element
+     */
+    ASF.OpenDialog = function(node, id, url, target) {
+        var div = $(id);
+        if (div.length > 0) {
+            return false;
+        }
+
+        div = document.createElement("div");
+        div.id = id;
+        div = $(div);
+
+        var d = $(document);
+        if (d.length == 0) {
+            return false;
+        }
+
+        $(d).append($(div));
+
+        /* Perform the HTTP GET */
+        jQuery.ajax({
+            url: url,
+            context: document.body,
+            success: function(data, status, jqXHDR) {
+                var contentType = jqXHDR.getResponseHeader('Content-type');
+                if (contentType == null) {
+                    contentType = "text/html";
+                }
+                if (contentType.match(/^text\/(html|xml)(;.*)?$/i)) {
+                    $(div).html(jqXHDR.responseText);
+                    var title = $(div).children('div').attr('title');
+                    if (title != null) {
+                        $(div).attr('title', title);
+                    }
+                    $(div).dialog({ autoOpen: true, show: "blind", hide: "explode" });
+
+                } else if (contentType.match(/^application\/json(;.*)?$/i)) {
+                    ASF.Execute(node, data);
+                }
+            }
+        });
         return false;
     };
 

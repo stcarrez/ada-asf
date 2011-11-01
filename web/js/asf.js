@@ -26,7 +26,7 @@ var ASF = {};
      */
     ASF.ExecuteOne = function(node, action) {
         if (action.action === "update") {
-	    $(action.id).html(action.data);
+	        $(action.id).html(action.data);
 
         } else if (action.action === "show") {
             $(action.id).show('slow');
@@ -35,13 +35,13 @@ var ASF = {};
             $(action.id).hide('slow');
 
         } else if (action.action === "delete") {
-	    $(action.id).remove();
+	        $(action.id).remove();
 
         } else if (action.action === "removeClass") {
-	    $(action.id).removeClass(action.data);
+	        $(action.id).removeClass(action.data);
 
         } else if (action.action === "addClass") {
-	    $(action.id).addClass(action.data);
+	        $(action.id).addClass(action.data);
 
         } else if (action.action === "fadeIn") {
             $(action.id).fadeIn('slow');
@@ -55,9 +55,12 @@ var ASF = {};
         } else if (action.action === "slideDown") {
             $(action.id).slideDown('slow');
 
+        } else if (action.action === "closeDialog") {
+            $(action.id).dialog('close');
+
         } else if (action.action === "redirect") {
             document.location = action.url;
-	}
+	    }
     };
 
     ASF.Execute = function(node, data) {
@@ -170,9 +173,9 @@ var ASF = {};
      * @param node the current element
      * @param id the dialog id
      * @param url the URL to fetch using an HTTP GET
-     * @param target the optional target element
+     * @param params the optional dialog options
      */
-    ASF.OpenDialog = function(node, id, url, target) {
+    ASF.OpenDialog = function(node, id, url, params) {
         var div = $(id);
         if (div.length > 0) {
             return false;
@@ -199,12 +202,24 @@ var ASF = {};
                     contentType = "text/html";
                 }
                 if (contentType.match(/^text\/(html|xml)(;.*)?$/i)) {
-                    $(div).html(jqXHDR.responseText);
-                    var title = $(div).children('div').attr('title');
-                    if (title != null) {
-                        $(div).attr('title', title);
-                    }
-                    $(div).dialog({ autoOpen: true, show: "blind", hide: "explode", minWidth: 400 });
+                    $(div).dialog({
+                        autoOpen: false,
+                        show: "blind",
+                        hide: "explode",
+                        minWidth: 500,
+                        close: function() {
+                            $(div).dialog('destroy');
+                            $(div).remove();
+                        }
+                     });
+
+                     $(div).html(jqXHDR.responseText);
+                     var dTitle = $(div).children('div').attr('title');
+                     if (dTitle != null) {
+                        $(div).dialog("option", "title", dTitle );
+                        /* $(div).attr('title', title); */
+                     }
+                     $(div).dialog('open');
 
                 } else if (contentType.match(/^application\/json(;.*)?$/i)) {
                     ASF.Execute(node, data);

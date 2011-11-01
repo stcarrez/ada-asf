@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module version="4" relativePaths="true" type="J2EE_WEB_MODULE">
-  <component name="AppServerSpecificValidatorsManager" />
-  <component name="ModuleRootManager" />
+<module relativePaths="true" type="J2EE_WEB_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <exclude-exploded />
@@ -10,7 +8,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
     <setting name="EXPLODED_URL" value="file://" />
@@ -28,6 +25,5 @@
       <root url="file://$MODULE_DIR$/WEB-INF" relative="/WEB-INF" />
     </webroots>
   </component>
-  <component name="WeblogicWebModuleProperties" />
 </module>
 

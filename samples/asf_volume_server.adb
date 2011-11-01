@@ -24,6 +24,7 @@ with ASF.Servlets.Files;
 with ASF.Filters.Dump;
 with ASF.Applications;
 with ASF.Applications.Main;
+with ASF.Applications.Main.Configs;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 
@@ -76,6 +77,7 @@ begin
 
    App.Add_Converter (Name => "float", Converter => Conv'Unchecked_Access);
 
+   ASF.Applications.Main.Configs.Read_Configuration (App, "samples/web/WEB-INF/web.xml");
    WS.Register_Application (CONTEXT_PATH, App'Unchecked_Access);
 
    Log.Info ("Connect you browser to: http://localhost:8080/volume/compute.html");

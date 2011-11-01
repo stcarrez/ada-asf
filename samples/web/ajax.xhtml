@@ -4,7 +4,7 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
                 template="/WEB-INF/layouts/layout.xhtml">
-    <ui:param name="title" value="Volume Cylinder" />
+    <ui:param name="title" value="#{samplesMsg.sample_ajax_page_title}" />
     <ui:param name="pageStyle" value="sample-ajax"/>
     <!-- Main page body -->
     <ui:define name="pageBody">
@@ -18,8 +18,10 @@
       <h1>AJAX Form open</h1>
       <p>Shows the <tt>ASF.Update</tt> javascript operation</p>
       <div class='sample'>
-          <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/compute-form.html')">
-              Click compute-form
+          <div class='asf-container'>
+              <div onclick="ASF.Update(this, '#{contextPath}/compute-form.html')">
+                  Click compute-form
+              </div>
           </div>
       </div>
 
@@ -40,15 +42,11 @@
       <h1>Dialog box</h1>
       <p>Shows the <tt>ASF.Update</tt> javascript with a JSON response</p>
       <div class='sample'>
-          <div class='asf-container'
+          <div class='asf-container' id='result'
                onclick="return ASF.OpenDialog(this, 'computeDialog', '#{contextPath}/compute-form.html');">
               Click here to trigger the json response
           </div>
       </div>
   </div>
-        <script type="text/javascript" src="#{contextPath}/js/jquery-1.6.js"></script>
-        <script type="text/javascript" src="#{contextPath}/js/asf.js"></script>
-        <script type="text/javascript">
-        </script>
     </ui:define>
 </ui:composition>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4"
+         xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <context-param>
+        <param-name>org.jboss.seam.core.init.debug</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.VIEW_MAPPINGS</param-name>
+        <param-value>*.xhtml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.REFRESH_PERIOD</param-name>
+        <param-value>2</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.DEVELOPMENT</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.LIBRARIES</param-name>
+        <param-value>
+            /WEB-INF/layouts/layouts-taglib.xml;
+            /WEB-INF/tomhawk/tomahawk.taglib.xml;
+            /WEB-INF/ajax.taglib.xml;
+            /WEB-INF/utils.taglib.xml;
+            /WEB-INF/auth.taglib.xml;
+            /WEB-INF/view.taglib.xml;
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-value>
+            /WEB-INF/faces-webtools.xml,
+            /WEB-INF/faces-project.xml,
+            /WEB-INF/faces-config.xml
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
+    </context-param>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <security-role>
+        <description>User with standard rights</description>
+        <role-name>user</role-name>
+    </security-role>
+
+    <security-role>
+        <description>User account expired</description>
+        <role-name>expired</role-name>
+    </security-role>
+
+    <session-config>
+        <!-- Session timeout in minutes -->
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/errors/403.jsf</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errors/404.jsf</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/errors/500.jsf</location>
+    </error-page>
+
+    <navigation-rule>
+      <from-view-id>/compute-form.xhtml</from-view-id>
+      <navigation-case>
+        <from-outcome>compute</from-outcome>
+        <to-view-id>/compute-form-response.xhtml</to-view-id>
+      </navigation-case>
+    </navigation-rule>
+
+</web-app>

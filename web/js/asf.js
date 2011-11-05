@@ -28,6 +28,12 @@ var ASF = {};
         if (action.action === "update") {
 	        $(action.id).html(action.data);
 
+        } else if (action.action === "prepend") {
+	        $(action.id).prepend(action.data);
+
+        } else if (action.action === "append") {
+	        $(action.id).append(action.data);
+
         } else if (action.action === "show") {
             $(action.id).show('slow');
 

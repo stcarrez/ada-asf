@@ -308,6 +308,23 @@ package ASF.Components.Base is
    procedure Steal_Root_Component (UI   : in out UIComponent'Class;
                                    Root : in out UIComponent_Access);
 
+   --  ------------------------------
+   --  Iterator over the component children
+   --  ------------------------------
+   type Cursor is limited private;
+
+   --  Get an iterator to scan the component children.
+   function First (UI : in UIComponent'Class) return Cursor;
+
+   --  Returns True if the iterator points to a valid child.
+   function Has_Element (Pos : in Cursor) return Boolean;
+
+   --  Get the child component pointed to by the iterator.
+   function Element (Pos : in Cursor) return UIComponent_Access;
+
+   --  Move to the next child.
+   procedure Next (Pos : in out Cursor);
+
 private
 
    --  Delete the component tree recursively.
@@ -326,6 +343,10 @@ private
       Last_Child  : UIComponent_Access := null;
       Next        : UIComponent_Access := null;
       Attributes  : UIAttribute_Access := null;
+   end record;
+
+   type Cursor is limited record
+      Child : UIComponent_Access := null;
    end record;
 
 end ASF.Components.Base;

@@ -855,4 +855,38 @@ package body ASF.Components.Base is
       end if;
    end Delete;
 
+   --  ------------------------------
+   --  Get an iterator to scan the component children.
+   --  ------------------------------
+   function First (UI : in UIComponent'Class) return Cursor is
+   begin
+      return Cursor '(Child => UI.First_Child);
+   end First;
+
+   --  ------------------------------
+   --  Returns True if the iterator points to a valid child.
+   --  ------------------------------
+   function Has_Element (Pos : in Cursor) return Boolean is
+   begin
+      return Pos.Child /= null;
+   end Has_Element;
+
+   --  ------------------------------
+   --  Get the child component pointed to by the iterator.
+   --  ------------------------------
+   function Element (Pos : in Cursor) return UIComponent_Access is
+   begin
+      return Pos.Child;
+   end Element;
+
+   --  ------------------------------
+   --  Move to the next child.
+   --  ------------------------------
+   procedure Next (Pos : in out Cursor) is
+   begin
+      if Pos.Child /= null then
+         Pos.Child := Pos.Child.Next;
+      end if;
+   end Next;
+
 end ASF.Components.Base;

@@ -65,6 +65,15 @@ package ASF.Models.Selects is
                                      Disabled    : in Boolean := False;
                                      Escaped     : in Boolean := True) return Select_Item;
 
+   --  Creates a <b>Select_Item</b> with the specified label, value and description.
+   --  The objects are converted to a wide wide string.  The empty string is used if they
+   --  are null.
+   function Create_Select_Item (Label       : in Util.Beans.Objects.Object;
+                                Value       : in Util.Beans.Objects.Object;
+                                Description : in Util.Beans.Objects.Object;
+                                Disabled    : in Boolean := False;
+                                Escaped     : in Boolean := True) return Select_Item;
+
    --  Get the item label.
    function Get_Label (Item : in Select_Item) return Wide_Wide_String;
 
@@ -77,8 +86,11 @@ package ASF.Models.Selects is
    --  Returns true if the item is disabled.
    function Is_Disabled (Item : in Select_Item) return Boolean;
 
-   --  Returns true if the
+   --  Returns true if the label must be escaped using HTML escape rules.
    function Is_Escaped (Item : in Select_Item) return Boolean;
+
+   --  Returns true if the select item component is empty.
+   function Is_Empty (Item : in Select_Item) return Boolean;
 
    --  Get the value identified by the name.
    --  If the name cannot be found, the method should return the Null object.

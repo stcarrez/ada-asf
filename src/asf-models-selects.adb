@@ -105,6 +105,39 @@ package body ASF.Models.Selects is
    end Create_Select_Item_Wide;
 
    --  ------------------------------
+   --  Creates a <b>Select_Item</b> with the specified label, value and description.
+   --  The objects are converted to a wide wide string.  The empty string is used if they
+   --  are null.
+   --  ------------------------------
+   function Create_Select_Item (Label       : in Util.Beans.Objects.Object;
+                                Value       : in Util.Beans.Objects.Object;
+                                Description : in Util.Beans.Objects.Object;
+                                Disabled    : in Boolean := False;
+                                Escaped     : in Boolean := True) return Select_Item is
+      use Util.Beans.Objects;
+
+      Result : Select_Item;
+   begin
+      Result.Item := Select_Item_Refs.Create;
+      declare
+         Item : constant Select_Item_Record_Access := Result.Item.Value;
+      begin
+         if not Is_Null (Label) then
+            Item.Label       := To_Unbounded_Wide_Wide_String (Label);
+         end if;
+         if not Is_Null (Value) then
+            Item.Value       := To_Unbounded_Wide_Wide_String (Value);
+         end if;
+         if not Is_Null (Description) then
+            Item.Description := To_Unbounded_Wide_Wide_String (Description);
+         end if;
+         Item.Disabled    := Disabled;
+         Item.Escape      := Escaped;
+      end;
+      return Result;
+   end Create_Select_Item;
+
+   --  ------------------------------
    --  Get the item label.
    --  ------------------------------
    function Get_Label (Item : in Select_Item) return Wide_Wide_String is
@@ -153,7 +186,7 @@ package body ASF.Models.Selects is
    end Is_Disabled;
 
    --  ------------------------------
-   --  Returns true if the
+   --  Returns true if the label must be escaped using HTML escape rules.
    --  ------------------------------
    function Is_Escaped (Item : in Select_Item) return Boolean is
    begin
@@ -164,8 +197,18 @@ package body ASF.Models.Selects is
       end if;
    end Is_Escaped;
 
+   --  ------------------------------
+   --  Returns true if the select item component is empty.
+   --  ------------------------------
+   function Is_Empty (Item : in Select_Item) return Boolean is
+   begin
+      return Item.Item.Is_Null;
+   end Is_Empty;
+
+   --  ------------------------------
    --  Get the value identified by the name.
    --  If the name cannot be found, the method should return the Null object.
+   --  ------------------------------
    overriding
    function Get_Value (From : in Select_Item;
                        Name : in String) return Util.Beans.Objects.Object is

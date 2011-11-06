@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Finalization;
 with Ada.Containers.Vectors;
 with Ada.Strings.Wide_Wide_Unbounded;
 
@@ -53,18 +52,18 @@ package ASF.Models.Selects is
    function To_Select_Item (Object : in Util.Beans.Objects.Object) return Select_Item;
 
    --  Creates a <b>Select_Item</b> with the specified label and value.
-   function Create_Select_Item (Label       : in Wide_Wide_String;
+   function Create_Select_Item (Label       : in String;
                                 Value       : in String;
-                                Description : in Wide_Wide_String := "";
+                                Description : in String := "";
                                 Disabled    : in Boolean := False;
                                 Escaped     : in Boolean := True) return Select_Item;
 
    --  Creates a <b>Select_Item</b> with the specified label and value.
-   function Create_Select_Item (Label       : in Wide_Wide_String;
-                                Value       : in Wide_Wide_String;
-                                Description : in Wide_Wide_String;
-                                Disabled    : in Boolean := False;
-                                Escaped     : in Boolean := True) return Select_Item;
+   function Create_Select_Item_Wide (Label       : in Wide_Wide_String;
+                                     Value       : in Wide_Wide_String;
+                                     Description : in Wide_Wide_String := "";
+                                     Disabled    : in Boolean := False;
+                                     Escaped     : in Boolean := True) return Select_Item;
 
    --  Get the item label.
    function Get_Label (Item : in Select_Item) return Wide_Wide_String;
@@ -93,7 +92,7 @@ package ASF.Models.Selects is
    --  The <b>Select_Item_List</b> type holds a list of <b>Select_Item</b>.
    --  Similar to <b>Select_Item</b>, an application builds the list items and gives it
    --  to the ASF components through an <b>Util.Beans.Objects.Object</b> instance.
-   type Select_Item_List is private;
+   type Select_Item_List is new Util.Beans.Basic.Readonly_Bean with private;
    type Select_Item_List_Access is access all Select_Item_List;
 
    --  Return an Object from the select item list.
@@ -106,6 +105,10 @@ package ASF.Models.Selects is
 
    --  Get the number of items in the list.
    function Length (List : in Select_Item_List) return Natural;
+
+   --  Get the select item from the list
+   function Get_Select_Item (List : in Select_Item_List'Class;
+                             Pos  : in Positive) return Select_Item;
 
    --  Add the item at the end of the list.
    procedure Append (List : in out Select_Item_List;

@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Characters.Conversions;
 package body ASF.Models.Selects is
 
    --  ------------------------------
@@ -58,20 +59,22 @@ package body ASF.Models.Selects is
    --  ------------------------------
    --  Creates a <b>Select_Item</b> with the specified label and value.
    --  ------------------------------
-   function Create_Select_Item (Label       : in Wide_Wide_String;
+   function Create_Select_Item (Label       : in String;
                                 Value       : in String;
-                                Description : in Wide_Wide_String := "";
+                                Description : in String := "";
                                 Disabled    : in Boolean := False;
                                 Escaped     : in Boolean := True) return Select_Item is
+      use Ada.Characters.Conversions;
+
       Result : Select_Item;
    begin
       Result.Item := Select_Item_Refs.Create;
       declare
          Item : constant Select_Item_Record_Access := Result.Item.Value;
       begin
-         Item.Label       := To_Unbounded_Wide_Wide_String (Label);
-         --  Item.Value       := To_Unbounded_Wide_Wide_String (Value);
-         Item.Description := To_Unbounded_Wide_Wide_String (Description);
+         Item.Label       := To_Unbounded_Wide_Wide_String (To_Wide_Wide_String (Label));
+         Item.Value       := To_Unbounded_Wide_Wide_String (To_Wide_Wide_String (Value));
+         Item.Description := To_Unbounded_Wide_Wide_String (To_Wide_Wide_String (Description));
          Item.Disabled    := Disabled;
          Item.Escape      := Escaped;
       end;
@@ -81,11 +84,11 @@ package body ASF.Models.Selects is
    --  ------------------------------
    --  Creates a <b>Select_Item</b> with the specified label and value.
    --  ------------------------------
-   function Create_Select_Item (Label       : in Wide_Wide_String;
-                                Value       : in Wide_Wide_String;
-                                Description : in Wide_Wide_String;
-                                Disabled    : in Boolean := False;
-                                Escaped     : in Boolean := True) return Select_Item is
+   function Create_Select_Item_Wide (Label       : in Wide_Wide_String;
+                                     Value       : in Wide_Wide_String;
+                                     Description : in Wide_Wide_String := "";
+                                     Disabled    : in Boolean := False;
+                                     Escaped     : in Boolean := True) return Select_Item is
       Result : Select_Item;
    begin
       Result.Item := Select_Item_Refs.Create;
@@ -99,7 +102,7 @@ package body ASF.Models.Selects is
          Item.Escape      := Escaped;
       end;
       return Result;
-   end Create_Select_Item;
+   end Create_Select_Item_Wide;
 
    --  ------------------------------
    --  Get the item label.
@@ -193,8 +196,10 @@ package body ASF.Models.Selects is
    --  Select Item List
    --  ------------------------------
 
+   --  ------------------------------
    --  Return an Object from the select item list.
    --  Returns a NULL object if the list is empty.
+   --  ------------------------------
    function To_Object (Item : in Select_Item_List) return Util.Beans.Objects.Object is
    begin
       if Item.List.Is_Null then
@@ -209,8 +214,10 @@ package body ASF.Models.Selects is
       end if;
    end To_Object;
 
+   --  ------------------------------
    --  Return the <b>Select_Item_List</b> instance from a generic bean object.
    --  Returns an empty list if the object does not hold a <b>Select_Item_List</b>.
+   --  ------------------------------
    function To_Select_Item_List (Object : in Util.Beans.Objects.Object) return Select_Item_List is
       Bean : constant access Util.Beans.Basic.Readonly_Bean'Class
         := Util.Beans.Objects.To_Bean (Object);
@@ -238,12 +245,28 @@ package body ASF.Models.Selects is
       end if;
    end Length;
 
+   --  ------------------------------
+   --  Get the select item from the list
+   --  ------------------------------
+   function Get_Select_Item (List : in Select_Item_List'Class;
+                             Pos  : in Positive) return Select_Item is
+   begin
+      if List.List.Is_Null then
+         raise Constraint_Error with "Select item list is empty";
+      end if;
+      return List.List.Value.List.Element (Pos);
+   end Get_Select_Item;
 
+   --  ------------------------------
    --  Add the item at the end of the list.
+   --  ------------------------------
    procedure Append (List : in out Select_Item_List;
                      Item : in Select_Item'Class) is
    begin
-      null;
+      if List.List.Is_Null then
+         List.List := Select_Item_Vector_Refs.Create;
+      end if;
+      List.List.Value.all.List.Append (Select_Item (Item));
    end Append;
 
    --  Get the value identified by the name.

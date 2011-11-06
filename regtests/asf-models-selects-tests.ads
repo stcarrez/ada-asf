@@ -31,4 +31,7 @@ package ASF.Models.Selects.Tests is
    --  Test To_Object and To_Select_Item
    procedure Test_To_Object (T : in out Test);
 
+   --  Test creation of Select_Item_List
+   procedure Test_Select_Item_List (T : in out Test);
+
 end ASF.Models.Selects.Tests;

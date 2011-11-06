@@ -24,6 +24,7 @@ with ASF.Servlets.Tests;
 with ASF.Contexts.Faces.Tests;
 with ASF.Cookies.Tests;
 with ASF.Applications.Tests;
+with ASF.Models.Selects.Tests;
 with Security.Openid.Tests;
 with Security.Permissions.Tests;
 with ASF.Clients.Tests;
@@ -37,6 +38,7 @@ package body ASF.Testsuite is
       ASF.Cookies.Tests.Add_Tests (Ret);
       ASF.Contexts.Writer.Tests.Add_Tests (Ret);
       ASF.Contexts.Faces.Tests.Add_Tests (Ret);
+      ASF.Models.Selects.Tests.Add_Tests (Ret);
       ASF.Views.Facelets.Tests.Add_Tests (Ret);
       ASF.Applications.Main.Tests.Add_Tests (Ret);
       ASF.Applications.Views.Tests.Add_Tests (Ret);

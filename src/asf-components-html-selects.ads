@@ -1,0 +1,117 @@
+-----------------------------------------------------------------------
+--  html-selects -- ASF HTML UISelectOne and UISelectMany components
+--  Copyright (C) 2011 Stephane Carrez
+--  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+--
+--  Licensed under the Apache License, Version 2.0 (the "License");
+--  you may not use this file except in compliance with the License.
+--  You may obtain a copy of the License at
+--
+--      http://www.apache.org/licenses/LICENSE-2.0
+--
+--  Unless required by applicable law or agreed to in writing, software
+--  distributed under the License is distributed on an "AS IS" BASIS,
+--  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--  See the License for the specific language governing permissions and
+--  limitations under the License.
+-----------------------------------------------------------------------
+
+with ASF.Components.Base;
+with ASF.Components.Html.Forms;
+with ASF.Models.Selects;
+
+--  The <b>Selects</b> package implements various components used in forms to select
+--  one or many choices from a list.
+--
+--  See JSR 314 - JavaServer Faces Specification 4.1.14 UISelectItem
+--  See JSR 314 - JavaServer Faces Specification 4.1.15 UISelectItems
+--  See JSR 314 - JavaServer Faces Specification 4.1.16 UISelectMany
+--  See JSR 314 - JavaServer Faces Specification 4.1.17 UISelectOne
+package ASF.Components.Html.Selects is
+
+   --  ------------------------------
+   --  UISelectItem Component
+   --  ------------------------------
+   --  The <b>UISelectItem</b> is a component that may be nested inside a <b>UISelectMany</b>
+   --  or <b>UISelectOne</b> component and represents exactly one <b>Select_Item</b>.
+   type UISelectItem is new Core.UILeaf with private;
+   type UISelectItem_Access is access all UISelectItem'Class;
+
+   --  Get the <b>Select_Item</b> represented by the component.
+   function Get_Select_Item (From    : in UISelectItem;
+                             Context : in Faces_Context'Class)
+                             return ASF.Models.Selects.Select_Item;
+
+   --  ------------------------------
+   --  UISelectItems Component
+   --  ------------------------------
+   --  The <b>UISelectItems</b> is a component that may be nested inside a <b>UISelectMany</b>
+   --  or <b>UISelectOne</b> component and represents zero or more <b>Select_Item</b>.
+   type UISelectItems is new Core.UILeaf with private;
+   type UISelectItems_Access is access all UISelectItems'Class;
+
+   --  Get the <b>Select_Item</b> represented by the component.
+   function Get_Select_Item_List (From    : in UISelectItems;
+                                  Context : in Faces_Context'Class)
+                                  return ASF.Models.Selects.Select_Item_List;
+
+   --  ------------------------------
+   --  SelectOne Component
+   --  ------------------------------
+   --  The <b>UISelectOne</b> is a component that represents zero or one selection from
+   --  a list of available options.
+   type UISelectOne is new Forms.UIInput with private;
+   type UISelectOne_Access is access all UISelectOne'Class;
+
+   --  Render the <b>select</b> element.
+   overriding
+   procedure Encode_Begin (UI      : in UISelectOne;
+                           Context : in out Faces_Context'Class);
+
+   --  Renders the <b>select</b> element.  This is called by <b>Encode_Begin</b> if
+   --  the component is rendered.
+   procedure Render_Select (UI      : in UISelectOne;
+                            Context : in out Faces_Context'Class);
+
+   --  Renders the <b>option</b> element.  This is called by <b>Render_Select</b> to
+   --  generate the component options.
+   procedure Render_Options (UI      : in UISelectOne;
+                             Context : in out Faces_Context'Class);
+
+   --  ------------------------------
+   --  Iterator over the Select_Item elements
+   --  ------------------------------
+   type Cursor is limited private;
+
+   --  Get an iterator to scan the component children.
+   function First (UI      : in UISelectOne'Class;
+                   Context : in Faces_Context'Class) return Cursor;
+
+   --  Returns True if the iterator points to a valid child.
+   function Has_Element (Pos : in Cursor) return Boolean;
+
+   --  Get the child component pointed to by the iterator.
+   function Element (Pos     : in Cursor;
+                     Context : in Faces_Context'Class) return ASF.Models.Selects.Select_Item;
+
+   --  Move to the next child.
+   procedure Next (Pos     : in out Cursor;
+                   Context : in Faces_Context'Class);
+
+private
+
+   type Cursor is limited record
+      Component : ASF.Components.Base.Cursor;
+      Current   : ASF.Components.Base.UIComponent_Access := null;
+      List      : ASF.Models.Selects.Select_Item_List;
+      Pos       : Natural := 0;
+      Last      : Natural := 0;
+   end record;
+
+   type UISelectItem is new Core.UILeaf with null record;
+
+   type UISelectItems is new Core.UILeaf with null record;
+
+   type UISelectOne is new Forms.UIInput with null record;
+
+end ASF.Components.Html.Selects;

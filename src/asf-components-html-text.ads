@@ -17,6 +17,14 @@
 -----------------------------------------------------------------------
 with ASF.Components.Holders;
 with ASF.Converters;
+
+--  The <b>Text</b> package implements various components used to print text outputs.
+--
+--  See JSR 314 - JavaServer Faces Specification 4.1.10 UIOutput
+--
+--  The <b>UILabel</b> and <b>UIOutputFormat</b> components is ASF implementation of
+--  the JavaServer Faces outputLabel and outputFormat components
+--  (implemented with UIOutput in Java).
 package ASF.Components.Html.Text is
 
    --  ------------------------------

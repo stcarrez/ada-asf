@@ -19,10 +19,13 @@
 with ASF.Components.Base;
 with ASF.Views.Nodes;
 with ASF.Views.Nodes.Jsf;
+with ASF.Components.Html.Selects;
 package body ASF.Components.Core.Factory is
 
    function Create_View return Base.UIComponent_Access;
    function Create_Parameter return Base.UIComponent_Access;
+   function Create_SelectItem return Base.UIComponent_Access;
+   function Create_SelectItems return Base.UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIView component
@@ -40,12 +43,30 @@ package body ASF.Components.Core.Factory is
       return new ASF.Components.Core.UIParameter;
    end Create_Parameter;
 
+   --  ------------------------------
+   --  Create an UISelectItem component
+   --  ------------------------------
+   function Create_SelectItem return Base.UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Selects.UISelectItem;
+   end Create_SelectItem;
+
+   --  ------------------------------
+   --  Create an UISelectItems component
+   --  ------------------------------
+   function Create_SelectItems return Base.UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Selects.UISelectItems;
+   end Create_SelectItems;
+
    use ASF.Views.Nodes;
 
    URI                     : aliased constant String := "http://java.sun.com/jsf/core";
    ATTRIBUTE_TAG           : aliased constant String := "attribute";
    CONVERTER_TAG           : aliased constant String := "converter";
    PARAM_TAG               : aliased constant String := "param";
+   SELECT_ITEM_TAG         : aliased constant String := "selectItem";
+   SELECT_ITEMS_TAG        : aliased constant String := "selectItems";
    VALIDATE_LENGTH_TAG     : aliased constant String := "validateLength";
    VALIDATE_LONG_RANGE_TAG : aliased constant String := "validateLongRange";
    VALIDATOR_TAG           : aliased constant String := "validator";
@@ -64,19 +85,27 @@ package body ASF.Components.Core.Factory is
                Component => Create_Parameter'Access,
                Tag       => Create_Component_Node'Access),
 
-         4 => (Name      => VALIDATE_LENGTH_TAG'Access,
+         4 => (Name      => SELECT_ITEM_TAG'Access,
+               Component => Create_SelectItem'Access,
+               Tag       => Create_Component_Node'Access),
+
+         5 => (Name      => SELECT_ITEMS_TAG'Access,
+               Component => Create_SelectItems'Access,
+               Tag       => Create_Component_Node'Access),
+
+         6 => (Name      => VALIDATE_LENGTH_TAG'Access,
                Component => null,
                Tag       => Views.Nodes.Jsf.Create_Length_Validator_Tag_Node'Access),
 
-         5 => (Name      => VALIDATE_LONG_RANGE_TAG'Access,
+         7 => (Name      => VALIDATE_LONG_RANGE_TAG'Access,
                Component => null,
                Tag       => Views.Nodes.Jsf.Create_Range_Validator_Tag_Node'Access),
 
-         6 => (Name      => VALIDATOR_TAG'Access,
+         8 => (Name      => VALIDATOR_TAG'Access,
                Component => null,
                Tag       => Views.Nodes.Jsf.Create_Validator_Tag_Node'Access),
 
-         7 => (Name      => VIEW_TAG'Access,
+         9 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access)
         );

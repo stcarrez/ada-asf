@@ -22,6 +22,7 @@ with ASF.Components.Html.Lists;
 with ASF.Components.Html.Links;
 with ASF.Components.Html.Panels;
 with ASF.Components.Html.Forms;
+with ASF.Components.Html.Selects;
 with ASF.Components.Html.Messages;
 with ASF.Views.Nodes;
 package body ASF.Components.Html.Factory is
@@ -40,6 +41,7 @@ package body ASF.Components.Html.Factory is
    function Create_Command return UIComponent_Access;
    function Create_Message return UIComponent_Access;
    function Create_Messages return UIComponent_Access;
+   function Create_SelectOne return UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIOutput component
@@ -137,6 +139,14 @@ package body ASF.Components.Html.Factory is
       return new ASF.Components.Html.Messages.UIMessages;
    end Create_Messages;
 
+   --  ------------------------------
+   --  Create an UISelectOne component
+   --  ------------------------------
+   function Create_SelectOne return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Selects.UISelectOne;
+   end Create_SelectOne;
+
    use ASF.Views.Nodes;
 
    URI                : aliased constant String := "http://java.sun.com/jsf/html";
@@ -153,6 +163,7 @@ package body ASF.Components.Html.Factory is
    OUTPUT_LINK_TAG    : aliased constant String := "outputLink";
    OUTPUT_TEXT_TAG    : aliased constant String := "outputText";
    PANEL_GROUP_TAG    : aliased constant String := "panelGroup";
+   SELECT_ONE_MENU_TAG : aliased constant String := "selectOneMenu";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => COMMAND_BUTTON_TAG'Access,
@@ -193,6 +204,9 @@ package body ASF.Components.Html.Factory is
                Tag       => Create_Component_Node'Access),
         13 => (Name      => PANEL_GROUP_TAG'Access,
                Component => Create_PanelGroup'Access,
+               Tag       => Create_Component_Node'Access),
+        14 => (Name      => SELECT_ONE_MENU_TAG'Access,
+               Component => Create_SelectOne'Access,
                Tag       => Create_Component_Node'Access)
         );
 

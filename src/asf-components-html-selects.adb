@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Beans.Objects;
 with Util.Strings;
 with ASF.Utils;
 package body ASF.Components.Html.Selects is
@@ -39,24 +38,31 @@ package body ASF.Components.Html.Selects is
    --  ------------------------------
    --  Get an iterator to scan the component children.
    --  ------------------------------
-   function First (UI      : in UISelectOne'Class;
-                   Context : in Faces_Context'Class) return Cursor is
+   procedure First (UI       : in UISelectOne'Class;
+                    Context  : in Faces_Context'Class;
+                    Iterator : out Cursor) is
    begin
-      return Result : Cursor := Cursor '(Component => UI.First, others => <>) do
-         Result.Pos     := 0;
-         Result.Current := null;
-         while ASF.Components.Base.Has_Element (Result.Component) loop
-            Result.Current := ASF.Components.Base.Element (Result.Component);
-            exit when Result.Current.all in UISelectItem'Class;
-            if Result.Current.all in UISelectItems'Class then
-               Result.List := UISelectItems'Class (Result.Current.all).Get_Select_Item_List (Context);
-               Result.Last := Result.List.Length;
-               Result.Pos  := 1;
-               exit when Result.Last > 0;
+      Iterator.Component := UI.First;
+      Iterator.Pos       := 0;
+      Iterator.Last      := 0;
+      while ASF.Components.Base.Has_Element (Iterator.Component) loop
+         Iterator.Current := ASF.Components.Base.Element (Iterator.Component);
+         if Iterator.Current.all in UISelectItem'Class then
+            return;
+         end if;
+         if Iterator.Current.all in UISelectItems'Class then
+            Iterator.List := UISelectItems'Class (Iterator.Current.all)
+              .Get_Select_Item_List (Context);
+            Iterator.Last := Iterator.List.Length;
+            Iterator.Pos  := 1;
+            if Iterator.Last > 0 then
+               return;
             end if;
-            ASF.Components.Base.Next (Result.Component);
-         end loop;
-      end return;
+         end if;
+         ASF.Components.Base.Next (Iterator.Component);
+      end loop;
+      Iterator.Pos := 0;
+      Iterator.Current := null;
    end First;
 
    --  ------------------------------
@@ -94,6 +100,7 @@ package body ASF.Components.Html.Selects is
       if Pos.Pos > 0 and Pos.Pos < Pos.Last then
          Pos.Pos := Pos.Pos + 1;
       else
+         Pos.Pos := 0;
          loop
             Pos.Current := null;
             ASF.Components.Base.Next (Pos.Component);
@@ -105,6 +112,7 @@ package body ASF.Components.Html.Selects is
                Pos.Last := Pos.List.Length;
                Pos.Pos  := 1;
                exit when Pos.Last > 0;
+               Pos.Pos := 0;
             end if;
          end loop;
       end if;
@@ -185,23 +193,32 @@ package body ASF.Components.Html.Selects is
       Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
       UI.Render_Attributes (Context, SELECT_ATTRIBUTE_NAMES, Writer);
 
-      UISelectOne'Class (UI).Render_Options (Context);
+      UISelectOne'Class (UI).Render_Options (Value, Context);
       Writer.End_Element ("select");
    end Render_Select;
 
+   --  ------------------------------
    --  Renders the <b>option</b> element.  This is called by <b>Render_Select</b> to
    --  generate the component options.
+   --  ------------------------------
    procedure Render_Options (UI      : in UISelectOne;
+                             Value   : in Util.Beans.Objects.Object;
                              Context : in out Faces_Context'Class) is
-      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
-      Iter   : Cursor := UI.First (Context);
+      Writer   : constant Response_Writer_Access := Context.Get_Response_Writer;
+      Selected : constant Wide_Wide_String := Util.Beans.Objects.To_Wide_Wide_String (Value);
+      Iter     : Cursor;
    begin
+      UI.First (Context, Iter);
       while Has_Element (Iter) loop
          declare
-            Item : constant ASF.Models.Selects.Select_Item := Element (Iter, Context);
+            Item       : constant ASF.Models.Selects.Select_Item := Element (Iter, Context);
+            Item_Value : constant Wide_Wide_String := Item.Get_Value;
          begin
             Writer.Start_Element ("option");
-            Writer.Write_Wide_Attribute ("value", Item.Get_Value);
+            Writer.Write_Wide_Attribute ("value", Item_Value);
+            if Item_Value = Selected then
+               Writer.Write_Attribute ("selected", "selected");
+            end if;
             if Item.Is_Escaped then
                Writer.Write_Wide_Text (Item.Get_Label);
             else

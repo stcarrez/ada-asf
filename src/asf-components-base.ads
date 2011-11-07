@@ -311,7 +311,7 @@ package ASF.Components.Base is
    --  ------------------------------
    --  Iterator over the component children
    --  ------------------------------
-   type Cursor is limited private;
+   type Cursor is private;
 
    --  Get an iterator to scan the component children.
    function First (UI : in UIComponent'Class) return Cursor;
@@ -345,7 +345,7 @@ private
       Attributes  : UIAttribute_Access := null;
    end record;
 
-   type Cursor is limited record
+   type Cursor is record
       Child : UIComponent_Access := null;
    end record;
 

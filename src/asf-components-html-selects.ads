@@ -20,6 +20,8 @@ with ASF.Components.Base;
 with ASF.Components.Html.Forms;
 with ASF.Models.Selects;
 
+with Util.Beans.Objects;
+
 --  The <b>Selects</b> package implements various components used in forms to select
 --  one or many choices from a list.
 --
@@ -76,6 +78,7 @@ package ASF.Components.Html.Selects is
    --  Renders the <b>option</b> element.  This is called by <b>Render_Select</b> to
    --  generate the component options.
    procedure Render_Options (UI      : in UISelectOne;
+                             Value   : in Util.Beans.Objects.Object;
                              Context : in out Faces_Context'Class);
 
    --  ------------------------------
@@ -84,8 +87,12 @@ package ASF.Components.Html.Selects is
    type Cursor is limited private;
 
    --  Get an iterator to scan the component children.
-   function First (UI      : in UISelectOne'Class;
-                   Context : in Faces_Context'Class) return Cursor;
+   --  SCz 2011-11-07: due to a bug in GNAT, we cannot use a function for First because
+   --  the inner member 'List' is not copied correctly if the 'Cursor' is a limited type.
+   --  Fallback to the Ada95 way.
+   procedure First (UI       : in UISelectOne'Class;
+                    Context  : in Faces_Context'Class;
+                    Iterator : out Cursor);
 
    --  Returns True if the iterator points to a valid child.
    function Has_Element (Pos : in Cursor) return Boolean;
@@ -101,9 +108,9 @@ package ASF.Components.Html.Selects is
 private
 
    type Cursor is limited record
+      List      : ASF.Models.Selects.Select_Item_List;
       Component : ASF.Components.Base.Cursor;
       Current   : ASF.Components.Base.UIComponent_Access := null;
-      List      : ASF.Models.Selects.Select_Item_List;
       Pos       : Natural := 0;
       Last      : Natural := 0;
    end record;

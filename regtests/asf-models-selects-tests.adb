@@ -34,6 +34,8 @@ package body ASF.Models.Selects.Tests is
                        Test_To_Object'Access);
       Caller.Add_Test (Suite, "Test ASF.Models.Selects.To_Select_Item",
                        Test_To_Object'Access);
+      Caller.Add_Test (Suite, "Test ASF.Models.Selects.Append,Length,Get_Select_Item",
+                       Test_Select_Item_List'Access);
    end Add_Tests;
 
    --  ------------------------------

@@ -1,0 +1,10 @@
+<h:form xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+	id="formSelect">
+  <label for='gender'>Gender</label>
+    <h:message for='gender' styleClass='error'/>
+    <h:selectOneMenu id='gender' value="#{form.gender}">
+       <f:selectItems value="#{form.genderList}"/>
+    </h:selectOneMenu>
+  <h:commandButton id='ok' action='#{form.save}' value='Go'/>
+</h:form>

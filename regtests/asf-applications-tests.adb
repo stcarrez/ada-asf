@@ -42,11 +42,14 @@ package body ASF.Applications.Tests is
       Caller.Add_Test (Suite, "Test service HTTP GET (Measure_Servlet)",
                        Test_Get_Measures'Access);
 
-      Caller.Add_Test (Suite, "Test service HTTP POST+INVOKE_APPLICATION",
+      Caller.Add_Test (Suite, "Test service HTTP POST+INVOKE_APPLICATION (inputText)",
                        Test_Form_Post'Access);
 
-      Caller.Add_Test (Suite, "Test service HTTP POST+PROCESS_VALIDATION",
+      Caller.Add_Test (Suite, "Test service HTTP POST+PROCESS_VALIDATION (inputText)",
                        Test_Form_Post_Validation_Error'Access);
+
+      Caller.Add_Test (Suite, "Test service HTTP POST+PROCESS_VALIDATION (selectOneMenu)",
+                       Test_Form_Post_Select'Access);
 
       Caller.Add_Test (Suite, "Test AJAX bean method invocation",
                        Test_Ajax_Action'Access);
@@ -77,6 +80,18 @@ package body ASF.Applications.Tests is
          return Util.Beans.Objects.To_Object (From.Password);
       elsif Name = "name" then
          return Util.Beans.Objects.To_Object (From.Name);
+      elsif Name = "gender" then
+         return Util.Beans.Objects.To_Object (From.Gender);
+      elsif Name = "genderList" then
+         declare
+            List : ASF.Models.Selects.Select_Item_List;
+         begin
+            ASF.Models.Selects.Append (List, ASF.Models.Selects.Create_Select_Item ("None", "0"));
+            ASF.Models.Selects.Append (List, ASF.Models.Selects.Create_Select_Item ("Mrs", "1"));
+            ASF.Models.Selects.Append (List, ASF.Models.Selects.Create_Select_Item ("Mr", "2"));
+            ASF.Models.Selects.Append (List, ASF.Models.Selects.Create_Select_Item ("Mss", "3"));
+            return ASF.Models.Selects.To_Object (List);
+         end;
       else
          return Util.Beans.Objects.Null_Object;
       end if;
@@ -96,6 +111,8 @@ package body ASF.Applications.Tests is
          From.Password := Util.Beans.Objects.To_Unbounded_String (Value);
       elsif Name = "name" then
          From.Name := Util.Beans.Objects.To_Unbounded_String (Value);
+      elsif Name = "gender" then
+         From.Gender := Util.Beans.Objects.To_Unbounded_String (Value);
       end if;
    end Set_Value;
 
@@ -229,6 +246,7 @@ package body ASF.Applications.Tests is
       Request.Set_Parameter ("name", "John");
       Request.Set_Parameter ("password", "12345");
       Request.Set_Parameter ("email", "john@gmail.com");
+      Request.Set_Parameter ("ok", "1");
       Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post.txt");
 
       Assert_Matches (T, ".*<input type=.text. name=.name. value=.John. id=.name.*",
@@ -237,7 +255,7 @@ package body ASF.Applications.Tests is
       Assert_Equals (T, "John", Form.Name, "Form name not saved in the bean");
       Assert_Equals (T, "12345", Form.Password, "Form password not saved in the bean");
       Assert_Equals (T, "john@gmail.com", Form.Email, "Form email not saved in the bean");
-
+      Assert_Equals (T, 1, Form.Called, "save action was not called");
    end Test_Form_Post;
 
    --  ------------------------------
@@ -294,6 +312,40 @@ package body ASF.Applications.Tests is
                       Reply, "Invalid error message for password");
 
    end Test_Form_Post_Validation_Error;
+
+   --  ------------------------------
+   --  Test a GET+POST request with form having <h:selectOneMenu> element.
+   --  ------------------------------
+   procedure Test_Form_Post_Select (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+   begin
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Do_Get (Request, Reply, "/tests/form-select.html", "form-select.txt");
+
+      Assert_Matches (T, ".*<label for=.gender.>Gender</label>.*", Reply, "Wrong form content");
+      Assert_Matches (T, ".*<select name=.gender.*",
+                      Reply, "Wrong form content");
+
+      Request.Set_Parameter ("formSelect", "1");
+      Request.Set_Parameter ("gender", "2");
+      Do_Post (Request, Reply, "/tests/form-select.html", "form-select-post.txt");
+
+      Assert_Matches (T, ".*<option value=.2. selected=.selected.*",
+                      Reply, "Wrong form content");
+
+      Request.Set_Parameter ("formSelect", "1");
+      Request.Set_Parameter ("gender", "3");
+      Do_Post (Request, Reply, "/tests/form-select.html", "form-select-post2.txt");
+
+      Assert_Matches (T, ".*<option value=.3. selected=.selected.*",
+                      Reply, "Wrong form content");
+
+   end Test_Form_Post_Select;
 
    --  ------------------------------
    --  Test a POST request to invoke a bean method.

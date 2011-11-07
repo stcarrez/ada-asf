@@ -22,6 +22,7 @@ with Util.Beans.Basic;
 with Util.Beans.Objects;
 with Util.Beans.Methods;
 with Ada.Strings.Unbounded;
+with ASF.Models.Selects;
 
 package ASF.Applications.Tests is
 
@@ -53,6 +54,9 @@ package ASF.Applications.Tests is
    --  Test a POST request with an invalid submitted value
    procedure Test_Form_Post_Validation_Error (T : in out Test);
 
+   --  Test a GET+POST request with form having <h:selectOneMenu> element.
+   procedure Test_Form_Post_Select (T : in out Test);
+
    --  Test a POST request to invoke a bean method.
    procedure Test_Ajax_Action (T : in out Test);
 
@@ -65,6 +69,7 @@ package ASF.Applications.Tests is
       Password : Unbounded_String;
       Email    : Unbounded_String;
       Called   : Natural := 0;
+      Gender   : Unbounded_String;
    end record;
    type Form_Bean_Access is access all Form_Bean'Class;
 

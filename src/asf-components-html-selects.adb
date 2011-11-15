@@ -142,7 +142,11 @@ package body ASF.Components.Html.Selects is
          Disabled    : constant Boolean := From.Get_Attribute (Name   => ITEM_DISABLED_NAME,
                                                                Context => Context);
       begin
-         return ASF.Models.Selects.Create_Select_Item (Label, Value, Description, Disabled);
+         if Is_Null (Label) then
+            return ASF.Models.Selects.Create_Select_Item (Value, Value, Description, Disabled);
+         else
+            return ASF.Models.Selects.Create_Select_Item (Label, Value, Description, Disabled);
+         end if;
       end;
    end Get_Select_Item;
 

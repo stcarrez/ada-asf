@@ -556,7 +556,9 @@ package body ASF.Applications.Main is
                                 Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
    begin
       App.Lifecycle.Execute (Context => Context);
-      App.Lifecycle.Render (Context);
+      if not Context.Get_Response_Completed then
+         App.Lifecycle.Render (Context);
+      end if;
    end Execute_Lifecycle;
 
    --  ------------------------------

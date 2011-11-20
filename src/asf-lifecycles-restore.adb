@@ -56,7 +56,7 @@ package body ASF.Lifecycles.Restore is
 
       --  If this is not a postback, render the response immediately.
       if Req.Get_Method = "GET" then
-         Context.Response_Completed;
+         Context.Render_Response;
       end if;
 
    exception

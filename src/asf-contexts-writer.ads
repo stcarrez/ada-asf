@@ -151,6 +151,9 @@ package ASF.Contexts.Writer is
    procedure Write (Stream : in out Response_Writer;
                     Item   : in Ada.Strings.Unbounded.Unbounded_String);
 
+   --  Write a raw string on the stream.
+   procedure Write_Raw (Stream : in out Response_Writer;
+                        Item   : in String);
 
    --  ------------------------------
    --  Javascript Support

@@ -30,9 +30,9 @@ package body ASF.Components.Html.Factory is
    use ASF.Components.Base;
 
    function Create_Output return UIComponent_Access;
+   function Create_Output_Label return UIComponent_Access;
    function Create_Output_Link return UIComponent_Access;
    function Create_Output_Format return UIComponent_Access;
-   function Create_Label return UIComponent_Access;
    function Create_List return UIComponent_Access;
    function Create_PanelGroup return UIComponent_Access;
    function Create_Form return UIComponent_Access;
@@ -53,6 +53,14 @@ package body ASF.Components.Html.Factory is
    end Create_Output;
 
    --  ------------------------------
+   --  Create an UIOutputLabel component
+   --  ------------------------------
+   function Create_Output_Label return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Text.UIOutputLabel;
+   end Create_Output_Label;
+
+   --  ------------------------------
    --  Create an UIOutputLink component
    --  ------------------------------
    function Create_Output_Link return UIComponent_Access is
@@ -67,14 +75,6 @@ package body ASF.Components.Html.Factory is
    begin
       return new ASF.Components.Html.Text.UIOutputFormat;
    end Create_Output_Format;
-
-   --  ------------------------------
-   --  Create a label component
-   --  ------------------------------
-   function Create_Label return UIComponent_Access is
-   begin
-      return new ASF.Components.Html.Text.UILabel;
-   end Create_Label;
 
    --  ------------------------------
    --  Create an UIList component
@@ -165,11 +165,11 @@ package body ASF.Components.Html.Factory is
    INPUT_SECRET_TAG   : aliased constant String := "inputSecret";
    INPUT_TEXT_TAG     : aliased constant String := "inputText";
    INPUT_TEXTAREA_TAG : aliased constant String := "inputTextarea";
-   LABEL_TAG          : aliased constant String := "label";
    LIST_TAG           : aliased constant String := "list";
    MESSAGE_TAG        : aliased constant String := "message";
    MESSAGES_TAG       : aliased constant String := "messages";
    OUTPUT_FORMAT_TAG  : aliased constant String := "outputFormat";
+   OUTPUT_LABEL_TAG   : aliased constant String := "outputLabel";
    OUTPUT_LINK_TAG    : aliased constant String := "outputLink";
    OUTPUT_TEXT_TAG    : aliased constant String := "outputText";
    PANEL_GROUP_TAG    : aliased constant String := "panelGroup";
@@ -194,20 +194,20 @@ package body ASF.Components.Html.Factory is
          6 => (Name      => INPUT_TEXTAREA_TAG'Access,
                Component => Create_Input_Textarea'Access,
                Tag       => Create_Component_Node'Access),
-         7 => (Name      => LABEL_TAG'Access,
-               Component => Create_Label'Access,
-               Tag       => Create_Component_Node'Access),
-         8 => (Name      => LIST_TAG'Access,
+         7 => (Name      => LIST_TAG'Access,
                Component => Create_List'Access,
                Tag       => Create_Component_Node'Access),
-         9 => (Name      => MESSAGE_TAG'Access,
+         8 => (Name      => MESSAGE_TAG'Access,
                Component => Create_Message'Access,
                Tag       => Create_Component_Node'Access),
-        10 => (Name      => MESSAGES_TAG'Access,
+         9 => (Name      => MESSAGES_TAG'Access,
                Component => Create_Messages'Access,
                Tag       => Create_Component_Node'Access),
-        11 => (Name      => OUTPUT_FORMAT_TAG'Access,
+        10 => (Name      => OUTPUT_FORMAT_TAG'Access,
                Component => Create_Output_Format'Access,
+               Tag       => Create_Component_Node'Access),
+        11 => (Name      => OUTPUT_LABEL_TAG'Access,
+               Component => Create_Output_Label'Access,
                Tag       => Create_Component_Node'Access),
         12 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,

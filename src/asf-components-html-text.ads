@@ -15,6 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Util.Beans.Objects;
+
 with ASF.Components.Holders;
 with ASF.Converters;
 
@@ -62,6 +64,11 @@ package ASF.Components.Html.Text is
    function Get_Formatted_Value (UI      : in UIOutput;
                                  Context : in Contexts.Faces.Faces_Context'Class) return String;
 
+   --  Format the value by appling the To_String converter on it if there is one.
+   function Get_Formatted_Value (UI      : in UIOutput;
+                                 Value   : in Util.Beans.Objects.Object;
+                                 Context : in Contexts.Faces.Faces_Context'Class) return String;
+
    procedure Write_Output (UI      : in UIOutput;
                            Context : in out Contexts.Faces.Faces_Context'Class;
                            Value   : in String);
@@ -72,12 +79,12 @@ package ASF.Components.Html.Text is
    --  ------------------------------
    --  Label Component
    --  ------------------------------
-   type UILabel is new UIOutput with private;
+   type UIOutputLabel is new UIOutput with private;
 
-   procedure Encode_Begin (UI      : in UILabel;
+   procedure Encode_Begin (UI      : in UIOutputLabel;
                            Context : in out Contexts.Faces.Faces_Context'Class);
 
-   procedure Encode_End (UI      : in UILabel;
+   procedure Encode_End (UI      : in UIOutputLabel;
                          Context : in out Contexts.Faces.Faces_Context'Class);
 
    --  ------------------------------
@@ -96,7 +103,7 @@ private
       Converter : ASF.Converters.Converter_Access := null;
    end record;
 
-   type UILabel is new UIOutput with null record;
+   type UIOutputLabel is new UIOutput with null record;
 
    type UIOutputFormat is new UIOutput with null record;
 

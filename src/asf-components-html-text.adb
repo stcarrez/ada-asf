@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with EL.Objects;
+with Util.Beans.Objects;
+
 with ASF.Components.Core;
 with ASF.Utils;
 package body ASF.Components.Html.Text is
@@ -89,8 +91,18 @@ package body ASF.Components.Html.Text is
    --  ------------------------------
    function Get_Formatted_Value (UI      : in UIOutput;
                                  Context : in Faces_Context'Class) return String is
-      use type ASF.Converters.Converter_Access;
       Value : constant EL.Objects.Object := UIOutput'Class (UI).Get_Value;
+   begin
+      return UIOutput'Class (UI).Get_Formatted_Value (Value, Context);
+   end Get_Formatted_Value;
+
+   --  ------------------------------
+   --  Format the value by appling the To_String converter on it if there is one.
+   --  ------------------------------
+   function Get_Formatted_Value (UI      : in UIOutput;
+                                 Value   : in Util.Beans.Objects.Object;
+                                 Context : in Contexts.Faces.Faces_Context'Class) return String is
+      use type ASF.Converters.Converter_Access;
    begin
       if UI.Converter /= null then
          return UI.Converter.To_String (Context   => Context,
@@ -126,7 +138,7 @@ package body ASF.Components.Html.Text is
       if Is_Null (Escape) or To_Boolean (Escape) then
          Writer.Write_Text (Value);
       else
-         Writer.Write (Value);
+         Writer.Write_Raw (Value);
       end if;
       Writer.End_Optional_Element ("span");
    end Write_Output;
@@ -140,18 +152,39 @@ package body ASF.Components.Html.Text is
       end if;
    end Encode_Begin;
 
-   procedure Encode_Begin (UI      : in UILabel;
+   --  ------------------------------
+   --  Label Component
+   --  ------------------------------
+
+   procedure Encode_Begin (UI      : in UIOutputLabel;
                            Context : in out Faces_Context'Class) is
       Writer : Response_Writer_Access;
    begin
       if UI.Is_Rendered (Context) then
          Writer := Context.Get_Response_Writer;
          Writer.Start_Element ("label");
-         UI.Render_Attributes (Context, TEXT_ATTRIBUTE_NAMES, Writer);
+         UI.Render_Attributes (Context, LABEL_ATTRIBUTE_NAMES, Writer);
+         declare
+            Value : Util.Beans.Objects.Object := UI.Get_Attribute (Name    => "for",
+                                                                   Context => Context);
+         begin
+            if not Util.Beans.Objects.Is_Null (Value) then
+               Writer.Write_Attribute ("for", Value);
+            end if;
+
+            Value := UIOutputLabel'Class (UI).Get_Value;
+            if not Util.Beans.Objects.Is_Null (Value) then
+               if UI.Get_Attribute (Name => "escape", Context => Context, Default => True) then
+                  Writer.Write_Text (UIOutputLabel'Class (UI).Get_Formatted_Value (Value, Context));
+               else
+                  Writer.Write_Raw (UIOutputLabel'Class (UI).Get_Formatted_Value (Value, Context));
+               end if;
+            end if;
+         end;
       end if;
    end Encode_Begin;
 
-   procedure Encode_End (UI      : in UILabel;
+   procedure Encode_End (UI      : in UIOutputLabel;
                          Context : in out Faces_Context'Class) is
       Writer : Response_Writer_Access;
    begin
@@ -161,6 +194,9 @@ package body ASF.Components.Html.Text is
       end if;
    end Encode_End;
 
+   --  ------------------------------
+   --  OutputFormat Component
+   --  ------------------------------
    procedure Encode_Begin (UI      : in UIOutputFormat;
                            Context : in out Faces_Context'Class) is
       use ASF.Components.Core;

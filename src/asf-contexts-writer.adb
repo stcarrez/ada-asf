@@ -449,6 +449,16 @@ package body ASF.Contexts.Writer is
    end Write;
 
    --  ------------------------------
+   --  Write a raw string on the stream.
+   --  ------------------------------
+   procedure Write_Raw (Stream : in out Response_Writer;
+                        Item   : in String) is
+   begin
+      Close_Current (Stream);
+      ASF.Streams.Print_Stream (Stream).Write (Item);
+   end Write_Raw;
+
+   --  ------------------------------
    --  Write the java scripts that have been queued by <b>Queue_Script</b>
    --  ------------------------------
    procedure Write_Scripts (Stream : in out Response_Writer) is

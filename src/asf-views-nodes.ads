@@ -25,7 +25,6 @@
 with Ada.Strings.Unbounded;
 with EL.Expressions;
 with EL.Objects;
-with Util.Strings;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
 with ASF.Contexts.Facelets;

@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Beans.Objects;
 with Ada.Unchecked_Deallocation;
 package body ASF.Components.Core is
 

@@ -23,7 +23,6 @@ with Util.Log.Loggers;
 with Ada.Unchecked_Deallocation;
 with ASF.Applications.Main;
 with ASF.Navigations.Render;
-with ASF.Navigations.Redirect;
 package body ASF.Navigations is
 
    --  ------------------------------

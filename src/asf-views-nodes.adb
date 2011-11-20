@@ -268,7 +268,6 @@ package body ASF.Views.Nodes is
    function Get_Line_Info (Node : Tag_Node) return String is
       L : constant String := Natural'Image (Node.Line.Line);
       C : constant String := Natural'Image (Node.Line.Column);
-      use Util.Strings;
    begin
       if Node.Line.File = null then
          return "?:"

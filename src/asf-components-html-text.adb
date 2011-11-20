@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with EL.Objects;
-with Util.Beans.Objects;
 
 with ASF.Components.Core;
 with ASF.Utils;
@@ -174,11 +173,16 @@ package body ASF.Components.Html.Text is
 
             Value := UIOutputLabel'Class (UI).Get_Value;
             if not Util.Beans.Objects.Is_Null (Value) then
-               if UI.Get_Attribute (Name => "escape", Context => Context, Default => True) then
-                  Writer.Write_Text (UIOutputLabel'Class (UI).Get_Formatted_Value (Value, Context));
-               else
-                  Writer.Write_Raw (UIOutputLabel'Class (UI).Get_Formatted_Value (Value, Context));
-               end if;
+               declare
+                  S : constant String
+                    := UIOutputLabel'Class (UI).Get_Formatted_Value (Value, Context);
+               begin
+                  if UI.Get_Attribute (Name => "escape", Context => Context, Default => True) then
+                     Writer.Write_Text (S);
+                  else
+                     Writer.Write_Raw (S);
+                  end if;
+               end;
             end if;
          end;
       end if;

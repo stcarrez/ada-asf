@@ -380,7 +380,7 @@ package body ASF.Cookies is
    begin
       Append (Result, Object.Name);
       Append (Result, '=');
-      Append_Value (Buf, "", Object.Value);
+      Append_Value (Result, "", Object.Value);
       Append_Value (Buf, "; Domain=", Object.Domain);
       Append_Value (Buf, "; Path=", Object.Path);
 

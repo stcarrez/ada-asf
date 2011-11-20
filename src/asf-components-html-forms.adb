@@ -305,6 +305,40 @@ package body ASF.Components.Html.Forms is
    end Render_Input;
 
    --  ------------------------------
+   --  Input_Hidden Component
+   --  ------------------------------
+   --  Render the inputHidden element.
+   overriding
+   procedure Render_Input (UI      : in UIInput_Hidden;
+                           Context : in out Faces_Context'Class) is
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
+      Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
+   begin
+      Writer.Start_Element ("input");
+      Writer.Write_Attribute (Name => "type", Value => "hidden");
+      Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
+      if not EL.Objects.Is_Null (Value) then
+         declare
+            Convert : constant access Converters.Converter'Class
+              := UIInput'Class (UI).Get_Converter;
+         begin
+            if Convert /= null and Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
+               Writer.Write_Attribute (Name  => "value",
+                                       Value => Convert.To_String (Value => Value,
+                                                                   Component => UI,
+                                                                   Context => Context));
+            else
+               Writer.Write_Attribute (Name => "value", Value => Value);
+            end if;
+         end;
+      end if;
+      if not UI.Is_Generated_Id then
+         Writer.Write_Attribute ("id", UI.Get_Client_Id);
+      end if;
+      Writer.End_Element ("input");
+   end Render_Input;
+
+   --  ------------------------------
    --  Button Component
    --  ------------------------------
 

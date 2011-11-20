@@ -1,0 +1,10 @@
+<h:form xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+	id="testHidden" styleClass="test" style="color: red;"
+	  value="Testing textarea">
+  <h:inputHidden id='count' value='testing'>
+     <f:validateLongRange minimum='10' maximum='20'/>
+     <f:validateLongRange minimum='1' maximum='20'/>
+  </h:inputHidden>
+  <h:commandButton id='ok' action='#{some_bean.run}' value='Go'/>
+</h:form>

@@ -36,6 +36,7 @@ package body ASF.Components.Html.Factory is
    function Create_List return UIComponent_Access;
    function Create_PanelGroup return UIComponent_Access;
    function Create_Form return UIComponent_Access;
+   function Create_Input_Hidden return UIComponent_Access;
    function Create_Input_Text return UIComponent_Access;
    function Create_Input_Textarea return UIComponent_Access;
    function Create_Command return UIComponent_Access;
@@ -100,6 +101,14 @@ package body ASF.Components.Html.Factory is
    end Create_Form;
 
    --  ------------------------------
+   --  Create an UIInput_Hidden component
+   --  ------------------------------
+   function Create_Input_Hidden return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Forms.UIInput_Hidden;
+   end Create_Input_Hidden;
+
+   --  ------------------------------
    --  Create an UIInput component
    --  ------------------------------
    function Create_Input_Text return UIComponent_Access is
@@ -152,6 +161,7 @@ package body ASF.Components.Html.Factory is
    URI                : aliased constant String := "http://java.sun.com/jsf/html";
    COMMAND_BUTTON_TAG : aliased constant String := "commandButton";
    FORM_TAG           : aliased constant String := "form";
+   INPUT_HIDDEN_TAG   : aliased constant String := "inputHidden";
    INPUT_SECRET_TAG   : aliased constant String := "inputSecret";
    INPUT_TEXT_TAG     : aliased constant String := "inputText";
    INPUT_TEXTAREA_TAG : aliased constant String := "inputTextarea";
@@ -172,40 +182,43 @@ package body ASF.Components.Html.Factory is
          2 => (Name      => FORM_TAG'Access,
                Component => Create_Form'Access,
                Tag       => Create_Component_Node'Access),
-         3 => (Name      => INPUT_SECRET_TAG'Access,
+         3 => (Name      => INPUT_HIDDEN_TAG'Access,
+               Component => Create_Input_Hidden'Access,
+               Tag       => Create_Component_Node'Access),
+         4 => (Name      => INPUT_SECRET_TAG'Access,
                Component => ASF.Components.Html.Forms.Create_Input_Secret'Access,
                Tag       => Create_Component_Node'Access),
-         4 => (Name      => INPUT_TEXT_TAG'Access,
+         5 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input_Text'Access,
                Tag       => Create_Component_Node'Access),
-         5 => (Name      => INPUT_TEXTAREA_TAG'Access,
+         6 => (Name      => INPUT_TEXTAREA_TAG'Access,
                Component => Create_Input_Textarea'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => LABEL_TAG'Access,
+         7 => (Name      => LABEL_TAG'Access,
                Component => Create_Label'Access,
                Tag       => Create_Component_Node'Access),
-         7 => (Name      => LIST_TAG'Access,
+         8 => (Name      => LIST_TAG'Access,
                Component => Create_List'Access,
                Tag       => Create_Component_Node'Access),
-         8 => (Name      => MESSAGE_TAG'Access,
+         9 => (Name      => MESSAGE_TAG'Access,
                Component => Create_Message'Access,
                Tag       => Create_Component_Node'Access),
-         9 => (Name      => MESSAGES_TAG'Access,
+        10 => (Name      => MESSAGES_TAG'Access,
                Component => Create_Messages'Access,
                Tag       => Create_Component_Node'Access),
-        10 => (Name      => OUTPUT_FORMAT_TAG'Access,
+        11 => (Name      => OUTPUT_FORMAT_TAG'Access,
                Component => Create_Output_Format'Access,
                Tag       => Create_Component_Node'Access),
-        11 => (Name      => OUTPUT_LINK_TAG'Access,
+        12 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,
                Tag       => Create_Component_Node'Access),
-        12 => (Name      => OUTPUT_TEXT_TAG'Access,
+        13 => (Name      => OUTPUT_TEXT_TAG'Access,
                Component => Create_Output'Access,
                Tag       => Create_Component_Node'Access),
-        13 => (Name      => PANEL_GROUP_TAG'Access,
+        14 => (Name      => PANEL_GROUP_TAG'Access,
                Component => Create_PanelGroup'Access,
                Tag       => Create_Component_Node'Access),
-        14 => (Name      => SELECT_ONE_MENU_TAG'Access,
+        15 => (Name      => SELECT_ONE_MENU_TAG'Access,
                Component => Create_SelectOne'Access,
                Tag       => Create_Component_Node'Access)
         );

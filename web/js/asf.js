@@ -212,7 +212,7 @@ var ASF = {};
                         autoOpen: false,
                         show: "blind",
                         hide: "explode",
-                        minWidth: 500,
+                        minWidth: 600,
                         close: function() {
                             $(div).dialog('destroy');
                             $(div).remove();

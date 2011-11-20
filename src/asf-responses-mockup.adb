@@ -71,7 +71,12 @@ package body ASF.Responses.Mockup is
                          Name  : in String;
                          Value : in String) is
    begin
-      Resp.Headers.Insert (Name, Value);
+      if Resp.Headers.Contains (Name) then
+         Resp.Headers.Include (Name, Resp.Headers.Element (Name) & ASCII.LF
+                               & Name & ": " & Value);
+      else
+         Resp.Headers.Insert (Name, Value);
+      end if;
    end Add_Header;
 
    --  ------------------------------

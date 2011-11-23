@@ -36,6 +36,9 @@ package body ASF.Utils is
    ON_MOUSE_OVER_ATTR : aliased constant String := "onmouseover";
    ON_MOUSE_UP_ATTR   : aliased constant String := "onmouseup";
 
+   ON_LOAD_ATTR       : aliased constant String := "onload";
+   ON_UNLOAD_ATTR     : aliased constant String := "onunload";
+
    TABINDEX_ATTR      : aliased constant String := "tabindex";
 
    AUTOCOMPLETE_ATTR  : aliased constant String := "autocomplete";
@@ -105,5 +108,15 @@ package body ASF.Utils is
       Names.Insert (ROWS_ATTR'Access);
       Names.Insert (COLS_ATTR'Access);
    end Set_Textarea_Attributes;
+
+   --  ------------------------------
+   --  Add in the <b>names</b> set, the online and onunload attributes that can be set
+   --  on <body> elements.
+   --  ------------------------------
+   procedure Set_Body_Attributes (Names : in out Util.Strings.String_Set.Set) is
+   begin
+      Names.Insert (ON_LOAD_ATTR'Access);
+      Names.Insert (ON_UNLOAD_ATTR'Access);
+   end Set_Body_Attributes;
 
 end ASF.Utils;

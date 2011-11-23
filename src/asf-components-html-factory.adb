@@ -22,6 +22,7 @@ with ASF.Components.Html.Lists;
 with ASF.Components.Html.Links;
 with ASF.Components.Html.Panels;
 with ASF.Components.Html.Forms;
+with ASF.Components.Html.Pages;
 with ASF.Components.Html.Selects;
 with ASF.Components.Html.Messages;
 with ASF.Views.Nodes;
@@ -29,6 +30,7 @@ package body ASF.Components.Html.Factory is
 
    use ASF.Components.Base;
 
+   function Create_Body return UIComponent_Access;
    function Create_Output return UIComponent_Access;
    function Create_Output_Label return UIComponent_Access;
    function Create_Output_Link return UIComponent_Access;
@@ -44,6 +46,14 @@ package body ASF.Components.Html.Factory is
    function Create_Messages return UIComponent_Access;
    function Create_SelectOne return UIComponent_Access;
    function Create_SelectBooleanCheckbox return UIComponent_Access;
+
+   --  ------------------------------
+   --  Create an UIBody component
+   --  ------------------------------
+   function Create_Body return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Pages.UIBody;
+   end Create_Body;
 
    --  ------------------------------
    --  Create an UIOutput component
@@ -168,6 +178,8 @@ package body ASF.Components.Html.Factory is
    use ASF.Views.Nodes;
 
    URI                : aliased constant String := "http://java.sun.com/jsf/html";
+
+   BODY_TAG           : aliased constant String := "body";
    COMMAND_BUTTON_TAG : aliased constant String := "commandButton";
    FORM_TAG           : aliased constant String := "form";
    INPUT_HIDDEN_TAG   : aliased constant String := "inputHidden";
@@ -186,52 +198,55 @@ package body ASF.Components.Html.Factory is
    SELECT_BOOLEAN_TAG  : aliased constant String := "selectBooleanCheckbox";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => COMMAND_BUTTON_TAG'Access,
+     := (1 => (Name      => BODY_TAG'Access,
+               Component => Create_Body'Access,
+               Tag       => Create_Component_Node'Access),
+         2 => (Name      => COMMAND_BUTTON_TAG'Access,
                Component => Create_Command'Access,
                Tag       => Create_Component_Node'Access),
-         2 => (Name      => FORM_TAG'Access,
+         3 => (Name      => FORM_TAG'Access,
                Component => Create_Form'Access,
                Tag       => Create_Component_Node'Access),
-         3 => (Name      => INPUT_HIDDEN_TAG'Access,
+         4 => (Name      => INPUT_HIDDEN_TAG'Access,
                Component => Create_Input_Hidden'Access,
                Tag       => Create_Component_Node'Access),
-         4 => (Name      => INPUT_SECRET_TAG'Access,
+         5 => (Name      => INPUT_SECRET_TAG'Access,
                Component => ASF.Components.Html.Forms.Create_Input_Secret'Access,
                Tag       => Create_Component_Node'Access),
-         5 => (Name      => INPUT_TEXT_TAG'Access,
+         6 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input_Text'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => INPUT_TEXTAREA_TAG'Access,
+         7 => (Name      => INPUT_TEXTAREA_TAG'Access,
                Component => Create_Input_Textarea'Access,
                Tag       => Create_Component_Node'Access),
-         7 => (Name      => LIST_TAG'Access,
+         8 => (Name      => LIST_TAG'Access,
                Component => Create_List'Access,
                Tag       => Create_Component_Node'Access),
-         8 => (Name      => MESSAGE_TAG'Access,
+         9 => (Name      => MESSAGE_TAG'Access,
                Component => Create_Message'Access,
                Tag       => Create_Component_Node'Access),
-         9 => (Name      => MESSAGES_TAG'Access,
+        10 => (Name      => MESSAGES_TAG'Access,
                Component => Create_Messages'Access,
                Tag       => Create_Component_Node'Access),
-        10 => (Name      => OUTPUT_FORMAT_TAG'Access,
+        11 => (Name      => OUTPUT_FORMAT_TAG'Access,
                Component => Create_Output_Format'Access,
                Tag       => Create_Component_Node'Access),
-        11 => (Name      => OUTPUT_LABEL_TAG'Access,
+        12 => (Name      => OUTPUT_LABEL_TAG'Access,
                Component => Create_Output_Label'Access,
                Tag       => Create_Component_Node'Access),
-        12 => (Name      => OUTPUT_LINK_TAG'Access,
+        13 => (Name      => OUTPUT_LINK_TAG'Access,
                Component => Create_Output_Link'Access,
                Tag       => Create_Component_Node'Access),
-        13 => (Name      => OUTPUT_TEXT_TAG'Access,
+        14 => (Name      => OUTPUT_TEXT_TAG'Access,
                Component => Create_Output'Access,
                Tag       => Create_Component_Node'Access),
-        14 => (Name      => PANEL_GROUP_TAG'Access,
+        15 => (Name      => PANEL_GROUP_TAG'Access,
                Component => Create_PanelGroup'Access,
                Tag       => Create_Component_Node'Access),
-        15 => (Name      => SELECT_BOOLEAN_TAG'Access,
+        16 => (Name      => SELECT_BOOLEAN_TAG'Access,
                Component => Create_SelectBooleanCheckbox'Access,
                Tag       => Create_Component_Node'Access),
-        16 => (Name      => SELECT_ONE_MENU_TAG'Access,
+        17 => (Name      => SELECT_ONE_MENU_TAG'Access,
                Component => Create_SelectOne'Access,
                Tag       => Create_Component_Node'Access)
         );

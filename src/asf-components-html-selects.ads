@@ -32,6 +32,18 @@ with Util.Beans.Objects;
 package ASF.Components.Html.Selects is
 
    --  ------------------------------
+   --  UISelectBoolean Component
+   --  ------------------------------
+   --  The <b>UISelectBoolean</b> is a component that represents a single boolean value.
+   type UISelectBoolean is new Forms.UIInput with private;
+   type UISelectBoolean_Access is access all UISelectBoolean'Class;
+
+   --  Render the checkbox element.
+   overriding
+   procedure Render_Input (UI      : in UISelectBoolean;
+                           Context : in out Faces_Context'Class);
+
+   --  ------------------------------
    --  UISelectItem Component
    --  ------------------------------
    --  The <b>UISelectItem</b> is a component that may be nested inside a <b>UISelectMany</b>
@@ -106,6 +118,8 @@ package ASF.Components.Html.Selects is
                    Context : in Faces_Context'Class);
 
 private
+
+   type UISelectBoolean is new Forms.UIInput with null record;
 
    type Cursor is limited record
       List      : ASF.Models.Selects.Select_Item_List;

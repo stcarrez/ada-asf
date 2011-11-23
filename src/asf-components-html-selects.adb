@@ -32,6 +32,28 @@ package body ASF.Components.Html.Selects is
    SELECT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 
    --  ------------------------------
+   --  UISelectBoolean Component
+   --  ------------------------------
+   --  Render the checkbox element.
+   overriding
+   procedure Render_Input (UI      : in UISelectBoolean;
+                           Context : in out Faces_Context'Class) is
+      use ASF.Components.Html.Forms;
+
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
+      Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
+   begin
+      Writer.Start_Element ("input");
+      Writer.Write_Attribute (Name => "type", Value => "checkbox");
+      UI.Render_Attributes (Context, SELECT_ATTRIBUTE_NAMES, Writer);
+      Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
+      if not EL.Objects.Is_Null (Value) and then EL.Objects.To_Boolean (Value) then
+         Writer.Write_Attribute (Name => "checked", Value => "true");
+      end if;
+      Writer.End_Element ("input");
+   end Render_Input;
+
+   --  ------------------------------
    --  Iterator over the Select_Item elements
    --  ------------------------------
 

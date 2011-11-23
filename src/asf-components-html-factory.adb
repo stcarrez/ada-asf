@@ -43,6 +43,7 @@ package body ASF.Components.Html.Factory is
    function Create_Message return UIComponent_Access;
    function Create_Messages return UIComponent_Access;
    function Create_SelectOne return UIComponent_Access;
+   function Create_SelectBooleanCheckbox return UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIOutput component
@@ -156,6 +157,14 @@ package body ASF.Components.Html.Factory is
       return new ASF.Components.Html.Selects.UISelectOne;
    end Create_SelectOne;
 
+   --  ------------------------------
+   --  Create an UISelectBoolean component
+   --  ------------------------------
+   function Create_SelectBooleanCheckbox return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Selects.UISelectBoolean;
+   end Create_SelectBooleanCheckbox;
+
    use ASF.Views.Nodes;
 
    URI                : aliased constant String := "http://java.sun.com/jsf/html";
@@ -174,6 +183,7 @@ package body ASF.Components.Html.Factory is
    OUTPUT_TEXT_TAG    : aliased constant String := "outputText";
    PANEL_GROUP_TAG    : aliased constant String := "panelGroup";
    SELECT_ONE_MENU_TAG : aliased constant String := "selectOneMenu";
+   SELECT_BOOLEAN_TAG  : aliased constant String := "selectBooleanCheckbox";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => COMMAND_BUTTON_TAG'Access,
@@ -218,7 +228,10 @@ package body ASF.Components.Html.Factory is
         14 => (Name      => PANEL_GROUP_TAG'Access,
                Component => Create_PanelGroup'Access,
                Tag       => Create_Component_Node'Access),
-        15 => (Name      => SELECT_ONE_MENU_TAG'Access,
+        15 => (Name      => SELECT_BOOLEAN_TAG'Access,
+               Component => Create_SelectBooleanCheckbox'Access,
+               Tag       => Create_Component_Node'Access),
+        16 => (Name      => SELECT_ONE_MENU_TAG'Access,
                Component => Create_SelectOne'Access,
                Tag       => Create_Component_Node'Access)
         );

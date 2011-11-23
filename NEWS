@@ -1,7 +1,7 @@
 Version 0.3     -
   - New components <h:inputTextarea>, <h:selectOneMenu>,
-    <f:selectItem>, <f:selectItems>, <h:outputLabel>,
-    <h:inputHidden>
+    <f:selectItem>, <f:selectItems>, <h:selectBooleanCheckbox>, <h:outputLabel>,
+    <h:inputHidden>, <h:body>
   - Implement a JSF exception handler framework
   - New date converter to format dates in a localized format
   - New components <util:escape>, <util:script>, <util:flush>

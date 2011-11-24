@@ -274,6 +274,7 @@ package body ASF.Views.Nodes.Core is
    --  Function names
    CAPITALIZE_FN       : aliased constant String := "capitalize";
    COMPOSE_PATH_FN     : aliased constant String := "composePath";
+   CONTAINS_FN         : aliased constant String := "contains";
    LENGTH_FN           : aliased constant String := "length";
    TO_UPPER_CASE_FN    : aliased constant String := "toUpperCase";
    TO_LOWER_CASE_FN    : aliased constant String := "toLowerCase";
@@ -282,6 +283,8 @@ package body ASF.Views.Nodes.Core is
    TRIM_FN             : aliased constant String := "trim";
 
    function Length (Value : in EL.Objects.Object) return EL.Objects.Object;
+   function Contains (Value : in EL.Objects.Object;
+                      Search : in EL.Objects.Object) return EL.Objects.Object;
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object;
    function To_Upper_Case (Value : EL.Objects.Object) return EL.Objects.Object;
    function To_Lower_Case (Value : EL.Objects.Object) return EL.Objects.Object;
@@ -302,6 +305,41 @@ package body ASF.Views.Nodes.Core is
    begin
       return EL.Objects.To_Object (Integer (S'Length));
    end Length;
+
+   --  ------------------------------
+   --  Check if the search string is contained in the value.  If the value is a wide string,
+   --  the search string is converted to a wide string and the search is made using wide string.
+   --  Otherwise the value and search string are converted to a string.
+   --  Returns true if the <b>Search</b> is contained in <b>Value</b>
+   --  ------------------------------
+   function Contains (Value  : in EL.Objects.Object;
+                      Search : in EL.Objects.Object) return EL.Objects.Object is
+      use Ada.Strings;
+
+      Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
+   begin
+      case Of_Type is
+         when EL.Objects.TYPE_NULL =>
+            return EL.Objects.To_Object (False);
+
+         when EL.Objects.TYPE_WIDE_STRING =>
+            declare
+               S : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Value);
+               P : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Search);
+            begin
+               return EL.Objects.To_Object (Ada.Strings.Wide_Wide_Fixed.Index (S, P) > 0);
+            end;
+
+         when others =>
+            declare
+               S : constant String := EL.Objects.To_String (Value);
+               P : constant String := EL.Objects.To_String (Search);
+            begin
+               return EL.Objects.To_Object (Ada.Strings.Fixed.Index (S, P) > 0);
+            end;
+
+      end case;
+   end Contains;
 
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object is
       S : constant String := EL.Objects.To_String (Value);
@@ -408,6 +446,9 @@ package body ASF.Views.Nodes.Core is
       Mapper.Set_Function (Name      => CAPITALIZE_FN,
                            Namespace => FN_URI,
                            Func      => Capitalize'Access);
+      Mapper.Set_Function (Name      => CONTAINS_FN,
+                           Namespace => FN_URI,
+                           Func      => Contains'Access);
       Mapper.Set_Function (Name      => LENGTH_FN,
                            Namespace => FN_URI,
                            Func      => Length'Access);

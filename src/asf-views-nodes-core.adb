@@ -275,9 +275,11 @@ package body ASF.Views.Nodes.Core is
    CAPITALIZE_FN       : aliased constant String := "capitalize";
    COMPOSE_PATH_FN     : aliased constant String := "composePath";
    CONTAINS_FN         : aliased constant String := "contains";
+   ENDS_WITH_FN        : aliased constant String := "endsWith";
    LENGTH_FN           : aliased constant String := "length";
    TO_UPPER_CASE_FN    : aliased constant String := "toUpperCase";
    TO_LOWER_CASE_FN    : aliased constant String := "toLowerCase";
+   STARTS_WITH_FN      : aliased constant String := "startsWith";
    SUBSTRING_AFTER_FN  : aliased constant String := "substringAfter";
    SUBSTRING_BEFORE_FN : aliased constant String := "substringBefore";
    TRIM_FN             : aliased constant String := "trim";
@@ -289,6 +291,10 @@ package body ASF.Views.Nodes.Core is
    function To_Upper_Case (Value : EL.Objects.Object) return EL.Objects.Object;
    function To_Lower_Case (Value : EL.Objects.Object) return EL.Objects.Object;
    function Trim (Value : in EL.Objects.Object) return EL.Objects.Object;
+   function Ends_With (Value  : in EL.Objects.Object;
+                       Search : in EL.Objects.Object) return EL.Objects.Object;
+   function Starts_With (Value  : in EL.Objects.Object;
+                         Search : in EL.Objects.Object) return EL.Objects.Object;
 
    function Substring_Before (Value : in EL.Objects.Object;
                               Token : in EL.Objects.Object) return EL.Objects.Object;
@@ -340,6 +346,74 @@ package body ASF.Views.Nodes.Core is
 
       end case;
    end Contains;
+
+   --  ------------------------------
+   --  Check if the value starts with the given search string.
+   --  Returns true if the <b>Value</b> starts with <b>Search</b>
+   --  ------------------------------
+   function Starts_With (Value  : in EL.Objects.Object;
+                         Search : in EL.Objects.Object) return EL.Objects.Object is
+      use Ada.Strings;
+
+      Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
+   begin
+      case Of_Type is
+         when EL.Objects.TYPE_NULL =>
+            return EL.Objects.To_Object (False);
+
+         when EL.Objects.TYPE_WIDE_STRING =>
+            declare
+               S : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Value);
+               P : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Search);
+            begin
+               return EL.Objects.To_Object (Ada.Strings.Wide_Wide_Fixed.Index (S, P) = S'First);
+            end;
+
+         when others =>
+            declare
+               S : constant String := EL.Objects.To_String (Value);
+               P : constant String := EL.Objects.To_String (Search);
+            begin
+               return EL.Objects.To_Object (Ada.Strings.Fixed.Index (S, P) = S'First);
+            end;
+
+      end case;
+   end Starts_With;
+
+   --  ------------------------------
+   --  Check if the value ends with the given search string.
+   --  Returns true if the <b>Value</b> starts with <b>Search</b>
+   --  ------------------------------
+   function Ends_With (Value  : in EL.Objects.Object;
+                       Search : in EL.Objects.Object) return EL.Objects.Object is
+      use Ada.Strings;
+
+      Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
+   begin
+      case Of_Type is
+         when EL.Objects.TYPE_NULL =>
+            return EL.Objects.To_Object (False);
+
+         when EL.Objects.TYPE_WIDE_STRING =>
+            declare
+               S : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Value);
+               P : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Search);
+               I : constant Natural := Ada.Strings.Wide_Wide_Fixed.Index (S, P);
+            begin
+               return EL.Objects.To_Object (I > 0 and I + P'Length - 1 = S'Last);
+            end;
+
+         when others =>
+            declare
+               S : constant String := EL.Objects.To_String (Value);
+               P : constant String := EL.Objects.To_String (Search);
+               I : constant Natural := Ada.Strings.Fixed.Index (S, P);
+            begin
+               return EL.Objects.To_Object (I > 0 and I + P'Length - 1 = S'Last);
+            end;
+
+      end case;
+   end Ends_With;
 
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object is
       S : constant String := EL.Objects.To_String (Value);
@@ -443,6 +517,13 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
    begin
+      Mapper.Set_Function (Name      => STARTS_WITH_FN,
+                           Namespace => FN_URI,
+                           Func      => Starts_With'Access);
+      Mapper.Set_Function (Name      => ENDS_WITH_FN,
+                           Namespace => FN_URI,
+                           Func      => Ends_With'Access);
+
       Mapper.Set_Function (Name      => CAPITALIZE_FN,
                            Namespace => FN_URI,
                            Func      => Capitalize'Access);

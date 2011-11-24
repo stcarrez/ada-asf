@@ -20,6 +20,7 @@ with Util.Files;
 
 with Ada.Exceptions;
 with Ada.Strings.Fixed;
+with Ada.Strings.Wide_Wide_Fixed;
 package body ASF.Views.Nodes.Core is
 
    --  ------------------------------
@@ -273,20 +274,34 @@ package body ASF.Views.Nodes.Core is
    --  Function names
    CAPITALIZE_FN       : aliased constant String := "capitalize";
    COMPOSE_PATH_FN     : aliased constant String := "composePath";
+   LENGTH_FN           : aliased constant String := "length";
    TO_UPPER_CASE_FN    : aliased constant String := "toUpperCase";
    TO_LOWER_CASE_FN    : aliased constant String := "toLowerCase";
    SUBSTRING_AFTER_FN  : aliased constant String := "substringAfter";
    SUBSTRING_BEFORE_FN : aliased constant String := "substringBefore";
+   TRIM_FN             : aliased constant String := "trim";
 
+   function Length (Value : in EL.Objects.Object) return EL.Objects.Object;
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object;
    function To_Upper_Case (Value : EL.Objects.Object) return EL.Objects.Object;
    function To_Lower_Case (Value : EL.Objects.Object) return EL.Objects.Object;
+   function Trim (Value : in EL.Objects.Object) return EL.Objects.Object;
+
    function Substring_Before (Value : in EL.Objects.Object;
                               Token : in EL.Objects.Object) return EL.Objects.Object;
    function Substring_After (Value : in EL.Objects.Object;
                              Token : in EL.Objects.Object) return EL.Objects.Object;
    function Compose_Path (Paths : in EL.Objects.Object;
                           Dir   : in EL.Objects.Object) return EL.Objects.Object;
+
+   --  ------------------------------
+   --  Get the length of the object.
+   --  ------------------------------
+   function Length (Value : in EL.Objects.Object) return EL.Objects.Object is
+      S : constant String := EL.Objects.To_String (Value);
+   begin
+      return EL.Objects.To_Object (Integer (S'Length));
+   end Length;
 
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object is
       S : constant String := EL.Objects.To_String (Value);
@@ -305,6 +320,34 @@ package body ASF.Views.Nodes.Core is
    begin
       return EL.Objects.To_Object (Util.Strings.Transforms.To_Lower_Case (S));
    end To_Lower_Case;
+
+   --  ------------------------------
+   --  Trim the white spaces at beginning and end of the string.
+   --  ------------------------------
+   function Trim (Value : in EL.Objects.Object) return EL.Objects.Object is
+      use Ada.Strings;
+
+      Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
+   begin
+      case Of_Type is
+         when EL.Objects.TYPE_STRING =>
+            declare
+               S : constant String := EL.Objects.To_String (Value);
+            begin
+               return EL.Objects.To_Object (Ada.Strings.Fixed.Trim (S, Both));
+            end;
+
+         when EL.Objects.TYPE_WIDE_STRING =>
+            declare
+               S : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Value);
+            begin
+               return EL.Objects.To_Object (Ada.Strings.Wide_Wide_Fixed.Trim (S, Both));
+            end;
+
+         when others =>
+            return Value;
+      end case;
+   end Trim;
 
    --  ------------------------------
    --  Return the substring before the token string
@@ -365,6 +408,9 @@ package body ASF.Views.Nodes.Core is
       Mapper.Set_Function (Name      => CAPITALIZE_FN,
                            Namespace => FN_URI,
                            Func      => Capitalize'Access);
+      Mapper.Set_Function (Name      => LENGTH_FN,
+                           Namespace => FN_URI,
+                           Func      => Length'Access);
       Mapper.Set_Function (Name      => TO_LOWER_CASE_FN,
                            Namespace => FN_URI,
                            Func      => To_Lower_Case'Access);
@@ -374,6 +420,9 @@ package body ASF.Views.Nodes.Core is
       Mapper.Set_Function (Name      => SUBSTRING_BEFORE_FN,
                            Namespace => FN_URI,
                            Func      => Substring_Before'Access);
+      Mapper.Set_Function (Name      => TRIM_FN,
+                           Namespace => FN_URI,
+                           Func      => Trim'Access);
       Mapper.Set_Function (Name      => SUBSTRING_AFTER_FN,
                            Namespace => FN_URI,
                            Func      => Substring_After'Access);

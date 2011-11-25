@@ -45,6 +45,10 @@ package ASF.Utils is
    --  on <body> elements.
    procedure Set_Body_Attributes (Names : in out Util.Strings.String_Set.Set);
 
+   --  Add in the <b>names</b> set, the dir, lang attributes that can be set
+   --  on <head> elements.
+   procedure Set_Head_Attributes (Names : in out Util.Strings.String_Set.Set);
+
    type Object_Array is array (Positive range <>) of Util.Beans.Objects.Object;
 
    package Formats is

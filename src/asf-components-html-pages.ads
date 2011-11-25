@@ -21,6 +21,22 @@
 package ASF.Components.Html.Pages is
 
    --  ------------------------------
+   --  Head Component
+   --  ------------------------------
+   type UIHead is new UIHtmlComponent with private;
+
+   --  Encode the HTML head element.
+   overriding
+   procedure Encode_Begin (UI      : in UIHead;
+                           Context : in out Contexts.Faces.Faces_Context'Class);
+
+   --  Terminate the HTML head element.  Before closing the head, generate the resource
+   --  links that have been queued for the head generation.
+   overriding
+   procedure Encode_End (UI      : in UIHead;
+                         Context : in out Contexts.Faces.Faces_Context'Class);
+
+   --  ------------------------------
    --  Body Component
    --  ------------------------------
    type UIBody is new UIHtmlComponent with private;
@@ -37,6 +53,8 @@ package ASF.Components.Html.Pages is
                          Context : in out Contexts.Faces.Faces_Context'Class);
 
 private
+
+   type UIHead is new UIHtmlComponent with null record;
 
    type UIBody is new UIHtmlComponent with record
       Value     : EL.Objects.Object;

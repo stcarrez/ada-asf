@@ -25,6 +25,37 @@ package body ASF.Components.Html.Pages is
 
    BODY_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 
+   HEAD_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
+
+   --  ------------------------------
+   --  Head Component
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Encode the HTML head element.
+   --  ------------------------------
+   overriding
+   procedure Encode_Begin (UI      : in UIHead;
+                           Context : in out Contexts.Faces.Faces_Context'Class) is
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
+   begin
+      Writer.Start_Element ("head");
+      UI.Render_Attributes (Context, HEAD_ATTRIBUTE_NAMES, Writer);
+   end Encode_Begin;
+
+   --  ------------------------------
+   --  Terminate the HTML head element.  Before closing the head, generate the resource
+   --  links that have been queued for the head generation.
+   --  ------------------------------
+   overriding
+   procedure Encode_End (UI      : in UIHead;
+                         Context : in out Contexts.Faces.Faces_Context'Class) is
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
+   begin
+      Writer.Write_Scripts;
+      Writer.End_Element ("head");
+   end Encode_End;
+
    --  ------------------------------
    --  Encode the HTML body element.
    --  ------------------------------
@@ -51,6 +82,7 @@ package body ASF.Components.Html.Pages is
    end Encode_End;
 
 begin
+   Utils.Set_Head_Attributes (HEAD_ATTRIBUTE_NAMES);
    Utils.Set_Text_Attributes (BODY_ATTRIBUTE_NAMES);
    Utils.Set_Body_Attributes (BODY_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Pages;

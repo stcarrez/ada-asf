@@ -119,4 +119,14 @@ package body ASF.Utils is
       Names.Insert (ON_UNLOAD_ATTR'Access);
    end Set_Body_Attributes;
 
+   --  ------------------------------
+   --  Add in the <b>names</b> set, the dir, lang attributes that can be set
+   --  on <head> elements.
+   --  ------------------------------
+   procedure Set_Head_Attributes (Names : in out Util.Strings.String_Set.Set) is
+   begin
+      Names.Insert (DIR_ATTR'Access);
+      Names.Insert (LANG_ATTR'Access);
+   end Set_Head_Attributes;
+
 end ASF.Utils;

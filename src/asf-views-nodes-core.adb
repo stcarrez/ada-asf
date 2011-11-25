@@ -280,9 +280,18 @@ package body ASF.Views.Nodes.Core is
    TO_UPPER_CASE_FN    : aliased constant String := "toUpperCase";
    TO_LOWER_CASE_FN    : aliased constant String := "toLowerCase";
    STARTS_WITH_FN      : aliased constant String := "startsWith";
+   SUBSTRING_FN        : aliased constant String := "substring";
    SUBSTRING_AFTER_FN  : aliased constant String := "substringAfter";
    SUBSTRING_BEFORE_FN : aliased constant String := "substringBefore";
    TRIM_FN             : aliased constant String := "trim";
+   INDEX_OF_FN         : aliased constant String := "indexOf";
+
+   --  JSFL function not implemented
+   CONTAINS_IGNORE_CASE_FN : aliased constant String := "containsIgnoreCase";
+   JOIN_FN             : aliased constant String := "join";
+   SPLIT_FN            : aliased constant String := "split";
+   REPLACE_FN          : aliased constant String := "replace";
+   ESCAPE_XML_FN       : aliased constant String := "escapeXml";
 
    function Length (Value : in EL.Objects.Object) return EL.Objects.Object;
    function Contains (Value : in EL.Objects.Object;
@@ -295,6 +304,8 @@ package body ASF.Views.Nodes.Core is
                        Search : in EL.Objects.Object) return EL.Objects.Object;
    function Starts_With (Value  : in EL.Objects.Object;
                          Search : in EL.Objects.Object) return EL.Objects.Object;
+   function Index_Of (Value  : in EL.Objects.Object;
+                      Search : in EL.Objects.Object) return EL.Objects.Object;
 
    function Substring_Before (Value : in EL.Objects.Object;
                               Token : in EL.Objects.Object) return EL.Objects.Object;
@@ -302,6 +313,11 @@ package body ASF.Views.Nodes.Core is
                              Token : in EL.Objects.Object) return EL.Objects.Object;
    function Compose_Path (Paths : in EL.Objects.Object;
                           Dir   : in EL.Objects.Object) return EL.Objects.Object;
+   function Index (Value  : in EL.Objects.Object;
+                   Search : in EL.Objects.Object) return Natural;
+   function Substring (Value  : in EL.Objects.Object;
+                       Start  : in EL.Objects.Object;
+                       Finish : in EL.Objects.Object) return EL.Objects.Object;
 
    --  ------------------------------
    --  Get the length of the object.
@@ -313,27 +329,24 @@ package body ASF.Views.Nodes.Core is
    end Length;
 
    --  ------------------------------
-   --  Check if the search string is contained in the value.  If the value is a wide string,
-   --  the search string is converted to a wide string and the search is made using wide string.
-   --  Otherwise the value and search string are converted to a string.
-   --  Returns true if the <b>Search</b> is contained in <b>Value</b>
+   --  Find the index of the search string in the value.
    --  ------------------------------
-   function Contains (Value  : in EL.Objects.Object;
-                      Search : in EL.Objects.Object) return EL.Objects.Object is
+   function Index (Value  : in EL.Objects.Object;
+                   Search : in EL.Objects.Object) return Natural is
       use Ada.Strings;
 
       Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
    begin
       case Of_Type is
          when EL.Objects.TYPE_NULL =>
-            return EL.Objects.To_Object (False);
+            return 0;
 
          when EL.Objects.TYPE_WIDE_STRING =>
             declare
                S : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Value);
                P : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Search);
             begin
-               return EL.Objects.To_Object (Ada.Strings.Wide_Wide_Fixed.Index (S, P) > 0);
+               return Ada.Strings.Wide_Wide_Fixed.Index (S, P);
             end;
 
          when others =>
@@ -341,11 +354,33 @@ package body ASF.Views.Nodes.Core is
                S : constant String := EL.Objects.To_String (Value);
                P : constant String := EL.Objects.To_String (Search);
             begin
-               return EL.Objects.To_Object (Ada.Strings.Fixed.Index (S, P) > 0);
+               return Ada.Strings.Fixed.Index (S, P);
             end;
 
       end case;
+   end Index;
+
+   --  ------------------------------
+   --  Check if the search string is contained in the value.  If the value is a wide string,
+   --  the search string is converted to a wide string and the search is made using wide string.
+   --  Otherwise the value and search string are converted to a string.
+   --  Returns true if the <b>Search</b> is contained in <b>Value</b>
+   --  ------------------------------
+   function Contains (Value  : in EL.Objects.Object;
+                      Search : in EL.Objects.Object) return EL.Objects.Object is
+   begin
+      return EL.Objects.To_Object (Index (Value, Search) > 0);
    end Contains;
+
+   --  ------------------------------
+   --  Find the index of the search string in the value.
+   --  Returns the index true if the <b>Search</b> is contained in <b>Value</b>
+   --  ------------------------------
+   function Index_Of (Value  : in EL.Objects.Object;
+                      Search : in EL.Objects.Object) return EL.Objects.Object is
+   begin
+      return EL.Objects.To_Object (Index (Value, Search));
+   end Index_Of;
 
    --  ------------------------------
    --  Check if the value starts with the given search string.
@@ -414,6 +449,58 @@ package body ASF.Views.Nodes.Core is
 
       end case;
    end Ends_With;
+
+   --  ------------------------------
+   --  Returns the substring starting from the <b>Start</b> index up to the <b>Finish</b>
+   --  index inclusive.
+   --  ------------------------------
+   function Substring (Value  : in EL.Objects.Object;
+                       Start  : in EL.Objects.Object;
+                       Finish : in EL.Objects.Object) return EL.Objects.Object is
+      use Ada.Strings;
+
+      Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
+   begin
+      case Of_Type is
+         when EL.Objects.TYPE_NULL =>
+            return Value;
+
+         when EL.Objects.TYPE_WIDE_STRING =>
+            declare
+               S     : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Value);
+               First : Natural := EL.Objects.To_Integer (Start);
+               Last  : Natural := EL.Objects.To_Integer (Finish);
+            begin
+               if First <= S'First then
+                  First := S'First;
+               end if;
+               if Last >= S'Last then
+                  Last := S'Last;
+               end if;
+               return EL.Objects.To_Object (S (First .. Last));
+            end;
+
+         when others =>
+            declare
+               S : constant String := EL.Objects.To_String (Value);
+               First : Natural := EL.Objects.To_Integer (Start);
+               Last  : Natural := EL.Objects.To_Integer (Finish);
+            begin
+               if First <= S'First then
+                  First := S'First;
+               end if;
+               if Last >= S'Last then
+                  Last := S'Last;
+               end if;
+               return EL.Objects.To_Object (S (First .. Last));
+            end;
+
+      end case;
+
+   exception
+      when others =>
+         return Value;
+   end Substring;
 
    function Capitalize (Value : EL.Objects.Object) return EL.Objects.Object is
       S : constant String := EL.Objects.To_String (Value);
@@ -523,6 +610,12 @@ package body ASF.Views.Nodes.Core is
       Mapper.Set_Function (Name      => ENDS_WITH_FN,
                            Namespace => FN_URI,
                            Func      => Ends_With'Access);
+      Mapper.Set_Function (Name      => INDEX_OF_FN,
+                           Namespace => FN_URI,
+                           Func      => Index_Of'Access);
+      Mapper.Set_Function (Name      => SUBSTRING_FN,
+                           Namespace => FN_URI,
+                           Func      => Substring'Access);
 
       Mapper.Set_Function (Name      => CAPITALIZE_FN,
                            Namespace => FN_URI,

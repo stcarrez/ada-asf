@@ -65,7 +65,7 @@ rebuild: clean build
 
 
 # Files to package in source distribution
-DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
+DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
 configure.in Makefile.in install-sh distrib test.properties ChangeLog \
 asf.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src asfunit samples regtests web bundles samples.properties \
@@ -88,14 +88,14 @@ dist:
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	-rm -f $(distdir)/bin/*
-	-rm -f $(distdir)/obj/*
-	-rm -f $(distdir)/obj/asf/*
-	-rm -f $(distdir)/obj/asfunit/*
-	-rm -f $(distdir)/lib/*
-	-rm -f $(distdir)/lib/asf/*
-	-rm -f $(distdir)/lib/asfunit/*
-	-rm -f $(distdir)/regtests/result/*
+	-rm -rf $(distdir)/bin/*
+	-rm -rf $(distdir)/obj/*
+	-rm -rf $(distdir)/obj/asf/*
+	-rm -rf $(distdir)/obj/asfunit/*
+	-rm -rf $(distdir)/lib/*
+	-rm -rf $(distdir)/lib/asf/*
+	-rm -rf $(distdir)/lib/asfunit/*
+	-rm -rf $(distdir)/regtests/result/*
 	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)

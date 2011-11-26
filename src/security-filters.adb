@@ -73,6 +73,8 @@ package body Security.Filters is
       AID     : Unbounded_String;
       Auth    : ASF.Principals.Principal_Access;
 
+      pragma Unreferenced (SID);
+
       procedure Fetch_Cookie (Cookie : in ASF.Cookies.Cookie);
 
       --  ------------------------------

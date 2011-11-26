@@ -122,7 +122,6 @@ package body ASF.Applications.Views.Tests is
          Get_Next_Entry (Search, Ent);
          declare
             Simple    : constant String := Simple_Name (Ent);
-            File_Path : constant String := Full_Name (Ent);
             Tst      : Test_Case_Access;
          begin
             if Simple /= "." and then Simple /= ".."

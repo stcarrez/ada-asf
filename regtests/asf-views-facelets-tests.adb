@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Facelet Tests - Unit tests for ASF.Views.Facelet
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,9 @@ package body ASF.Views.Facelets.Tests is
                              return access ASF.Applications.Main.Application'Class;
 
 
+   --  ------------------------------
    --  Get the application associated with this facelet context.
+   --  ------------------------------
    overriding
    function Get_Application (Context : in Facelet_Context)
                              return access ASF.Applications.Main.Application'Class is
@@ -40,7 +42,9 @@ package body ASF.Views.Facelets.Tests is
       return null;
    end Get_Application;
 
+   --  ------------------------------
    --  Set up performed before each test case
+   --  ------------------------------
    overriding
    procedure Set_Up (T : in out Test) is
    begin
@@ -48,28 +52,35 @@ package body ASF.Views.Facelets.Tests is
    end Set_Up;
 
 
+   --  ------------------------------
    --  Tear down performed after each test case
+   --  ------------------------------
    overriding
    procedure Tear_Down (T : in out Test) is
    begin
       null;
    end Tear_Down;
 
+   --  ------------------------------
    --  Test loading of facelet file
+   --  ------------------------------
    procedure Test_Load_Facelet (T : in out Test) is
       Factory    : ASF.Views.Facelets.Facelet_Factory;
       Components : aliased ASF.Factory.Component_Factory;
       View       : ASF.Views.Facelets.Facelet;
       Ctx        : Facelet_Context;
    begin
-      Initialize (Factory, Components'Unchecked_Access, "regtests/files/views;.", True, True, True);
+      Initialize (Factory, Components'Unchecked_Access, "regtests/files/views;.",
+                  True, True, True);
       Find_Facelet (Factory, "text.xhtml", Ctx, View);
 
       T.Assert (Condition => not Is_Null (View),
                 Message   => "Loading an existing facelet should return a view");
    end Test_Load_Facelet;
 
+   --  ------------------------------
    --  Test loading of an unknown file
+   --  ------------------------------
    procedure Test_Load_Unknown_Facelet (T : in out Test) is
       Factory    : ASF.Views.Facelets.Facelet_Factory;
       Components : aliased ASF.Factory.Component_Factory;

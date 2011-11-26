@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with ASF.Converters;
-with ASF.Validators;
 with ASF.Validators.Texts;
 with ASF.Validators.Numbers;
 with ASF.Components.Holders;

@@ -466,6 +466,8 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    function Get_Action (UI      : in UIForm;
                         Context : in Faces_Context'Class) return String is
+      pragma Unreferenced (UI);
+
       App          : constant ASF.Contexts.Faces.Application_Access := Context.Get_Application;
       View_Handler : constant access Applications.Views.View_Handler'Class := App.Get_View_Handler;
       View         : constant ASF.Components.Root.UIViewRoot := Context.Get_View_Root;

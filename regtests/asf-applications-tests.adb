@@ -23,6 +23,7 @@ with ASF.Events.Faces.Actions;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Applications.Main;
+with ASF.Models.Selects;
 package body ASF.Applications.Tests is
 
    use ASF.Tests;

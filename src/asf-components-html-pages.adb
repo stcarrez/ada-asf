@@ -50,6 +50,8 @@ package body ASF.Components.Html.Pages is
    overriding
    procedure Encode_End (UI      : in UIHead;
                          Context : in out Contexts.Faces.Faces_Context'Class) is
+      pragma Unreferenced (UI);
+
       Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
    begin
       Writer.Write_Scripts;
@@ -75,6 +77,8 @@ package body ASF.Components.Html.Pages is
    overriding
    procedure Encode_End (UI      : in UIBody;
                          Context : in out Contexts.Faces.Faces_Context'Class) is
+      pragma Unreferenced (UI);
+
       Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
    begin
       Writer.Write_Scripts;

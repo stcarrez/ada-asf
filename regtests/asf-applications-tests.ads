@@ -22,7 +22,6 @@ with Util.Beans.Basic;
 with Util.Beans.Objects;
 with Util.Beans.Methods;
 with Ada.Strings.Unbounded;
-with ASF.Models.Selects;
 
 package ASF.Applications.Tests is
 

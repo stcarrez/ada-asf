@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 
 with Util.Strings;
-with ASF.Applications.Main;
+
 with EL.Expressions;
 with EL.Variables;
 

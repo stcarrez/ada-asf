@@ -131,7 +131,7 @@ package body ASF.Applications.Views.Tests is
                Tst.File := To_Unbounded_String ("views/" & Simple);
                Tst.Expect := To_Unbounded_String (Expect_Path & "/" & Simple);
                Tst.Result := To_Unbounded_String (Result_Path & "/" & Simple);
-               Suite.Add_Test (Tst);
+               Suite.Add_Test (Tst.all'Access);
             end if;
          end;
       end loop;

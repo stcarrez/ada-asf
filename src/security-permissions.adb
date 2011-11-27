@@ -24,6 +24,7 @@ with Util.Log.Loggers;
 with Util.Serialize.Mappers.Record_Mapper;
 
 with Security.Contexts;
+with Security.Controllers;
 with Security.Controllers.Roles;
 
 --  The <b>Security.Permissions</b> package defines the different permissions that can be

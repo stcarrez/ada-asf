@@ -21,12 +21,12 @@ with ASF.Applications.Main;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with Ada.Directories;
-with Util.Tests;
+
+with Util.Test_Caller;
 with Util.Files;
 with Util.Measures;
 package body ASF.Applications.Views.Tests is
 
-   use AUnit;
    use Ada.Strings.Unbounded;
 
    overriding
@@ -88,9 +88,9 @@ package body ASF.Applications.Views.Tests is
 
    --  Test case name
    overriding
-   function Name (T : Test) return Message_String is
+   function Name (T : Test) return Util.Tests.Message_String is
    begin
-      return Format ("Test " & To_String (T.Name));
+      return Util.Tests.Format ("Test " & To_String (T.Name));
    end Name;
 
    --  Perform the test.
@@ -100,7 +100,7 @@ package body ASF.Applications.Views.Tests is
       T.Test_Load_Facelet;
    end Run_Test;
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
       use Ada.Directories;
 
       Result_Dir  : constant String := "regtests/result/views";

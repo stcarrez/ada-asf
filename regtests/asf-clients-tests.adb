@@ -16,15 +16,12 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Tests;
 with Util.Test_Caller;
 with Util.Log.Loggers;
 
-with Ada.Strings.Fixed;
-with ASF.Server.Web;
+with ASF.Clients.Web;
 package body ASF.Clients.Tests is
 
-   use Ada.Strings.Fixed;
    use Util.Tests;
    use Util.Log;
 
@@ -33,16 +30,19 @@ package body ASF.Clients.Tests is
 
    package Caller is new Util.Test_Caller (Test);
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
       Caller.Add_Test (Suite, "Test ASF.Clients.Do_Get",
                        Test_Http_Get'Access);
+      ASF.Clients.Web.Register;
    end Add_Tests;
 
    --  ------------------------------
    --  Test creation of cookie
    --  ------------------------------
    procedure Test_Http_Get (T : in out Test) is
+      pragma Unreferenced (T);
+
       C     : ASF.Clients.Client;
       Reply : ASF.Clients.Response;
    begin

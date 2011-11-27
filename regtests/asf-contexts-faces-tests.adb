@@ -26,7 +26,7 @@ package body ASF.Contexts.Faces.Tests is
 
    package Caller is new Util.Test_Caller (Test);
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 
    begin
       --  To document what is tested, register the test methods for each

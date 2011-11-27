@@ -30,10 +30,10 @@ with Security.Permissions.Tests;
 with ASF.Clients.Tests;
 package body ASF.Testsuite is
 
-   Tests : aliased Test_Suite;
+   Tests : aliased Util.Tests.Test_Suite;
 
-   function Suite return Access_Test_Suite is
-      Ret : constant Access_Test_Suite := Tests'Access;
+   function Suite return Util.Tests.Access_Test_Suite is
+      Ret : constant Util.Tests.Access_Test_Suite := Tests'Access;
    begin
       ASF.Cookies.Tests.Add_Tests (Ret);
       ASF.Contexts.Writer.Tests.Add_Tests (Ret);

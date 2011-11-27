@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Caller;
+with Util.Test_Caller;
 with ASF.Contexts.Facelets;
 with ASF.Applications.Main;
 package body ASF.Views.Facelets.Tests is
@@ -94,17 +94,17 @@ package body ASF.Views.Facelets.Tests is
                 Message   => "Loading a missing facelet should not raise any exception");
    end Test_Load_Unknown_Facelet;
 
-   package Caller is new AUnit.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test);
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 
    begin
       --  To document what is tested, register the test methods for each
       --  operation that is tested.
-      Suite.Add_Test (Caller.Create ("Test ASF.Views.Facelets.Find_Facelet",
-        Test_Load_Facelet'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Views.Facelets.Find_Facelet",
-        Test_Load_Unknown_Facelet'Access));
+      Caller.Add_Test (Suite, "Test ASF.Views.Facelets.Find_Facelet",
+                       Test_Load_Facelet'Access);
+      Caller.Add_Test (Suite, "Test ASF.Views.Facelets.Find_Facelet",
+                       Test_Load_Unknown_Facelet'Access);
    end Add_Tests;
 
 end ASF.Views.Facelets.Tests;

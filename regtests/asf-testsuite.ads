@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF testsuite - Ada Server Faces Test suite
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Suites;
+with Util.Tests;
 
 package ASF.Testsuite is
 
-   use AUnit.Test_Suites;
-
-   function Suite return Access_Test_Suite;
+   function Suite return Util.Tests.Access_Test_Suite;
 
 end ASF.Testsuite;

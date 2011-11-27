@@ -16,8 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Caller;
-with Util.Tests;
+with Util.Test_Caller;
 with Util.Measures;
 
 with ASF.Streams;
@@ -61,7 +60,8 @@ package body ASF.Servlets.Tests is
       Ctx.Add_Mapping (Pattern => "*.jsf", Name => "Faces");
 
       declare
-         Dispatcher : constant Request_Dispatcher := Ctx.Get_Request_Dispatcher (Path => "/home/test.jsf");
+         Dispatcher : constant Request_Dispatcher
+           := Ctx.Get_Request_Dispatcher (Path => "/home/test.jsf");
          Req        : ASF.Requests.Mockup.Request;
          Resp       : ASF.Responses.Mockup.Response;
          Result     : Unbounded_String;
@@ -187,19 +187,19 @@ package body ASF.Servlets.Tests is
 
    end Test_Create_Servlet;
 
-   package Caller is new AUnit.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test);
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 
    begin
       --  To document what is tested, register the test methods for each
       --  operation that is tested.
-      Suite.Add_Test (Caller.Create ("Test ASF.Servlets.Add_Mapping,Find_Mapping",
-                                      Test_Create_Servlet'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Servlets.Add_Servlet",
-                                      Test_Add_Servlet'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Servlets.Get_Request_Dispatcher",
-                                      Test_Request_Dispatcher'Access));
+      Caller.Add_Test (Suite, "Test ASF.Servlets.Add_Mapping,Find_Mapping",
+                       Test_Create_Servlet'Access);
+      Caller.Add_Test (Suite, "Test ASF.Servlets.Add_Servlet",
+                       Test_Add_Servlet'Access);
+      Caller.Add_Test (Suite, "Test ASF.Servlets.Get_Request_Dispatcher",
+                       Test_Request_Dispatcher'Access);
    end Add_Tests;
 
 end ASF.Servlets.Tests;

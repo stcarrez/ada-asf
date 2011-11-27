@@ -16,9 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Caller;
+with Util.Test_Caller;
 with ASF.Sessions.Factory;
-with Util.Tests;
 with Util.Measures;
 with EL.Objects;
 package body ASF.Sessions.Tests is
@@ -86,25 +85,25 @@ package body ASF.Sessions.Tests is
       end;
    end Test_Session_Attributes;
 
-   package Caller is new AUnit.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test);
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 
    begin
       --  To document what is tested, register the test methods for each
       --  operation that is tested.
-      Suite.Add_Test (Caller.Create ("Test ASF.Sessions.Factory.Create_Session",
-                                      Test_Create_Session'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Sessions.Factory.Find_Session",
-                                      Test_Create_Session'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Sessions.Get_Id",
-                                      Test_Create_Session'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Sessions.Is_Valid",
-                                      Test_Empty_Session'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Sessions.Set_Attribute",
-                                      Test_Session_Attributes'Access));
-      Suite.Add_Test (Caller.Create ("Test ASF.Sessions.Get_Attribute",
-                                      Test_Session_Attributes'Access));
+      Caller.Add_Test (Suite, "Test ASF.Sessions.Factory.Create_Session",
+                       Test_Create_Session'Access);
+      Caller.Add_Test (Suite, "Test ASF.Sessions.Factory.Find_Session",
+                       Test_Create_Session'Access);
+      Caller.Add_Test (Suite, "Test ASF.Sessions.Get_Id",
+                       Test_Create_Session'Access);
+      Caller.Add_Test (Suite, "Test ASF.Sessions.Is_Valid",
+                       Test_Empty_Session'Access);
+      Caller.Add_Test (Suite, "Test ASF.Sessions.Set_Attribute",
+                       Test_Session_Attributes'Access);
+      Caller.Add_Test (Suite, "Test ASF.Sessions.Get_Attribute",
+                       Test_Session_Attributes'Access);
    end Add_Tests;
 
 end ASF.Sessions.Tests;

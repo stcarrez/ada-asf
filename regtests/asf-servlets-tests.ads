@@ -16,12 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Suites; use AUnit.Test_Suites;
 with Util.Tests;
 
 package ASF.Servlets.Tests is
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);
 
    type Test_Servlet1 is new Servlet with null record;
 

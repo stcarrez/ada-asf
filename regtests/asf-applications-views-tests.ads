@@ -16,15 +16,16 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Simple_Test_Cases;
-with AUnit.Test_Suites; use AUnit.Test_Suites;
+with Util.Tests;
 
 with Ada.Strings.Unbounded;
 package ASF.Applications.Views.Tests is
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);
 
-   type Test is new AUnit.Simple_Test_Cases.Test_Case with record
+   --    type Test is new AUnit.Simple_Test_Cases.Test_Case with record
+
+   type Test is new Util.Tests.Test_Case with record
       Writer : Integer;
       Name    : Ada.Strings.Unbounded.Unbounded_String;
       File    : Ada.Strings.Unbounded.Unbounded_String;
@@ -35,7 +36,7 @@ package ASF.Applications.Views.Tests is
 
    --  Test case name
    overriding
-   function Name (T : Test) return AUnit.Message_String;
+   function Name (T : Test) return Util.Tests.Message_String;
 
    --  Perform the test.
    overriding

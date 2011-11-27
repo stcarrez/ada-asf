@@ -34,7 +34,7 @@ package body ASF.Applications.Main.Tests is
 
    package Caller is new Util.Test_Caller (Test);
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
       Caller.Add_Test (Suite, "Test ASF.Applications.Main.Read_Configuration",
                        Test_Read_Configuration'Access);

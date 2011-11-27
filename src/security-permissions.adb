@@ -464,13 +464,25 @@ package body Security.Permissions is
    overriding
    procedure Finalize (Manager : in out Permission_Manager) is
       use Ada.Strings.Unbounded;
-      procedure Free is new Ada.Unchecked_Deallocation (Rules_Ref.Atomic_Ref, Rules_Ref_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Rules_Ref.Atomic_Ref, Rules_Ref_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Security.Controllers.Controller'Class, Controller_Access);
+      procedure Free is
+         new Ada.Unchecked_Deallocation (Controller_Access_Array, Controller_Access_Array_Access);
    begin
       Free (Manager.Cache);
       for I in Manager.Names'Range loop
          exit when Manager.Names (I) = null;
          Ada.Strings.Unbounded.Free (Manager.Names (I));
       end loop;
+
+      if Manager.Permissions /= null then
+         for I in Manager.Permissions.all'Range loop
+            Free (Manager.Permissions (I));
+         end loop;
+         Free (Manager.Permissions);
+      end if;
    end Finalize;
 
    package body Permission_ACL is

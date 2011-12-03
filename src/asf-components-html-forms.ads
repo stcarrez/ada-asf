@@ -107,6 +107,10 @@ package ASF.Components.Html.Forms is
                             Validator : in ASF.Validators.Validator_Access;
                             Shared    : in Boolean := False);
 
+   --  Delete the UI input instance.
+   overriding
+   procedure Finalize (UI : in out UIInput);
+
    --  ------------------------------
    --  InputTextarea Component
    --  ------------------------------

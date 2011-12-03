@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Unchecked_Deallocation;
+
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 with Ada.Exceptions;
@@ -38,6 +40,10 @@ package body ASF.Components.Html.Forms is
    INPUT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 
    TEXTAREA_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
+
+   procedure Free is
+      new Ada.Unchecked_Deallocation (Object => ASF.Validators.Validator'Class,
+                                      Name   => ASF.Validators.Validator_Access);
 
    --  ------------------------------
    --  Input Component
@@ -273,7 +279,29 @@ package body ASF.Components.Html.Forms is
       end loop;
       Base.Log_Error (UI, "Too many validators added (max {0})",
                       Positive'Image (UI.Validators'Length));
+      if Shared then
+         declare
+            V : ASF.Validators.Validator_Access := Validator;
+         begin
+            Free (V);
+         end;
+      end if;
    end Add_Validator;
+
+   --  ------------------------------
+   --  Delete the UI input instance.
+   --  ------------------------------
+   overriding
+   procedure Finalize (UI : in out UIInput) is
+      use type ASF.Validators.Validator_Access;
+   begin
+      for I in UI.Validators'Range loop
+         exit when UI.Validators (I).Validator = null;
+         if not UI.Validators (I).Shared then
+            Free (UI.Validators (I).Validator);
+         end if;
+      end loop;
+   end Finalize;
 
    --  ------------------------------
    --  Render the textarea element.

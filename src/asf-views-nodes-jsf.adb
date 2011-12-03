@@ -256,7 +256,6 @@ package body ASF.Views.Nodes.Jsf is
    --  ------------------------------
    overriding
    procedure Get_Validator (Node      : in Length_Validator_Tag_Node;
-
                             Context   : in out Contexts.Facelets.Facelet_Context'Class;
                             Validator : out Validators.Validator_Access;
                             Shared    : out Boolean) is

@@ -486,6 +486,8 @@ package body Security.Permissions is
 
       if Manager.Permissions /= null then
          for I in Manager.Permissions.all'Range loop
+            exit when Manager.Permissions (I) = null;
+
             --  SCz 2011-12-03: GNAT 2011 reports a compilation error:
             --  'missing "with" clause on package "Security.Controllers"'
             --  if we use the 'Security.Controller_Access' type, even if this "with" clause exist.

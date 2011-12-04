@@ -295,6 +295,7 @@ package body ASF.Components.Html.Forms is
    procedure Finalize (UI : in out UIInput) is
       use type ASF.Validators.Validator_Access;
    begin
+      --  If there are any validator that is not shared, delete the instance.
       for I in UI.Validators'Range loop
          exit when UI.Validators (I).Validator = null;
          if not UI.Validators (I).Shared then

@@ -106,6 +106,15 @@ package body ASF.Streams is
    end Flush;
 
    --  ------------------------------
+   --  Close the text stream.
+   --  ------------------------------
+   overriding
+   procedure Close (Stream : in out Print_Stream) is
+   begin
+      Stream.Target.Close;
+   end Close;
+
+   --  ------------------------------
    --  Write into the text stream.
    --  ------------------------------
    procedure Write (Stream : in out Print_Stream;

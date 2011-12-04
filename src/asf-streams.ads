@@ -79,6 +79,10 @@ package ASF.Streams is
                     Print  : access procedure
                       (Into : in out Util.Streams.Texts.Print_Stream'Class));
 
+   --  Close the text stream.
+   overriding
+   procedure Close (Stream : in out Print_Stream);
+
 private
 
    type Print_Stream is new Ada.Finalization.Limited_Controlled

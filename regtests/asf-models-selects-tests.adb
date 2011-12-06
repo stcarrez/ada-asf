@@ -20,7 +20,7 @@ with Util.Test_Caller;
 
 package body ASF.Models.Selects.Tests is
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Models.Selects");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin

@@ -29,7 +29,7 @@ package body ASF.Applications.Tests is
    use ASF.Tests;
    use Util.Tests;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Applications");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin

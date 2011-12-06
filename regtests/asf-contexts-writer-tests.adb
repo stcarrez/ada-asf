@@ -121,7 +121,7 @@ package body ASF.Contexts.Writer.Tests is
                      T.Writer.Response);
    end Test_Write_Text;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Contexts.Writer");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 

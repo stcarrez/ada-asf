@@ -85,7 +85,7 @@ package body ASF.Sessions.Tests is
       end;
    end Test_Session_Attributes;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Sessions");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 

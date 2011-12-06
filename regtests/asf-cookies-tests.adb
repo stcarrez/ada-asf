@@ -33,7 +33,7 @@ package body ASF.Cookies.Tests is
 
    procedure Free is new Ada.Unchecked_Deallocation (Cookie_Array, Cookie_Array_Access);
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Cookies");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin

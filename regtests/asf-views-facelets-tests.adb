@@ -94,7 +94,7 @@ package body ASF.Views.Facelets.Tests is
                 Message   => "Loading a missing facelet should not raise any exception");
    end Test_Load_Unknown_Facelet;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Views.Facelets");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 

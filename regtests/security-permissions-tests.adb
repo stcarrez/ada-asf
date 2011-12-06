@@ -26,7 +26,7 @@ package body Security.Permissions.Tests is
 
    use Util.Tests;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Security.Permissions");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin

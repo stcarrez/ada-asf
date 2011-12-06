@@ -54,4 +54,7 @@ package ASF.Contexts.Writer.Tests is
 
    procedure Test_Write_Element (T : in out Test);
 
+   --  Test the Write_Char/Text methods
+   procedure Test_Write_Text (T : in out Test);
+
 end ASF.Contexts.Writer.Tests;

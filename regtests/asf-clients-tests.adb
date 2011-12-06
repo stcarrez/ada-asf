@@ -28,7 +28,7 @@ package body ASF.Clients.Tests is
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Clients.Tests");
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Clients");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin

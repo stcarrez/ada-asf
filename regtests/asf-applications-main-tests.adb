@@ -32,7 +32,7 @@ package body ASF.Applications.Main.Tests is
 
    function Create_Form_Bean return Util.Beans.Basic.Readonly_Bean_Access;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "Applications.Main");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin

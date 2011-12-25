@@ -6,7 +6,7 @@ Version 0.3     -
     fn:startsWith, fn:endsWith
   - Implement a JSF exception handler framework
   - New date converter to format dates in a localized format
-  - New components <util:escape>, <util:script>, <util:flush>
+  - New components <util:escape>, <util:script>, <util:flush>, <util:set>
   - Provide pre-defined beans in ASF contexts: param, header
   - Add support for dialog boxes with jQuery UI
 

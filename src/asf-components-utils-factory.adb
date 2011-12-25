@@ -21,6 +21,7 @@ with ASF.Views.Nodes;
 with ASF.Components.Utils.Flush;
 with ASF.Components.Utils.Scripts;
 with ASF.Components.Utils.Escapes;
+with ASF.Components.Utils.Beans;
 with Util.Strings.Transforms; use Util.Strings;
 package body ASF.Components.Utils.Factory is
 
@@ -31,6 +32,7 @@ package body ASF.Components.Utils.Factory is
    function Create_Flush return UIComponent_Access;
    function Create_Script return UIComponent_Access;
    function Create_Escape return UIComponent_Access;
+   function Create_Set return UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIView component
@@ -72,6 +74,14 @@ package body ASF.Components.Utils.Factory is
       return new ASF.Components.Utils.Escapes.UIEscape;
    end Create_Escape;
 
+   --  ------------------------------
+   --  Create a UISetBean component
+   --  ------------------------------
+   function Create_Set return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.Beans.UISetBean;
+   end Create_Set;
+
    use ASF.Views.Nodes;
 
    URI        : aliased constant String := "http://code.google.com/p/ada-asf/util";
@@ -79,6 +89,7 @@ package body ASF.Components.Utils.Factory is
    FLUSH_TAG  : aliased constant String := "flush";
    PARAM_TAG  : aliased constant String := "param";
    SCRIPT_TAG : aliased constant String := "script";
+   SET_TAG    : aliased constant String := "set";
    VIEW_TAG   : aliased constant String := "view";
 
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
@@ -94,7 +105,10 @@ package body ASF.Components.Utils.Factory is
          4 => (Name      => SCRIPT_TAG'Access,
                Component => Create_Script'Access,
                Tag       => Create_Component_Node'Access),
-         5 => (Name      => VIEW_TAG'Access,
+         5 => (Name      => SET_TAG'Access,
+               Component => Create_Set'Access,
+               Tag       => Create_Component_Node'Access),
+         6 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access)
         );

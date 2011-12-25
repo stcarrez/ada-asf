@@ -92,16 +92,19 @@ package body ASF.Components.Ajax.Includes is
                View         : constant ASF.Components.Root.UIViewRoot := Context.Get_View_Root;
                Include_View : ASF.Components.Root.UIViewRoot;
                Is_Ajax      : constant Boolean := Context.Is_Ajax_Request;
+               Content_Type : constant String := Context.Get_Response.Get_Content_Type;
             begin
                Context.Set_Ajax_Request (True);
                View_Handler.Restore_View (Page, Context, Include_View);
                Context.Set_View_Root (Include_View);
                View_Handler.Render_View (Context, Include_View);
+               Context.Get_Response.Set_Content_Type (Content_Type);
                Context.Set_View_Root (View);
                Context.Set_Ajax_Request (Is_Ajax);
 
             exception
                when others =>
+                  Context.Get_Response.Set_Content_Type (Content_Type);
                   Context.Set_View_Root (View);
                   Context.Set_Ajax_Request (Is_Ajax);
                   raise;

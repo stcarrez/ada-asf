@@ -27,7 +27,7 @@ with EL.Contexts;
 package ASF.Navigations.Mappers is
 
    type Navigation_Case_Fields is (FROM_VIEW_ID, OUTCOME, ACTION, TO_VIEW, REDIRECT, CONDITION,
-                                   CONTENT, CONTENT_TYPE, NAVIGATION_CASE);
+                                   CONTENT, CONTENT_TYPE, NAVIGATION_CASE, NAVIGATION_RULE);
 
    --  ------------------------------
    --  Navigation Config Reader

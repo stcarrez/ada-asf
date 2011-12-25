@@ -29,7 +29,7 @@ package body ASF.Navigations.Mappers is
    --  ------------------------------
    procedure Reset (N : in out Nav_Config) is
    begin
-      N.From_View := Empty;
+
       N.To_View   := Empty;
       N.Outcome   := Empty;
       N.Action    := Empty;
@@ -91,6 +91,9 @@ package body ASF.Navigations.Mappers is
             end;
             Reset (N);
 
+         when NAVIGATION_RULE =>
+            N.From_View := Empty;
+
       end case;
    end Set_Member;
 
@@ -106,6 +109,7 @@ package body ASF.Navigations.Mappers is
       Reader.Add_Mapping ("web-app", Mapping'Access);
       Config.Handler := Handler;
       Config.Context := Context;
+      Config.From_View := Empty;
       Reset (Config);
       Navigation_Mapper.Set_Context (Reader, Config'Unchecked_Access);
    end Reader_Config;
@@ -125,5 +129,6 @@ begin
    Mapping.Add_Mapping ("navigation-rule/navigation-case/content", CONTENT);
    Mapping.Add_Mapping ("navigation-rule/navigation-case/content/@type", CONTENT_TYPE);
    Mapping.Add_Mapping ("navigation-rule/navigation-case", NAVIGATION_CASE);
+   Mapping.Add_Mapping ("navigation-rule", NAVIGATION_RULE);
 
 end ASF.Navigations.Mappers;

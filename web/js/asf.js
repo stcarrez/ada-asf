@@ -25,44 +25,45 @@ var ASF = {};
      * @param action the JSON action object
      */
     ASF.ExecuteOne = function(node, action) {
+        var id = action.id === null ? node : action.id;
         if (action.action === "update") {
-	        $(action.id).html(action.data);
+	        $(id).html(action.data);
 
         } else if (action.action === "prepend") {
-	        $(action.id).prepend(action.data);
+	        $(id).prepend(action.data);
 
         } else if (action.action === "append") {
-	        $(action.id).append(action.data);
+	        $(id).append(action.data);
 
         } else if (action.action === "show") {
-            $(action.id).show('slow');
+            $(id).show('slow');
 
         } else if (action.action === "hide") {
-            $(action.id).hide('slow');
+            $(id).hide('slow');
 
         } else if (action.action === "delete") {
-	        $(action.id).remove();
+	        $(id).remove();
 
         } else if (action.action === "removeClass") {
-	        $(action.id).removeClass(action.data);
+	        $(id).removeClass(action.data);
 
         } else if (action.action === "addClass") {
-	        $(action.id).addClass(action.data);
+	        $(id).addClass(action.data);
 
         } else if (action.action === "fadeIn") {
-            $(action.id).fadeIn('slow');
+            $(id).fadeIn('slow');
 
         } else if (action.action === "fadeOut") {
-            $(action.id).fadeOut('slow');
+            $(id).fadeOut('slow');
 
         } else if (action.action === "slideUp") {
-            $(action.id).slideUp('slow');
+            $(id).slideUp('slow');
 
         } else if (action.action === "slideDown") {
-            $(action.id).slideDown('slow');
+            $(id).slideDown('slow');
 
         } else if (action.action === "closeDialog") {
-            $(action.id).dialog('close');
+            $(id).dialog('close');
 
         } else if (action.action === "redirect") {
             document.location = action.url;
@@ -110,7 +111,7 @@ var ASF = {};
                         d.html(jqXHDR.responseText);
 
                     } else if (contentType.match(/^application\/json(;.*)?$/i)) {
-                        ASF.Execute(node, data);
+                        ASF.Execute(d, data);
                     }
                }
             });
@@ -165,7 +166,7 @@ var ASF = {};
                         d.html(jqXHDR.responseText);
 
                     } else if (contentType.match(/^application\/json(;.*)?$/i)) {
-                        ASF.Execute(node, data);
+                        ASF.Execute(d, data);
                     }
                }
             });
@@ -232,6 +233,16 @@ var ASF = {};
                 }
             }
         });
+        return false;
+    };
+
+    /**
+     * Close the dialog box identified by the given identifier.
+     *
+     * @param id the dialog box identifier
+     */
+    ASF.CloseDialog = function(id) {
+        $('#' + id).dialog('close');
         return false;
     };
 

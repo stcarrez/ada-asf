@@ -1,7 +1,7 @@
 Version 0.3     -
   - New components <h:inputTextarea>, <h:selectOneMenu>,
     <f:selectItem>, <f:selectItems>, <h:selectBooleanCheckbox>, <h:outputLabel>,
-    <h:inputHidden>, <h:body>, <h:head>
+    <h:inputHidden>, <h:body>, <h:head>, <h:selectOneRadio>
   - New functions fn:substring, fn:indexOf, fn:trim, fn:contains,
     fn:startsWith, fn:endsWith
   - Implement a JSF exception handler framework

@@ -256,6 +256,105 @@ package body ASF.Components.Html.Selects is
       end loop;
    end Render_Options;
 
+   --  ------------------------------
+   --  Returns True if the radio options must be rendered vertically.
+   --  ------------------------------
+   function Is_Vertical (UI      : in UISelectOneRadio;
+                         Context : in Faces_Context'Class) return Boolean is
+      Dir    : constant String := UI.Get_Attribute (Context => Context,
+                                                    Name    => "layout",
+                                                    Default => "");
+   begin
+      return Dir = "pageDirection";
+   end Is_Vertical;
+
+   --  ------------------------------
+   --  Renders the <b>select</b> element.  This is called by <b>Encode_Begin</b> if
+   --  the component is rendered.
+   --  ------------------------------
+   overriding
+   procedure Render_Select (UI      : in UISelectOneRadio;
+                            Context : in out Faces_Context'Class) is
+      Writer   : constant Response_Writer_Access := Context.Get_Response_Writer;
+      Value    : constant EL.Objects.Object := UISelectOne'Class (UI).Get_Value;
+      Vertical : constant Boolean := UI.Is_Vertical (Context);
+      Selected : constant Wide_Wide_String := Util.Beans.Objects.To_Wide_Wide_String (Value);
+      Iter     : Cursor;
+      Id       : constant String := To_String (UI.Get_Client_Id);
+      N        : Natural := 0;
+
+      Disabled_Class : constant EL.Objects.Object := UI.Get_Attribute (Context => Context,
+                                                                       Name => "disabledClass");
+      Enabled_Class  : constant EL.Objects.Object := UI.Get_Attribute (Context => Context,
+                                                                       Name => "enabledClass");
+   begin
+      Writer.Start_Element ("table");
+      UI.Render_Attributes (Context, Writer);
+
+      if not Vertical then
+         Writer.Start_Element ("tr");
+      end if;
+
+      UI.First (Context, Iter);
+      while Has_Element (Iter) loop
+         declare
+            Item       : constant ASF.Models.Selects.Select_Item := Element (Iter, Context);
+            Item_Value : constant Wide_Wide_String := Item.Get_Value;
+         begin
+            if Vertical then
+               Writer.Start_Element ("tr");
+            end if;
+            Writer.Start_Element ("td");
+
+            --  Render the input radio checkbox.
+            Writer.Start_Element ("input");
+            Writer.Write_Attribute ("type", "radio");
+            if Item.Is_Disabled then
+               Writer.Write_Attribute ("disabled", "disabled");
+            end if;
+            Writer.Write_Attribute ("id", Id & "_" & Util.Strings.Image (N));
+            Writer.Write_Wide_Attribute ("value", Item_Value);
+            if Item_Value = Selected then
+               Writer.Write_Attribute ("checked", "checked");
+            end if;
+            Writer.End_Element ("input");
+
+            --  Render the label associated with the checkbox.
+            Writer.Start_Element ("label");
+            if Item.Is_Disabled then
+               if not Util.Beans.Objects.Is_Null (Disabled_Class) then
+                  Writer.Write_Attribute ("class", Disabled_Class);
+               end if;
+            else
+               if not Util.Beans.Objects.Is_Null (Enabled_Class) then
+                  Writer.Write_Attribute ("class", Enabled_Class);
+               end if;
+            end if;
+
+            Writer.Write_Attribute ("for", Id & "_" & Util.Strings.Image (N));
+            if Item.Is_Escaped then
+               Writer.Write_Wide_Text (Item.Get_Label);
+            else
+               Writer.Write_Wide_Text (Item.Get_Label);
+            end if;
+            Writer.End_Element ("label");
+
+            Writer.End_Element ("td");
+            if Vertical then
+               Writer.End_Element ("tr");
+            end if;
+
+            Next (Iter, Context);
+            N := N + 1;
+         end;
+      end loop;
+
+      if not Vertical then
+         Writer.End_Element ("tr");
+      end if;
+      Writer.End_Element ("table");
+   end Render_Select;
+
 begin
    ASF.Utils.Set_Text_Attributes (SELECT_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Interactive_Attributes (SELECT_ATTRIBUTE_NAMES);

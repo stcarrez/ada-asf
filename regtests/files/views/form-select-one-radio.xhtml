@@ -1,0 +1,21 @@
+<h:form xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+	id="testColor" styleClass="test" style="color: red;">
+  <ul>
+    <li>
+  <h:selectOneRadio id='color' value='0'>
+     <f:selectItem itemLabel="red" itemValue="0"/>
+     <f:selectItem itemLabel="blue" itemValue="1"/>
+     <f:selectItem itemLabel="green" itemValue="2"/>
+  </h:selectOneRadio>
+    </li>
+    <li>
+  <h:selectOneRadio id='color' value='0' layout="pageDirection"
+                    enabledClass="en-class" disabledClass="dis-class">
+     <f:selectItem itemLabel="red" itemValue="0"/>
+     <f:selectItem itemLabel="blue" itemValue="1" itemDisabled="true"/>
+     <f:selectItem itemLabel="green" itemValue="2"/>
+  </h:selectOneRadio>
+    </li>
+  </ul>
+</h:form>

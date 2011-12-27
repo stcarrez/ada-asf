@@ -46,6 +46,7 @@ package body ASF.Components.Html.Factory is
    function Create_Message return UIComponent_Access;
    function Create_Messages return UIComponent_Access;
    function Create_SelectOne return UIComponent_Access;
+   function Create_SelectOneRadio return UIComponent_Access;
    function Create_SelectBooleanCheckbox return UIComponent_Access;
 
    --  ------------------------------
@@ -177,6 +178,14 @@ package body ASF.Components.Html.Factory is
    end Create_SelectOne;
 
    --  ------------------------------
+   --  Create an UISelectOneRadio component
+   --  ------------------------------
+   function Create_SelectOneRadio return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Selects.UISelectOneRadio;
+   end Create_SelectOneRadio;
+
+   --  ------------------------------
    --  Create an UISelectBoolean component
    --  ------------------------------
    function Create_SelectBooleanCheckbox return UIComponent_Access is
@@ -205,6 +214,7 @@ package body ASF.Components.Html.Factory is
    OUTPUT_TEXT_TAG    : aliased constant String := "outputText";
    PANEL_GROUP_TAG    : aliased constant String := "panelGroup";
    SELECT_ONE_MENU_TAG : aliased constant String := "selectOneMenu";
+   SELECT_ONE_RADIO_TAG : aliased constant String := "selectOneRadio";
    SELECT_BOOLEAN_TAG  : aliased constant String := "selectBooleanCheckbox";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
@@ -261,6 +271,9 @@ package body ASF.Components.Html.Factory is
                Tag       => Create_Component_Node'Access),
         18 => (Name      => SELECT_ONE_MENU_TAG'Access,
                Component => Create_SelectOne'Access,
+               Tag       => Create_Component_Node'Access),
+        19 => (Name      => SELECT_ONE_RADIO_TAG'Access,
+               Component => Create_SelectOneRadio'Access,
                Tag       => Create_Component_Node'Access)
         );
 

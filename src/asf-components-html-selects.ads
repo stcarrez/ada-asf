@@ -94,6 +94,24 @@ package ASF.Components.Html.Selects is
                              Context : in out Faces_Context'Class);
 
    --  ------------------------------
+   --  SelectOneRadio Component
+   --  ------------------------------
+   --  The <b>UISelectOneRadio</b> is a component that represents zero or one selection from
+   --  a list of available options.
+   type UISelectOneRadio is new UISelectOne with private;
+   type UISelectOneRadio_Access is access all UISelectOneRadio'Class;
+
+   --  Returns True if the radio options must be rendered vertically.
+   function Is_Vertical (UI      : in UISelectOneRadio;
+                         Context : in Faces_Context'Class) return Boolean;
+
+   --  Renders the <b>select</b> element.  This is called by <b>Encode_Begin</b> if
+   --  the component is rendered.
+   overriding
+   procedure Render_Select (UI      : in UISelectOneRadio;
+                            Context : in out Faces_Context'Class);
+
+   --  ------------------------------
    --  Iterator over the Select_Item elements
    --  ------------------------------
    type Cursor is limited private;
@@ -134,5 +152,7 @@ private
    type UISelectItems is new Core.UILeaf with null record;
 
    type UISelectOne is new Forms.UIInput with null record;
+
+   type UISelectOneRadio is new UISelectOne with null record;
 
 end ASF.Components.Html.Selects;

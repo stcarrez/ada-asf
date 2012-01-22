@@ -1,7 +1,14 @@
-<div id='nav'>
+<div id='nav' xmlns:c="http://java.sun.com/jstl/core">
     <ul>
-        <li id='nav-compute'><a href="compute.html">Volume</a></li>
-        <li id='nav-utf8'><a href="utf8.html">UTF-8</a></li>
-        <li id='nav-ajax'><a href="ajax.html">AJAX</a></li>
+        <c:choose>
+           <c:when test="#{sampleName eq 'openid'}">
+                <li id='nav-openid'><a href="#{contextPath}/auth/login.html">OpenID</a></li>
+           </c:when>
+           <c:otherwise>
+                <li id='nav-compute'><a href="#{contextPath}/compute.html">Volume</a></li>
+           </c:otherwise>
+        </c:choose>
+        <li id='nav-utf8'><a href="#{contextPath}/utf8.html">UTF-8</a></li>
+        <li id='nav-ajax'><a href="#{contextPath}/ajax.html">AJAX</a></li>
     </ul>
 </div>

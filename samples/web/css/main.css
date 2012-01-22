@@ -108,9 +108,14 @@ div.awa-title div {
 #awa-copyright {
   float: left;
   margin-left: 20px;
+  margin-right: 5px;
 }
 #awa-clfooter {
   clear: both;
   height: 70px;
   width: 100%;
+}
+#awa-footer_content {
+  float: right;
+  margin-right: 20px;
 }

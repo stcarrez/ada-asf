@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf_volume_server -- The volume_server application with Ada Server Faces
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,6 +62,9 @@ begin
    App.Set_Global ("compute",
                    Util.Beans.Objects.To_Object (Bean'Unchecked_Access,
                                                  Util.Beans.Objects.STATIC));
+
+   --  Declare a global bean to identify this sample from within the XHTML files.
+   App.Set_Global ("sampleName", "volume");
 
    --  Register the servlets and filters
    App.Add_Servlet (Name => "faces", Server => Faces'Unchecked_Access);

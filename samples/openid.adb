@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  openid -- Example of OpenID 2.0 Authentication
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -140,8 +140,12 @@ begin
    App.Register ("samplesMsg", "samples");
    App.Set_Global ("contextPath", "/openid");
 
+   --  Declare a global bean to identify this sample from within the XHTML files.
+   App.Set_Global ("sampleName", "openid");
+
    App.Set_Global ("version", "0.1");
-   App.Set_Global ("user", Util.Beans.Objects.To_Object (User'Unchecked_Access));
+   App.Set_Global ("user", Util.Beans.Objects.To_Object (User'Unchecked_Access,
+     Util.Beans.Objects.STATIC));
 
    --  Register the servlets and filters
    App.Add_Servlet (Name => "faces", Server => Faces'Unchecked_Access);

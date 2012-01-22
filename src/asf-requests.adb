@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -684,6 +684,23 @@ package body ASF.Requests is
    begin
       return Header'Length > 0;
    end Is_Ajax_Request;
+
+   --  ------------------------------
+   --  Returns the absolute path of the resource identified by the given relative path.
+   --  The resource is searched in a list of directories configured by the application.
+   --  The path must begin with a "/" and is interpreted as relative to the current
+   --  context root.
+   --
+   --  This method allows the servlet container to make a resource available to
+   --  servlets from any source.
+   --
+   --  This method returns an empty string if the resource could not be localized.
+   --  ------------------------------
+   function Get_Resource (Req  : in Request;
+                          Path : in String) return String is
+   begin
+      return Req.Servlet.Get_Servlet_Context.Get_Resource (Path);
+   end Get_Resource;
 
    --  ------------------------------
    --  Initialize the request object.

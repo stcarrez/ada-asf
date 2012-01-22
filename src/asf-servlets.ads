@@ -337,6 +337,18 @@ package ASF.Servlets is
    procedure Set_Init_Parameters (Context : in out Servlet_Registry;
                                   Params  : in Util.Properties.Manager'Class);
 
+   --  Returns the absolute path of the resource identified by the given relative path.
+   --  The resource is searched in a list of directories configured by the application.
+   --  The path must begin with a "/" and is interpreted as relative to the current
+   --  context root.
+   --
+   --  This method allows the servlet container to make a resource available to
+   --  servlets from any source.
+   --
+   --  This method returns an empty string if the resource could not be localized.
+   function Get_Resource (Context : in Servlet_Registry;
+                          Path    : in String) return String;
+
    --  Registers the given servlet instance with this ServletContext under
    --  the given servletName.
    --

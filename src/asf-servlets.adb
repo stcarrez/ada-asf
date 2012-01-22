@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ with EL.Objects;
 with GNAT.Traceback.Symbolic;
 
 with Util.Strings;
+with Util.Files;
 with Util.Log.Loggers;
 
 
@@ -500,6 +501,29 @@ package body ASF.Servlets is
    begin
       Context.Config.Copy (Params);
    end Set_Init_Parameters;
+
+   --  ------------------------------
+   --  Returns the absolute path of the resource identified by the given relative path.
+   --  The resource is searched in a list of directories configured by the application.
+   --  The path must begin with a "/" and is interpreted as relative to the current
+   --  context root.
+   --
+   --  This method allows the servlet container to make a resource available to
+   --  servlets from any source.
+   --
+   --  This method returns an empty string if the resource could not be localized.
+   --  ------------------------------
+   function Get_Resource (Context : in Servlet_Registry;
+                          Path    : in String) return String is
+      Paths  : constant String := Context.Get_Init_Parameter ("view.dir");
+      Result : constant String := Util.Files.Find_File_Path (Name => Path, Paths => Paths);
+   begin
+      if Result = Path then
+         return "";
+      else
+         return Result;
+      end if;
+   end Get_Resource;
 
    --  ------------------------------
    --  Registers the given servlet instance with this ServletContext under

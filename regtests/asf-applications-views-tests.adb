@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Render Tests - Unit tests for ASF.Applications.Views
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,8 @@ with Ada.Text_IO;
 with ASF.Applications.Main;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
+with ASF.Requests.Tools;
+with ASF.Servlets.Faces;
 with Ada.Directories;
 
 with Util.Test_Caller;
@@ -51,20 +53,25 @@ package body ASF.Applications.Views.Tests is
       App_Factory : Applications.Main.Application_Factory;
       Dir         : constant String := "regtests/files";
       Path        : constant String := Util.Tests.Get_Path (Dir);
+      Faces       : aliased ASF.Servlets.Faces.Faces_Servlet;
    begin
       Conf.Load_Properties ("regtests/view.properties");
       Conf.Set ("view.dir", Path);
       App.Initialize (Conf, App_Factory);
+      App.Register_Application ("/");
+      App.Add_Servlet ("faces", Faces'Unchecked_Access);
 
       App.Set_Global ("function", "Test_Load_Facelet");
       for I in 1 .. 2 loop
          declare
             S : Util.Measures.Stamp;
             Req       : ASF.Requests.Mockup.Request;
-            Rep       : ASF.Responses.Mockup.Response;
+            Rep       : aliased ASF.Responses.Mockup.Response;
             Content   : Unbounded_String;
          begin
-
+            ASF.Requests.Tools.Set_Context (Req      => Req,
+                                            Servlet  => Faces'Unchecked_Access,
+                                            Response => Rep'Unchecked_Access);
             Req.Set_Method ("GET");
             Req.Set_Path_Info (View_Name);
             Req.Set_Parameter ("file-name", To_String (T.Name));

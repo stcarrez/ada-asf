@@ -24,7 +24,7 @@ package body ASF.Components.Html.Panels is
       Layout : constant String := EL.Objects.To_String (Value);
    begin
       if Layout = "div" or Layout = "block" then
-         return "block";
+         return "div";
       elsif Layout = "none" then
          return "";
       else
@@ -44,6 +44,7 @@ package body ASF.Components.Html.Panels is
       begin
          if Tag'Length > 0 then
             Writer.Start_Optional_Element (Tag);
+            UI.Render_Attributes (Context, Writer);
          end if;
       end;
    end Encode_Begin;

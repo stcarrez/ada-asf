@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,6 +68,9 @@ package ASF.Contexts.Writer is
 
    --  Get the character encoding.
    function Get_Encoding (Stream : in Response_Writer) return String;
+
+   --  Close the current XML entity if an entity was started
+   procedure Close_Current (Stream : in out Response_Writer'Class);
 
    --  Start an XML element with the given name.
    procedure Start_Element (Stream : in out Response_Writer;

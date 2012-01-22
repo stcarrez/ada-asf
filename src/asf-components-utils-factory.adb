@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 
 with ASF.Components.Core;
 with ASF.Views.Nodes;
+with ASF.Components.Utils.Files;
 with ASF.Components.Utils.Flush;
 with ASF.Components.Utils.Scripts;
 with ASF.Components.Utils.Escapes;
@@ -29,6 +30,7 @@ package body ASF.Components.Utils.Factory is
 
    function Create_View return UIComponent_Access;
    function Create_Parameter return UIComponent_Access;
+   function Create_File return UIComponent_Access;
    function Create_Flush return UIComponent_Access;
    function Create_Script return UIComponent_Access;
    function Create_Escape return UIComponent_Access;
@@ -49,6 +51,14 @@ package body ASF.Components.Utils.Factory is
    begin
       return new ASF.Components.Core.UIParameter;
    end Create_Parameter;
+
+   --  ------------------------------
+   --  Create a UIFile component
+   --  ------------------------------
+   function Create_File return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.Files.UIFile;
+   end Create_File;
 
    --  ------------------------------
    --  Create a UIFlush component
@@ -86,6 +96,7 @@ package body ASF.Components.Utils.Factory is
 
    URI        : aliased constant String := "http://code.google.com/p/ada-asf/util";
    ESCAPE_TAG : aliased constant String := "escape";
+   FILE_TAG   : aliased constant String := "file";
    FLUSH_TAG  : aliased constant String := "flush";
    PARAM_TAG  : aliased constant String := "param";
    SCRIPT_TAG : aliased constant String := "script";
@@ -96,19 +107,22 @@ package body ASF.Components.Utils.Factory is
      := (1 => (Name      => ESCAPE_TAG'Access,
                Component => Create_Escape'Access,
                Tag       => Create_Component_Node'Access),
-         2 => (Name      => FLUSH_TAG'Access,
+         2 => (Name      => FILE_TAG'Access,
+               Component => Create_File'Access,
+               Tag       => Create_Component_Node'Access),
+         3 => (Name      => FLUSH_TAG'Access,
                Component => Create_Flush'Access,
                Tag       => Create_Component_Node'Access),
-         3 => (Name      => PARAM_TAG'Access,
+         4 => (Name      => PARAM_TAG'Access,
                Component => Create_Parameter'Access,
                Tag       => Create_Component_Node'Access),
-         4 => (Name      => SCRIPT_TAG'Access,
+         5 => (Name      => SCRIPT_TAG'Access,
                Component => Create_Script'Access,
                Tag       => Create_Component_Node'Access),
-         5 => (Name      => SET_TAG'Access,
+         6 => (Name      => SET_TAG'Access,
                Component => Create_Set'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => VIEW_TAG'Access,
+         7 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access)
         );

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,9 +30,6 @@ package body ASF.Contexts.Writer is
 
    procedure Write_Escape (Stream : in out Response_Writer'Class;
                            Char   : in Wide_Wide_Character);
-
-   --  Close the current XML entity if an entity was started
-   procedure Close_Current (Stream : in out Response_Writer'Class);
 
    --  ------------------------------
    --  Response Writer

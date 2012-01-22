@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Servlets Tests - Unit tests for ASF.Servlets
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,9 @@ package ASF.Servlets.Tests is
 
    --  Test add servlet
    procedure Test_Add_Servlet (T : in out Test);
+
+   --  Test getting a resource path
+   procedure Test_Get_Resource (T : in out Test);
 
    procedure Test_Request_Dispatcher (T : in out Test);
 

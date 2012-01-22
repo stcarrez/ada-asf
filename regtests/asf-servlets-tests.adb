@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Sessions Tests - Unit tests for ASF.Sessions
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 with Util.Test_Caller;
 with Util.Measures;
 
+with ASF.Applications;
 with ASF.Streams;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
@@ -107,6 +108,38 @@ package body ASF.Servlets.Tests is
             null;
       end;
    end Test_Add_Servlet;
+
+   --  ------------------------------
+   --  Test getting a resource path
+   --  ------------------------------
+   procedure Test_Get_Resource (T : in out Test) is
+      Ctx : Servlet_Registry;
+
+      Conf  : Applications.Config;
+      S1    : aliased Test_Servlet1;
+      Dir   : constant String := "regtests/files";
+      Path  : constant String := Util.Tests.Get_Path (Dir);
+   begin
+      Conf.Load_Properties ("regtests/view.properties");
+      Conf.Set ("view.dir", Path);
+      Ctx.Set_Init_Parameters (Conf);
+      Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
+
+      --  Resource exist, check the returned path.
+      declare
+         P : constant String := Ctx.Get_Resource ("/tests/form-text.xhtml");
+      begin
+         Assert_Matches (T, ".*/regtests/files/tests/form-text.xhtml",
+                         P, "Invalid resource path");
+      end;
+
+      --  Resource does not exist
+      declare
+         P : constant String := Ctx.Get_Resource ("/tests/form-text-missing.xhtml");
+      begin
+         Assert_Equals (T, "", P, "Invalid resource path for missing resource");
+      end;
+   end Test_Get_Resource;
 
    --  ------------------------------
    --  Check that the mapping for the given URI matches the server.
@@ -200,6 +233,8 @@ package body ASF.Servlets.Tests is
                        Test_Add_Servlet'Access);
       Caller.Add_Test (Suite, "Test ASF.Servlets.Get_Request_Dispatcher",
                        Test_Request_Dispatcher'Access);
+      Caller.Add_Test (Suite, "Test ASF.Servlets.Get_Resource",
+                       Test_Get_Resource'Access);
    end Add_Tests;
 
 end ASF.Servlets.Tests;

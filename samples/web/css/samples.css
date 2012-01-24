@@ -77,7 +77,7 @@ div.openid-retry {
     font-size: 13px;
     margin-right: 5px;
 }
-#nav li a, #nav li a:visited {
+#nav li a, #nav li a:visited, ul.selector a, ul.selector a:visited {
     display: block;
     height: 40px;
     line-height: 40px;
@@ -125,4 +125,38 @@ div.sample {
 #index dd {
     clear: both;
     padding-left: 20px;
+}
+div.code {
+    white-space: pre;
+    border: 1px solid #bcd;
+    font-family: courier;
+}
+
+ul.buttons, ul.selector {
+    padding-top: 10px;
+    list-style-type: none;
+}
+ul.buttons li, ul.selector li {
+    float: left;
+    padding-right: 10px;
+}
+
+ul.selector {
+    float: left;
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #e0e0f0;
+    margin-bottom: 10px;
+}
+ul.selector li {
+    padding: 0px;
+    margin-left: 5px;
+}
+ul.selector a {
+    text-decoration: none;
+    font-weight: bold;
+    color:
+}
+li.active {
+    background-color: #ddd;
 }

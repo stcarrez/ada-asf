@@ -1,0 +1,33 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     title="Compute the volume of a cylinder">
+
+    <h:form id='text-form'>
+        <div class='container_12'>
+            <dl>
+                <dt><label for='height'>Height</label></dt>
+                <dd>
+                    <h:inputText id='height' size='10' value='#{compute.height}'>
+                        <f:converter converterId="float" />
+                    </h:inputText>
+                    <h:message for='height'/>
+                </dd>
+                <dt><label for='radius'>Radius</label></dt>
+                <dd>
+                    <h:inputText id='radius' size='10' value='#{compute.radius}'>
+                        <f:converter converterId="float"/>
+                    </h:inputText>
+                    <h:message for='radius'/>
+                </dd>
+            </dl>
+        </div>
+        <div class='container_12'>
+            <ul class='buttons'>
+                <li>
+                    <h:commandButton id='run' value='Compute' action="#{compute.run}"/>
+                </li>
+            </ul>
+        </div>
+    </h:form>
+
+</div>

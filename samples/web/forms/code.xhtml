@@ -1,0 +1,22 @@
+<c:choose xmlns:c="http://java.sun.com/jstl/core"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:util="http://code.google.com/p/ada-asf/util">
+    <c:when test="#{param['code'] eq 'select-form'}">
+        <util:file src="/forms/select-form.xhtml" escape="true"/>
+    </c:when>
+    <c:when test="#{param['code'] eq 'text-forms'}">
+        <util:file src="/forms/text-forms.xhtml" escape="true"/>
+    </c:when>
+    <c:when test="#{param['code'] eq 'textarea-form'}">
+        <util:file src="/forms/textarea-form.xhtml" escape="true"/>
+    </c:when>
+
+    <c:otherwise>
+        <p>
+            <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">
+                <f:param value="#{param['code']}"/>
+            </h:outputFormat>
+        </p>
+    </c:otherwise>
+</c:choose>

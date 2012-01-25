@@ -97,4 +97,12 @@
       </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+      <from-view-id>/forms/*</from-view-id>
+      <navigation-case>
+        <from-outcome>compute</from-outcome>
+        <to-view-id>/forms/form-response.xhtml</to-view-id>
+      </navigation-case>
+    </navigation-rule>
+
 </web-app>

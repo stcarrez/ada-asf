@@ -24,7 +24,7 @@ package body Volume is
 
    use Ada.Strings.Unbounded;
 
-   Pic : constant Ada.Text_IO.Editing.Picture := Ada.Text_IO.Editing.To_Picture ("ZZZZZ9.99");
+   Pic : constant Ada.Text_IO.Editing.Picture := Ada.Text_IO.Editing.To_Picture ("ZZZZZZZZ9.99");
 
    package Float_Output is new Ada.Text_IO.Editing.Decimal_Output (My_Float);
 

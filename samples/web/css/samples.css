@@ -135,6 +135,7 @@ div.code {
 ul.buttons, ul.selector {
     padding-top: 10px;
     list-style-type: none;
+    height: 30px;
 }
 ul.buttons li, ul.selector li {
     float: left;
@@ -159,4 +160,8 @@ ul.selector a {
 }
 li.active {
     background-color: #ddd;
+}
+
+#result {
+    margin-top: 10px;
 }

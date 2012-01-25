@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -298,7 +298,8 @@ package ASF.Components.Base is
    procedure Log_Error (UI      : in UIComponent'Class;
                         Message : in String;
                         Arg1    : in String := "";
-                        Arg2    : in String := "");
+                        Arg2    : in String := "";
+                        Arg3    : in String := "");
 
    --  Get the root component from the <b>UI</b> component tree.
    --  After the operation, the <b>UI</b> component tree will contain no

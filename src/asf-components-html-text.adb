@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Exceptions;
+
 with EL.Objects;
 
 with ASF.Components.Core;
@@ -124,6 +126,17 @@ package body ASF.Components.Html.Text is
             end if;
          end;
       end if;
+
+      --  If the converter raises an exception, report an error in the logs.
+      --  At this stage, we know the value and we can report it in this log message.
+      --  We must queue the exception in the context, so this is done later.
+   exception
+      when E : others =>
+         UI.Log_Error ("Error when converting value '{0}': {1}: {2}",
+                       Util.Beans.Objects.To_String (Value),
+                       Ada.Exceptions.Exception_Name (E),
+                       Ada.Exceptions.Exception_Message (E));
+         raise;
    end Get_Formatted_Value;
 
    procedure Write_Output (UI      : in UIOutput;
@@ -148,7 +161,13 @@ package body ASF.Components.Html.Text is
       if UI.Is_Rendered (Context) then
          UI.Write_Output (Context => Context,
                           Value   => UIOutput'Class (UI).Get_Formatted_Value (Context));
+
       end if;
+
+      --  Queue any block converter exception that could be raised.
+   exception
+      when E : others =>
+         Context.Queue_Exception (E);
    end Encode_Begin;
 
    --  ------------------------------
@@ -184,6 +203,11 @@ package body ASF.Components.Html.Text is
                   end if;
                end;
             end if;
+
+            --  Queue and block any converter exception that could be raised.
+         exception
+            when E : others =>
+               Context.Queue_Exception (E);
          end;
       end if;
    end Encode_Begin;

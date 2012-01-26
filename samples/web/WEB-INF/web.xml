@@ -25,27 +25,6 @@
     </context-param>
 
     <context-param>
-        <param-name>facelets.LIBRARIES</param-name>
-        <param-value>
-            /WEB-INF/layouts/layouts-taglib.xml;
-            /WEB-INF/tomhawk/tomahawk.taglib.xml;
-            /WEB-INF/ajax.taglib.xml;
-            /WEB-INF/utils.taglib.xml;
-            /WEB-INF/auth.taglib.xml;
-            /WEB-INF/view.taglib.xml;
-        </param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>javax.faces.CONFIG_FILES</param-name>
-        <param-value>
-            /WEB-INF/faces-webtools.xml,
-            /WEB-INF/faces-project.xml,
-            /WEB-INF/faces-config.xml
-        </param-value>
-    </context-param>
-
-    <context-param>
         <param-name>facelets.SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
@@ -88,6 +67,9 @@
         <error-code>500</error-code>
         <location>/errors/500.jsf</location>
     </error-page>
+
+    <!-- Navigation rules are defined in faces-config.xml in a JSF application.
+         Make it simple and allow such definition here.  -->
 
     <navigation-rule>
       <from-view-id>/compute-form.xhtml</from-view-id>

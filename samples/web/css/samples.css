@@ -90,6 +90,7 @@ div.openid-retry {
     font-weight: bold;
 }
 .sample-openid #nav #nav-openid a,
+.sample-forms #nav #nav-forms a,
 .sample-compute #nav #nav-compute a,
 .sample-ajax #nav #nav-ajax a,
 .sample-utf8 #nav #nav-utf8 a {

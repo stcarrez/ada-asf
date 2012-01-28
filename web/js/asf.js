@@ -85,8 +85,9 @@ var ASF = {};
      * @param node the current element
      * @param url the URL to fetch using an HTTP GET
      * @param target the optional target element
+     * @param complete an optional function called when the response is received
      */
-    ASF.Update = function(node, url, target) {
+    ASF.Update = function(node, url, target, complete) {
         /* Find the container to update */
         var d;
         if (target != null) {
@@ -112,6 +113,9 @@ var ASF = {};
 
                     } else if (contentType.match(/^application\/json(;.*)?$/i)) {
                         ASF.Execute(d, data);
+                    }
+                    if (complete != null) {
+                        complete(d);
                     }
                }
             });
@@ -163,7 +167,10 @@ var ASF = {};
                         contentType = "text/html";
                     }
                     if (contentType.match(/^text\/(html|xml)(;.*)?$/i)) {
-                        d.html(jqXHDR.responseText);
+                        d.fadeOut("fast", function() {
+                            d.html(jqXHDR.responseText);
+                            d.fadeIn("fast");
+                        });
 
                     } else if (contentType.match(/^application\/json(;.*)?$/i)) {
                         ASF.Execute(d, data);

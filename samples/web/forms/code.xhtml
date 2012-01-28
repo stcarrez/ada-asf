@@ -2,14 +2,34 @@
           xmlns:f="http://java.sun.com/jsf/core"
           xmlns:h="http://java.sun.com/jsf/html"
           xmlns:util="http://code.google.com/p/ada-asf/util">
+    <!-- For security reasons, check that the code parameter matches what is allowed  -->
     <c:when test="#{param['code'] eq 'select-form'}">
-        <util:file src="/forms/select-form.xhtml" escape="true"/>
+        <util:script>
+            Sample_Highlight('selectOneMenu','h:form,f:selectItem,h:selectOneMenu,f:converter');
+        </util:script>
+        <code class="prettyprint lang-selectOneMenu linenums:1"><util:file src="/forms/select-form.xhtml" escape="true"/>
+        </code>
     </c:when>
-    <c:when test="#{param['code'] eq 'text-forms'}">
-        <util:file src="/forms/text-form.xhtml" escape="true"/>
+    <c:when test="#{param['code'] eq 'text-form'}">
+        <util:script>
+            Sample_Highlight('text_form', 'h:form,h:inputText,f:converter,value');
+        </util:script>
+        <code class="prettyprint lang-text_form linenums:1"><util:file src="/forms/text-form.xhtml" escape="true"/>
+        </code>
     </c:when>
     <c:when test="#{param['code'] eq 'textarea-form'}">
-        <util:file src="/forms/textarea-form.xhtml" escape="true"/>
+        <util:script>
+            Sample_Highlight('textarea','h:form,h:inputTextarea,f:converter');
+        </util:script>
+        <code class="prettyprint lang-textarea linenums:1"><util:file src="/forms/textarea-form.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'secret-form'}">
+        <util:script>
+            Sample_Highlight('secret','h:form,h:inputSecret,f:converter');
+        </util:script>
+        <code class="prettyprint lang-secret linenums:1"><util:file src="/forms/secret-form.xhtml" escape="true"/>
+        </code>
     </c:when>
 
     <c:otherwise>

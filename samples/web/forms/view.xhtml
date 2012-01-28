@@ -12,42 +12,56 @@
 
         <util:script>
             function sample_select(node, name) {
-                $(".selector li").removeClass("active");
+                $(".selector li").removeClass("ui-state-active");
                 ASF.Update(node, '#{contextPath}/forms/' + name + '.html', '#form-block');
-                ASF.Update(node, '#{contextPath}/forms/code.html?code=' + name, '#form-code');
-                $(node).parent().addClass("active");
+                ASF.Update(node, '#{contextPath}/forms/code.html?code=' + name, '#form-code',
+                           function(n) {
+                                prettyPrint();
+                });
+                $(node).parent().addClass("ui-state-active");
                 return false;
             }
+            prettyPrint();
         </util:script>
-        <div class="container_12">
-            <ul class='selector'>
-                <li class='active'>
-                    <a href="#" onclick="return sample_select(this, 'text-forms');">
+        <div class="container_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
+            <ul class='selector ui-tabs-nav ui-corner-all'>
+                <li class='ui-state-default ui-corner-top ui-tabs-selected ui-state-active'>
+                    <a href="#" onclick="return sample_select(this, 'text-form');">
                         h:inputText
                     </a>
                 </li>
-                <li>
+                <li class="ui-state-default ui-corner-top ">
                     <a href="#" onclick="return sample_select(this, 'select-form');">
                         h:selectOneMenu
                     </a>
                 </li>
-                <li>
+                <li class="ui-state-default ui-corner-top ">
+                     <a href="#" onclick="return sample_select(this, 'secret-form');">
+                         h:inputSecret
+                     </a>
+                 </li>
+                <li class="ui-state-default ui-corner-top ">
                     <a href="#" onclick="return sample_select(this, 'textarea-form');">
                         h:inputTextarea
                     </a>
                 </li>
             </ul>
-        </div>
-        <div class="container_12">
-            <div class="grid_4">
-                <div id='form-block' class="asf-container">
-                    <ajax:include src="/forms/text-form.xhtml"/>
+            <div class="container_12 left ui-tabs-panel ui-widget-content ui-corner-bottom clearfix">
+                <div class="grid_4 ui-widget">
+                    <div id='form-block' class="asf-container">
+                        <ajax:include src="/forms/text-form.xhtml"/>
+                    </div>
+                    <div id="result"/>
                 </div>
-                <div id="result"/>
-            </div>
-            <div id='form-code' class="grid_8 code">
-                <util:file src="/forms/text-form.xhtml" escape="true"/>
+                <div id='form-code' class="grid_8 code ui-widget">
+                    <code class="prettyprint linenums:1"><util:file src="/forms/text-form.xhtml" escape="true"/>
+                    </code>
+                </div>
             </div>
         </div>
+
+    </ui:define>
+    <ui:define name="pageScript">
+        <script type="text/javascript" src="#{contextPath}/js/samples.js"></script>
     </ui:define>
 </ui:composition>

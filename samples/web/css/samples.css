@@ -67,6 +67,7 @@ div.openid-retry {
     border: 1px solid #bcd;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px 6px;
+    display: block;
 }
 #nav ul {
     list-style-type: none;
@@ -127,9 +128,11 @@ div.sample {
     padding-left: 20px;
 }
 div.code {
-    white-space: pre;
-    border: 1px solid #bcd;
+    border: 2px solid #bcd;
     font-family: courier;
+}
+code {
+    white-space: pre;
 }
 
 ul.buttons, ul.selector {
@@ -145,9 +148,8 @@ ul.buttons li, ul.selector li {
 ul.selector {
     float: left;
     width: 100%;
-    height: 40px;
-    border-bottom: 1px solid #e0e0f0;
-    margin-bottom: 10px;
+    height: 57px;
+    border-bottom: 1px solid #a0a0f0;
 }
 ul.selector li {
     padding: 0px;
@@ -164,4 +166,11 @@ li.active {
 
 #result {
     margin-top: 10px;
+}
+
+.kwd {
+    font-weight: bold;
+}
+.left {
+    float: left;
 }

@@ -22,11 +22,11 @@ body.awa {
 #awa-page {
   position: relative;
   min-height:100%;
-  position: relative;
   margin-left: 10px;
   margin-right: 10px;
   background-color: white;
   margin-bottom: -70px;
+  display: block;
 }
 .awa #awa-page {
   background-color: #99DFCA;

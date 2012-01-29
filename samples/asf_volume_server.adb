@@ -75,6 +75,7 @@ begin
    App.Add_Mapping (Name => "faces", Pattern => "*.html");
    App.Add_Mapping (Name => "files", Pattern => "*.css");
    App.Add_Mapping (Name => "files", Pattern => "*.js");
+   App.Add_Mapping (Name => "files", Pattern => "*.png");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.js");
 
@@ -86,6 +87,6 @@ begin
    Log.Info ("Connect you browser to: http://localhost:8080/volume/compute.html");
    WS.Start;
 
-   delay 600.0;
+   delay 6000.0;
 
 end Asf_Volume_Server;

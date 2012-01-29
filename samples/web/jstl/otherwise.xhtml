@@ -1,0 +1,12 @@
+<div xmlns:c="http://java.sun.com/jstl/core">
+
+    <c:choose>
+        <c:when test="#{not empty compute.radius}">
+            Radius is not empty: #{compute.radius}.
+        </c:when>
+        <c:otherwise>
+            Radius is empty
+         </c:otherwise>
+    </c:choose>
+
+</div>

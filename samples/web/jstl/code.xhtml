@@ -1,0 +1,50 @@
+<c:choose xmlns:c="http://java.sun.com/jstl/core"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:util="http://code.google.com/p/ada-asf/util">
+    <!-- For security reasons, check that the code parameter matches what is allowed  -->
+    <c:when test="#{param['code'] eq 'if'}">
+        <util:script>
+            Sample_Highlight('if','c:if');
+        </util:script>
+        <code class="prettyprint lang-if linenums:1"><util:file src="/jstl/if.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{empty param['code'] or param['code'] eq 'set'}">
+        <util:script>
+            Sample_Highlight('set', 'c:set');
+            prettyPrint();
+        </util:script>
+        <code class="prettyprint lang-set linenums:1"><util:file src="/jstl/set.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'choose'}">
+        <util:script>
+            Sample_Highlight('choose','c:choose');
+        </util:script>
+        <code class="prettyprint lang-choose linenums:1"><util:file src="/jstl/choose.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'otherwise'}">
+        <util:script>
+            Sample_Highlight('otherwise','c:otherwise');
+        </util:script>
+        <code class="prettyprint lang-otherwise linenums:1"><util:file src="/jstl/otherwise.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'when'}">
+        <util:script>
+            Sample_Highlight('when','c:when');
+        </util:script>
+        <code class="prettyprint lang-when linenums:1"><util:file src="/jstl/when.xhtml" escape="true"/>
+        </code>
+    </c:when>
+
+    <c:otherwise>
+        <p>
+            <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">
+                <f:param value="#{param['code']}"/>
+            </h:outputFormat>
+        </p>
+    </c:otherwise>
+</c:choose>

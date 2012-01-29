@@ -79,10 +79,11 @@ package body ASF.Components.Ajax.Includes is
          --  In Async mode, generate the javascript code to trigger the async update of
          --  the generated div/span.
          if Async then
-            Writer.Queue_Script ("ASF.Update(""");
-            Writer.Queue_Script (Id);
-            Writer.Queue_Script (""", """);
+            Writer.Write_Attribute ("id", Id);
+            Writer.Queue_Script ("ASF.Update(null,""");
             Writer.Queue_Script (View_Handler.Get_Action_URL (Context, Page));
+            Writer.Queue_Script (""", ""#");
+            Writer.Queue_Script (Id);
             Writer.Queue_Script (""");");
          else
             --  Include the view content as if the user fetched the patch.  This has almost the

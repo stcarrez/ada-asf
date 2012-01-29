@@ -12,19 +12,19 @@
 
         <util:script>
             function sample_select(node, name) {
-                $(".selector li").removeClass("ui-state-active");
+                $(".selector li").removeClass("ui-tabs-selected ui-state-active");
                 ASF.Update(node, '#{contextPath}/forms/' + name + '.html', '#form-block');
                 ASF.Update(node, '#{contextPath}/forms/code.html?code=' + name, '#form-code',
                            function(n) {
                                 prettyPrint();
                 });
-                $(node).parent().addClass("ui-state-active");
+                $(node).parent().addClass("ui-tabs-selected ui-state-active");
                 return false;
             }
             prettyPrint();
         </util:script>
-        <div class="container_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
-            <ul class='selector ui-tabs-nav ui-corner-all'>
+        <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
+            <ul class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
                 <li class='ui-state-default ui-corner-top ui-tabs-selected ui-state-active'>
                     <a href="#" onclick="return sample_select(this, 'text-form');">
                         h:inputText
@@ -46,16 +46,15 @@
                     </a>
                 </li>
             </ul>
-            <div class="container_12 left ui-tabs-panel ui-widget-content ui-corner-bottom clearfix">
+            <div class="grid_12 left ui-tabs-panel ui-widget-content ui-corner-bottom clearfix">
                 <div class="grid_4 ui-widget">
-                    <div id='form-block' class="asf-container">
+                    <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
                         <ajax:include src="/forms/text-form.xhtml"/>
                     </div>
                     <div id="result"/>
                 </div>
-                <div id='form-code' class="grid_8 code ui-widget">
-                    <code class="prettyprint linenums:1"><util:file src="/forms/text-form.xhtml" escape="true"/>
-                    </code>
+                <div id='form-code' class="grid_8 code ui-widget asf-container ui-corner-all">
+                    <ajax:include src="/forms/code.xhtml" async="true"/>
                 </div>
             </div>
         </div>

@@ -10,9 +10,10 @@
         <code class="prettyprint lang-selectOneMenu linenums:1"><util:file src="/forms/select-form.xhtml" escape="true"/>
         </code>
     </c:when>
-    <c:when test="#{param['code'] eq 'text-form'}">
+    <c:when test="#{empty param['code'] or param['code'] eq 'text-form'}">
         <util:script>
             Sample_Highlight('text_form', 'h:form,h:inputText,f:converter,value');
+            prettyPrint();
         </util:script>
         <code class="prettyprint lang-text_form linenums:1"><util:file src="/forms/text-form.xhtml" escape="true"/>
         </code>

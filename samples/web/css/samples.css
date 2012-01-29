@@ -78,7 +78,7 @@ div.openid-retry {
     font-size: 13px;
     margin-right: 5px;
 }
-#nav li a, #nav li a:visited, ul.selector a, ul.selector a:visited {
+#nav li a, #nav li a:visited, ul.selectorx a, ul.selectorx a:visited {
     display: block;
     height: 40px;
     line-height: 40px;
@@ -91,6 +91,7 @@ div.openid-retry {
 }
 .sample-openid #nav #nav-openid a,
 .sample-forms #nav #nav-forms a,
+.sample-jstl #nav #nav-jstl a,
 .sample-compute #nav #nav-compute a,
 .sample-ajax #nav #nav-ajax a,
 .sample-utf8 #nav #nav-utf8 a {
@@ -139,23 +140,30 @@ code {
 ul.buttons, ul.selector {
     padding-top: 10px;
     list-style-type: none;
-    height: 30px;
+    height: 35px;
 }
 ul.buttons li, ul.selector li {
     float: left;
     padding-right: 10px;
 }
+.container_12 {
 
+}
+.grid_1, .grid_2, .grid_3, .grid_4, .grid_5, .grid_6, .grid_7, .grid_8, .grid_9, .grid_10, .grid_11, .grid_12 {
+    margin-left: 0;
+}
+/*
 ul.selector {
     float: left;
     width: 100%;
     height: 57px;
     border-bottom: 1px solid #a0a0f0;
-}
+}*/
+/*
 ul.selector li {
     padding: 0px;
     margin-left: 5px;
-}
+}*/
 ul.selector a {
     text-decoration: none;
     font-weight: bold;
@@ -174,4 +182,57 @@ li.active {
 }
 .left {
     float: left;
+}
+#form-block {
+    margin-right: 50px;
+}
+ul.tag-doc {
+    float: left;
+    display: block;
+    list-style-type: none;
+    width: 99%;
+    margin-bottom: 10px;
+}
+ul.tag-doc b {
+    display: inline-block;
+    float: left;
+    width: 10%;
+    font-weight: normal;
+}
+ul.tag-doc i {
+    display: inline-block;
+    float: left;
+    width: 20%;
+    font-weight: normal;
+    font-style: normal;
+}
+ul.tag-doc span {
+    display: inline-block;
+    float: left;
+    width: 59%;
+}
+ul.tag-doc li {
+    float: left;
+    width: 99%;
+    display: block;
+    clear: both;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+}
+li.attr-required {
+    color: #333;
+}
+li.attr-optional {
+    color: #888;
+}
+li.attr-unimpl {
+    color: #ddd;
+}
+li.attr-required b {
+    font-weight: bold;
+}
+h2 {
+    margin-bottom: 5px;
+    margin-top: 10px;
 }

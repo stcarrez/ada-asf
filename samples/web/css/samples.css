@@ -92,6 +92,7 @@ div.openid-retry {
 .sample-openid #nav #nav-openid a,
 .sample-forms #nav #nav-forms a,
 .sample-jstl #nav #nav-jstl a,
+.sample-facelet #nav #nav-facelet a,
 .sample-compute #nav #nav-compute a,
 .sample-ajax #nav #nav-ajax a,
 .sample-utf8 #nav #nav-utf8 a {
@@ -234,5 +235,11 @@ li.attr-required b {
 }
 h2 {
     margin-bottom: 5px;
+    margin-top: 10px;
+}
+h2.tag-name, h2.tag-attr {
+    border-bottom: 1px solid #ddd;
+}
+h2.tag-attr {
     margin-top: 10px;
 }

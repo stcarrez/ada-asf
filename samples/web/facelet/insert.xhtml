@@ -1,0 +1,17 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h2>Title #{empty name ? '?' : name}</h2>
+    <p>
+        <ui:insert name="description">
+            There is no description
+        </ui:insert>
+    </p>
+    <h2>List</h2>
+    <ul style='padding-left: 20px;'>
+        <ui:insert name="list">
+            <li>
+                There is no list.
+            </li>
+        </ui:insert>
+    </ul>
+</ui:composition>

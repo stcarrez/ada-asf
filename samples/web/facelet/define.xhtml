@@ -1,0 +1,12 @@
+<ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
+             template="/facelet/composition.xhtml">
+    <ui:param name="name" value="decorate"/>
+    <ui:define name="description">
+        The decorate tag allows to use a template and insert data at various places.
+    </ui:define>
+    <ui:define name="list">
+        <li>The decorate tag uses a template</li>
+        <li>It includes optional ui:param elements</li>
+        <li>It fills the template by using the ui:define element.</li>
+    </ui:define>
+</ui:decorate>

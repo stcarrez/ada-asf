@@ -1,0 +1,141 @@
+<c:choose xmlns:c="http://java.sun.com/jstl/core"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:ui="http://java.sun.com/jsf/facelets"
+          xmlns:util="http://code.google.com/p/ada-asf/util">
+    <!-- For security reasons, check that the code parameter matches what is allowed  -->
+
+    <c:when test="#{empty param['code'] or param['code'] eq 'composition'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="ui:composition"/>
+            <ui:define name="description">
+                Defines a composition that optionally uses a template, as outlined in the description
+                of the ui tag library. Multiple compositions can use the same template, thus encapsulating
+                and reusing layout. JSF disregards everything outside of the composition, which lets
+                developers embed compositions in well-formed XHTML pages that can be viewed in an XHTML viewer,
+                such as Dreamweaver or a browser, without including extraneous elements such as head and body.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>template</b>
+                    <i>String</i>
+                    <span>A URI that points to a template, also known as a layout, that inserts pieces of the page defined in the composition.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'define'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="ui:define"/>
+            <ui:define name="description">
+                The define tag defines content that is inserted into a page by a template.
+                The define tag can be used inside <b>ui:composition</b>, ui:component, <b>ui:decorate</b>,
+                and ui:fragment tags.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>name</b>
+                    <i>String</i>
+                    <span>Assigns a name to the content inside a define tag. That name is used by corresponding ui:insert tags in a template that insert the named content into a page.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'decorate'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="ui:decorate"/>
+            <ui:define name="description">
+                The decorate tag is identical to the composition tag, except that ui:decorate,
+                unlike ui:composition, does not disregard all content outside of the tag.
+                The decorate is useful when you want to decorate some content in a page, for example,
+                you might want to decorate a list of items.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>template</b>
+                    <i>String</i>
+                    <span>A URI that points to a template, also known as a layout, that inserts pieces of the page defined in the decorator.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'include'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="ui:include"/>
+            <ui:define name="description">
+                Use this tag—which is very similar to JSP's jsp:include to encapsulate and reuse
+                content among multiple XHTML pages. There are three things this tag can include:
+                plain XHTML, and XHTML pages that have either a composition tag or a component tag.
+
+                <br/>
+                You supply a filename, through <b>ui:include</b>'s src attribute for JSF to include.
+                That filename is relative to the XHTML file that was rendered as a result of the
+                last request. So, for example, if JSF loaded the view login.xhtml, and that file
+                included <tt>pageDecorations/header.xhtml</tt>, and <tt>pageDecorations/header.xhtml</tt> included
+                <tt>companyLogo.xhtml</tt>, then <tt>companyLogo.xhtml</tt> will not be found if it's in the
+                <tt>pageDecorations</tt> directory, because <tt>companyLogo.xhtml</tt> has to be in the same
+                directory as <tt>login.xhtml</tt>.
+
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>src</b>
+                    <i>String</i>
+                    <span>The filename of an XHTML page to include. The filename is relative to the XHTML page that was originally loaded.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'insert'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="ui:insert"/>
+            <ui:define name="description">
+                Inserts content into a template. That content is defined with the <b>ui:define</b> tag
+                in either a <b>ui:composition</b>, ui:component, <b>ui:decorate</b>, or ui:fragment.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>name</b>
+                    <i>String</i>
+                    <span>The fragment name to insert.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+    <c:when test="#{param['code'] eq 'param'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="ui:param"/>
+            <ui:define name="description">
+                Use this tag to pass parameters to an included file (using <b>ui:include</b>),
+                or a template (linked to either a composition or decorator). Embed <b>ui:param</b> tags
+                in either <b>ui:include</b>, <b>ui:composition</b>, or <b>ui:decorate</b> to pass the parameters.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>name</b>
+                    <i>String</i>
+                    <span>The name of the parameter.</span>
+                </li>
+                <li class="attr-required">
+                    <b>value</b>
+                    <i>String</i>
+                    <span>The value of the parameter. Notice that this attribute's value can be an EL expression,
+                        which means that you can pass objects to either an included file or a template.
+                        </span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:otherwise>
+        <p>
+            <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">
+                <f:param value="#{param['code']}"/>
+            </h:outputFormat>
+        </p>
+    </c:otherwise>
+</c:choose>

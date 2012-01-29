@@ -1,0 +1,56 @@
+<c:choose xmlns:c="http://java.sun.com/jstl/core"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:util="http://code.google.com/p/ada-asf/util">
+    <!-- For security reasons, check that the code parameter matches what is allowed  -->
+    <c:when test="#{param['code'] eq 'define'}">
+        <util:script>
+            Sample_Highlight('define','ui:define');
+        </util:script>
+        <code class="prettyprint lang-define linenums:1"><util:file src="/facelet/define.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{empty param['code'] or param['code'] eq 'composition'}">
+        <util:script>
+            Sample_Highlight('composition', 'ui:composition');
+        </util:script>
+        <code class="prettyprint lang-composition linenums:1"><util:file src="/facelet/composition.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'decorate'}">
+        <util:script>
+            Sample_Highlight('decorate','ui:decorate');
+        </util:script>
+        <code class="prettyprint lang-decorate linenums:1"><util:file src="/facelet/decorate.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'include'}">
+        <util:script>
+            Sample_Highlight('include','ui:include');
+        </util:script>
+        <code class="prettyprint lang-include linenums:1"><util:file src="/facelet/include.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'insert'}">
+        <util:script>
+            Sample_Highlight('insert','ui:insert');
+        </util:script>
+        <code class="prettyprint lang-insert linenums:1"><util:file src="/facelet/insert.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'param'}">
+        <util:script>
+            Sample_Highlight('param','ui:param');
+        </util:script>
+        <code class="prettyprint lang-param linenums:1"><util:file src="/facelet/param.xhtml" escape="true"/>
+        </code>
+    </c:when>
+
+    <c:otherwise>
+        <p>
+            <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">
+                <f:param value="#{param['code']}"/>
+            </h:outputFormat>
+        </p>
+    </c:otherwise>
+</c:choose>

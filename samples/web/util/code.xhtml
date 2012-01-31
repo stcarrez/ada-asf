@@ -1,0 +1,73 @@
+<!-- Util tag library documentation
+  -  Copyright (C) 2012 Stephane Carrez
+  -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+  -
+  -  Licensed under the Apache License, Version 2.0 (the "License");
+  -  you may not use this file except in compliance with the License.
+  -  You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -  Unless required by applicable law or agreed to in writing, software
+  -  distributed under the License is distributed on an "AS IS" BASIS,
+  -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  -  See the License for the specific language governing permissions and
+  -  limitations under the License.
+  -->
+<c:choose xmlns:c="http://java.sun.com/jstl/core"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:util="http://code.google.com/p/ada-asf/util">
+    <!-- For security reasons, check that the code parameter matches what is allowed  -->
+    <c:when test="#{empty param['code'] or param['code'] eq 'escape'}">
+        <util:script>
+            Sample_Highlight('escape', 'util:escape');
+            prettyPrint();
+        </util:script>
+        <code class="prettyprint lang-escape linenums:1"><util:file src="/util/escape.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'file'}">
+        <util:script>
+            Sample_Highlight('file','util:file');
+        </util:script>
+        <code class="prettyprint lang-file linenums:1"><util:file src="/util/file.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'flush'}">
+        <util:script>
+            Sample_Highlight('flush','util:flush');
+        </util:script>
+        <code class="prettyprint lang-flush linenums:1"><util:file src="/util/flush.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'param'}">
+        <util:script>
+            Sample_Highlight('param','util:param');
+        </util:script>
+        <code class="prettyprint lang-param linenums:1"><util:file src="/util/param.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'script'}">
+         <util:script>
+             Sample_Highlight('script','util:script');
+         </util:script>
+         <code class="prettyprint lang-script linenums:1"><util:file src="/util/script.xhtml" escape="true"/>
+         </code>
+     </c:when>
+    <c:when test="#{param['code'] eq 'view'}">
+         <util:script>
+             Sample_Highlight('view','util:view');
+         </util:script>
+         <code class="prettyprint lang-view linenums:1"><util:file src="/util/view.xhtml" escape="true"/>
+         </code>
+     </c:when>
+
+    <c:otherwise>
+        <p>
+            <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">
+                <f:param value="#{param['code']}"/>
+            </h:outputFormat>
+        </p>
+    </c:otherwise>
+</c:choose>

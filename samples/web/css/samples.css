@@ -58,13 +58,13 @@ div.openid-retry {
     margin-top: 10px;
 }
 #nav {
-    margin-top: 40px;
+    margin-top: 26px;
     float: left;
     width: 100%;
     padding: 0;
     margin-bottom: 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #bcd;
+    background-color: #444; /* #f0f0f0; */
+    /* border: 1px solid #bcd; */
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px 6px;
     display: block;
@@ -80,14 +80,21 @@ div.openid-retry {
 }
 #nav li a, #nav li a:visited, ul.selectorx a, ul.selectorx a:visited {
     display: block;
-    height: 40px;
+    height: 30px;
     line-height: 40px;
     padding-left: 10px;
     padding-right: 10px;
     font-size: 15px;
     text-decoration: none;
     color: #616243;
+    color: #ddd;
     font-weight: bold;
+    border-bottom: 3px solid #333;
+    margin-bottom: 3px;
+}
+#nav li a:hover {
+    border-bottom: 3px solid orange;
+    color: #fff;
 }
 .sample-openid #nav #nav-openid a,
 .sample-forms #nav #nav-forms a,
@@ -99,8 +106,20 @@ div.openid-retry {
     background-color: #ccc;
     color: #f0f0f0;
     font-weight: bold;
+    background-color: #fff;
+    color: #333;
+    border-color: #fff;
 }
-
+.sample-openid #nav #nav-openid,
+.sample-forms #nav #nav-forms,
+.sample-jstl #nav #nav-jstl,
+.sample-facelet #nav #nav-facelet,
+.sample-compute #nav #nav-compute,
+.sample-ajax #nav #nav-ajax,
+.sample-utf8 #nav #nav-utf8 {
+     background-color: #fff;
+    /* -webkit-border-radius: 6px 6px; */
+}
 #container, .asf-container {
     margin-top: 10px;
     margin-bottom: 10px;

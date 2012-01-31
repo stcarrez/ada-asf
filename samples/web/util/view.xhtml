@@ -1,0 +1,95 @@
+<!-- Util tag library documentation
+  -  Copyright (C) 2012 Stephane Carrez
+  -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+  -
+  -  Licensed under the Apache License, Version 2.0 (the "License");
+  -  you may not use this file except in compliance with the License.
+  -  You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -  Unless required by applicable law or agreed to in writing, software
+  -  distributed under the License is distributed on an "AS IS" BASIS,
+  -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  -  See the License for the specific language governing permissions and
+  -  limitations under the License.
+  -->
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:util="http://code.google.com/p/ada-asf/util"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/layout.xhtml">
+    <ui:param name="title" value="Ada Server Faces Examples" />
+    <ui:param name="pageStyle" value="sample-util"/>
+    <!-- Main page body -->
+    <ui:define name="pageBody">
+
+        <util:script>
+            function sample_select(node, name) {
+                $(".selector li").removeClass("ui-tabs-selected ui-state-active");
+                ASF.Update(node, '#{contextPath}/util/' + name + '.html', '#form-block');
+                ASF.Update(node, '#{contextPath}/util/doc.html?code=' + name, '#doc-block');
+                ASF.Update(node, '#{contextPath}/util/code.html?code=' + name, '#form-code',
+                           function(n) {
+                                prettyPrint();
+                });
+                $(node).parent().addClass("ui-tabs-selected ui-state-active");
+                return false;
+            }
+            prettyPrint();
+        </util:script>
+        <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
+            <ul class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
+                <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+                    <a href="#" onclick="return sample_select(this, 'escape');">
+                        util:escape
+                    </a>
+                </li>
+                <li class='ui-state-default ui-corner-top'>
+                    <a href="#" onclick="return sample_select(this, 'file');">
+                        util:file
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'flush');">
+                        util:flush
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                     <a href="#" onclick="return sample_select(this, 'param');">
+                         util:param
+                     </a>
+                 </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'script');">
+                        util:script
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'view');">
+                        util:view
+                    </a>
+                </li>
+            </ul>
+            <div class="grid_12 left ui-tabs-panel ui-widget-content ui-corner-bottom clearfix">
+                <h2>Namespace: xmlns:util="http://code.google.com/p/ada-asf/util"</h2>
+                <div id='doc-block' class="grid_12 ui-widget">
+                    <ajax:include src="/util/doc.xhtml"/>
+                </div>
+                <h2>Example</h2>
+                <div class="grid_4 ui-widget">
+                    <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
+                        <ajax:include src="/util/escape.xhtml"/>
+                    </div>
+                    <div id="result"/>
+                </div>
+                <div id='form-code' class="grid_8 code ui-widget asf-container ui-corner-all">
+                    <ajax:include src="/util/code.xhtml" async="true"/>
+                </div>
+            </div>
+        </div>
+
+    </ui:define>
+    <ui:define name="pageScript">
+        <script type="text/javascript" src="#{contextPath}/js/samples.js"></script>
+    </ui:define>
+</ui:composition>

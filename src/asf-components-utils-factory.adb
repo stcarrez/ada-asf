@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ASF.Components.Core;
 with ASF.Views.Nodes;
 with ASF.Components.Utils.Files;
 with ASF.Components.Utils.Flush;
@@ -28,30 +27,13 @@ package body ASF.Components.Utils.Factory is
 
    use ASF.Components.Base;
 
-   function Create_View return UIComponent_Access;
-   function Create_Parameter return UIComponent_Access;
    function Create_File return UIComponent_Access;
    function Create_Flush return UIComponent_Access;
    function Create_Script return UIComponent_Access;
    function Create_Escape return UIComponent_Access;
    function Create_Set return UIComponent_Access;
 
-   --  ------------------------------
-   --  Create an UIView component
-   --  ------------------------------
-   function Create_View return UIComponent_Access is
-   begin
-      return new ASF.Components.Core.UIView;
-   end Create_View;
-
-   --  ------------------------------
-   --  Create an UIParameter component
-   --  ------------------------------
-   function Create_Parameter return UIComponent_Access is
-   begin
-      return new ASF.Components.Core.UIParameter;
-   end Create_Parameter;
-
+   --  -------------------------
    --  ------------------------------
    --  Create a UIFile component
    --  ------------------------------
@@ -98,10 +80,8 @@ package body ASF.Components.Utils.Factory is
    ESCAPE_TAG : aliased constant String := "escape";
    FILE_TAG   : aliased constant String := "file";
    FLUSH_TAG  : aliased constant String := "flush";
-   PARAM_TAG  : aliased constant String := "param";
    SCRIPT_TAG : aliased constant String := "script";
    SET_TAG    : aliased constant String := "set";
-   VIEW_TAG   : aliased constant String := "view";
 
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => ESCAPE_TAG'Access,
@@ -113,17 +93,11 @@ package body ASF.Components.Utils.Factory is
          3 => (Name      => FLUSH_TAG'Access,
                Component => Create_Flush'Access,
                Tag       => Create_Component_Node'Access),
-         4 => (Name      => PARAM_TAG'Access,
-               Component => Create_Parameter'Access,
-               Tag       => Create_Component_Node'Access),
-         5 => (Name      => SCRIPT_TAG'Access,
+         4 => (Name      => SCRIPT_TAG'Access,
                Component => Create_Script'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => SET_TAG'Access,
+         5 => (Name      => SET_TAG'Access,
                Component => Create_Set'Access,
-               Tag       => Create_Component_Node'Access),
-         7 => (Name      => VIEW_TAG'Access,
-               Component => Create_View'Access,
                Tag       => Create_Component_Node'Access)
         );
 

@@ -41,25 +41,11 @@
         <code class="prettyprint lang-flush linenums:1"><util:file src="/util/flush.xhtml" escape="true"/>
         </code>
     </c:when>
-    <c:when test="#{param['code'] eq 'param'}">
-        <util:script>
-            Sample_Highlight('param','util:param');
-        </util:script>
-        <code class="prettyprint lang-param linenums:1"><util:file src="/util/param.xhtml" escape="true"/>
-        </code>
-    </c:when>
     <c:when test="#{param['code'] eq 'script'}">
          <util:script>
              Sample_Highlight('script','util:script');
          </util:script>
          <code class="prettyprint lang-script linenums:1"><util:file src="/util/script.xhtml" escape="true"/>
-         </code>
-     </c:when>
-    <c:when test="#{param['code'] eq 'view'}">
-         <util:script>
-             Sample_Highlight('view','util:view');
-         </util:script>
-         <code class="prettyprint lang-view linenums:1"><util:file src="/util/view.xhtml" escape="true"/>
          </code>
      </c:when>
 

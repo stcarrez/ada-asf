@@ -25,7 +25,7 @@ body.awa {
   margin-left: 10px;
   margin-right: 10px;
   background-color: white;
-  margin-bottom: -70px;
+  margin-bottom: -30px; /* See #awa-clfooter height */
   display: block;
 }
 .awa #awa-page {
@@ -122,7 +122,7 @@ div.awa-title div {
 }
 #awa-clfooter {
   clear: both;
-  height: 70px;
+  height: 30px; /* See #awa-page margin bottom */
   width: 100%;
 }
 #awa-footer_content {

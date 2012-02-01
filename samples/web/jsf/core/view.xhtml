@@ -1,4 +1,4 @@
-<!-- Util tag library documentation
+<!-- JSF Core tag library documentation
   -  Copyright (C) 2012 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
@@ -19,16 +19,16 @@
                 xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
                 template="/WEB-INF/layouts/layout.xhtml">
     <ui:param name="title" value="Ada Server Faces Examples" />
-    <ui:param name="pageStyle" value="sample-util"/>
+    <ui:param name="pageStyle" value="sample-jsf-core"/>
     <!-- Main page body -->
     <ui:define name="pageBody">
 
         <util:script>
             function sample_select(node, name) {
                 $(".selector li").removeClass("ui-tabs-selected ui-state-active");
-                ASF.Update(node, '#{contextPath}/util/' + name + '.html', '#form-block');
-                ASF.Update(node, '#{contextPath}/util/doc.html?code=' + name, '#doc-block');
-                ASF.Update(node, '#{contextPath}/util/code.html?code=' + name, '#form-code',
+                ASF.Update(node, '#{contextPath}/jsf/core/' + name + '.html', '#form-block');
+                ASF.Update(node, '#{contextPath}/jsf/core/doc.html?code=' + name, '#doc-block');
+                ASF.Update(node, '#{contextPath}/jsf/core/code.html?code=' + name, '#form-code',
                            function(n) {
                                 prettyPrint();
                 });
@@ -40,40 +40,65 @@
         <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
             <ul class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
                 <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
-                    <a href="#" onclick="return sample_select(this, 'escape');">
-                        util:escape
+                    <a href="#" onclick="return sample_select(this, 'attribute');">
+                        f:attribute
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top">
+                    <a href="#" onclick="return sample_select(this, 'converter');">
+                        f:converter
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top">
+                    <a href="#" onclick="return sample_select(this, 'param');">
+                        f:param
                     </a>
                 </li>
                 <li class='ui-state-default ui-corner-top'>
-                    <a href="#" onclick="return sample_select(this, 'file');">
-                        util:file
+                    <a href="#" onclick="return sample_select(this, 'selectItem');">
+                        f:selectItem
+                    </a>
+                </li>
+                <li class='ui-state-default ui-corner-top'>
+                    <a href="#" onclick="return sample_select(this, 'selectItems');">
+                        f:selectItems
                     </a>
                 </li>
                 <li class="ui-state-default ui-corner-top ">
-                    <a href="#" onclick="return sample_select(this, 'flush');">
-                        util:flush
+                    <a href="#" onclick="return sample_select(this, 'validateLength');">
+                        f:validateLength
                     </a>
                 </li>
                 <li class="ui-state-default ui-corner-top ">
-                    <a href="#" onclick="return sample_select(this, 'script');">
-                        util:script
+                    <a href="#" onclick="return sample_select(this, 'validateLongRange');">
+                        f:validateLongRange
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'validator');">
+                        f:validator
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'view');">
+                        f:view
                     </a>
                 </li>
             </ul>
             <div class="grid_12 left ui-tabs-panel ui-widget-content ui-corner-bottom clearfix">
-                <h2>Namespace: xmlns:util="http://code.google.com/p/ada-asf/util"</h2>
+                <h2>Namespace: xmlns:f="http://java.sun.com/jsf/core"</h2>
                 <div id='doc-block' class="grid_12 ui-widget">
-                    <ajax:include src="/util/doc.xhtml"/>
+                    <ajax:include src="/jsf/core/doc.xhtml"/>
                 </div>
                 <h2>Example</h2>
                 <div class="grid_4 ui-widget">
                     <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
-                        <ajax:include src="/util/escape.xhtml"/>
+                        <ajax:include src="/jsf/core//escape.xhtml"/>
                     </div>
                     <div id="result"/>
                 </div>
                 <div id='form-code' class="grid_8 code ui-widget asf-container ui-corner-all">
-                    <ajax:include src="/util/code.xhtml" async="true"/>
+                    <ajax:include src="/jsf/core/code.xhtml" async="true"/>
                 </div>
             </div>
         </div>

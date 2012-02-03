@@ -1,8 +1,13 @@
-<div xmlns:util="http://code.google.com/p/ada-asf/util"
-     xmlns:f="http://java.sun.com/jsf/core"
+<div xmlns:f="http://java.sun.com/jsf/core"
      xmlns:h="http://java.sun.com/jsf/html">
-    <util:file rendered="true">
-        <f:attribute name="src" value="code.xhtml"/>
-    </util:file>
-    <util:file src="code.xhtml"/>
+    <h:panelGroup layout="block">
+        <h:outputText value="Hello world!">
+            <!-- The 'styleClass' attribute is applied on the h:outputText -->
+            <f:attribute name="styleClass" value="left"/>
+        </h:outputText>
+        <p>
+            <!-- The 'styleClass' attribute is applied on the h:panelGroup -->
+            <f:attribute name="styleClass" value="ui-widget asf-container ui-corner-all"/>
+        </p>
+    </h:panelGroup>
 </div>

@@ -1,0 +1,17 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <dl>
+        <dt>No converter</dt>
+        <dd>
+            <!-- pi is a float, use a default converter -->
+            #{compute.pi}
+        </dd>
+        <dt>With converter</dt>
+        <dd>
+            <h:outputText value='#{compute.pi}'>
+                <!-- use the 'float' converter defined by the application  -->
+                <f:converter converterId="float"/>
+            </h:outputText>
+        </dd>
+    </dl>
+</div>

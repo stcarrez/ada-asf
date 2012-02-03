@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  volume - Bean to compute the cylinder volume
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 
 with Ada.Strings.Fixed;
 with Ada.Text_IO.Editing;
+with Ada.Numerics;
 
 with ASF.Events.Faces.Actions;
 package body Volume is
@@ -74,6 +75,9 @@ package body Volume is
 
       elsif Name = "volume" and From.Volume >= 0.0 then
          return Util.Beans.Objects.To_Object (Float (From.Volume));
+
+      elsif Name = "pi" then
+         return Util.Beans.Objects.To_Object (Float (Ada.Numerics.Pi));
 
       else
          return Util.Beans.Objects.Null_Object;

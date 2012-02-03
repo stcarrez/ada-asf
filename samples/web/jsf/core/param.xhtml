@@ -1,0 +1,7 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:outputFormat value="The value of π is {0} and 2 x π is {1}.">
+        <f:param value="#{compute.pi}"/>
+        <f:param value="#{compute.pi + compute.pi}"/>
+    </h:outputFormat>
+</div>

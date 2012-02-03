@@ -43,7 +43,11 @@ package body ASF.Components.Html.Panels is
          Tag    : constant String := UI.Get_Layout (Context);
       begin
          if Tag'Length > 0 then
-            Writer.Start_Optional_Element (Tag);
+            if Tag = "span" then
+               Writer.Start_Optional_Element (Tag);
+            else
+               Writer.Start_Element (Tag);
+            end if;
             UI.Render_Attributes (Context, Writer);
          end if;
       end;
@@ -60,7 +64,11 @@ package body ASF.Components.Html.Panels is
          Tag    : constant String := UI.Get_Layout (Context);
       begin
          if Tag'Length > 0 then
-            Writer.End_Optional_Element (Tag);
+            if Tag = "span" then
+               Writer.End_Optional_Element (Tag);
+            else
+               Writer.End_Element (Tag);
+            end if;
          end if;
       end;
    end Encode_End;

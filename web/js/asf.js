@@ -115,7 +115,7 @@ var ASF = {};
                         ASF.Execute(d, data);
                     }
                     if (complete != null) {
-                        complete(d);
+                        complete(d, jqXHDR);
                     }
                }
             });

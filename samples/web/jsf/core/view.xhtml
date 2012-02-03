@@ -26,7 +26,10 @@
         <util:script>
             function sample_select(node, name) {
                 $(".selector li").removeClass("ui-tabs-selected ui-state-active");
-                ASF.Update(node, '#{contextPath}/jsf/core/' + name + '.html', '#form-block');
+                ASF.Update(node, '#{contextPath}/jsf/core/' + name + '.html', '#form-block', function(n) {
+                                var html = $('#form-block').html();
+                                $('#code-html').text(html);
+                });
                 ASF.Update(node, '#{contextPath}/jsf/core/doc.html?code=' + name, '#doc-block');
                 ASF.Update(node, '#{contextPath}/jsf/core/code.html?code=' + name, '#form-code',
                            function(n) {
@@ -93,18 +96,21 @@
                 <h2>Example</h2>
                 <div class="grid_4 ui-widget">
                     <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
-                        <ajax:include src="/jsf/core//escape.xhtml"/>
+                        <ajax:include src="/jsf/html/select-form.xhtml"/>
                     </div>
                     <div id="result"/>
+                     <div id='code-html'></div>
                 </div>
                 <div id='form-code' class="grid_8 code ui-widget asf-container ui-corner-all">
                     <ajax:include src="/jsf/core/code.xhtml" async="true"/>
                 </div>
+
             </div>
         </div>
 
     </ui:define>
     <ui:define name="pageScript">
         <script type="text/javascript" src="#{contextPath}/js/samples.js"></script>
+        <util:flush/>
     </ui:define>
 </ui:composition>

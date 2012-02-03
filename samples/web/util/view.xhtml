@@ -26,7 +26,11 @@
         <util:script>
             function sample_select(node, name) {
                 $(".selector li").removeClass("ui-tabs-selected ui-state-active");
-                ASF.Update(node, '#{contextPath}/util/' + name + '.html', '#form-block');
+                $('#code-html').html('');
+                ASF.Update(node, '#{contextPath}/util/' + name + '.html', '#form-block', function(n) {
+                                var html = $('#form-block').html();
+                                $('#code-html').text(html);
+                });
                 ASF.Update(node, '#{contextPath}/util/doc.html?code=' + name, '#doc-block');
                 ASF.Update(node, '#{contextPath}/util/code.html?code=' + name, '#form-code',
                            function(n) {
@@ -75,6 +79,8 @@
                 <div id='form-code' class="grid_8 code ui-widget asf-container ui-corner-all">
                     <ajax:include src="/util/code.xhtml" async="true"/>
                 </div>
+                <h2>Generated HTML</h2>
+                <div id='code-html'  style='white-space: pre;' class="grid_8 code ui-widget asf-container ui-corner-all"> </div>
             </div>
         </div>
 

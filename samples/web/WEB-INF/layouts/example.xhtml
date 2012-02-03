@@ -1,0 +1,66 @@
+<!-- Template for the TLD example and documentation
+  -  Copyright (C) 2012 Stephane Carrez
+  -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+  -
+  -  Licensed under the Apache License, Version 2.0 (the "License");
+  -  you may not use this file except in compliance with the License.
+  -  You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -  Unless required by applicable law or agreed to in writing, software
+  -  distributed under the License is distributed on an "AS IS" BASIS,
+  -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  -  See the License for the specific language governing permissions and
+  -  limitations under the License.
+  -->
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:util="http://code.google.com/p/ada-asf/util">
+    <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
+        <ul class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
+            <ui:insert name="tabs"/>
+        </ul>
+        <div class="grid_12 left ui-tabs-panel ui-widget-content ui-corner-bottom clearfix">
+            <h2>Namespace: #{namespace}</h2>
+            <div id='doc-block' class="grid_12 ui-widget">
+                <ui:insert name="doc"/>
+            </div>
+            <div class="grid_4 ui-widget">
+                <h2>Example</h2>
+                <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
+                    <ui:insert name="example"/>
+                </div>
+                <div id="result"/>
+            </div>
+            <div class="grid_8">
+                <h2>XHTML</h2>
+                <div id='form-code' class="code ui-widget asf-container ui-corner-all">
+                    <ui:insert name="xhtml"/>
+                </div>
+            </div>
+            <h2>Generated HTML</h2>
+            <div id='code-html' class="code ui-widget asf-container ui-corner-all">
+                <ui:insert name="html"/>
+            </div>
+        </div>
+    </div>
+
+    <util:script>
+        function sample_select(node, name) {
+            $(".selector li").removeClass("ui-tabs-selected ui-state-active");
+            $('#code-html').html('');
+            ASF.Update(node, '#{contextPath}/#{basename}/' + name + '.html', '#form-block',
+                       function(n, jqXHDR) {
+                          $('#code-html').text(jqXHDR.responseText);
+                       });
+            ASF.Update(node, '#{contextPath}/#{basename}/doc.html?code=' + name, '#doc-block');
+            ASF.Update(node, '#{contextPath}/#{basename}/code.html?code=' + name, '#form-code',
+                       function(n, jqXHDR) {
+                           prettyPrint();
+                       });
+            $(node).parent().addClass("ui-tabs-selected ui-state-active");
+            return false;
+        }
+        prettyPrint();
+    </util:script>
+</ui:composition>

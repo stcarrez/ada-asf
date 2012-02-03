@@ -266,3 +266,11 @@ h2.tag-name, h2.tag-attr {
 h2.tag-attr {
     margin-top: 10px;
 }
+#code-html {
+    overflow: hidden;
+    width: 99%;
+    white-space: pre;
+}
+.left h2 {
+    clear: both;
+}

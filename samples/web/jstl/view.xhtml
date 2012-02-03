@@ -10,22 +10,10 @@
     <!-- Main page body -->
     <ui:define name="pageBody">
 
-        <util:script>
-            function sample_select(node, name) {
-                $(".selector li").removeClass("ui-tabs-selected ui-state-active");
-                ASF.Update(node, '#{contextPath}/jstl/' + name + '.html', '#form-block');
-                ASF.Update(node, '#{contextPath}/jstl/doc.html?code=' + name, '#doc-block');
-                ASF.Update(node, '#{contextPath}/jstl/code.html?code=' + name, '#form-code',
-                           function(n) {
-                                prettyPrint();
-                });
-                $(node).parent().addClass("ui-tabs-selected ui-state-active");
-                return false;
-            }
-            prettyPrint();
-        </util:script>
-        <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
-            <ul class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
+        <ui:decorate template="/WEB-INF/layouts/example.xhtml">
+            <ui:param name="namespace" value='xmlns:c="http://java.sun.com/jstl/core"'/>
+            <ui:param name="basename" value="jstl"/>
+            <ui:define name="tabs">
                 <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
                     <a href="#" onclick="return sample_select(this, 'set');">
                         c:set
@@ -42,52 +30,28 @@
                     </a>
                 </li>
                 <li class="ui-state-default ui-corner-top ">
-                     <a href="#" onclick="return sample_select(this, 'when');">
-                         c:when
-                     </a>
-                 </li>
+                    <a href="#" onclick="return sample_select(this, 'when');">
+                        c:when
+                    </a>
+                </li>
                 <li class="ui-state-default ui-corner-top ">
                     <a href="#" onclick="return sample_select(this, 'otherwise');">
                         c:otherwise
                     </a>
                 </li>
-            </ul>
-            <div class="grid_12 left ui-tabs-panel ui-widget-content ui-corner-bottom clearfix">
-                <h2>Namespace: xmlns:c="http://java.sun.com/jstl/core"</h2>
-                <div id='doc-block' class="grid_12 ui-widget">
-                    <h2>Tag: c:set</h2>
-                    <p>
-                        Sets the result of an expression evaluation based on the value of the attributes. If "scope" the is present, but has a zero length or is equal to the string "page",
-                    </p>
-                    <h2>Attributes</h2>
-                    <ul class="tag-doc">
-                        <li class="attr-required">
-                            <b>var</b>
-                            <i>String</i>
-                            <span>Name of the variable</span>
-                        </li>
-                        <li class="attr-required">
-                            <b>value</b>
-                            <i>ValueExpression</i>
-                            <span>Expression to be evaluated</span>
-                        </li>
-                    </ul>
-                </div>
-                <h2>Example</h2>
-                <div class="grid_4 ui-widget">
-                    <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
-                        <ajax:include src="/jstl/set.xhtml"/>
-                    </div>
-                    <div id="result"/>
-                </div>
-                <div id='form-code' class="grid_8 code ui-widget asf-container ui-corner-all">
-                    <ajax:include src="/jstl/code.xhtml" async="true"/>
-                </div>
-            </div>
-            <!--
-            <iframe width="100%" height="1200" src="http://docs.oracle.com/cd/E17802_01/j2ee/javaee/javaserverfaces/2.0/docs/pdldocs/facelets/c/if.html"/>
-            -->
-        </div>
+            </ui:define>
+            <ui:define name="doc">
+                <ajax:include src="/jstl/doc.xhtml"/>
+            </ui:define>
+            <ui:define name="example">
+                <ajax:include src="/jstl/set.xhtml"/>
+            </ui:define>
+            <ui:define name="xhtml">
+                <ajax:include src="/jstl/code.xhtml" async="true"/>
+            </ui:define>
+            <ui:define name="html">
+            </ui:define>
+        </ui:decorate>
 
     </ui:define>
     <ui:define name="pageScript">

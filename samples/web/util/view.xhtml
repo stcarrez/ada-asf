@@ -23,26 +23,10 @@
     <!-- Main page body -->
     <ui:define name="pageBody">
 
-        <util:script>
-            function sample_select(node, name) {
-                $(".selector li").removeClass("ui-tabs-selected ui-state-active");
-                $('#code-html').html('');
-                ASF.Update(node, '#{contextPath}/util/' + name + '.html', '#form-block', function(n) {
-                                var html = $('#form-block').html();
-                                $('#code-html').text(html);
-                });
-                ASF.Update(node, '#{contextPath}/util/doc.html?code=' + name, '#doc-block');
-                ASF.Update(node, '#{contextPath}/util/code.html?code=' + name, '#form-code',
-                           function(n) {
-                                prettyPrint();
-                });
-                $(node).parent().addClass("ui-tabs-selected ui-state-active");
-                return false;
-            }
-            prettyPrint();
-        </util:script>
-        <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
-            <ul class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
+        <ui:decorate template="/WEB-INF/layouts/example.xhtml">
+            <ui:param name="namespace" value='xmlns:util="http://code.google.com/p/ada-asf/util"'/>
+            <ui:param name="basename" value="util"/>
+            <ui:define name="tabs">
                 <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
                     <a href="#" onclick="return sample_select(this, 'escape');">
                         util:escape
@@ -63,26 +47,19 @@
                         util:script
                     </a>
                 </li>
-            </ul>
-            <div class="grid_12 left ui-tabs-panel ui-widget-content ui-corner-bottom clearfix">
-                <h2>Namespace: xmlns:util="http://code.google.com/p/ada-asf/util"</h2>
-                <div id='doc-block' class="grid_12 ui-widget">
-                    <ajax:include src="/util/doc.xhtml"/>
-                </div>
-                <h2>Example</h2>
-                <div class="grid_4 ui-widget">
-                    <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
-                        <ajax:include src="/util/escape.xhtml"/>
-                    </div>
-                    <div id="result"/>
-                </div>
-                <div id='form-code' class="grid_8 code ui-widget asf-container ui-corner-all">
-                    <ajax:include src="/util/code.xhtml" async="true"/>
-                </div>
-                <h2>Generated HTML</h2>
-                <div id='code-html'  style='white-space: pre;' class="grid_8 code ui-widget asf-container ui-corner-all"> </div>
-            </div>
-        </div>
+            </ui:define>
+            <ui:define name="doc">
+                <ajax:include src="/util/doc.xhtml"/>
+            </ui:define>
+            <ui:define name="example">
+                <ajax:include src="/util/escape.xhtml"/>
+            </ui:define>
+            <ui:define name="xhtml">
+                <ajax:include src="/util/code.xhtml" async="true"/>
+            </ui:define>
+            <ui:define name="html">
+            </ui:define>
+        </ui:decorate>
 
     </ui:define>
     <ui:define name="pageScript">

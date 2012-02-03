@@ -30,11 +30,11 @@
                                 var html = $('#form-block').html();
                                 $('#code-html').text(html);
                 });
-                ASF.Update(node, '#{contextPath}/jsf/core/doc.html?code=' + name, '#doc-block');
+                /* ASF.Update(node, '#{contextPath}/jsf/core/doc.html?code=' + name, '#doc-block');
                 ASF.Update(node, '#{contextPath}/jsf/core/code.html?code=' + name, '#form-code',
                            function(n) {
                                 prettyPrint();
-                });
+                });*/
                 $(node).parent().addClass("ui-tabs-selected ui-state-active");
                 return false;
             }
@@ -96,7 +96,7 @@
                 <h2>Example</h2>
                 <div class="grid_4 ui-widget">
                     <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
-                        <ajax:include src="/jsf/html/select-form.xhtml"/>
+                        <ajax:include src="/jsf/core/attribute.xhtml"/>
                     </div>
                     <div id="result"/>
                      <div id='code-html'></div>

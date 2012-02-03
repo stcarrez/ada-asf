@@ -2,16 +2,20 @@
     <!-- A first javascript piece to fade out the block and update its content  -->
     <util:script>
         $('#code-raw').fadeOut('slow', function() {
-            var code = "<script type='text/javascript'>var a;</script>
-
-            Code: <util:flush/>
-            ";
-
+            var code = "Fade in code";
             $('#code-raw').html(code).fadeIn();
         });
     </util:script>
-
     <div id='code-raw'/>
+    <div id='code-raw-2'/>
+    <util:script>
+        $('#code-raw').fadeOut('slow', function() {
+            var code = "<util:escape>Code</util:escape>";
 
+            $('#code-raw-2').html(code).fadeIn();
+        });
+    </util:script>
+
+    <!-- Javascript enclosed by <util:script> generated here -->
     <util:flush/>
 </div>

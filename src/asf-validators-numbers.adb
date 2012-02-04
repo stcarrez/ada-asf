@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-validators-numbers -- ASF Number Validators
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,6 +68,15 @@ package body ASF.Validators.Numbers is
             raise Invalid_Value;
          end if;
       end;
+
+   exception
+      when others =>
+         Component.Add_Message (Name    => ASF.Components.VALIDATOR_MESSAGE_NAME,
+                                Default => TYPE_MESSAGE_ID,
+                                Arg1    => Util.Beans.Objects.To_Object (Valid.Minimum),
+                                Arg2    => Component.Get_Label (Context),
+                                Context => Context);
+         raise Invalid_Value;
    end Validate;
 
 end ASF.Validators.Numbers;

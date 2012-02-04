@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-validators-numbers -- ASF Number Validators
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,9 @@ with ASF.Contexts.Faces;
 --  The <b>ASF.Validators.Numbers</b> defines various number oriented validators.
 package ASF.Validators.Numbers is
 
-   MAXIMUM_MESSAGE_ID : constant String := "asf.validators.range.maximum";
-   MINIMUM_MESSAGE_ID : constant String := "asf.validators.range.minimum";
+   MAXIMUM_MESSAGE_ID : constant String := "asf.validators.long_range.maximum";
+   MINIMUM_MESSAGE_ID : constant String := "asf.validators.long_range.minimum";
+   TYPE_MESSAGE_ID    : constant String := "asf.validators.long_range.type";
 
    --  ------------------------------
    --  Range Validator

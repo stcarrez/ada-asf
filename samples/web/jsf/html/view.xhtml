@@ -1,0 +1,145 @@
+<!-- JSF Core tag library documentation
+  -  Copyright (C) 2012 Stephane Carrez
+  -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+  -
+  -  Licensed under the Apache License, Version 2.0 (the "License");
+  -  you may not use this file except in compliance with the License.
+  -  You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -  Unless required by applicable law or agreed to in writing, software
+  -  distributed under the License is distributed on an "AS IS" BASIS,
+  -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  -  See the License for the specific language governing permissions and
+  -  limitations under the License.
+  -->
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:util="http://code.google.com/p/ada-asf/util"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/layout.xhtml">
+    <ui:param name="title" value="Ada Server Faces Examples" />
+    <ui:param name="pageStyle" value="sample-jsf-html"/>
+    <!-- Main page body -->
+    <ui:define name="pageBody">
+
+        <ui:decorate template="/WEB-INF/layouts/example.xhtml">
+            <ui:param name="namespace" value='xmlns:h="http://java.sun.com/jsf/html"'/>
+            <ui:param name="basename" value="jsf/html"/>
+            <ui:define name="tabs">
+                <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+                    <a href="#" onclick="return sample_select(this, 'body');">
+                        h:body
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top">
+                    <a href="#" onclick="return sample_select(this, 'commandButton');">
+                        h:commandButton
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top">
+                    <a href="#" onclick="return sample_select(this, 'form');">
+                        h:form
+                    </a>
+                </li>
+                <li class='ui-state-default ui-corner-top'>
+                    <a href="#" onclick="return sample_select(this, 'head');">
+                        h:head
+                    </a>
+                </li>
+                <li class='ui-state-default ui-corner-top'>
+                    <a href="#" onclick="return sample_select(this, 'inputHidden');">
+                        h:inputHidden
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'inputSecret');">
+                        h:inputSecret
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'inputText');">
+                        h:inputText
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'inputTextarea');">
+                        h:inputTextarea
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'list');">
+                        h:list
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'message');">
+                        h:message
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'messages');">
+                        h:messages
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'outputFormat');">
+                        h:outputFormat
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'outputLabel');">
+                        h:outputLabel
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'outputLink');">
+                        h:outputLink
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'outputText');">
+                        h:outputText
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'panelGroup');">
+                        h:panelGroup
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'selectBooleanCheckbox');">
+                        h:selectBooleanCheckbox
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'selectOneMenu');">
+                        h:selectOneMenu
+                    </a>
+                </li>
+                <li class="ui-state-default ui-corner-top ">
+                    <a href="#" onclick="return sample_select(this, 'selectOneRadio');">
+                        h:selectOneRadio
+                    </a>
+                </li>
+            </ui:define>
+            <ui:define name="doc">
+                <ajax:include src="/jsf/html/doc.xhtml"/>
+            </ui:define>
+            <ui:define name="example">
+                <ajax:include src="/jsf/html/body.xhtml"/>
+                <div id="result"/>
+            </ui:define>
+            <ui:define name="xhtml">
+                <ajax:include src="/jsf/html/code.xhtml" async="true"/>
+            </ui:define>
+            <ui:define name="html">
+            </ui:define>
+        </ui:decorate>
+
+    </ui:define>
+    <ui:define name="pageScript">
+        <script type="text/javascript" src="#{contextPath}/js/samples.js"></script>
+        <util:flush/>
+    </ui:define>
+</ui:composition>

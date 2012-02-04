@@ -1,0 +1,164 @@
+<!-- JSF Core tag library documentation
+  -  Copyright (C) 2012 Stephane Carrez
+  -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+  -
+  -  Licensed under the Apache License, Version 2.0 (the "License");
+  -  you may not use this file except in compliance with the License.
+  -  You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -  Unless required by applicable law or agreed to in writing, software
+  -  distributed under the License is distributed on an "AS IS" BASIS,
+  -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  -  See the License for the specific language governing permissions and
+  -  limitations under the License.
+  -->
+<c:choose xmlns:c="http://java.sun.com/jstl/core"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:util="http://code.google.com/p/ada-asf/util">
+    <!-- For security reasons, check that the code parameter matches what is allowed  -->
+    <c:when test="#{empty param['code'] or param['code'] eq 'body'}">
+        <util:script>
+            Sample_Highlight('body', 'h:body');
+            prettyPrint();
+        </util:script>
+        <code class="prettyprint lang-body linenums:1"><util:file src="/jsf/html/body.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'commandButton'}">
+        <util:script>
+            Sample_Highlight('commandButton','h:commandButton');
+        </util:script>
+        <code class="prettyprint lang-commandButton linenums:1"><util:file src="/jsf/html/commandButton.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'form'}">
+        <util:script>
+            Sample_Highlight('form','h:form');
+        </util:script>
+        <code class="prettyprint lang-form linenums:1"><util:file src="/jsf/html/form.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'head'}">
+         <util:script>
+             Sample_Highlight('head','h:head');
+         </util:script>
+         <code class="prettyprint lang-head linenums:1"><util:file src="/jsf/html/head.xhtml" escape="true"/>
+         </code>
+     </c:when>
+    <c:when test="#{param['code'] eq 'inputHidden'}">
+        <util:script>
+            Sample_Highlight('inputHidden','h:inputHidden');
+        </util:script>
+        <code class="prettyprint lang-inputHidden linenums:1"><util:file src="/jsf/html/inputHidden.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'inputSecret'}">
+        <util:script>
+            Sample_Highlight('inputSecret','h:inputSecret');
+        </util:script>
+        <code class="prettyprint lang-inputSecret linenums:1"><util:file src="/jsf/html/inputSecret.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'inputText'}">
+        <util:script>
+            Sample_Highlight('inputText','h:inputText');
+        </util:script>
+        <code class="prettyprint lang-inputText linenums:1"><util:file src="/jsf/html/inputText.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'inputTextarea'}">
+        <util:script>
+            Sample_Highlight('inputTextarea','h:inputTextarea');
+        </util:script>
+        <code class="prettyprint lang-inputTextarea linenums:1"><util:file src="/jsf/html/inputTextarea.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'list'}">
+        <util:script>
+            Sample_Highlight('list','h:list');
+        </util:script>
+        <code class="prettyprint lang-list linenums:1"><util:file src="/jsf/html/list.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'message'}">
+        <util:script>
+            Sample_Highlight('message','h:message');
+        </util:script>
+        <code class="prettyprint lang-message linenums:1"><util:file src="/jsf/html/message.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'messages'}">
+        <util:script>
+            Sample_Highlight('messages','h:messages');
+        </util:script>
+        <code class="prettyprint lang-messages linenums:1"><util:file src="/jsf/html/messages.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'outputFormat'}">
+        <util:script>
+            Sample_Highlight('outputFormat','h:outputFormat');
+        </util:script>
+        <code class="prettyprint lang-outputFormat linenums:1"><util:file src="/jsf/html/outputFormat.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'outputLabel'}">
+        <util:script>
+            Sample_Highlight('outputLabel','h:outputLabel');
+        </util:script>
+        <code class="prettyprint lang-outputLabel linenums:1"><util:file src="/jsf/html/outputLabel.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'outputLink'}">
+        <util:script>
+            Sample_Highlight('outputLink','h:outputLink');
+        </util:script>
+        <code class="prettyprint lang-outputLink linenums:1"><util:file src="/jsf/html/outputLink.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'outputText'}">
+        <util:script>
+            Sample_Highlight('outputLink','h:outputLink');
+        </util:script>
+        <code class="prettyprint lang-outputText linenums:1"><util:file src="/jsf/html/outputText.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'panelGroup'}">
+        <util:script>
+            Sample_Highlight('panelGroup','h:panelGroup');
+        </util:script>
+        <code class="prettyprint lang-panelGroup linenums:1"><util:file src="/jsf/html/panelGroup.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'selectBooleanCheckbox'}">
+        <util:script>
+            Sample_Highlight('selectBooleanCheckbox','h:selectBooleanCheckbox');
+        </util:script>
+        <code class="prettyprint lang-selectBooleanCheckbox linenums:1"><util:file src="/jsf/html/selectBooleanCheckbox.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'selectOneMenu'}">
+        <util:script>
+            Sample_Highlight('selectOneMenu','h:selectOneMenu');
+        </util:script>
+        <code class="prettyprint lang-selectOneMenu linenums:1"><util:file src="/jsf/html/selectOneMenu.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'selectOneRadio'}">
+        <util:script>
+            Sample_Highlight('selectOneRadio','h:selectOneRadio');
+        </util:script>
+        <code class="prettyprint lang-selectOneRadio linenums:1"><util:file src="/jsf/html/selectOneRadio.xhtml" escape="true"/>
+        </code>
+    </c:when>
+
+    <c:otherwise>
+        <p>
+            <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">
+                <f:param value="#{param['code']}"/>
+            </h:outputFormat>
+        </p>
+    </c:otherwise>
+</c:choose>

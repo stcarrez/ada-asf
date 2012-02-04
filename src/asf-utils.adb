@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +35,9 @@ package body ASF.Utils is
    ON_MOUSE_OUT_ATTR  : aliased constant String := "onmouseout";
    ON_MOUSE_OVER_ATTR : aliased constant String := "onmouseover";
    ON_MOUSE_UP_ATTR   : aliased constant String := "onmouseup";
+
+   ON_RESET_ATTR      : aliased constant String := "onreset";
+   ON_SUBMIT_ATTR     : aliased constant String := "onsubmit";
 
    ON_LOAD_ATTR       : aliased constant String := "onload";
    ON_UNLOAD_ATTR     : aliased constant String := "onunload";
@@ -128,5 +131,15 @@ package body ASF.Utils is
       Names.Insert (DIR_ATTR'Access);
       Names.Insert (LANG_ATTR'Access);
    end Set_Head_Attributes;
+
+   --------------------
+   --  Add in the <b>names</b> set, the onreset and onsubmit attributes that can be set
+   --  on <form> elements.
+   --  ------------------------------
+   procedure Set_Form_Attributes (Names : in out Util.Strings.String_Set.Set) is
+   begin
+      Names.Insert (ON_RESET_ATTR'Access);
+      Names.Insert (ON_SUBMIT_ATTR'Access);
+   end Set_Form_Attributes;
 
 end ASF.Utils;

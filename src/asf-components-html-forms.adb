@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -580,6 +580,7 @@ begin
    ASF.Utils.Set_Text_Attributes (INPUT_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Interactive_Attributes (INPUT_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Interactive_Attributes (FORM_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Form_Attributes (FORM_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Input_Attributes (INPUT_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Textarea_Attributes (TEXTAREA_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Forms;

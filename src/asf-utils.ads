@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-utils -- Various utility operations for ASF
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,6 +48,10 @@ package ASF.Utils is
    --  Add in the <b>names</b> set, the dir, lang attributes that can be set
    --  on <head> elements.
    procedure Set_Head_Attributes (Names : in out Util.Strings.String_Set.Set);
+
+   --  Add in the <b>names</b> set, the onreset and onsubmit attributes that can be set
+   --  on <form> elements.
+   procedure Set_Form_Attributes (Names : in out Util.Strings.String_Set.Set);
 
    type Object_Array is array (Positive range <>) of Util.Beans.Objects.Object;
 

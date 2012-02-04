@@ -45,7 +45,7 @@
          <util:script>
              Sample_Highlight('selectItem','f:selectItem');
          </util:script>
-         <code class="prettyprint lang-selectItem linenums:1"><util:file src="/jsf/html/select-form.xhtml" escape="true"/>
+         <code class="prettyprint lang-selectItem linenums:1"><util:file src="/jsf/core/selectItem.xhtml" escape="true"/>
          </code>
      </c:when>
     <c:when test="#{param['code'] eq 'selectItems'}">
@@ -76,11 +76,11 @@
         <code class="prettyprint lang-validator linenums:1"><util:file src="/jsf/core/validator.xhtml" escape="true"/>
         </code>
     </c:when>
-    <c:when test="#{param['code'] eq 'view'}">
+    <c:when test="#{param['code'] eq 'view-example'}">
         <util:script>
             Sample_Highlight('view','f:view');
         </util:script>
-        <code class="prettyprint lang-view linenums:1"><util:file src="/jsf/core/view.xhtml" escape="true"/>
+        <code class="prettyprint lang-view linenums:1"><util:file src="/jsf/core/view-example.xhtml" escape="true"/>
         </code>
     </c:when>
 

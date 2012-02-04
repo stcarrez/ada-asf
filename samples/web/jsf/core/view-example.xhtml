@@ -1,0 +1,16 @@
+<f:view contentType="application/json"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:util="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html">
+[
+ { "action": "update", "id": "#result", "data": "<util:escape>
+     <h:panelGroup rendered="#{not empty compute.volume}">
+         <h2>The cylinder volume is
+             <h:outputText value="#{compute.volume}">
+                <f:converter converterId="float"/>
+             </h:outputText>
+         </h2>
+     </h:panelGroup>
+    </util:escape>" }
+]
+</f:view>

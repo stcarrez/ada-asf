@@ -201,6 +201,83 @@
         </ui:decorate>
     </c:when>
 
+    <c:when test="#{param['code'] eq 'validateLength'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:validateLength"/>
+            <ui:define name="description">
+                Creates a validator and associates it with the nearest parent <tt>UIComponent</tt>.
+                When invoked, the validator ensures that values are valid strings with a length
+                that lies within the minimum and maximum values specified. Commonly associated
+                with a <tt>h:inputText</tt> entity. Unless otherwise specified, all attributes
+                accept static values or EL expressions.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>maximum</b>
+                    <i>Natural</i>
+                    <span>The largest value that should be considered valid.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>minimum</b>
+                    <i>Natural</i>
+                    <span>The smallest value that should be considered valid.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'validateLongRange'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:validateLongRange"/>
+            <ui:define name="description">
+                Creates a validator and associates it with the nearest parent <tt>UIComponent</tt>.
+                When invoked, the validator ensures that values are valid longs that lie within the
+                minimum and maximum values specified. Commonly associated
+                with a <tt>h:inputText</tt> entity. Unless otherwise specified, all attributes
+                accept static values or EL expressions.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>maximum</b>
+                    <i>Long</i>
+                    <span>The largest value that should be considered valid.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>minimum</b>
+                    <i>Long</i>
+                    <span>The smallest value that should be considered valid.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'view-example'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:view"/>
+            <ui:define name="description">
+                Creates a JSF View, which is a container that holds all of the components
+                that are part of the view.  The <tt>UIView</tt> represents the root of
+                the component tree.
+
+                <br></br>
+                Unless otherwise specified, all attributes accept static values or EL expressions.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>locale</b>
+                    <i>String</i>
+                    <span>The locale of this view. Default: the default locale from the configuration file.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>contentType</b>
+                    <i>String</i>
+                    <span>The content type to be placed in the response header.
+                    The default content type is <tt>text/html</tt>.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
     <c:when test="#{param['code'] eq 'script'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="util:script"/>

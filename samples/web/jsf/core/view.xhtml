@@ -68,7 +68,7 @@
                     </a>
                 </li>
                 <li class="ui-state-default ui-corner-top ">
-                    <a href="#" onclick="return sample_select(this, 'view');">
+                    <a href="#" onclick="return sample_select(this, 'view-example');">
                         f:view
                     </a>
                 </li>
@@ -78,6 +78,7 @@
             </ui:define>
             <ui:define name="example">
                 <ajax:include src="/jsf/core/attribute.xhtml"/>
+                <div id="result"/>
             </ui:define>
             <ui:define name="xhtml">
                 <ajax:include src="/jsf/core/code.xhtml" async="true"/>

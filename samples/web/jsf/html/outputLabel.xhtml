@@ -1,0 +1,23 @@
+<dl xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+    <dt><h:outputLabel for='height' value="Height"/><h:message for='height'/></dt>
+    <dd>
+        <h:selectOneMenu id='height' size='10' value='#{compute.height}'
+                         styleClass="ui-state-default ui-corner-all">
+            <f:selectItem itemLabel="1 inch" itemValue="25.4"/>
+            <f:selectItem itemLabel="1 feet" itemValue="304.8"/>
+            <f:selectItem itemLabel="1 yard" itemValue="914.4"/>
+            <f:converter converterId="float" />
+        </h:selectOneMenu>
+    </dd>
+    <dt><h:outputLabel for='radius' value="Radius"/><h:message for='radius'/></dt>
+    <dd>
+        <h:selectOneMenu id='radius' size='10' value='#{compute.radius}'
+                         styleClass="ui-state-default ui-corner-all">
+            <f:selectItem itemLabel="1 inch" itemValue="25.4"/>
+            <f:selectItem itemLabel="1 feet" itemValue="304.8"/>
+            <f:selectItem itemLabel="1 yard" itemValue="914.4"/>
+            <f:converter converterId="float"/>
+        </h:selectOneMenu>
+    </dd>
+</dl>

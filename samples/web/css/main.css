@@ -22,11 +22,12 @@ body.awa {
 #awa-page {
   position: relative;
   min-height:100%;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 1%;
+  margin-right: 1%;
   background-color: white;
   margin-bottom: -30px; /* See #awa-clfooter height */
   display: block;
+  width: 98%;
 }
 .awa #awa-page {
   background-color: #99DFCA;

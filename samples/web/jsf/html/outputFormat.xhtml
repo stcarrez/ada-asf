@@ -1,0 +1,14 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <!-- Write a text string escaping special characters -->
+    <p><h:outputFormat value="The application name is: {0}">
+        <f:param value="#{sampleName}"/>
+    </h:outputFormat>
+    </p>
+    <!-- Write a text with a style.  Generate a <span> element.  -->
+    <p><h:outputFormat value="The context path is: #{contextPath}"
+                       style="font-weight: bold;">
+        <f:param value="#{contextPath}"/>
+    </h:outputFormat>
+    </p>
+</div>

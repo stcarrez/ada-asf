@@ -1,0 +1,27 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+
+    <div class="ui-widget ui-widget-header">
+        Write a message in a textarea
+    </div>
+    <h:form id='textarea-form'>
+        <dl>
+            <dt><label for='email'>Email</label> <h:message for='email'/></dt>
+            <dd>
+                <h:inputText id='email' size='80' value='#{message.email}'
+                             styleClass="ui-corner-all">
+                </h:inputText>
+            </dd>
+            <dt><label for='message'>Message</label> <h:message for='message'/></dt>
+            <dd>
+                <h:inputTextarea id='message' rows='20' cols='30' value='#{message.text}'/>
+            </dd>
+        </dl>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='send' value='Send' action="#{message.post}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>

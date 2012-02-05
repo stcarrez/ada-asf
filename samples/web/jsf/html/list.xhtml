@@ -1,0 +1,12 @@
+<div xmlns:h="http://java.sun.com/jsf/html">
+    <h:list value="#{messages}" var="msg">
+        <div class="message">
+            <div class="email">
+                #{msg.email}
+            </div>
+            <div class="text">
+                #{msg.text}
+            </div>
+        </div>
+    </h:list>
+</div>

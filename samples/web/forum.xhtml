@@ -1,0 +1,34 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/demo.xhtml">
+    <ui:param name="title" value="#{samplesMsg.sample_ajax_page_title}" />
+    <ui:param name="tab" value="forum"/>
+    <!-- Main page body -->
+    <ui:define name="demoBody">
+        <div>
+            <h1>Forum messages</h1>
+            <div class="grid_12 ui-widget">
+                <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
+                    <ajax:include src="post.xhtml"/>
+                </div>
+            </div>
+            <div class="grid_12 ui-widget forum">
+                <div id='forum-posts' class="asf-container ui-widget ui-widget-content ui-corner-all forum">
+                    <h:list value="#{messages}" var="msg" reverse="true">
+                        <div class="message">
+                            <div class="email">
+                                #{msg.email}
+                            </div>
+                            <div class="text">
+                                #{msg.text}
+                            </div>
+                        </div>
+                    </h:list>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -21,7 +21,9 @@ with ASF.Server.Web;
 with ASF.Servlets;
 with ASF.Servlets.Faces;
 with ASF.Servlets.Files;
+with ASF.Servlets.Measures;
 with ASF.Filters.Dump;
+with ASF.Beans;
 with ASF.Applications;
 with ASF.Applications.Main;
 with ASF.Applications.Main.Configs;
@@ -30,6 +32,7 @@ with Util.Log.Loggers;
 
 with Countries;
 with Volume;
+with Messages;
 procedure Asf_Volume_Server is
 
    CONTEXT_PATH : constant String := "/volume";
@@ -41,11 +44,13 @@ procedure Asf_Volume_Server is
    App     : aliased ASF.Applications.Main.Application;
    Faces   : aliased ASF.Servlets.Faces.Faces_Servlet;
    Files   : aliased ASF.Servlets.Files.File_Servlet;
+   Perf    : aliased ASF.Servlets.Measures.Measure_Servlet;
    Dump    : aliased ASF.Filters.Dump.Dump_Filter;
    Bean    : aliased Volume.Compute_Bean;
    Conv    : aliased Volume.Float_Converter;
    WS      : ASF.Server.Web.AWS_Container;
    C       : ASF.Applications.Config;
+   None    : ASF.Beans.Parameter_Bean_Ref.Ref;
 begin
    C.Set (ASF.Applications.VIEW_EXT, ".html");
    C.Set (ASF.Applications.VIEW_DIR, "samples/web");
@@ -73,6 +78,8 @@ begin
    App.Add_Servlet (Name => "faces", Server => Faces'Unchecked_Access);
    App.Add_Servlet (Name => "files", Server => Files'Unchecked_Access);
    App.Add_Filter (Name => "dump", Filter => Dump'Unchecked_Access);
+   App.Add_Servlet (Name => "perf", Server => Perf'Unchecked_Access);
+   App.Add_Filter (Name => "perf", Filter => Perf'Unchecked_Access);
 
    --  Define servlet mappings
    App.Add_Mapping (Name => "faces", Pattern => "*.html");
@@ -83,6 +90,11 @@ begin
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.js");
 
    App.Add_Converter (Name => "float", Converter => Conv'Unchecked_Access);
+
+   App.Register_Class (Name => "Message_Bean", Handler => Messages.Create_Message_Bean'Access);
+   App.Register_Class (Name => "Message_List", Handler => Messages.Create_Message_List'Access);
+   App.Register (Name => "message", Class => "Message_Bean", Params => None);
+   App.Register (Name => "messages", Class => "Message_List", Params => None);
 
    ASF.Applications.Main.Configs.Read_Configuration (App, "samples/web/WEB-INF/web.xml");
    WS.Register_Application (CONTEXT_PATH, App'Unchecked_Access);

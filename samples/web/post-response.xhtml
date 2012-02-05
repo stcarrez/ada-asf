@@ -1,0 +1,20 @@
+<f:view contentType="application/json"
+	    xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:c="http://java.sun.com/jstl/core"
+	    xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:util="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html">
+[
+ { "action": "prepend", "id": "#forum-posts", "data": "<util:escape>
+    <div class="message">
+        <div class="email">
+            #{message.email}
+        </div>
+        <div class="text">
+            #{message.text}
+        </div>
+    </div>
+    </util:escape>" }
+]
+</f:view>

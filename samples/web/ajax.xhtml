@@ -3,11 +3,11 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
-                template="/WEB-INF/layouts/layout.xhtml">
+                template="/WEB-INF/layouts/demo.xhtml">
     <ui:param name="title" value="#{samplesMsg.sample_ajax_page_title}" />
-    <ui:param name="pageStyle" value="sample-ajax"/>
+    <ui:param name="tab" value="ajax"/>
     <!-- Main page body -->
-    <ui:define name="pageBody">
+    <ui:define name="demoBody">
   <div>
       <h1>Compute the volume of a cylinder</h1>
       <p>Shows the <tt>&amp;lt;ajax:include&gt;&lt;/ajax:include&gt;</tt> form</p>

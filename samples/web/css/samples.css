@@ -100,7 +100,7 @@ div.openid-retry {
 .sample-forms #nav #nav-forms a,
 .sample-jstl #nav #nav-jstl a,
 .sample-facelet #nav #nav-facelet a,
-.sample-compute #nav #nav-compute a,
+.sample-demos #nav #nav-demos a,
 .sample-util #nav #nav-util a,
 .sample-jsf-core #nav #nav-jsf-core a,
 .sample-jsf-html #nav #nav-jsf-html a,
@@ -117,7 +117,7 @@ div.openid-retry {
 .sample-forms #nav #nav-forms,
 .sample-jstl #nav #nav-jstl,
 .sample-facelet #nav #nav-facelet,
-.sample-compute #nav #nav-compute,
+.sample-demos #nav #nav-demos,
 .sample-ajax #nav #nav-ajax,
 .sample-jsf-core #nav #nav-jsf-core,
 .sample-jsf-html #nav #nav-jsf-html,
@@ -275,4 +275,28 @@ h2.tag-attr {
 }
 .left h2 {
     clear: both;
+}
+div.forum {
+    float: left;
+    display: block;
+}
+.forum .message {
+    float: left;
+    width: 100%;
+    padding-bottom: 10px;
+    display: block;
+
+}
+.forum .email {
+    float: left;
+    width: 100%;
+    color: #888;
+    font-weight: bold;
+    display: block;
+}
+.forum .text {
+    float: left;
+    width: 96%;
+    padding-left: 2%;
+    padding-right: 2%;
 }

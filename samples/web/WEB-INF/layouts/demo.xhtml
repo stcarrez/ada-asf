@@ -1,0 +1,18 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/layout.xhtml">
+    <ui:param name="title" value="#{samplesMsg.sample_ajax_page_title}" />
+    <ui:param name="pageStyle" value="sample-demos"/>
+    <!-- Main page body -->
+    <ui:define name="pageBody">
+        <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
+            <ui:include src="demo-tabs.xhtml"/>
+            <div class='ui-widget'>
+                <ui:insert name="demoBody"/>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -49,6 +49,7 @@
         function sample_select(node, name) {
             $(".selector li").removeClass("ui-tabs-selected ui-state-active");
             $('#code-html').html('');
+            $('#result').html('');
             ASF.Update(node, '#{contextPath}/#{basename}/' + name + '.html', '#form-block',
                        function(n, jqXHDR) {
                           $('#code-html').text(jqXHDR.responseText);

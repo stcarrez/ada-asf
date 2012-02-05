@@ -5,11 +5,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
     <context-param>
-        <param-name>org.jboss.seam.core.init.debug</param-name>
-        <param-value>false</param-value>
-    </context-param>
-
-    <context-param>
         <param-name>facelets.VIEW_MAPPINGS</param-name>
         <param-value>*.xhtml</param-value>
     </context-param>
@@ -35,7 +30,7 @@
     </context-param>
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
     <security-role>
@@ -68,6 +63,16 @@
         <location>/errors/500.jsf</location>
     </error-page>
 
+    <servlet-mapping>
+      <servlet-name>perf</servlet-name>
+      <url-pattern>/statistics.xml</url-pattern>
+    </servlet-mapping>
+
+    <filter-mapping>
+      <filter-name>perf</filter-name>
+      <url-pattern>*.html</url-pattern>
+    </filter-mapping>
+
     <!-- Navigation rules are defined in faces-config.xml in a JSF application.
          Make it simple and allow such definition here.  -->
 
@@ -84,6 +89,22 @@
       <navigation-case>
         <from-outcome>compute</from-outcome>
         <to-view-id>/forms/form-response.xhtml</to-view-id>
+      </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+      <from-view-id>/jsf/*</from-view-id>
+      <navigation-case>
+        <from-outcome>compute</from-outcome>
+        <to-view-id>/forms/form-response.xhtml</to-view-id>
+      </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+      <from-view-id>/post.xhtml</from-view-id>
+      <navigation-case>
+        <from-outcome>posted</from-outcome>
+        <to-view-id>/post-response.xhtml</to-view-id>
       </navigation-case>
     </navigation-rule>
 

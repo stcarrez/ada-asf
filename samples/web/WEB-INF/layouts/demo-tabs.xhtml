@@ -1,0 +1,25 @@
+<ul xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:util="http://code.google.com/p/ada-asf/util"
+    id='demo-tabs'
+    class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
+    <li class="ui-state-default ui-corner-top #{tab eq 'volume' ? 'ui-tabs-selected ui-state-active' : ''}">
+        <a href="#{contextPath}/compute.html">
+            Volume
+        </a>
+    </li>
+    <li class="ui-state-default ui-corner-top #{tab eq 'forum' ? 'ui-tabs-selected ui-state-active' : ''}">
+        <a href="#{contextPath}/forum.html">
+            Forum
+        </a>
+    </li>
+    <li class="ui-state-default ui-corner-top #{tab eq 'utf-8' ? 'ui-tabs-selected ui-state-active' : ''}">
+        <a href="#{contextPath}/utf8.html">
+            UTF-8
+        </a>
+    </li>
+    <li class="ui-state-default ui-corner-top #{tab eq 'ajax' ? 'ui-tabs-selected ui-state-active' : ''}">
+        <a href="#{contextPath}/ajax.html">
+            AJAX
+        </a>
+    </li>
+</ul>

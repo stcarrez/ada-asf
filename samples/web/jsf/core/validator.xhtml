@@ -1,0 +1,29 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:form id='text-form'>
+        <dl class='ui-widget container_12'>
+            <dt><label for='height'>Height</label><h:message for='height'/></dt>
+            <dd>
+                <h:inputText id='height' size='10' value='#{compute.height}'
+                             styleClass="ui-corner-all">
+                    <f:converter converterId="float" />
+                    <f:validator validatorId="validateDimension"/>
+                </h:inputText>
+            </dd>
+            <dt><label for='radius'>Radius</label><h:message for='radius'/></dt>
+            <dd>
+                <h:inputText id='radius' size='10' value='#{compute.radius}'
+                             styleClass="ui-corner-all">
+                    <f:converter converterId="float"/>
+                    <f:validator validatorId="validateDimension"/>
+                </h:inputText>
+            </dd>
+        </dl>
+        <ul class='container_12 buttons'>
+            <li>
+                <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>

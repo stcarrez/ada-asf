@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-models-selects -- Data model for UISelectOne and UISelectMany
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -312,8 +312,21 @@ package body ASF.Models.Selects is
       List.List.Value.all.List.Append (Select_Item (Item));
    end Append;
 
+   --  ------------------------------
+   --  Add the item at the end of the list.  This is a shortcut for
+   --  Append (Create_List_Item (Label, Value))
+   --  ------------------------------
+   procedure Append (List  : in out Select_Item_List;
+                     Label : in String;
+                     Value : in String) is
+   begin
+      List.Append (Create_Select_Item (Label, Value));
+   end Append;
+
+   --  ------------------------------
    --  Get the value identified by the name.
    --  If the name cannot be found, the method should return the Null object.
+   --  ------------------------------
    overriding
    function Get_Value (From : in Select_Item_List;
                        Name : in String) return Util.Beans.Objects.Object is

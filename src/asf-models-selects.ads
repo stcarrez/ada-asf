@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-models-selects -- Data model for UISelectOne and UISelectMany
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,6 +125,12 @@ package ASF.Models.Selects is
    --  Add the item at the end of the list.
    procedure Append (List : in out Select_Item_List;
                      Item : in Select_Item'Class);
+
+   --  Add the item at the end of the list.  This is a shortcut for
+   --  Append (Create_List_Item (Label, Value))
+   procedure Append (List  : in out Select_Item_List;
+                     Label : in String;
+                     Value : in String);
 
 private
 

@@ -1,0 +1,10 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <!-- Write a text string escaping special characters -->
+    <p><h:outputText value="The application name is: #{sampleName}"/></p>
+    <!-- Write a text with a style.  Generate a <span> element.  -->
+    <p><h:outputText value="The context path is: #{contextPath}"
+                     style="font-weight: bold;"/></p>
+    <!-- Write a text without escaping -->
+    <p><h:outputText escape="false" value="&lt;i&gt;This string is not escaped.&lt;/i&gt;"/></p>
+</div>

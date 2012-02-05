@@ -28,6 +28,7 @@ with ASF.Applications.Main.Configs;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 
+with Countries;
 with Volume;
 procedure Asf_Volume_Server is
 
@@ -62,6 +63,8 @@ begin
    App.Set_Global ("compute",
                    Util.Beans.Objects.To_Object (Bean'Unchecked_Access,
                                                  Util.Beans.Objects.STATIC));
+
+   App.Set_Global ("countries", Util.Beans.Objects.To_Object (Countries.Create_Country_List));
 
    --  Declare a global bean to identify this sample from within the XHTML files.
    App.Set_Global ("sampleName", "volume");

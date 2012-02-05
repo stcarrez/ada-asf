@@ -149,7 +149,7 @@
                 Unless otherwise specified, all attributes accept static values or EL expressions.
 
                 <br></br>
-                UISelectItem should be nestetd inside a <tt>UISelectMany</tt> or
+                UISelectItem should be nested inside a <tt>UISelectMany</tt> or
                 <tt>UISelectOne</tt> component, and results in the addition of a <tt>SelectItem</tt>
                 instance to the list of available options for the parent component
             </ui:define>
@@ -191,6 +191,83 @@
                     <b>noSelectionOptions</b>
                     <i>Boolean</i>
                     <span>Indicate this component represent no selection option. Default value is false.</span>
+                </li>
+                <li class="attr-unimpl">
+                    <b>binding</b>
+                    <i>ValueExpression</i>
+                    <span>A <tt>ValueExpression</tt> that evaluates to a UIComponent.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'selectItems'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:selectItems"/>
+            <ui:define name="description">
+                This tag associates a list of <tt>SelectItem</tt> with the nearest parent UIComponent.
+                The list of items is retrieved via a value-binding.
+                See also component <tt>selectItem</tt>.
+
+                <br></br>
+                Unless otherwise specified, all attributes accept static values or EL expressions.
+
+                <br></br>
+                UISelectItem should be nested inside a <tt>UISelectMany</tt> or
+                <tt>UISelectOne</tt> component, and results in the addition of one or more <tt>SelectItem</tt>
+                instance to the list of available options for the parent component.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>itemDisabled</b>
+                    <i>Boolean</i>
+                    <span>Determine whether this item can be chosen by the user.
+                        When true, this item cannot be chosen by the user.
+                        If this method is ever called, then any EL-binding for the disabled property
+                        will be ignored.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>itemLabelEscaped</b>
+                    <i>Boolean</i>
+                    <span>The escape setting for the label of this selection item.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>itemDescription</b>
+                    <i>String</i>
+                    <span>The description of the current item.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>itemLabel</b>
+                    <i>String</i>
+                    <span>The string which will be presented to the user for this option.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>itemValue</b>
+                    <i>String</i>
+                    <span>The value for this item.</span>
+                </li>
+                <li class="attr-required">
+                    <b>value</b>
+                    <i>ValueExpression</i>
+                    <span>The initial value of this component.</span>
+                </li>
+                <li class="attr-unimpl">
+                    <b>var</b>
+                    <i>String</i>
+                    <span>Name of a request-scope attribute under which the current item of the collection,
+                        array, etc. of the value attribute will be exposed so that it can be referred to in EL
+                        for other attributes of this component.
+                    </span>
+                </li>
+                <li class="attr-unimpl">
+                    <b>noSelectionValue</b>
+                    <i>Boolean</i>
+                    <span>Is either an EL expression pointing to the element in the value collection whose value
+                        should be marked as a "no selection" item, or a literal string that exactly matches the
+                        value of the item in the collection that must be marked as the "no selection" item.
+                        If the user selects such an item and the field is marked as required, then it will
+                        not pass validation.
+                    </span>
                 </li>
                 <li class="attr-unimpl">
                     <b>binding</b>

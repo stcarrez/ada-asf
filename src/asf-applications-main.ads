@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -168,18 +168,19 @@ package ASF.Applications.Main is
                         Context : in EL.Contexts.ELContext'Class)
                         return EL.Objects.Object;
 
-   --  Register under the given name a function to create the bean instance when
-   --  it is accessed for a first time.  The scope defines the scope of the bean.
-   --  bean
---     procedure Register (App     : in out Application;
---                         Name    : in String;
---                         Handler : in Create_Bean_Access;
---                         Scope   : in Scope_Type := REQUEST_SCOPE);
-
    --  Register a bundle and bind it to a facelet variable.
    procedure Register (App    : in out Application;
                        Name   : in String;
                        Bundle : in String);
+
+   --  Register the bean identified by <b>Name</b> and associated with the class <b>Class</b>.
+   --  The class must have been registered by using the <b>Register</b> class operation.
+   --  The scope defines the scope of the bean.
+   procedure Register (App     : in out Application;
+                       Name    : in String;
+                       Class   : in String;
+                       Params  : in Parameter_Bean_Ref.Ref;
+                       Scope   : in Scope_Type := REQUEST_SCOPE);
 
    --  Register under the name identified by <b>Name</b> the class instance <b>Class</b>.
    procedure Register_Class (App     : in out Application;

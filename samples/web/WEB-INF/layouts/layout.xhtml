@@ -18,7 +18,7 @@
     <ui:insert name="pageHeader"/>
     <title>#{title}</title>
 </head>
-<body class="#{not empty pageStyle ? pageStyle : ''}">
+<h:body styleClass="#{not empty pageStyle ? pageStyle : ''}">
 <!-- Top header with user account -->
 <div id='awa-hdr'>
   <div id='awa-top'>
@@ -67,6 +67,6 @@
 <!--DEV_START-->
 <ui:debug/>
 <!--DEV_END-->
-</body>
+</h:body>
 </html>
 </f:view>

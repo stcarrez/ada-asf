@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,13 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with EL.Objects;
+with Util.Strings;
+with ASF.Utils;
 package body ASF.Components.Html.Links is
 
    use EL.Objects;
+
+   LINK_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 
    --  ------------------------------
    --  Get the value to write on the output.
@@ -38,19 +42,62 @@ package body ASF.Components.Html.Links is
       UI.Value := Value;
    end Set_Value;
 
+   --  ------------------------------
+   --  Get the link to be rendered in the <b>href</b> attribute.
+   --  ------------------------------
+   function Get_Link (UI      : in UIOutputLink;
+                      Context : in Faces_Context'Class) return String is
+      Value : constant String := UI.Get_Attribute ("value", Context,  "");
+   begin
+      return Value;
+   end Get_Link;
+
+   --  ------------------------------
+   --  Encode the begining of the link.
+   --  ------------------------------
    procedure Encode_Begin (UI      : in UIOutputLink;
                            Context : in out Faces_Context'Class) is
-      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
-      Escape : constant Object := UI.Get_Attribute (Context, "escape");
    begin
-      Writer.Start_Optional_Element ("span");
-      UI.Render_Attributes (Context, Writer);
-      if Is_Null (Escape) or To_Boolean (Escape) then
-         Writer.Write_Text (UI.Get_Value);
-      else
-         Writer.Write_Text (UI.Get_Value);
+      if not UI.Is_Rendered (Context) then
+         return;
       end if;
-      Writer.End_Optional_Element ("span");
+      declare
+         Writer   : constant Response_Writer_Access := Context.Get_Response_Writer;
+         Disabled : constant Boolean := UI.Get_Attribute ("disabled", Context, False);
+      begin
+         if Disabled then
+            Writer.Start_Optional_Element ("span");
+         else
+            Writer.Start_Element ("a");
+            Writer.Write_Attribute ("href", UIOutputLink'Class (UI).Get_Link (Context));
+         end if;
+         UI.Render_Attributes (Context, Writer);
+      end;
    end Encode_Begin;
 
+   --  ------------------------------
+   --  Encode the end of the link.
+   --  ------------------------------
+   procedure Encode_End (UI      : in UIOutputLink;
+                         Context : in out Faces_Context'Class) is
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+      declare
+         Disabled : constant Boolean := UI.Get_Attribute ("disabled", Context, False);
+         Writer   : constant Response_Writer_Access := Context.Get_Response_Writer;
+      begin
+         if Disabled then
+            Writer.End_Optional_Element ("span");
+         else
+            Writer.End_Element ("a");
+         end if;
+      end;
+   end Encode_End;
+
+begin
+   Utils.Set_Text_Attributes (LINK_ATTRIBUTE_NAMES);
+   Utils.Set_Interactive_Attributes (LINK_ATTRIBUTE_NAMES);
+   Utils.Set_Link_Attributes (LINK_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Links;

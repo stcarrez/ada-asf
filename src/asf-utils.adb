@@ -54,6 +54,13 @@ package body ASF.Utils is
    ROWS_ATTR          : aliased constant String := "rows";
    COLS_ATTR          : aliased constant String := "cols";
 
+   CHARSET_ATTR       : aliased constant String := "charset";
+   SHAPE_ATTR         : aliased constant String := "shape";
+   REV_ATTR           : aliased constant String := "rev";
+   COORDS_ATTR        : aliased constant String := "coords";
+   TARGET_ATTR        : aliased constant String := "target";
+   HREFLANG_ATTR      : aliased constant String := "hreflang";
+
    --  ------------------------------
    --  Add in the <b>names</b> set, the basic text attributes that can be set
    --  on HTML elements (dir, lang, style, title).
@@ -141,5 +148,18 @@ package body ASF.Utils is
       Names.Insert (ON_RESET_ATTR'Access);
       Names.Insert (ON_SUBMIT_ATTR'Access);
    end Set_Form_Attributes;
+
+   --------------------
+   --  Add in the <b>names</b> set, the attributes which are specific to a link.
+   --  ------------------------------
+   procedure Set_Link_Attributes (Names : in out Util.Strings.String_Set.Set) is
+   begin
+      Names.Insert (CHARSET_ATTR'Access);
+      Names.Insert (SHAPE_ATTR'Access);
+      Names.Insert (REV_ATTR'Access);
+      Names.Insert (COORDS_ATTR'Access);
+      Names.Insert (TARGET_ATTR'Access);
+      Names.Insert (HREFLANG_ATTR'Access);
+   end Set_Link_Attributes;
 
 end ASF.Utils;

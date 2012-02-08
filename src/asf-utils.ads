@@ -53,6 +53,9 @@ package ASF.Utils is
    --  on <form> elements.
    procedure Set_Form_Attributes (Names : in out Util.Strings.String_Set.Set);
 
+   --  Add in the <b>names</b> set, the attributes which are specific to a link.
+   procedure Set_Link_Attributes (Names : in out Util.Strings.String_Set.Set);
+
    type Object_Array is array (Positive range <>) of Util.Beans.Objects.Object;
 
    package Formats is

@@ -1,0 +1,15 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:panelGroup layout="block">
+        A div element
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sampleName eq 'demo'}">
+        A text block which is not present (rendered = false)
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sampleName ne 'demo'}">
+        A text block which is present (rendered = true)
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sampleName ne 'demo'}" style="padding-top: 20px; color: red;">
+        A text block which is present (rendered = true)
+    </h:panelGroup>
+</div>

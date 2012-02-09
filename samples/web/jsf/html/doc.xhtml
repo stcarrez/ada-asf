@@ -396,6 +396,16 @@
                 Renders a list of items.
             </ui:define>
             <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>var</b>
+                    <i>String</i>
+                    <span>Name of the variable which holds the current row value.</span>
+                </li>
+                <li class="attr-required">
+                    <b>value</b>
+                    <i>ValueExpression</i>
+                    <span>The value expression representing the list to iterate on.</span>
+                </li>
                 <ui:include src="doc-common.xhtml"/>
                 <ui:include src="doc-style.xhtml"/>
             </ui:define>
@@ -578,6 +588,62 @@
                     <b>converter</b>
                     <i>Converter</i>
                     <span>Converter instance registered with this component.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'panelGroup'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:panelGroup"/>
+            <ui:define name="description">
+                This element is used to group other components where the specification requires one child element.
+                If any of the HTML or CSS attributes are set, its content is rendered within a span or div element.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <li class="attr-optional">
+                    <b>layout</b>
+                    <i>String</i>
+                    <span>The type of layout markup to use when rendering this group.
+                        If the value is "block" the renderer must produce an HTML "div" element.
+                        Otherwise HTML "span" element must be produced.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'selectOneMenu'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:selectOneMenu"/>
+            <ui:define name="description">
+                Allow the user to choose one option from a set of options.
+                Renders a drop-down menu (aka "combo-box") containing a set of choices, of which
+                only one can be chosen at a time. The available choices are defined via child
+                <tt>f:selectItem</tt> or <tt>f:selectItems</tt> elements.
+
+                <br></br>
+                The value attribute of this component is read to determine which of the available
+                options is initially selected; its value should match the "value" property of one of the
+                child <tt>SelectItem</tt> objects.
+
+                <br></br>
+                On submit of the enclosing form, the value attribute's bound property is updated to contain
+                the "value" property from the chosen <tt>SelectItem</tt>.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+                <li class="attr-optional">
+                    <b>layout</b>
+                    <i>String</i>
+                    <span>The type of layout markup to use when rendering this group.
+                        If the value is "block" the renderer must produce an HTML "div" element.
+                        Otherwise HTML "span" element must be produced.</span>
                 </li>
             </ui:define>
         </ui:decorate>

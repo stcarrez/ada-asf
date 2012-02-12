@@ -108,13 +108,13 @@ install:
 	${MKDIR} -p ${alidir}/asfunit
 	${MKDIR} -p ${awadir}/web/js
 	${MKDIR} -p ${awadir}/web/js/jquery-ui
-	${CP} asfunit/*.ad[bs] ${includedir}/asfunit
-	${CP} src/*.ad[bs] ${includedir}/asf
-	${CP} src/aws/*.ad[bs] ${includedir}/asf
+	${CP} -p asfunit/*.ad[bs] ${includedir}/asfunit
+	${CP} -p src/*.ad[bs] ${includedir}/asf
+	${CP} -p src/aws/*.ad[bs] ${includedir}/asf
 	sed -e "s,INSTALL,${prefix},g" < distrib/asf.gpr > ${projectdir}/asf.gpr
 	sed -e "s,INSTALL,${prefix},g" < distrib/asfunit.gpr > ${projectdir}/asfunit.gpr
-	${CP} lib/asf/*.ali ${alidir}/asf
-	${CP} lib/asfunit/*.ali ${alidir}/asfunit
+	${CP} -p lib/asf/*.ali ${alidir}/asf
+	${CP} -p lib/asfunit/*.ali ${alidir}/asfunit
 	${CP} lib/asf/libasf.a ${libdir}/
 	${CP} lib/asfunit/libasfunit.a ${libdir}/
 	${CP} web/js/*.js ${awadir}/web/js

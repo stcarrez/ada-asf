@@ -1,4 +1,5 @@
-Version 0.3     -
+Version 0.3     - Feb 2012
+  - Add documentation and examples for the supported tags
   - New components <h:inputTextarea>, <h:selectOneMenu>,
     <f:selectItem>, <f:selectItems>, <h:selectBooleanCheckbox>, <h:outputLabel>,
     <h:inputHidden>, <h:body>, <h:head>, <h:selectOneRadio>

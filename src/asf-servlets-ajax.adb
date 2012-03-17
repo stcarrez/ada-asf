@@ -107,7 +107,7 @@ package body ASF.Servlets.Ajax is
          Response.Send_Error (ASF.Responses.SC_NOT_FOUND, "Invalid request");
          return;
 
-      when EL.Variables.No_Variable =>
+      when EL.Variables.No_Variable | EL.Expressions.Invalid_Variable =>
          Response.Send_Error (ASF.Responses.SC_NOT_FOUND, "Invalid request");
          return;
 

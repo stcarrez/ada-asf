@@ -78,6 +78,18 @@ package body ASF.Server is
    end Register_Application;
 
    --  ------------------------------
+   --  Start the applications that have been registered.
+   --  ------------------------------
+   procedure Start (Server : in out Container) is
+   begin
+      if Server.Applications /= null then
+         for I in Server.Applications'Range loop
+            Server.Applications (I).Context.Start;
+         end loop;
+      end if;
+   end Start;
+
+   --  ------------------------------
    --  Receives standard HTTP requests from the public service method and dispatches
    --  them to the Do_XXX methods defined in this class. This method is an HTTP-specific
    --  version of the Servlet.service(Request, Response) method. There's no need

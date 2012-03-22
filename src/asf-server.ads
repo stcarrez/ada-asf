@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.server -- ASF Server
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,9 @@ package ASF.Server is
    procedure Register_Application (Server  : in out Container;
                                    URI     : in String;
                                    Context : in ASF.Servlets.Servlet_Registry_Access);
+
+   --  Start the applications that have been registered.
+   procedure Start (Server : in out Container);
 
    --  Receives standard HTTP requests from the public service method and dispatches
    --  them to the Do_XXX methods defined in this class. This method is an HTTP-specific

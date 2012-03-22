@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -407,6 +407,9 @@ package ASF.Servlets is
    --  operation.
    procedure Register_Application (Registry : in out Servlet_Registry;
                                    URI      : in String);
+
+   --  Start the application.
+   procedure Start (Registry : in out Servlet_Registry) is null;
 
 private
 

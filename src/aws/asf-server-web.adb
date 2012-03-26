@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.server -- ASF Server for AWS
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,33 +42,18 @@ package body ASF.Server.Web is
       Server := Instance'Unchecked_Access;
    end Initialize;
 
+   ----------------------
+   --  Start the applications that have been registered.
+   ----------------------
    procedure Start (Server : in out AWS_Container) is
    begin
       Log.Info ("Starting server...");
 
+      Container (Server).Start;
       AWS.Server.Start (Web_Server => Server.WS,
                         Config     => Server.Conf,
                         Callback   => ASF.Server.Web.Server_Callback'Access);
    end Start;
---
---     function Application_Dispatch (App     : Main.Application_Access;
---                                    Page    : String;
---                                    Request : AWS.Status.Data;
---                                    Status  : AWS.Messages.Status_Code)
---                                    return AWS.Response.Data is
---        Writer   : aliased ASF.Contexts.Writer.String.String_Writer;
---        Req      : aliased ASF.Requests.Web.Request;
---     begin
---        Writer.Initialize ("text/html", "UTF-8", 8192);
---
---        App.Dispatch (Page    => Page,
---                      Writer  => Writer'Unchecked_Access,
---                      Request => Req'Unchecked_Access);
---
---        return AWS.Response.Build (Content_Type    => Writer.Get_Content_Type,
---                                   Status_Code     => Status,
---                                   UString_Message => Writer.Get_Response);
---     end Application_Dispatch;
 
    ----------------------
    --  Main server callback

@@ -99,7 +99,6 @@ package body ASF.Sessions is
    --  ------------------------------
    function Get_Attribute (Sess : in Session;
                            Name : in String) return EL.Objects.Object is
-      Key : constant Unbounded_String := To_Unbounded_String (Name);
    begin
       if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
@@ -107,7 +106,7 @@ package body ASF.Sessions is
 
       Sess.Impl.Lock.Read;
       declare
-         Pos : constant EL.Objects.Maps.Cursor := Sess.Impl.Attributes.Find (Key);
+         Pos : constant EL.Objects.Maps.Cursor := Sess.Impl.Attributes.Find (Name);
       begin
          if EL.Objects.Maps.Has_Element (Pos) then
             return Value : constant EL.Objects.Object := EL.Objects.Maps.Element (Pos) do
@@ -139,18 +138,15 @@ package body ASF.Sessions is
       if Sess.Impl = null or else not Sess.Impl.Is_Active then
          raise No_Session;
       end if;
-
-      declare
-         Key : constant Unbounded_String := To_Unbounded_String (Name);
       begin
          Sess.Impl.Lock.Write;
          if EL.Objects.Is_Null (Value) then
             --  Do not complain if there is no attribute with the given name.
-            if Sess.Impl.Attributes.Contains (Key) then
-               Sess.Impl.Attributes.Delete (Key);
+            if Sess.Impl.Attributes.Contains (Name) then
+               Sess.Impl.Attributes.Delete (Name);
             end if;
          else
-            Sess.Impl.Attributes.Include (Key, Value);
+            Sess.Impl.Attributes.Include (Name, Value);
          end if;
 
       exception

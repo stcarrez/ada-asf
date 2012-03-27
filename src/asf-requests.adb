@@ -70,8 +70,7 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_Attribute (Req  : in Request;
                            Name : in String) return EL.Objects.Object is
-      Key : constant Ada.Strings.Unbounded.Unbounded_String := To_Unbounded_String (Name);
-      Pos : constant EL.Objects.Maps.Cursor := Req.Attributes.Find (Key);
+      Pos : constant EL.Objects.Maps.Cursor := Req.Attributes.Find (Name);
    begin
       if EL.Objects.Maps.Has_Element (Pos) then
          return EL.Objects.Maps.Element (Pos);
@@ -93,12 +92,11 @@ package body ASF.Requests is
    procedure Set_Attribute (Req   : in out Request;
                             Name  : in String;
                             Value : in EL.Objects.Object) is
-      Key : constant Ada.Strings.Unbounded.Unbounded_String := To_Unbounded_String (Name);
    begin
       if EL.Objects.Is_Null (Value) then
-         Req.Attributes.Delete (Key);
+         Req.Attributes.Delete (Name);
       else
-         Req.Attributes.Include (Key, Value);
+         Req.Attributes.Include (Name, Value);
       end if;
    end Set_Attribute;
 
@@ -124,7 +122,7 @@ package body ASF.Requests is
 
       procedure Process_Wrapper (Position : in EL.Objects.Maps.Cursor) is
       begin
-         Process.all (Name  => To_String (EL.Objects.Maps.Key (Position)),
+         Process.all (Name  => EL.Objects.Maps.Key (Position),
                       Value => EL.Objects.Maps.Element (Position));
       end Process_Wrapper;
 

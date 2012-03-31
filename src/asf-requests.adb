@@ -101,6 +101,30 @@ package body ASF.Requests is
    end Set_Attribute;
 
    --  ------------------------------
+   --  Stores a list of attributes in this request.
+   --  ------------------------------
+   procedure Set_Attributes (Req        : in out Request;
+                             Attributes : in Util.Beans.Objects.Maps.Map) is
+
+      procedure Set_Attribute (Name  : in String;
+                               Value : in Util.Beans.Objects.Object) is
+      begin
+         if EL.Objects.Is_Null (Value) then
+            Req.Attributes.Delete (Name);
+         else
+            Req.Attributes.Include (Name, Value);
+         end if;
+      end Set_Attribute;
+
+      Iter : Util.Beans.Objects.Maps.Cursor := Attributes.First;
+   begin
+      while Util.Beans.Objects.Maps.Has_Element (Iter) loop
+         Util.Beans.Objects.Maps.Query_Element (Iter, Set_Attribute'Access);
+         Util.Beans.Objects.Maps.Next (Iter);
+      end loop;
+   end Set_Attributes;
+
+   --  ------------------------------
    --  Removes an attribute from this request. This method is not generally needed
    --  as attributes only persist as long as the request is being handled.
    --  ------------------------------

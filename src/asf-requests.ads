@@ -89,6 +89,10 @@ package ASF.Requests is
                             Name  : in String;
                             Value : in EL.Objects.Object);
 
+   --  Stores a list of attributes in this request.
+   procedure Set_Attributes (Req        : in out Request;
+                             Attributes : in Util.Beans.Objects.Maps.Map);
+
    --  Removes an attribute from this request. This method is not generally needed
    --  as attributes only persist as long as the request is being handled.
    procedure Remove_Attribute (Req  : in out Request;

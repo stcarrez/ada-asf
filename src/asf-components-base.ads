@@ -212,6 +212,13 @@ package ASF.Components.Base is
    procedure Encode_Children (UI      : in UIComponent;
                               Context : in out Faces_Context'Class);
 
+   --  Encode the children components in a local buffer and after the rendering execute
+   --  the <b>Process</b> procedure with the generated content.
+   --  If this component is not rendered, do nothing.
+   procedure Wrap_Encode_Children (UI      : in UIComponent;
+                                   Context : in out ASF.Contexts.Faces.Faces_Context'Class;
+                                   Process : not null access procedure (Content : in String));
+
    procedure Encode_End (UI      : in UIComponent;
                          Context : in out Faces_Context'Class);
 

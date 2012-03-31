@@ -23,6 +23,8 @@ with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes;
 with ASF.Converters;
+with ASF.Contexts.Writer;
+with ASF.Contexts.Writer.String;
 with ASF.Components.Utils;
 with ASF.Components.Core;
 
@@ -570,6 +572,47 @@ package body ASF.Components.Base is
          Child := Child.Next;
       end loop;
    end Encode_Children;
+
+   --  ------------------------------
+   --  Encode the children components in a local buffer and after the rendering execute
+   --  the <b>Process</b> procedure with the generated content.
+   --  If this component is not rendered, do nothing.
+   --  ------------------------------
+   procedure Wrap_Encode_Children (UI      : in UIComponent;
+                                   Context : in out ASF.Contexts.Faces.Faces_Context'Class;
+                                   Process : not null access procedure (Content : in String)) is
+      Child : UIComponent_Access := UI.First_Child;
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+
+      elsif Child = null then
+         Process ("");
+
+      else
+         --  Replace temporarily the response writer by a local buffer.
+         --  Make sure that if an exception is raised, the original response writer is restored.
+         declare
+            Writer : constant Contexts.Writer.Response_Writer_Access
+              := Context.Get_Response_Writer;
+            Buffer : aliased ASF.Contexts.Writer.String.String_Writer;
+         begin
+            Context.Set_Response_Writer (Buffer'Unchecked_Access);
+            while Child /= null loop
+               Child.Encode_All (Context);
+               Child := Child.Next;
+            end loop;
+            Context.Set_Response_Writer (Writer);
+
+            Process (Ada.Strings.Unbounded.To_String (Buffer.Get_Response));
+
+         exception
+            when others =>
+               Context.Set_Response_Writer (Writer);
+               raise;
+         end;
+      end if;
+   end Wrap_Encode_Children;
 
    procedure Encode_End (UI      : in UIComponent;
                          Context : in out Faces_Context'Class) is

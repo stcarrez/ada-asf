@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-utils-escape -- Escape generated content produced by component children
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +32,7 @@ package ASF.Components.Utils.Escapes is
    --  Escape the content using Javascript escape rules.
    procedure Write_Content (UI      : in UIEscape;
                             Writer  : in out Contexts.Writer.Response_Writer'Class;
-                            Content : in Ada.Strings.Unbounded.Unbounded_String;
+                            Content : in String;
                             Context : in out ASF.Contexts.Faces.Faces_Context'Class);
 
    --  Encode the children components in a local buffer.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-utils-scripts -- Javascript queue
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ package body ASF.Components.Utils.Scripts is
    overriding
    procedure Write_Content (UI      : in UIScript;
                             Writer  : in out Contexts.Writer.Response_Writer'Class;
-                            Content : in Ada.Strings.Unbounded.Unbounded_String;
+                            Content : in String;
                             Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
       pragma Unreferenced (UI, Context);
    begin

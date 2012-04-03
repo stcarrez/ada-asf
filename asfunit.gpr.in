@@ -2,7 +2,7 @@ with "config";
 with "@UTIL_DIR@util";
 with "@UTIL_DIR@testutil";
 with "@EL_DIR@el";
-with "@AWS_DIR@aws";
+@WITH_SERVER@
 with "asf";
 
 project AsfUnit is
@@ -13,7 +13,7 @@ project AsfUnit is
 
    for Library_Dir use Library_Dir & "/asfunit";
    for Library_Name use "asfunit";
-   for Library_Kind use "static";
+   for Library_Kind use Config.Library_Type;
 
    for Object_Dir use "./" & Config'Object_Dir & "/obj/asfunit";
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";

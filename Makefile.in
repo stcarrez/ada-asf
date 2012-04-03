@@ -13,6 +13,8 @@ DIST_FILE=ada-asf-@ASF_VERSION@.tar.gz
 MKDIR=mkdir
 CP=cp
 
+ASF_SERVER=@ASF_SERVER@
+
 srcdir = .
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -31,9 +33,12 @@ build:
 	$(GNATMAKE) -p -P "$(GPRPATH)"
 
 # Build and run the unit tests
-test:	build
+test:	build regtests/asf-testsuite.adb
 	$(GNATMAKE) -p -Ptests
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
+
+regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile
+	gnatprep -DASF_SERVER=$(ASF_SERVER) regtests/asf-testsuite.gpb $@
 
 # Not intended for manual invocation.
 # Invoked if automatic builds are enabled.
@@ -45,6 +50,8 @@ autobuild:
 # Clean the root project of all build products.
 clean:	clean_test
 	$(GNATCLEAN) -q -P "$(GPRPATH)"
+	-rm -f lib/asf/*.a lib/asf/*.so
+	-rm -f lib/asfunit/*.a lib/asfunit/*.so
 
 # Clean the files produced by the unit tests
 clean_test:
@@ -67,7 +74,7 @@ rebuild: clean build
 # Files to package in source distribution
 DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
 configure.in Makefile.in install-sh distrib test.properties ChangeLog \
-asf.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
+asf.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr.in \
 src asfunit samples regtests web bundles samples.properties \
 bin obj lib
 
@@ -115,8 +122,13 @@ install:
 	sed -e "s,INSTALL,${prefix},g" < distrib/asfunit.gpr > ${projectdir}/asfunit.gpr
 	${CP} -p lib/asf/*.ali ${alidir}/asf
 	${CP} -p lib/asfunit/*.ali ${alidir}/asfunit
-	${CP} lib/asf/libasf.a ${libdir}/
-	${CP} lib/asfunit/libasfunit.a ${libdir}/
+	if test T@LIB_SHARED@ != Trelocatable ; then \
+	   ${CP} -p lib/asf/libasf.a ${libdir}/ && \
+	   ${CP} -p lib/asfunit/libasfunit.a ${libdir}/ ; \
+	else \
+	   ${CP} -p lib/asf/libasf.so ${libdir}/ && \
+	   ${CP} -p lib/asfunit/libasfunit.so ${libdir}/ ; \
+	fi
 	${CP} web/js/*.js ${awadir}/web/js
 	${CP} web/js/jquery-ui/*.js ${awadir}/web/js/jquery-ui
 
@@ -125,6 +137,8 @@ uninstall:
 	rm -rf ${includedir}/asfunit
 	rm -f ${libdir}/libasf.a
 	rm -f ${libdir}/libasfunit.a
+	rm -f ${libdir}/libasf.so
+	rm -f ${libdir}/libasfunit.so
 	rm -f ${projectdir}/asf.gpr
 	rm -f ${projectdir}/asfunit.gpr
 	rm -rf ${awadir}/web

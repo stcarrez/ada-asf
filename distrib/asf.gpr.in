@@ -1,13 +1,13 @@
 with "util";
 with "el";
-with "aws";
+@WITH_SERVER@
 
 project Asf is
-   Version := "0.1.0";
+   Version := "@ASF_VERSION@";
 
    for Library_Name use "asf";
    for Library_Dir use "INSTALL/lib";
-   for Library_Kind use "static";
+   for Library_Kind use "@LIB_SHARED@";
 
    for Source_Dirs use ("INSTALL/share/ada/adainclude/asf");
    for Library_ALI_Dir use "INSTALL/share/ada/adainclude/asf";

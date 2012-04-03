@@ -27,7 +27,9 @@ with ASF.Applications.Tests;
 with ASF.Models.Selects.Tests;
 with Security.Openid.Tests;
 with Security.Permissions.Tests;
+#if ASF_SERVER = "aws"
 with ASF.Clients.Tests;
+#end if;
 package body ASF.Testsuite is
 
    Tests : aliased Util.Tests.Test_Suite;
@@ -45,7 +47,9 @@ package body ASF.Testsuite is
       ASF.Sessions.Tests.Add_Tests (Ret);
       ASF.Servlets.Tests.Add_Tests (Ret);
 
+#if ASF_SERVER = "aws"
       ASF.Clients.Tests.Add_Tests (Ret);
+#end if;
       Security.Openid.Tests.Add_Tests (Ret);
       Security.Permissions.Tests.Add_Tests (Ret);
 

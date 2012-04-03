@@ -1,3 +1,6 @@
+Version 0.4     -
+  - Support for shared or static build configuration  
+
 Version 0.3     - Feb 2012
   - Add documentation and examples for the supported tags
   - New components <h:inputTextarea>, <h:selectOneMenu>,

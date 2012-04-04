@@ -120,7 +120,7 @@ package body ASF.Applications.Views.Tests is
       Filter      : constant Filter_Type := (others => True);
       Ent         : Directory_Entry_Type;
    begin
-      if Kind (Path) = Directory then
+      if Kind (Path) /= Directory then
          Ada.Text_IO.Put_Line ("Cannot read test directory: " & Path);
       end if;
 

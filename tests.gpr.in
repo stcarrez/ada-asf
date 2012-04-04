@@ -12,6 +12,13 @@ project Tests is
    Mains := ("asf_harness.adb");
 
    for Source_Dirs use ("regtests");
+   case Asf.Server is
+      when "aws" =>
+          for Source_Dirs use project'Source_Dirs & ("regtests/aws");
+
+      when others =>
+
+   end case;
 
    for Main use Mains;
 

@@ -31,6 +31,7 @@ alidir=${prefix}/share/ada/adainclude
 # Build executables for all mains defined by the project.
 build:
 	$(GNATMAKE) -p -P "$(GPRPATH)"
+	$(GNATMAKE) -p -Ptests
 
 # Build and run the unit tests
 test:	build regtests/asf-testsuite.adb

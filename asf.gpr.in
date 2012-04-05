@@ -7,6 +7,7 @@ project Asf is
 
    Version := "@ASF_VERSION@";
    Library_Dir := "@ASF_LIBDIR@";
+   Library_Type : Config.Library_Type_Type := external ("LIBRARY_TYPE", "static");
 
    type Server_Type is ("none", "aws");
    Server : Server_Type := external ("SERVER", "@ASF_SERVER@");
@@ -19,15 +20,16 @@ project Asf is
       when others =>
 
    end case;
-   for Library_Dir use Library_Dir & "/asf";
    for Library_Name use "asf";
-   for Library_Kind use Config.Library_Type;
+   for Library_Kind use Library_Type;
 
-   for Object_Dir use "./" & Config'Object_Dir & "/obj/asf";
+   for Library_Dir use Library_Dir & "/asf/" & Project'Library_Kind;
+   for Object_Dir use "./" & Config'Object_Dir & "/obj/asf/" & Project'Library_Kind;
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
 
    package Binder renames Config.Binder;
    package Builder renames Config.Builder;
    package Compiler renames Config.Compiler;
+   package Ide      renames Config.Ide;
 
 end Asf;

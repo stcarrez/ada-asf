@@ -8,18 +8,20 @@ with "asf";
 project AsfUnit is
 
    Library_Dir := "lib";
+   Library_Type : Config.Library_Type_Type := external ("LIBRARY_TYPE", "static");
 
    for Source_Dirs use ("asfunit");
 
-   for Library_Dir use Library_Dir & "/asfunit";
    for Library_Name use "asfunit";
-   for Library_Kind use Config.Library_Type;
+   for Library_Kind use Library_Type;
 
-   for Object_Dir use "./" & Config'Object_Dir & "/obj/asfunit";
+   for Library_Dir use Library_Dir & "/asfunit/" & Project'Library_Kind;
+   for Object_Dir use "./" & Config'Object_Dir & "/obj/asfunit/" & Project'Library_Kind;
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
 
-   package Binder renames Config.Binder;
-   package Builder renames Config.Builder;
+   package Binder   renames Config.Binder;
+   package Builder  renames Config.Builder;
    package Compiler renames Config.Compiler;
+   package Ide      renames Config.Ide;
 
 end AsfUnit;

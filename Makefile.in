@@ -1,19 +1,36 @@
+## The type of library we want to build. Possible values:
+##   relocatable
+##   static
+LIBRARY_TYPE=static
+
 # You may edit this makefile as long as you keep these original 
 # target names defined.
 MODE=debug
-GNATMAKE=gnatmake -XMODE=${MODE} -XPROCESSORS=4
+GNATMAKE=@GNATMAKE@
 GNATCLEAN=gnatclean
-GPRPATH=asf.gpr
 SVN=svn
+INSTALL=@INSTALL@
+
+GPRPATH=asf.gpr
 
 distdir=ada-asf-@ASF_VERSION@
 
 DIST_FILE=ada-asf-@ASF_VERSION@.tar.gz
 
+LN_S=@LN_S@
 MKDIR=mkdir
 CP=cp
+LN=ln -s
 
 ASF_SERVER=@ASF_SERVER@
+
+ifeq (${OS},Windows_NT)
+LIBEXT=dll
+LIBVER=dll
+else
+LIBEXT=so
+LIBVER=so.$(version)
+endif
 
 srcdir = .
 top_srcdir = @top_srcdir@
@@ -25,13 +42,30 @@ top_builddir = .
 awadir=${prefix}/share/ada/awa
 includedir=${prefix}/share/ada/adainclude
 projectdir=${prefix}/share/ada/adainclude
+bindir=${prefix}/bin
 libdir=${prefix}/lib
-alidir=${prefix}/share/ada/adainclude
+alidir=${libdir}/ada/adalib/
+
+MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=4
+
+ifeq (${BUILDS_SHARED},yes)
+all:     static shared
+install: install_static install_shared
+else
+all:     static
+install: install_static
+endif
 
 # Build executables for all mains defined by the project.
 build:
-	$(GNATMAKE) -p -P "$(GPRPATH)"
-	$(GNATMAKE) -p -Ptests
+	$(GNATMAKE) -m -p -P "$(GPRPATH)" $(MAKE_ARGS)
+	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS)
+
+static:
+	$(MAKE) LIBRARY_TYPE=static build
+
+shared:
+	$(MAKE) LIBRARY_TYPE=relocatable build
 
 # Build and run the unit tests
 test:	build regtests/asf-testsuite.adb
@@ -50,9 +84,10 @@ autobuild:
 
 # Clean the root project of all build products.
 clean:	clean_test
-	$(GNATCLEAN) -q -P "$(GPRPATH)"
-	-rm -f lib/asf/*.a lib/asf/*.so
-	-rm -f lib/asfunit/*.a lib/asfunit/*.so
+	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=static
+	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=relocatable
+	-rm -f lib/asf/*.a lib/asf/*.$(DLLEXT)
+	-rm -f lib/asfunit/*.a lib/asfunit/*.$(DLLEXT)
 
 # Clean the files produced by the unit tests
 clean_test:
@@ -108,12 +143,18 @@ dist:
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)
 
-install:
+install_static:
+	$(MAKE) LIBRARY_TYPE=static install_lib
+
+install_shared:
+	$(MAKE) LIBRARY_TYPE=relocatable install_lib
+
+install_lib:
 	$(MKDIR) -p ${includedir}/asf
 	$(MKDIR) -p ${includedir}/asfunit
 	$(MKDIR) -p ${projectdir}/
-	${MKDIR} -p ${alidir}/asf
-	${MKDIR} -p ${alidir}/asfunit
+	${MKDIR} -p ${alidir}/asf/$(LIBRARY_TYPE)
+	${MKDIR} -p ${alidir}/asfunit/$(LIBRARY_TYPE)
 	${MKDIR} -p ${awadir}/web/js
 	${MKDIR} -p ${awadir}/web/js/jquery-ui
 	${CP} -p asfunit/*.ad[bs] ${includedir}/asfunit
@@ -121,25 +162,30 @@ install:
 	${CP} -p src/aws/*.ad[bs] ${includedir}/asf
 	sed -e "s,INSTALL,${prefix},g" < distrib/asf.gpr > ${projectdir}/asf.gpr
 	sed -e "s,INSTALL,${prefix},g" < distrib/asfunit.gpr > ${projectdir}/asfunit.gpr
-	${CP} -p lib/asf/*.ali ${alidir}/asf
-	${CP} -p lib/asfunit/*.ali ${alidir}/asfunit
-	if test T@LIB_SHARED@ != Trelocatable ; then \
-	   ${CP} -p lib/asf/libasf.a ${libdir}/ && \
-	   ${CP} -p lib/asfunit/libasfunit.a ${libdir}/ ; \
-	else \
-	   ${CP} -p lib/asf/libasf.so ${libdir}/ && \
-	   ${CP} -p lib/asfunit/libasfunit.so ${libdir}/ ; \
-	fi
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/*.ali ${alidir}/asf
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/*.ali ${alidir}/asfunit
+ifeq ($(LIBRARY_TYPE),static)
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/libasf.a ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libasfunit.a ${libdir}/
+else
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/libasf.$(LIBEXT) ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libasfunit.$(LIBEXT) ${libdir}/
+	cd ${libdir} && \
+	rm -f libasf.$(LIBEXT) libasfunit.$(LIBEXT) && \
+	${LN} libasf.$(LIBVER) libasf.$(LIBEXT) && \
+	${LN} libasfunit.$(LIBVER) libasfunit.$(LIBEXT)
+endif
 	${CP} web/js/*.js ${awadir}/web/js
 	${CP} web/js/jquery-ui/*.js ${awadir}/web/js/jquery-ui
 
 uninstall:
 	rm -rf ${includedir}/asf
 	rm -rf ${includedir}/asfunit
+	rm -rf ${alidir}/asf ${alidir}/asfunit
 	rm -f ${libdir}/libasf.a
 	rm -f ${libdir}/libasfunit.a
-	rm -f ${libdir}/libasf.so
-	rm -f ${libdir}/libasfunit.so
+	rm -f ${libdir}/libasf.$(LIBEXT)
+	rm -f ${libdir}/libasfunit.$(LIBEXT)
 	rm -f ${projectdir}/asf.gpr
 	rm -f ${projectdir}/asfunit.gpr
 	rm -rf ${awadir}/web

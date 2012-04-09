@@ -133,6 +133,13 @@ package ASF.Requests.Mockup is
                            Position : in Positive;
                            Process  : not null access
                              procedure (Data : in ASF.Parts.Part'Class));
+
+   --  Process the part identifed by <b>Id</b> and executes the <b>Process</b> operation
+   --  with the part object.
+   procedure Process_Part (Req      : in out Request;
+                           Id       : in String;
+                           Process  : not null access
+                             procedure (Data : in ASF.Parts.Part'Class));
 private
 
    type Request is new ASF.Requests.Request with record

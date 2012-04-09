@@ -352,6 +352,13 @@ package ASF.Requests is
                            Process  : not null access
                              procedure (Data : in ASF.Parts.Part'Class)) is abstract;
 
+   --  Process the part identifed by <b>Id</b> and executes the <b>Process</b> operation
+   --  with the part object.
+   procedure Process_Part (Req      : in out Request;
+                           Id       : in String;
+                           Process  : not null access
+                             procedure (Data : in ASF.Parts.Part'Class)) is abstract;
+
    --  Returns True if the request is an AJAX request.
    function Is_Ajax_Request (Req : in Request) return Boolean;
 

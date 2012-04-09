@@ -148,4 +148,17 @@ package body ASF.Requests.Web is
       ASF.Parts.Web.Process_Part (AWS.Attachments.Get (Attachs, Position), Process);
    end Process_Part;
 
+   --  ------------------------------
+   --  Process the part identifed by <b>Id</b> and executes the <b>Process</b> operation
+   --  with the part object.
+   --  ------------------------------
+   procedure Process_Part (Req      : in out Request;
+                           Id       : in String;
+                           Process  : not null access
+                             procedure (Data : in ASF.Parts.Part'Class)) is
+      Attachs : constant AWS.Attachments.List := AWS.Status.Attachments (Req.Data.all);
+   begin
+      ASF.Parts.Web.Process_Part (AWS.Attachments.Get (Attachs, Id), Process);
+   end Process_Part;
+
 end ASF.Requests.Web;

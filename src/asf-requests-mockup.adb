@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests.mockup -- ASF Requests mockup
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -222,6 +222,18 @@ package body ASF.Requests.Mockup is
    --  ------------------------------
    procedure Process_Part (Req      : in out Request;
                            Position : in Positive;
+                           Process  : not null access
+                             procedure (Data : in ASF.Parts.Part'Class)) is
+   begin
+      null;
+   end Process_Part;
+
+   --  ------------------------------
+   --  Process the part identifed by <b>Id</b> and executes the <b>Process</b> operation
+   --  with the part object.
+   --  ------------------------------
+   procedure Process_Part (Req      : in out Request;
+                           Id       : in String;
                            Process  : not null access
                              procedure (Data : in ASF.Parts.Part'Class)) is
    begin

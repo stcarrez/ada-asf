@@ -223,7 +223,7 @@ package body ASF.Requests.Mockup is
    procedure Process_Part (Req      : in out Request;
                            Position : in Positive;
                            Process  : not null access
-                             procedure (Data : in Part'Class)) is
+                             procedure (Data : in ASF.Parts.Part'Class)) is
    begin
       null;
    end Process_Part;

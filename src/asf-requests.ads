@@ -27,6 +27,7 @@ with ASF.Cookies;
 with ASF.Sessions;
 with ASF.Responses;
 with ASF.Principals;
+with ASF.Parts;
 limited with ASF.Servlets;
 
 --  The <b>ASF.Requests</b> package is an Ada implementation of
@@ -34,28 +35,6 @@ limited with ASF.Servlets;
 package ASF.Requests is
 
    use Ada.Strings.Unbounded;
-
-   --  ------------------------------
-   --  Multi part content
-   --  ------------------------------
-   --  The <b>Part</b> type describes a mime part received in a request.
-   --  The content is stored in a file and several operations are provided
-   --  to manage the content.
-   type Part is abstract new Ada.Finalization.Limited_Controlled with private;
-
-   --  Get the size of the mime part.
-   function Get_Size (Data : in Part) return Natural;
-
-   --  Get the content name submitted in the mime part.
-   function Get_Name (Data : in Part) return String;
-
-   --  Get the content type of the part.
-   function Get_Content_Type (Data : in Part) return String;
-
-   --  Get
---     function Get_Stream (Data : in Part) return Util.Stream.Buffer;
-   procedure Save (Data : in Part;
-                   Path : in String);
 
    --  ------------------------------
    --  Request
@@ -371,7 +350,7 @@ package ASF.Requests is
    procedure Process_Part (Req      : in out Request;
                            Position : in Positive;
                            Process  : not null access
-                             procedure (Data : in Part'Class)) is abstract;
+                             procedure (Data : in ASF.Parts.Part'Class)) is abstract;
 
    --  Returns True if the request is an AJAX request.
    function Is_Ajax_Request (Req : in Request) return Boolean;
@@ -424,13 +403,6 @@ private
       Path_Info  : Unbounded_String;
       Servlet    : access ASF.Servlets.Servlet'Class;
       Info       : Request_Data_Access := null;
-   end record;
-
-   type Part is abstract new Ada.Finalization.Limited_Controlled with record
-      Path         : Unbounded_String;
-      Size         : Natural;
-      Name         : Unbounded_String;
-      Content_Type : Unbounded_String;
    end record;
 
 end ASF.Requests;

@@ -50,6 +50,8 @@ package body ASF.Server.Web is
       Log.Info ("Starting server...");
 
       Container (Server).Start;
+
+      AWS.Config.Set.Upload_Directory (Server.Conf, "upload");
       AWS.Server.Start (Web_Server => Server.WS,
                         Config     => Server.Conf,
                         Callback   => ASF.Server.Web.Server_Callback'Access);

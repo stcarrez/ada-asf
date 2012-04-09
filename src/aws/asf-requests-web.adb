@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,9 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with AWS.Attachments;
+
+with ASF.Parts.Web;
 package body ASF.Requests.Web is
 
    function Get_Parameter (R : Request; Name : String) return String is
@@ -42,9 +45,11 @@ package body ASF.Requests.Web is
       return AWS.Status.Method (Req.Data.all);
    end Get_Method;
 
+   --  ------------------------------
    --  Returns the name and version of the protocol the request uses in the form
    --  protocol/majorVersion.minorVersion, for example, HTTP/1.1. For HTTP servlets,
    --  the value returned is the same as the value of the CGI variable SERVER_PROTOCOL.
+   --  ------------------------------
    function Get_Protocol (Req : in Request) return String is
    begin
       return AWS.Status.HTTP_Version (Req.Data.all);
@@ -127,7 +132,7 @@ package body ASF.Requests.Web is
    --  ------------------------------
    function Get_Part_Count (Req : in Request) return Natural is
    begin
-      return 0;
+      return AWS.Attachments.Count (AWS.Status.Attachments (Req.Data.all));
    end Get_Part_Count;
 
    --  ------------------------------
@@ -137,9 +142,10 @@ package body ASF.Requests.Web is
    procedure Process_Part (Req      : in out Request;
                            Position : in Positive;
                            Process  : not null access
-                             procedure (Data : in Part'Class)) is
+                             procedure (Data : in ASF.Parts.Part'Class)) is
+       Attachs : constant AWS.Attachments.List := AWS.Status.Attachments (Req.Data.all);
    begin
-      null;
+      ASF.Parts.Web.Process_Part (AWS.Attachments.Get (Attachs, Position), Process);
    end Process_Part;
 
 end ASF.Requests.Web;

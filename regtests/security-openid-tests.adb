@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-openid - Tests for OpenID
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,13 +22,16 @@ with ASF.Requests.Mockup;
 with ASF.Clients.Files;
 
 with Util.Test_Caller;
-with Util.Tests;
 with Ada.Text_IO;
 package body Security.Openid.Tests is
 
    use Util.Tests;
 
    package Caller is new Util.Test_Caller (Test, "Security.Openid");
+
+   procedure Check_Discovery (T    : in out Test;
+                              Name : in String;
+                              URI  : in String);
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
@@ -41,13 +44,15 @@ package body Security.Openid.Tests is
    procedure Check_Discovery (T    : in out Test;
                               Name : in String;
                               URI  : in String) is
+      pragma Unreferenced (URI, T);
+
       M      : Manager;
       Dir    : constant String := "regtests/files/discover/";
       Path   : constant String := Util.Tests.Get_Path (Dir);
       Result : End_Point;
    begin
       ASF.Clients.Files.Register;
-      ASF.Clients.Files.Set_File ( Path & Name & ".xrds");
+      ASF.Clients.Files.Set_File (Path & Name & ".xrds");
       M.Discover (Name   => Name,
                   Result => Result);
       Ada.Text_IO.Put_Line ("Result: " & To_String (Result));

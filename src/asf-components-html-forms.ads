@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ package ASF.Components.Html.Forms is
 
    --  Message displayed when the submitted value is required but is empty.
    REQUIRED_MESSAGE_ID          : constant String := "asf.faces.component.UIInput.REQUIRED";
+
 
    --  ------------------------------
    --  Input Component
@@ -134,6 +135,21 @@ package ASF.Components.Html.Forms is
                            Context : in out Faces_Context'Class);
 
    --  ------------------------------
+   --  InputFile Component
+   --  ------------------------------
+   type UIInput_File is new UIInput with private;
+   type UIInput_File_Access is access all UIInput_File'Class;
+
+   --  Render the input file element.
+   overriding
+   procedure Render_Input (UI      : in UIInput_File;
+                           Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Process_Updates (UI      : in out UIInput_File;
+                              Context : in out Faces_Context'Class);
+
+   --  ------------------------------
    --  Button Component
    --  ------------------------------
    type UICommand is new UIHtmlComponent with private;
@@ -219,6 +235,8 @@ private
    end record;
 
    type UIInput_Hidden is new UIInput with null record;
+
+   type UIInput_File is new UIInput with null record;
 
    type UICommand is new UIHtmlComponent with record
       Value : EL.Objects.Object;

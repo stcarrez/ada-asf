@@ -22,7 +22,10 @@ with Util.Beans.Objects;
 with Util.Log.Loggers;
 with Ada.Exceptions;
 with ASF.Utils;
+with ASF.Parts;
+with ASF.Parts.Upload_Method;
 with ASF.Converters;
+with ASF.Requests;
 with ASF.Components.Utils;
 with ASF.Components.Root;
 with ASF.Events.Faces.Actions;
@@ -35,11 +38,13 @@ package body ASF.Components.Html.Forms is
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Components.Html.Forms");
 
-   FORM_ATTRIBUTE_NAMES   : Util.Strings.String_Set.Set;
+   FORM_ATTRIBUTE_NAMES      : Util.Strings.String_Set.Set;
 
-   INPUT_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
+   INPUT_ATTRIBUTE_NAMES     : Util.Strings.String_Set.Set;
 
    TEXTAREA_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
+
+   FILE_ATTRIBUTE_NAMES      : Util.Strings.String_Set.Set;
 
    procedure Free is
       new Ada.Unchecked_Deallocation (Object => ASF.Validators.Validator'Class,
@@ -368,6 +373,56 @@ package body ASF.Components.Html.Forms is
    end Render_Input;
 
    --  ------------------------------
+   --  Render the input file element.
+   --  ------------------------------
+   overriding
+   procedure Render_Input (UI      : in UIInput_File;
+                           Context : in out Faces_Context'Class) is
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
+   begin
+      Writer.Start_Element ("input");
+      UI.Render_Attributes (Context, FILE_ATTRIBUTE_NAMES, Writer);
+      Writer.Write_Attribute (Name => "type", Value => "file");
+      Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
+      Writer.End_Element ("input");
+   end Render_Input;
+
+   overriding
+   procedure Process_Updates (UI      : in out UIInput_File;
+                              Context : in out Faces_Context'Class) is
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+      declare
+         procedure Process_Part (Part : in ASF.Parts.Part'Class);
+
+         Id  : constant String := To_String (UI.Get_Client_Id);
+         Req : constant ASF.Requests.Request_Access := Context.Get_Request;
+         ME  : constant EL.Expressions.Method_Expression
+           := UI.Get_Method_Expression (VALUE_NAME);
+
+         procedure Process_Part (Part : in ASF.Parts.Part'Class) is
+         begin
+            ASF.Parts.Upload_Method.Execute (ME, Part, Context.Get_ELContext.all);
+         end Process_Part;
+
+      begin
+         Req.Process_Part (Id, Process_Part'Access);
+         UI.Is_Valid := True;
+      end;
+
+   exception
+      when E : others =>
+         UI.Is_Valid := False;
+         UI.Add_Message (CONVERTER_MESSAGE_NAME, "convert", Context);
+         Log.Info (Utils.Get_Line_Info (UI)
+                   & ": Exception raised when updating value {0} for component {1}: {2}",
+                   EL.Objects.To_String (UI.Submitted_Value),
+                   To_String (UI.Get_Client_Id), Ada.Exceptions.Exception_Name (E));
+   end Process_Updates;
+
+   --  ------------------------------
    --  Button Component
    --  ------------------------------
 
@@ -583,4 +638,8 @@ begin
    ASF.Utils.Set_Form_Attributes (FORM_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Input_Attributes (INPUT_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Textarea_Attributes (TEXTAREA_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_File_Attributes (FILE_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Interactive_Attributes (FILE_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Text_Attributes (FILE_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Input_Attributes (FILE_ATTRIBUTE_NAMES);
 end ASF.Components.Html.Forms;

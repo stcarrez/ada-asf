@@ -38,6 +38,7 @@ package body ASF.Utils is
 
    ON_RESET_ATTR      : aliased constant String := "onreset";
    ON_SUBMIT_ATTR     : aliased constant String := "onsubmit";
+   ENCTYPE_ATTR       : aliased constant String := "enctype";
 
    ON_LOAD_ATTR       : aliased constant String := "onload";
    ON_UNLOAD_ATTR     : aliased constant String := "onunload";
@@ -50,6 +51,8 @@ package body ASF.Utils is
    ALT_ATTR           : aliased constant String := "alt";
    DISABLED_ATTR      : aliased constant String := "disabled";
    READONLY_ATTR      : aliased constant String := "readonly";
+
+   ACCEPT_ATTR        : aliased constant String := "accept";
 
    ROWS_ATTR          : aliased constant String := "rows";
    COLS_ATTR          : aliased constant String := "cols";
@@ -147,6 +150,7 @@ package body ASF.Utils is
    begin
       Names.Insert (ON_RESET_ATTR'Access);
       Names.Insert (ON_SUBMIT_ATTR'Access);
+      Names.Insert (ENCTYPE_ATTR'Access);
    end Set_Form_Attributes;
 
    --------------------
@@ -161,5 +165,13 @@ package body ASF.Utils is
       Names.Insert (TARGET_ATTR'Access);
       Names.Insert (HREFLANG_ATTR'Access);
    end Set_Link_Attributes;
+
+   --  ------------------------------
+   --  Add in the <b>names</b> set, the attributes which are specific to an input file.
+   --  ------------------------------
+   procedure Set_File_Attributes (Names : in out Util.Strings.String_Set.Set) is
+   begin
+      Names.Insert (ACCEPT_ATTR'Access);
+   end Set_File_Attributes;
 
 end ASF.Utils;

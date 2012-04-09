@@ -213,6 +213,26 @@
         </ui:decorate>
     </c:when>
 
+    <c:when test="#{param['code'] eq 'inputFile'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:inputFile"/>
+            <ui:define name="description">
+                Renders an HTML <tt>input</tt> element of type <tt>file</tt>.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-converter.xhtml"/>
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+
+                <li class="attr-unimpl">
+                    <b>binding</b>
+                    <i>ValueExpression</i>
+                    <span>A <tt>ValueExpression</tt> that evaluates to a UIComponent.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
     <c:when test="#{param['code'] eq 'inputHidden'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="h:inputHidden"/>

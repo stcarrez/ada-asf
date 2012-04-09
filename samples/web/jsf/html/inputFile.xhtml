@@ -1,0 +1,23 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <div class="ui-widget ui-widget-header">
+        Compute the volume of a cylinder
+    </div>
+    <h:form id='text-form' enctype='multipart/form-data'>
+        <dl>
+            <dt><label for='file'>File to upload</label></dt>
+            <dd>
+                <h:inputFile id='file' size='50' value='#{image.image}'
+                             styleClass="ui-corner-all">
+                </h:inputFile>
+                <h:message for='file'/>
+            </dd>
+        </dl>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='run' value='Upload' action="#{image.post}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>

@@ -48,6 +48,13 @@
          <code class="prettyprint lang-head linenums:1"><util:file src="/jsf/html/head.xhtml" escape="true"/>
          </code>
      </c:when>
+     <c:when test="#{param['code'] eq 'inputFile'}">
+        <util:script>
+            Sample_Highlight('inputFile','h:inputFile');
+        </util:script>
+        <code class="prettyprint lang-inputFile linenums:1"><util:file src="/jsf/html/inputFile.xhtml" escape="true"/>
+        </code>
+    </c:when>
     <c:when test="#{param['code'] eq 'inputHidden'}">
         <util:script>
             Sample_Highlight('inputHidden','h:inputHidden');

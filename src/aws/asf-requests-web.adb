@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with AWS.Attachments;
+with AWS.Attachments.Extend;
 
 with ASF.Parts.Web;
 package body ASF.Requests.Web is
@@ -156,9 +156,20 @@ package body ASF.Requests.Web is
                            Id       : in String;
                            Process  : not null access
                              procedure (Data : in ASF.Parts.Part'Class)) is
+      procedure Process_Part (E : in AWS.Attachments.Element);
+
+      procedure Process_Part (E : in AWS.Attachments.Element) is
+         Name : constant String := AWS.Attachments.Extend.Get_Name (E);
+      begin
+         if Id = Name then
+            ASF.Parts.Web.Process_Part (E, Process);
+         end if;
+      end Process_Part;
+
       Attachs : constant AWS.Attachments.List := AWS.Status.Attachments (Req.Data.all);
    begin
-      ASF.Parts.Web.Process_Part (AWS.Attachments.Get (Attachs, Id), Process);
+      AWS.Attachments.Iterate (Attachs, Process_Part'Access);
+--        ASF.Parts.Web.Process_Part (AWS.Attachments.Get (Attachs, Id), Process);
    end Process_Part;
 
 end ASF.Requests.Web;

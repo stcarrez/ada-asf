@@ -145,6 +145,16 @@ package ASF.Components.Html.Forms is
    procedure Render_Input (UI      : in UIInput_File;
                            Context : in out Faces_Context'Class);
 
+   --  Validate the submitted file.
+   --  <ul>
+   --     <li>Retreive the submitted value
+   --     <li>If the value is null, exit without further processing.
+   --     <li>Validate the value by calling <b>Validate_Value</b>
+   --  </ul>
+   overriding
+   procedure Validate (UI      : in out UIInput_File;
+                       Context : in out Faces_Context'Class);
+
    overriding
    procedure Process_Updates (UI      : in out UIInput_File;
                               Context : in out Faces_Context'Class);

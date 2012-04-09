@@ -387,6 +387,44 @@ package body ASF.Components.Html.Forms is
       Writer.End_Element ("input");
    end Render_Input;
 
+   --  ------------------------------
+   --  Validate the submitted value.
+   --  <ul>
+   --     <li>Retreive the submitted value
+   --     <li>If the value is null, exit without further processing.
+   --     <li>Validate the value by calling <b>Validate_Value</b>
+   --  </ul>
+   --  ------------------------------
+   overriding
+   procedure Validate (UI      : in out UIInput_File;
+                       Context : in out Faces_Context'Class) is
+      procedure Process_Part (Part : in ASF.Parts.Part'Class);
+
+      procedure Process_Part (Part : in ASF.Parts.Part'Class) is
+      begin
+         UI.Is_Valid := True;
+      end Process_Part;
+
+      Req : constant ASF.Requests.Request_Access := Context.Get_Request;
+      Id  : constant String := To_String (UI.Get_Client_Id);
+   begin
+      Log.Info ("validating input file {0}", Id);
+
+      UI.Is_Valid := False;
+      Req.Process_Part (Id, Process_Part'Access);
+
+      if not UI.Is_Valid and UI.Is_Required (Context) then
+         UI.Add_Message (Name    => REQUIRED_MESSAGE_NAME,
+                         Default => REQUIRED_MESSAGE_ID,
+                         Arg1    => UI.Get_Label (Context),
+                         Context => Context);
+         UI.Is_Valid := False;
+
+         --  Render the response after the current phase if something is wrong.
+         Context.Render_Response;
+      end if;
+   end Validate;
+
    overriding
    procedure Process_Updates (UI      : in out UIInput_File;
                               Context : in out Faces_Context'Class) is

@@ -1,0 +1,9 @@
+<h:form xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        enctype="multipart/form-data"
+	id="testFile" styleClass="test" style="color: red;"
+	value="Testing input file">
+  <h:inputFile id='file' value='#{some_bean.file}' size='40'/>
+  <h:inputFile id='second_file' value='#{some_bean.file}' size='40' maxlength='10000' accept='image/*'/>
+  <h:commandButton id='ok' action='#{some_bean.run}' value='Go'/>
+</h:form>

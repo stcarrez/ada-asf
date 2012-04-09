@@ -1,5 +1,7 @@
 Version 0.4     -
-  - Support for shared or static build configuration  
+  - Support for shared or static build configuration
+  - Support for file upload
+  - New component <h:inputFile>
 
 Version 0.3     - Feb 2012
   - Add documentation and examples for the supported tags

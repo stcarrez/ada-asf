@@ -24,7 +24,6 @@ with ASF.Requests.Tools;
 with ASF.Servlets.Faces;
 with Ada.Directories;
 
-with Util.Test_Caller;
 with Util.Files;
 with Util.Measures;
 package body ASF.Applications.Views.Tests is

@@ -30,15 +30,19 @@ package ASF.Parts.Web is
    type AWS_Part is new Part with private;
 
    --  Get the size of the mime part.
+   overriding
    function Get_Size (Data : in AWS_Part) return Natural;
 
    --  Get the content name submitted in the mime part.
+   overriding
    function Get_Name (Data : in AWS_Part) return String;
 
    --  Get the path of the local file which contains the part.
+   overriding
    function Get_Local_Filename (Data : in AWS_Part) return String;
 
    --  Get the content type of the part.
+   overriding
    function Get_Content_Type (Data : in AWS_Part) return String;
 
    --  Build a part instance from the AWS attachment and execute the <b>Process</b> operation.

@@ -73,6 +73,8 @@ package body ASF.Requests is
    --  ------------------------------
    procedure Set_Attributes (Req        : in out Request;
                              Attributes : in Util.Beans.Objects.Maps.Map) is
+      procedure Set_Attribute (Name  : in String;
+                               Value : in Util.Beans.Objects.Object);
 
       procedure Set_Attribute (Name  : in String;
                                Value : in Util.Beans.Objects.Object) is

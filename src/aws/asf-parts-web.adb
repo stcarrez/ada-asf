@@ -23,6 +23,7 @@ package body ASF.Parts.Web is
    --  ------------------------------
    --  Get the size of the mime part.
    --  ------------------------------
+   overriding
    function Get_Size (Data : in AWS_Part) return Natural is
    begin
       return AWS.Attachments.Extend.Get_Length (Data.Element);
@@ -31,6 +32,7 @@ package body ASF.Parts.Web is
    --  ------------------------------
    --  Get the content name submitted in the mime part.
    --  ------------------------------
+   overriding
    function Get_Name (Data : in AWS_Part) return String is
    begin
       return AWS.Attachments.Filename (Data.Element);
@@ -39,6 +41,7 @@ package body ASF.Parts.Web is
    --  ------------------------------
    --  Get the path of the local file which contains the part.
    --  ------------------------------
+   overriding
    function Get_Local_Filename (Data : in AWS_Part) return String is
    begin
       return AWS.Attachments.Local_Filename (Data.Element);
@@ -47,6 +50,7 @@ package body ASF.Parts.Web is
    --  ------------------------------
    --  Get the content type of the part.
    --  ------------------------------
+   overriding
    function Get_Content_Type (Data : in AWS_Part) return String is
    begin
       return AWS.Attachments.Content_Type (Data.Element);

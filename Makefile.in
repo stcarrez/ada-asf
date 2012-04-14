@@ -160,8 +160,8 @@ install_lib:
 	${CP} -p asfunit/*.ad[bs] ${includedir}/asfunit
 	${CP} -p src/*.ad[bs] ${includedir}/asf
 	${CP} -p src/aws/*.ad[bs] ${includedir}/asf
-	sed -e "s,INSTALL,${prefix},g" < distrib/asf.gpr > ${projectdir}/asf.gpr
-	sed -e "s,INSTALL,${prefix},g" < distrib/asfunit.gpr > ${projectdir}/asfunit.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/asf.gpr > ${projectdir}/asf.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/asfunit.gpr > ${projectdir}/asfunit.gpr
 	${CP} -p lib/asf/$(LIBRARY_TYPE)/*.ali ${alidir}/asf
 	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/*.ali ${alidir}/asfunit
 ifeq ($(LIBRARY_TYPE),static)

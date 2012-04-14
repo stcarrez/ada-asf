@@ -57,7 +57,7 @@ install: install_static
 endif
 
 # Build executables for all mains defined by the project.
-build:
+build: regtests/asf-testsuite.adb
 	$(GNATMAKE) -m -p -P "$(GPRPATH)" $(MAKE_ARGS)
 	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS)
 
@@ -68,7 +68,7 @@ shared:
 	$(MAKE) LIBRARY_TYPE=relocatable build
 
 # Build and run the unit tests
-test:	build regtests/asf-testsuite.adb
+test:	build
 	$(GNATMAKE) -p -Ptests
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
 

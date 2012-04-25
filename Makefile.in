@@ -39,7 +39,7 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 top_builddir = .
 
-awadir=${prefix}/share/ada/awa
+dynamodir=${prefix}/share/dynamo
 includedir=${prefix}/share/ada/adainclude
 projectdir=${prefix}/share/ada/adainclude
 bindir=${prefix}/bin
@@ -155,8 +155,9 @@ install_lib:
 	$(MKDIR) -p ${projectdir}/
 	${MKDIR} -p ${alidir}/asf/$(LIBRARY_TYPE)
 	${MKDIR} -p ${alidir}/asfunit/$(LIBRARY_TYPE)
-	${MKDIR} -p ${awadir}/web/js
-	${MKDIR} -p ${awadir}/web/js/jquery-ui
+	${MKDIR} -p ${dynamodir}/asf/bundles
+	${MKDIR} -p ${dynamodir}/asf/web/js
+	${MKDIR} -p ${dynamodir}/asf/web/js/jquery-ui
 	${CP} -p asfunit/*.ad[bs] ${includedir}/asfunit
 	${CP} -p src/*.ad[bs] ${includedir}/asf
 	${CP} -p src/aws/*.ad[bs] ${includedir}/asf
@@ -175,8 +176,11 @@ else
 	${LN} libasf.$(LIBVER) libasf.$(LIBEXT) && \
 	${LN} libasfunit.$(LIBVER) libasfunit.$(LIBEXT)
 endif
-	${CP} web/js/*.js ${awadir}/web/js
-	${CP} web/js/jquery-ui/*.js ${awadir}/web/js/jquery-ui
+	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd ${dynamodir}/asf/web && tar xf -)
+	${CP} bundles/*.properties ${dynamodir}/asf/bundles/
+	${CP} dynamo.xml ${dynamodir}/asf/
+	${CP} NOTICE.txt ${dynamodir}/asf/
+	${CP} LICENSE.txt ${dynamodir}/asf/
 
 uninstall:
 	rm -rf ${includedir}/asf

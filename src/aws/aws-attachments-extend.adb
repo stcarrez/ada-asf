@@ -16,10 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 package body AWS.Attachments.Extend is
-
-   use Ada.Strings.Unbounded;
 
    --  ------------------------------
    --  Get the length of the data content.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-main-tests - Unit tests for Applications
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,6 +40,10 @@ package body ASF.Applications.Main.Tests is
                        Test_Read_Configuration'Access);
       Caller.Add_Test (Suite, "Test ASF.Applications.Main.Create",
                        Test_Create_Bean'Access);
+      Caller.Add_Test (Suite, "Test ASF.Applications.Main.Load_Bundle",
+                       Test_Load_Bundle'Access);
+      Caller.Add_Test (Suite, "Test ASF.Applications.Main.Register,Load_Bundle",
+                       Test_Bundle_Configuration'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -127,5 +131,56 @@ package body ASF.Applications.Main.Tests is
       Check ("sessionForm", ASF.Beans.SESSION_SCOPE);
       Check ("requestForm", ASF.Beans.REQUEST_SCOPE);
    end Test_Create_Bean;
+
+   --  ------------------------------
+   --  Test loading a resource bundle through the application.
+   --  ------------------------------
+   procedure Test_Load_Bundle (T : in out Test) is
+      use type Util.Beans.Basic.Readonly_Bean_Access;
+
+      Path   : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-bundle.xml");
+      Bundle : ASF.Locales.Bundle;
+   begin
+      ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
+
+      T.App.Load_Bundle (Name   => "samples",
+                         Locale => "en",
+                         Bundle => Bundle);
+      Util.Tests.Assert_Equals (T, "Help", String '(Bundle.Get ("layout_help_label")),
+                                "Invalid bundle value");
+
+      T.App.Load_Bundle (Name   => "asf",
+                         Locale => "en",
+                         Bundle => Bundle);
+      Util.Tests.Assert_Matches (T, ".*greater than.*",
+                                 String '(Bundle.Get ("validators.length.maximum")),
+                                "Invalid bundle value");
+   end Test_Load_Bundle;
+
+   --  ------------------------------
+   --  Test application configuration and registration of resource bundles.
+   --  ------------------------------
+   procedure Test_Bundle_Configuration (T : in out Test) is
+      use type Util.Beans.Basic.Readonly_Bean_Access;
+
+      Path   : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-bundle.xml");
+      Result : Util.Beans.Basic.Readonly_Bean_Access;
+      Ctx    : EL.Contexts.Default.Default_Context;
+      Scope  : Scope_Type;
+   begin
+      ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
+
+      T.App.Create (Name    => Ada.Strings.Unbounded.To_Unbounded_String ("samplesMsg"),
+                    Context => Ctx,
+                    Result  => Result,
+                    Scope   => Scope);
+      T.Assert (Result /= null, "The samplesMsg bundle was not created");
+
+      T.App.Create (Name    => Ada.Strings.Unbounded.To_Unbounded_String ("defaultMsg"),
+                    Context => Ctx,
+                    Result  => Result,
+                    Scope   => Scope);
+      T.Assert (Result /= null, "The defaultMsg bundle was not created");
+   end Test_Bundle_Configuration;
 
 end ASF.Applications.Main.Tests;

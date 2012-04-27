@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-main-tests - Unit tests for Application
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,5 +43,11 @@ package ASF.Applications.Main.Tests is
 
    --  Test reading configuration and creation of a managed bean.
    procedure Test_Create_Bean (T : in out Test);
+
+   --  Test loading a resource bundle through the application.
+   procedure Test_Load_Bundle (T : in out Test);
+
+   --  Test application configuration and registration of resource bundles.
+   procedure Test_Bundle_Configuration (T : in out Test);
 
 end ASF.Applications.Main.Tests;

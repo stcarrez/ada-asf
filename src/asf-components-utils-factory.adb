@@ -22,6 +22,7 @@ with ASF.Components.Utils.Flush;
 with ASF.Components.Utils.Scripts;
 with ASF.Components.Utils.Escapes;
 with ASF.Components.Utils.Beans;
+with ASF.Components.Html.Messages;
 with Util.Strings.Transforms; use Util.Strings;
 package body ASF.Components.Utils.Factory is
 
@@ -127,6 +128,10 @@ package body ASF.Components.Utils.Factory is
       Mapper.Set_Function (Name      => "escapeXml",
                            Namespace => URI,
                            Func      => Escape_Xml'Access);
+      Mapper.Set_Function (Name      => "hasMessage",
+                           Namespace => URI,
+                           Func      => ASF.Components.Html.Messages.Has_Message'Access,
+                           Optimize  => False);
    end Set_Functions;
 
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object is

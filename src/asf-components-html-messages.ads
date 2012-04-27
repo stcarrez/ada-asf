@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.messages -- Faces messages
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,18 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
+
 with ASF.Applications.Messages.Vectors;
 
 --  The <b>ASF.Components.Html.Messages</b> package implements the <b>h:message</b>
 --  and <b>h:messages</b> components.
 package ASF.Components.Html.Messages is
+
+   --  Check whether the UI component whose name is given in <b>Name</b> has some messages
+   --  associated with it.
+   --  ------------------------------
+   function Has_Message (Name : in Util.Beans.Objects.Object) return Util.Beans.Objects.Object;
 
    type Message_Mode is (SPAN_NO_STYLE, SPAN, LIST, TABLE);
 

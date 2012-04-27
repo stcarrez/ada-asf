@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.messages -- Faces messages
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
-with Util.Beans.Objects;
 
 with ASF.Utils;
 with ASF.Applications.Messages;
@@ -39,6 +37,24 @@ package body ASF.Components.Html.Messages is
    WARN_ATTRIBUTE_NAMES   : Util.Strings.String_Set.Set;
 
    INFO_ATTRIBUTE_NAMES   : Util.Strings.String_Set.Set;
+
+   --  ------------------------------
+   --  Check whether the UI component whose name is given in <b>Name</b> has some messages
+   --  associated with it.
+   --  ------------------------------
+   function Has_Message (Name : in Util.Beans.Objects.Object) return Util.Beans.Objects.Object is
+      Context  : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
+   begin
+      if Context = null then
+         return Util.Beans.Objects.To_Object (False);
+      end if;
+      declare
+         Id   : constant String := Util.Beans.Objects.To_String (Name);
+         Msgs : constant ASF.Applications.Messages.Vectors.Cursor := Context.Get_Messages (Id);
+      begin
+         return Util.Beans.Objects.To_Object (Applications.Messages.Vectors.Has_Element (Msgs));
+      end;
+   end Has_Message;
 
    --  ------------------------------
    --  Write a single message enclosed by the tag represented by <b>Tag</b>.

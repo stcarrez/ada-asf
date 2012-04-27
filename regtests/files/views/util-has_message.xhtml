@@ -1,0 +1,13 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <h:form id="testMessage" styleClass="test" style="color: red;"
+	  value="Testing message">
+     Has message: #{util:hasMessage('count')}
+     <h:inputHidden id='count' value='testing'>
+     </h:inputHidden>
+     <h:commandButton id='ok' action='#{some_bean.run}' value='Go'/>
+  </h:form>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications-main-configs -- Configuration support for ASF Applications
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,38 @@ package body ASF.Applications.Main.Configs is
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Applications.Main.Configs");
 
    --  ------------------------------
+   --  Save in the application config object the value associated with the given field.
+   --  When the <b>TAG_MESSAGE_BUNDLE</b> field is reached, insert the new bundle definition
+   --  in the application.
+   --  ------------------------------
+   procedure Set_Member (N     : in out Application_Config;
+                         Field : in Application_Fields;
+                         Value : in Util.Beans.Objects.Object) is
+   begin
+      case Field is
+         when TAG_MESSAGE_VAR =>
+            N.Name := Value;
+
+         when TAG_MESSAGE_BUNDLE =>
+            declare
+               Bundle : constant String := Util.Beans.Objects.To_String (Value);
+               Name   : constant String := Util.Beans.Objects.To_String (N.Name);
+            begin
+               if Name'Length = 0 then
+                  N.App.Register (Name   => Bundle & "Msg",
+                                  Bundle => Bundle);
+               else
+                  N.App.Register (Name   => Name,
+                                  Bundle => Bundle);
+               end if;
+            end;
+
+      end case;
+   end Set_Member;
+
+   AMapper : aliased Application_Mapper.Mapper;
+
+   --  ------------------------------
    --  Setup the XML parser to read the managed bean definitions.
    --  By instantiating this package, the <b>Reader</b> gets populated with the XML mappings
    --  to read the servlet, managed beans and navigation rules.
@@ -53,11 +85,19 @@ package body ASF.Applications.Main.Configs is
       pragma Warnings (Off, Navigation_Config);
       pragma Warnings (Off, Servlet_Config);
 
+      Config : aliased Application_Config;
+
    begin
       --  Install the property context that gives access
       --  to the application configuration properties
       Prop_Context.Set_Properties (App.Conf);
       Context.Set_Resolver (Prop_Context'Unchecked_Access);
+
+      Reader.Add_Mapping ("faces-config", AMapper'Access);
+      Reader.Add_Mapping ("module", AMapper'Access);
+      Reader.Add_Mapping ("web-app", AMapper'Access);
+      Config.App := App;
+      Application_Mapper.Set_Context (Reader, Config'Unchecked_Access);
    end Reader_Config;
 
    --  ------------------------------
@@ -109,4 +149,7 @@ package body ASF.Applications.Main.Configs is
 
    end Parameter;
 
+begin
+   AMapper.Add_Mapping ("application/message-bundle/@var", TAG_MESSAGE_VAR);
+   AMapper.Add_Mapping ("application/message-bundle", TAG_MESSAGE_BUNDLE);
 end ASF.Applications.Main.Configs;

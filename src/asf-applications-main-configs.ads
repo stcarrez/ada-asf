@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications-main-configs -- Configuration support for ASF Applications
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,9 @@ with EL.Contexts.Properties;
 with ASF.Contexts.Faces;
 with ASF.Applications.Main;
 
+with Util.Beans.Objects;
 with Util.Serialize.IO.XML;
+with Util.Serialize.Mappers.Record_Mapper;
 package ASF.Applications.Main.Configs is
 
    --  Read the configuration file associated with the application.  This includes:
@@ -58,5 +60,39 @@ package ASF.Applications.Main.Configs is
       function P return Config_Param;
       pragma Inline_Always (P);
    end Parameter;
+
+   --  ------------------------------
+   --  Application Specific Configuration
+   --  ------------------------------
+   --  Read the application specific configuration by using the XML mapper.
+   --  The application configuration looks like:
+   --
+   --    <application>
+   --      <message-bundle>name</message-bundle>
+   --      <message-bundle var='name'>bundle-name</message-bundle>
+   --    </application>
+   --
+   type Application_Config is limited record
+      Name    : Util.Beans.Objects.Object;
+      App     : ASF.Contexts.Faces.Application_Access;
+   end record;
+   type Application_Config_Access is access all Application_Config;
+
+   type Application_Fields is (TAG_MESSAGE_BUNDLE, TAG_MESSAGE_VAR);
+
+   --  Save in the application config object the value associated with the given field.
+   --  When the <b>TAG_MESSAGE_BUNDLE</b> field is reached, insert the new bundle definition
+   --  in the application.
+   procedure Set_Member (N     : in out Application_Config;
+                         Field : in Application_Fields;
+                         Value : in Util.Beans.Objects.Object);
+
+private
+
+   package Application_Mapper is
+     new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Application_Config,
+                                               Element_Type_Access => Application_Config_Access,
+                                               Fields              => Application_Fields,
+                                               Set_Member          => Set_Member);
 
 end ASF.Applications.Main.Configs;

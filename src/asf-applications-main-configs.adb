@@ -46,15 +46,15 @@ package body ASF.Applications.Main.Configs is
          when TAG_MESSAGE_BUNDLE =>
             declare
                Bundle : constant String := Util.Beans.Objects.To_String (Value);
-               Name   : constant String := Util.Beans.Objects.To_String (N.Name);
             begin
-               if Name'Length = 0 then
+               if Util.Beans.Objects.Is_Null (N.Name) then
                   N.App.Register (Name   => Bundle & "Msg",
                                   Bundle => Bundle);
                else
-                  N.App.Register (Name   => Name,
+                  N.App.Register (Name   => Util.Beans.Objects.To_String (N.Name),
                                   Bundle => Bundle);
                end if;
+               N.Name := Util.Beans.Objects.Null_Object;
             end;
 
       end case;

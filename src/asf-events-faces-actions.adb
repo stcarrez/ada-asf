@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-events-faces-actions -- Actions Events
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Lifecycles;
+
 package body ASF.Events.Faces.Actions is
 
    --  ------------------------------
@@ -33,7 +33,7 @@ package body ASF.Events.Faces.Actions is
                          Method : in EL.Expressions.Method_Expression) is
       Ev : constant Action_Event_Access := new Action_Event;
    begin
-      Ev.Phase     := ASF.Lifecycles.INVOKE_APPLICATION;
+      Ev.Phase     := ASF.Events.Phases.INVOKE_APPLICATION;
       Ev.Component := UI'Unchecked_Access;
       Ev.Method    := Method;
       UI.Queue_Event (Ev.all'Access);

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core -- ASF Core Components
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+
+with ASF.Events.Phases;
 
 with Ada.Unchecked_Deallocation;
 package body ASF.Components.Core is
@@ -140,7 +142,7 @@ package body ASF.Components.Core is
       Base.UIComponent (UI).Process_Decodes (Context);
 
       --  Dispatch events queued for this phase.
-      UI.Broadcast (ASF.Lifecycles.APPLY_REQUEST_VALUES, Context);
+      UI.Broadcast (ASF.Events.Phases.APPLY_REQUEST_VALUES, Context);
 
       --  Drop other events if the response is to be returned.
       if Context.Get_Render_Response or Context.Get_Response_Completed then
@@ -164,7 +166,7 @@ package body ASF.Components.Core is
       Base.UIComponent (UI).Process_Validators (Context);
 
       --  Dispatch events queued for this phase.
-      UI.Broadcast (ASF.Lifecycles.PROCESS_VALIDATION, Context);
+      UI.Broadcast (ASF.Events.Phases.PROCESS_VALIDATION, Context);
 
       --  Drop other events if the response is to be returned.
       if Context.Get_Render_Response or Context.Get_Response_Completed then
@@ -188,7 +190,7 @@ package body ASF.Components.Core is
       Base.UIComponent (UI).Process_Updates (Context);
 
       --  Dispatch events queued for this phase.
-      UI.Broadcast (ASF.Lifecycles.UPDATE_MODEL_VALUES, Context);
+      UI.Broadcast (ASF.Events.Phases.UPDATE_MODEL_VALUES, Context);
 
       --  Drop other events if the response is to be returned.
       if Context.Get_Render_Response or Context.Get_Response_Completed then
@@ -206,7 +208,7 @@ package body ASF.Components.Core is
                                   Context : in out Faces_Context'Class) is
    begin
       --  Dispatch events queued for this phase.
-      UI.Broadcast (ASF.Lifecycles.INVOKE_APPLICATION, Context);
+      UI.Broadcast (ASF.Events.Phases.INVOKE_APPLICATION, Context);
    end Process_Application;
 
    --  ------------------------------

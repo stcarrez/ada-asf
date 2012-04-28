@@ -66,6 +66,7 @@ package body ASF.Lifecycles is
    procedure Execute (Controller : in Lifecycle;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
       use type ASF.Contexts.Exceptions.Exception_Handler_Access;
+      use ASF.Events.Phases;
    begin
       for Phase in RESTORE_VIEW .. INVOKE_APPLICATION loop
          if Context.Get_Render_Response or Context.Get_Response_Completed then
@@ -98,7 +99,7 @@ package body ASF.Lifecycles is
    procedure Render (Controller : in Lifecycle;
                      Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
    begin
-      Controller.Controllers (RENDER_RESPONSE).Execute (Context);
+      Controller.Controllers (ASF.Events.Phases.RENDER_RESPONSE).Execute (Context);
    end Render;
 
 end ASF.Lifecycles;

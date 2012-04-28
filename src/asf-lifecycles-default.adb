@@ -30,6 +30,7 @@ package body ASF.Lifecycles.Default is
    --  the lifecycle handler.
    --  ------------------------------
    procedure Create_Phase_Controllers (Controller : in out Lifecycle) is
+      use ASF.Events.Phases;
    begin
       Controller.Set_Controller (Phase    => RESTORE_VIEW,
                                  Instance => new Lifecycles.Restore.Restore_Controller);

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles -- Lifecycle
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,16 +17,13 @@
 -----------------------------------------------------------------------
 
 with Ada.Finalization;
+
+with ASF.Events.Phases;
 with ASF.Contexts.Faces;
 limited with ASF.Applications.Main;
 package ASF.Lifecycles is
 
-   type Phase_Type is (RESTORE_VIEW,
-                       APPLY_REQUEST_VALUES,
-                       PROCESS_VALIDATION,
-                       UPDATE_MODEL_VALUES,
-                       INVOKE_APPLICATION,
-                       RENDER_RESPONSE);
+   subtype Phase_Type is ASF.Events.Phases.Phase_Type;
 
    type Phase_Controller is abstract tagged limited private;
    type Phase_Controller_Access is access all Phase_Controller'Class;

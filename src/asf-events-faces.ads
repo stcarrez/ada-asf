@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-events -- ASF Events
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 with Util.Events;
 with ASF.Lifecycles;
 with ASF.Components.Base;
+with ASF.Events.Phases;
 
 with Ada.Containers.Vectors;
 
@@ -56,7 +57,7 @@ private
                                                         Element_Type => Faces_Event_Access);
 
    type Faces_Event is new Util.Events.Event with record
-      Phase     : ASF.Lifecycles.Phase_Type := ASF.Lifecycles.RESTORE_VIEW;
+      Phase     : ASF.Events.Phases.Phase_Type := ASF.Events.Phases.RESTORE_VIEW;
       Component : Components.Base.UIComponent_Access := null;
    end record;
 

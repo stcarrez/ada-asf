@@ -306,6 +306,24 @@ package body ASF.Contexts.Faces is
    end Get_Application;
 
    --  ------------------------------
+   --  Get the current lifecycle phase.
+   --  ------------------------------
+   function Get_Current_Phase (Context : in Faces_Context) return ASF.Events.Phases.Phase_Type is
+   begin
+      return Context.Phase;
+   end Get_Current_Phase;
+
+   --  ------------------------------
+   --  Set the current lifecycle phase.  This operation is called by the lifecycle manager
+   --  each time the lifecycle phase changes.
+   --  ------------------------------
+   procedure Set_Current_Phase (Context : in out Faces_Context;
+                                Phase   : in ASF.Events.Phases.Phase_Type) is
+   begin
+      Context.Phase := Phase;
+   end Set_Current_Phase;
+
+   --  ------------------------------
    --  Get the component view root.
    --  ------------------------------
    function Get_View_Root (Context : in Faces_Context)

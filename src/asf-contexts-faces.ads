@@ -28,6 +28,7 @@ with ASF.Contexts.Writer;
 with ASF.Contexts.Exceptions;
 with ASF.Contexts.Flash;
 with ASF.Events.Exceptions;
+with ASF.Events.Phases;
 
 with EL.Objects;
 with EL.Contexts;
@@ -162,6 +163,14 @@ package ASF.Contexts.Faces is
    function Get_Application (Context : in Faces_Context)
                              return Application_Access;
 
+   --  Get the current lifecycle phase.
+   function Get_Current_Phase (Context : in Faces_Context) return ASF.Events.Phases.Phase_Type;
+
+   --  Set the current lifecycle phase.  This operation is called by the lifecycle manager
+   --  each time the lifecycle phase changes.
+   procedure Set_Current_Phase (Context : in out Faces_Context;
+                                Phase   : in ASF.Events.Phases.Phase_Type);
+
    --  Get the component view root.
    function Get_View_Root (Context : in Faces_Context)
                            return ASF.Components.Root.UIViewRoot;
@@ -255,6 +264,9 @@ private
       Render_Response    : Boolean := False;
       Response_Completed : Boolean := False;
 
+      --  True if the view is processed as part of an AJAX request.
+      Ajax               : Boolean := False;
+
       --  List of messages added indexed by the client identifier.
       Messages           : Message_Maps.Map;
 
@@ -263,10 +275,11 @@ private
 
       Root               : ASF.Components.Root.UIViewRoot;
 
+      --  The flash context.
       Flash              : aliased ASF.Contexts.Flash.Flash_Context;
 
-      --  True if the view is processed as part of an AJAX request.
-      Ajax               : Boolean := False;
+      --  The current lifecycle phase.
+      Phase              : ASF.Events.Phases.Phase_Type := ASF.Events.Phases.RESTORE_VIEW;
    end record;
 
    --  Release any storage held by this context.

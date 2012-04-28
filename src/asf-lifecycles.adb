@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles -- Lifecycle
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,6 +73,7 @@ package body ASF.Lifecycles is
             return;
          end if;
          begin
+            Context.Set_Current_Phase (Phase);
             Controller.Controllers (Phase).Execute (Context);
          exception
             when E : others =>
@@ -99,6 +100,7 @@ package body ASF.Lifecycles is
    procedure Render (Controller : in Lifecycle;
                      Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
    begin
+      Context.Set_Current_Phase (ASF.Events.Phases.RENDER_RESPONSE);
       Controller.Controllers (ASF.Events.Phases.RENDER_RESPONSE).Execute (Context);
    end Render;
 

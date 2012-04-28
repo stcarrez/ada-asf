@@ -23,7 +23,8 @@ with ASF.Contexts.Faces;
 limited with ASF.Applications.Main;
 package ASF.Lifecycles is
 
-   subtype Phase_Type is ASF.Events.Phases.Phase_Type;
+   subtype Phase_Type is
+     Events.Phases.Phase_Type range Events.Phases.RESTORE_VIEW .. Events.Phases.RENDER_RESPONSE;
 
    type Phase_Controller is abstract tagged limited private;
    type Phase_Controller_Access is access all Phase_Controller'Class;

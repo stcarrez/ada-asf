@@ -20,6 +20,7 @@ with Ada.Finalization;
 
 with ASF.Events.Phases;
 with ASF.Contexts.Faces;
+with Util.Concurrent.Arrays;
 limited with ASF.Applications.Main;
 package ASF.Lifecycles is
 
@@ -67,11 +68,23 @@ package ASF.Lifecycles is
    procedure Render (Controller : in Lifecycle;
                      Context    : in out ASF.Contexts.Faces.Faces_Context'Class);
 
+   --  Add a phase listener in the lifecycle controller.
+   procedure Add_Phase_Listener (Controller : in out Lifecycle;
+                                 Listener   : in ASF.Events.Phases.Phase_Listener_Access);
+
 private
    type Phase_Controller is abstract tagged limited null record;
 
+   use type ASF.Events.Phases.Phase_Listener_Access;
+
+   --  Use the concurrent arrays package so that we can insert phase listeners while
+   --  we also have the lifecycle manager which invokes listeners for the existing requests.
+   package Listener_Vectors is
+      new Util.Concurrent.Arrays (Element_Type => ASF.Events.Phases.Phase_Listener_Access);
+
    type Lifecycle is abstract new Ada.Finalization.Limited_Controlled with record
       Controllers : Phase_Controller_Array;
+      Listeners   : Listener_Vectors.Vector;
    end record;
 
 end ASF.Lifecycles;

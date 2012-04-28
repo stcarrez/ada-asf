@@ -67,29 +67,73 @@ package body ASF.Lifecycles is
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
       use type ASF.Contexts.Exceptions.Exception_Handler_Access;
       use ASF.Events.Phases;
+
+      Listeners : constant Listener_Vectors.Ref := Controller.Listeners.Get;
    begin
       for Phase in RESTORE_VIEW .. INVOKE_APPLICATION loop
          if Context.Get_Render_Response or Context.Get_Response_Completed then
             return;
          end if;
+         declare
+            procedure Before_Phase (Listener : in ASF.Events.Phases.Phase_Listener_Access);
+            procedure After_Phase (Listener : in ASF.Events.Phases.Phase_Listener_Access);
+
+            Event : ASF.Events.Phases.Phase_Event (Phase);
+
+            procedure Before_Phase (Listener : in ASF.Events.Phases.Phase_Listener_Access) is
+               P : constant ASF.Events.Phases.Phase_Type := Listener.Get_Phase;
+            begin
+               if P = Event.Phase or P = ASF.Events.Phases.ANY_PHASE then
+                  Listener.Before_Phase (Event);
+               end if;
+
+            exception
+               when E : others =>
+                  Context.Queue_Exception (E);
+            end Before_Phase;
+
+            procedure After_Phase (Listener : in ASF.Events.Phases.Phase_Listener_Access) is
+               P : constant ASF.Events.Phases.Phase_Type := Listener.Get_Phase;
+            begin
+               if P = Event.Phase or P = ASF.Events.Phases.ANY_PHASE then
+                  Listener.Before_Phase (Event);
+               end if;
+
+            exception
+               when E : others =>
+                  Context.Queue_Exception (E);
+            end After_Phase;
+
          begin
             Context.Set_Current_Phase (Phase);
-            Controller.Controllers (Phase).Execute (Context);
-         exception
-            when E : others =>
-               Context.Queue_Exception (E);
-         end;
 
-         --  If exceptions have been raised and queued during the current phase, process them.
-         --  An exception handler could use them to redirect the current request to another
-         --  page or navigate to a specific view.
-         declare
-            Ex : constant ASF.Contexts.Exceptions.Exception_Handler_Access
-              := Context.Get_Exception_Handler;
-         begin
-            if Ex /= null then
-               Ex.Handle;
+            --  Call the before phase listeners if there are some.
+            if not Listeners.Is_Empty then
+               Listeners.Iterate (Before_Phase'Access);
             end if;
+
+            begin
+               Controller.Controllers (Phase).Execute (Context);
+            exception
+               when E : others =>
+                  Context.Queue_Exception (E);
+            end;
+
+            if not Listeners.Is_Empty then
+               Listeners.Iterate (After_Phase'Access);
+            end if;
+
+            --  If exceptions have been raised and queued during the current phase, process them.
+            --  An exception handler could use them to redirect the current request to another
+            --  page or navigate to a specific view.
+            declare
+               Ex : constant ASF.Contexts.Exceptions.Exception_Handler_Access
+                 := Context.Get_Exception_Handler;
+            begin
+               if Ex /= null then
+                  Ex.Handle;
+               end if;
+            end;
          end;
       end loop;
    end Execute;
@@ -103,5 +147,14 @@ package body ASF.Lifecycles is
       Context.Set_Current_Phase (ASF.Events.Phases.RENDER_RESPONSE);
       Controller.Controllers (ASF.Events.Phases.RENDER_RESPONSE).Execute (Context);
    end Render;
+
+   --  ------------------------------
+   --  Add a phase listener in the lifecycle controller.
+   --  ------------------------------
+   procedure Add_Phase_Listener (Controller : in out Lifecycle;
+                                 Listener   : in ASF.Events.Phases.Phase_Listener_Access) is
+   begin
+      Controller.Listeners.Append (Listener);
+   end Add_Phase_Listener;
 
 end ASF.Lifecycles;

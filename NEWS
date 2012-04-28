@@ -3,6 +3,7 @@ Version 0.4     -
   - Support for file upload
   - New component <h:inputFile>
   - New function util:hasMessage
+  - Implement JSF phase events and phase listeners
 
 Version 0.3     - Feb 2012
   - Add documentation and examples for the supported tags

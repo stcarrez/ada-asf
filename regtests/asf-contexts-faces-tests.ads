@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,5 +31,8 @@ package ASF.Contexts.Faces.Tests is
 
    --  Test adding some exception in the faces context.
    procedure Test_Queue_Exception (T : in out Test);
+
+   --  Test the flash instance.
+   procedure Test_Flash_Context (T : in out Test);
 
 end ASF.Contexts.Faces.Tests;

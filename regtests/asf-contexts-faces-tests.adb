@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,8 @@ package body ASF.Contexts.Faces.Tests is
                        Test_Get_Messages'Access);
       Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Queue_Exception",
                        Test_Queue_Exception'Access);
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Get_Flash",
+                       Test_Flash_Context'Access);
    end Add_Tests;
 
    --  Test the faces message queue.
@@ -149,5 +151,17 @@ package body ASF.Contexts.Faces.Tests is
       Ctx.Iterate_Exception (Check_Exception'Access);
       Util.Tests.Assert_Equals (T, 3, Cnt, "3 exception should have been queued");
    end Test_Queue_Exception;
+
+   --  ------------------------------
+   --  Test the flash instance.
+   --  ------------------------------
+   procedure Test_Flash_Context (T : in out Test) is
+      use type ASF.Contexts.Flash.Flash_Context_Access;
+
+      Ctx   : Faces_Context;
+      Flash : constant ASF.Contexts.Flash.Flash_Context_Access := Ctx.Get_Flash;
+   begin
+      T.Assert (Flash /= null, "Null flash context returned");
+   end Test_Flash_Context;
 
 end ASF.Contexts.Faces.Tests;

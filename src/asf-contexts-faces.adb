@@ -177,6 +177,12 @@ package body ASF.Contexts.Faces is
       return Context.Response_Completed;
    end Get_Response_Completed;
 
+   --  Get the flash context allowing to add flash attributes.
+   function Get_Flash (Context : in Faces_Context) return Contexts.Flash.Flash_Context_Access is
+   begin
+      return Context.Flash'Unrestricted_Access;
+   end Get_Flash;
+
    --  ------------------------------
    --  Append the message to the list of messages associated with the specified
    --  client identifier.  If <b>Client_Id</b> is empty, the message is global

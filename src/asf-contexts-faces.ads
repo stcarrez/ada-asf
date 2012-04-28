@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ with ASF.Applications.Messages;
 with ASF.Applications.Messages.Vectors;
 with ASF.Contexts.Writer;
 with ASF.Contexts.Exceptions;
+with ASF.Contexts.Flash;
 with ASF.Events.Exceptions;
 
 with EL.Objects;
@@ -120,6 +121,9 @@ package ASF.Contexts.Faces is
 
    --  Check whether the response has been completed.
    function Get_Response_Completed (Context : in Faces_Context) return Boolean;
+
+   --  Get the flash context allowing to add flash attributes.
+   function Get_Flash (Context : in Faces_Context) return ASF.Contexts.Flash.Flash_Context_Access;
 
    --  Append the message to the list of messages associated with the specified
    --  client identifier.  If <b>Client_Id</b> is empty, the message is global
@@ -258,6 +262,8 @@ private
       Max_Severity       : Severity := NONE;
 
       Root               : ASF.Components.Root.UIViewRoot;
+
+      Flash              : aliased ASF.Contexts.Flash.Flash_Context;
 
       --  True if the view is processed as part of an AJAX request.
       Ajax               : Boolean := False;

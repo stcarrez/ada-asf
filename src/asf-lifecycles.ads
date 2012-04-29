@@ -72,6 +72,10 @@ package ASF.Lifecycles is
    procedure Add_Phase_Listener (Controller : in out Lifecycle;
                                  Listener   : in ASF.Events.Phases.Phase_Listener_Access);
 
+   --  Remove a phase listener that was registered in the lifecycle controller.
+   procedure Remove_Phase_Listener (Controller : in out Lifecycle;
+                                    Listener   : in ASF.Events.Phases.Phase_Listener_Access);
+
 private
    type Phase_Controller is abstract tagged limited null record;
 

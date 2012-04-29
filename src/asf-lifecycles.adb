@@ -176,4 +176,13 @@ package body ASF.Lifecycles is
       Controller.Listeners.Append (Listener);
    end Add_Phase_Listener;
 
+   --  ------------------------------
+   --  Remove a phase listener that was registered in the lifecycle controller.
+   --  ------------------------------
+   procedure Remove_Phase_Listener (Controller : in out Lifecycle;
+                                    Listener   : in ASF.Events.Phases.Phase_Listener_Access) is
+   begin
+      Controller.Listeners.Remove (Listener);
+   end Remove_Phase_Listener;
+
 end ASF.Lifecycles;

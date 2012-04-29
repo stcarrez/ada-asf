@@ -450,6 +450,16 @@ package body ASF.Applications.Tests is
       Request.Set_Cookie (Reply);
       Do_Get (Request, Reply, "/tests/flash-data.html", "flash-data.txt");
 
+      Assert_Matches (T, ".*Name: John.*",
+                      Reply, "Wrong form content");
+      Assert_Matches (T, ".*Email: john@gmail.com",
+                      Reply, "Wrong form content");
+
+      Request.Set_Cookie (Reply);
+      Do_Get (Request, Reply, "/tests/flash-data.html", "flash-data-2.txt");
+      Assert_Matches (T, ".*Name:  Email:",
+                      Reply, "Wrong form content");
+
    end Test_Flash_Object;
 
 

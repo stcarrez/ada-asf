@@ -212,6 +212,7 @@ package body ASF.Requests.Mockup is
    --  Get the number of parts included in the request.
    --  ------------------------------
    function Get_Part_Count (Req : in Request) return Natural is
+      pragma Unreferenced (Req);
    begin
       return 0;
    end Get_Part_Count;
@@ -239,5 +240,15 @@ package body ASF.Requests.Mockup is
    begin
       null;
    end Process_Part;
+
+   --  ------------------------------
+   --  Set the request cookie by using the cookie returned in the response.
+   --  ------------------------------
+   procedure Set_Cookie (Req  : in out Request;
+                         From : in ASF.Responses.Mockup.Response'Class) is
+      C : constant String := From.Get_Header ("Set-Cookie");
+   begin
+      Req.Set_Header ("Cookie", C);
+   end Set_Cookie;
 
 end ASF.Requests.Mockup;

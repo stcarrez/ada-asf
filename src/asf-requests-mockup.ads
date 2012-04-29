@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Strings.Maps;
+with ASF.Responses.Mockup;
 
 --  The <b>ASF.Requests.Mockup</b> provides a fake request object to simulate
 --  an HTTP request.
@@ -140,6 +141,11 @@ package ASF.Requests.Mockup is
                            Id       : in String;
                            Process  : not null access
                              procedure (Data : in ASF.Parts.Part'Class));
+
+   --  Set the request cookie by using the cookie returned in the response.
+   procedure Set_Cookie (Req  : in out Request;
+                         From : in ASF.Responses.Mockup.Response'Class);
+
 private
 
    type Request is new ASF.Requests.Request with record

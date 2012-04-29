@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.messages-factory -- Application Message Factory
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -72,12 +72,6 @@ package body ASF.Applications.Messages.Factory is
       return Result;
    end Get_Message;
 
-   --
-   --
-   --     function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
-   --                           Message_Id : in String) return Message;
-   --
-
    --  ------------------------------
    --  Build a localized message and format the message with one argument.
    --  ------------------------------
@@ -117,15 +111,23 @@ package body ASF.Applications.Messages.Factory is
       return Result;
    end Get_Message;
 
+   --  ------------------------------
+   --  Add a localized global message in the faces context.
+   --  ------------------------------
+   procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
+                          Message_Id : in String) is
+      Msg     : constant Message := Get_Message (Context, Message_Id);
+   begin
+      Context.Add_Message (Client_Id => "", Message   => Msg);
+   end Add_Message;
 
    --  ------------------------------
    --  Add a localized global message in the current faces context.
    --  ------------------------------
    procedure Add_Message (Message_Id : in String) is
       Context : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
-      Msg     : constant Message := Get_Message (Context.all, Message_Id);
    begin
-      Context.Add_Message (Client_Id => "", Message   => Msg);
+      Add_Message (Context.all, Message_Id);
    end Add_Message;
 
 end ASF.Applications.Messages.Factory;

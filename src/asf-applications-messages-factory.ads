@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.messages-factory -- Application Message Factory
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,5 +48,9 @@ package ASF.Applications.Messages.Factory is
 
    --  Add a localized global message in the current faces context.
    procedure Add_Message (Message_Id : in String);
+
+   --  Add a localized global message in the faces context.
+   procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
+                          Message_Id : in String);
 
 end ASF.Applications.Messages.Factory;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF tests - ASF Tests Framework
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -74,5 +74,13 @@ package ASF.Tests is
                              Message : in String := "Test failed";
                              Source  : String := GNAT.Source_Info.File;
                              Line    : Natural := GNAT.Source_Info.Line);
+
+   --  Check that the response body is a redirect to the given URI.
+   procedure Assert_Redirect (T       : in Util.Tests.Test'Class;
+                              Value   : in String;
+                              Reply   : in out ASF.Responses.Mockup.Response;
+                              Message : in String := "Test failed";
+                              Source  : String := GNAT.Source_Info.File;
+                              Line    : Natural := GNAT.Source_Info.Line);
 
 end ASF.Tests;

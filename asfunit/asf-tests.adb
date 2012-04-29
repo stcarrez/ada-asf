@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF tests - ASF Tests Framework
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ with GNAT.Regpat;
 with Ada.Strings.Unbounded;
 
 with Util.Files;
+with Util.Log.Loggers;
 
 with ASF.Streams;
 with ASF.Servlets.Faces;
@@ -36,6 +37,8 @@ package body ASF.Tests is
 
    use Ada.Strings.Unbounded;
    use Util.Tests;
+
+   Log      : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Tests");
 
    CONTEXT_PATH : constant String := "/asfunit";
 
@@ -239,5 +242,23 @@ package body ASF.Tests is
                 Source    => Source,
                 Line      => Line);
    end Assert_Matches;
+
+   --  ------------------------------
+   --  Check that the response body is a redirect to the given URI.
+   --  ------------------------------
+   procedure Assert_Redirect (T       : in Util.Tests.Test'Class;
+                              Value   : in String;
+                              Reply   : in out ASF.Responses.Mockup.Response;
+                              Message : in String := "Test failed";
+                              Source  : String := GNAT.Source_Info.File;
+                              Line    : Natural := GNAT.Source_Info.Line) is
+   begin
+      Assert_Equals (T, ASF.Responses.SC_MOVED_TEMPORARILY, Reply.Get_Status,
+                     "Invalid response", Source, Line);
+
+      Util.Tests.Assert_Equals (T, Value, Reply.Get_Header ("Location"),
+                                Message & ": missing Location",
+                                Source, Line);
+   end Assert_Redirect;
 
 end ASF.Tests;

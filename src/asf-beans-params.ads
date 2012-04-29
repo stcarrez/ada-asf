@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-beans-params -- Bean giving access to the request parameters
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,9 @@ with Util.Beans.Basic;
 with Util.Beans.Objects;
 
 package ASF.Beans.Params is
+
+   --  Context variable giving access to the request parameters.
+   PARAM_ATTRIBUTE_NAME    : constant String := "param";
 
    --  ------------------------------
    --  Request Parameter Bean

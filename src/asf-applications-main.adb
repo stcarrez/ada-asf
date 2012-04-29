@@ -486,7 +486,7 @@ package body ASF.Applications.Main is
          return Base.Get_Value (Key);
       end if;
 
-      if Key = "param" then
+      if Key = ASF.Beans.Params.PARAM_ATTRIBUTE_NAME then
          return ASF.Beans.Params.Instance;
       end if;
 

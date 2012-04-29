@@ -96,7 +96,7 @@ package body ASF.Lifecycles is
                P : constant ASF.Events.Phases.Phase_Type := Listener.Get_Phase;
             begin
                if P = Event.Phase or P = ASF.Events.Phases.ANY_PHASE then
-                  Listener.Before_Phase (Event);
+                  Listener.After_Phase (Event);
                end if;
 
             exception
@@ -108,9 +108,7 @@ package body ASF.Lifecycles is
             Context.Set_Current_Phase (Phase);
 
             --  Call the before phase listeners if there are some.
-            if not Listeners.Is_Empty then
-               Listeners.Iterate (Before_Phase'Access);
-            end if;
+            Listeners.Iterate (Before_Phase'Access);
 
             begin
                Controller.Controllers (Phase).Execute (Context);
@@ -119,9 +117,7 @@ package body ASF.Lifecycles is
                   Context.Queue_Exception (E);
             end;
 
-            if not Listeners.Is_Empty then
-               Listeners.Iterate (After_Phase'Access);
-            end if;
+            Listeners.Iterate (After_Phase'Access);
 
             --  If exceptions have been raised and queued during the current phase, process them.
             --  An exception handler could use them to redirect the current request to another

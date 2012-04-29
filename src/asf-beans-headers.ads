@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-beans-headers -- Bean giving access to the request headers
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,9 @@ with Util.Beans.Basic;
 with Util.Beans.Objects;
 
 package ASF.Beans.Headers is
+
+   --  Context variable giving access to the request headers.
+   HEADER_ATTRIBUTE_NAME    : constant String := "header";
 
    --  ------------------------------
    --  Request Header Bean

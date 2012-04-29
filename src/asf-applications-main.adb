@@ -491,7 +491,7 @@ package body ASF.Applications.Main is
          return ASF.Beans.Params.Instance;
       end if;
 
-      if Key = "header" then
+      if Key = ASF.Beans.Headers.HEADER_ATTRIBUTE_NAME then
          return ASF.Beans.Headers.Instance;
       end if;
 

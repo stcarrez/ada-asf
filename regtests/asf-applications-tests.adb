@@ -164,6 +164,9 @@ package body ASF.Applications.Tests is
          begin
             Ctx.Get_Flash.Set_Attribute ("name", To_Object (Data.Name));
             Ctx.Get_Flash.Set_Attribute ("email", To_Object (Data.Email));
+            Ctx.Get_Flash.Set_Keep_Messages (True);
+            Ctx.Add_Message (Client_Id => "",
+                             Message   => "Message saved in the flash context");
          end;
       end if;
    end Save;
@@ -454,6 +457,8 @@ package body ASF.Applications.Tests is
                       Reply, "Wrong form content");
       Assert_Matches (T, ".*Email: john@gmail.com",
                       Reply, "Wrong form content");
+      Assert_Matches (T, ".*Message saved in the flash context.*",
+                      Reply, "Message was not restored");
 
       Request.Set_Cookie (Reply);
       Do_Get (Request, Reply, "/tests/flash-data.html", "flash-data-2.txt");

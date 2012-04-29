@@ -19,6 +19,7 @@
 with Ada.Unchecked_Deallocation;
 
 with ASF.Contexts.Exceptions;
+with ASF.Contexts.Flash;
 package body ASF.Lifecycles is
 
    --  ------------------------------
@@ -81,6 +82,7 @@ package body ASF.Lifecycles is
       procedure After_Phase (Listener : in ASF.Events.Phases.Phase_Listener_Access);
 
       Event : ASF.Events.Phases.Phase_Event (Phase);
+      Flash : constant ASF.Contexts.Faces.Flash_Context_Access := Context.Get_Flash;
 
       --  ------------------------------
       --  Execute the before phase listener action.
@@ -115,6 +117,8 @@ package body ASF.Lifecycles is
    begin
       Context.Set_Current_Phase (Phase);
 
+      Flash.Do_Pre_Phase_Actions (Phase, Context);
+
       --  Call the before phase listeners if there are some.
       Listeners.Iterate (Before_Phase'Access);
 
@@ -124,6 +128,8 @@ package body ASF.Lifecycles is
          when E : others =>
             Context.Queue_Exception (E);
       end;
+
+      Flash.Do_Post_Phase_Actions (Phase, Context);
 
       Listeners.Iterate (After_Phase'Access);
 

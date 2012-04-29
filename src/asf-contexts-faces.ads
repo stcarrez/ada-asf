@@ -147,6 +147,12 @@ package ASF.Contexts.Faces is
                           Severity  : in Applications.Messages.Severity
                           := Applications.Messages.ERROR);
 
+   --  Append the messages defined in <b>Messages</b> to the current list of messages
+   --  in the faces context.
+   procedure Add_Messages (Context   : in out Faces_Context;
+                           Client_Id : in String;
+                           Messages  : in ASF.Applications.Messages.Vectors.Vector);
+
    --  Get an iterator for the messages associated with the specified client
    --  identifier.  If the <b>Client_Id</b> ie empty, an iterator for the
    --  global messages is returned.

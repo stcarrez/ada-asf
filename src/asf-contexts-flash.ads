@@ -22,6 +22,7 @@ with Util.Beans.Objects.Maps;
 
 with ASF.Events.Phases;
 with ASF.Contexts.Faces;
+with ASF.Applications.Messages.Vectors;
 
 --  The <b>Flash</b> package implements the flash context scope which allows to pass
 --  temporary information between requests.  The <b>Flash</b> concept is taken from
@@ -44,12 +45,6 @@ with ASF.Contexts.Faces;
 package ASF.Contexts.Flash is
 
    use Ada.Strings.Unbounded;
-
-   --  Context variable giving access to the flash context in facelet files.
-   FLASH_ATTRIBUTE_NAME    : constant String := "flash";
-
-   KEEP_MESSAGES_ATTR_NAME : constant String := "keepMessages";
-   REDIRECT_ATTR_NAME      : constant String := "redirect";
 
    --  ------------------------------
    --  Flash context
@@ -79,6 +74,16 @@ package ASF.Contexts.Flash is
    --  Keep in the flash context the request attribute identified by the name <b>Name</b>.
    procedure Keep (Flash   : in out Flash_Context;
                    Name    : in String);
+
+   --  Returns True if the faces messages that are queued in the faces context must be
+   --  preserved so they are accessible through the flash instance at the next request.
+   function Is_Keep_Messages (Flash : in Flash_Context) return Boolean;
+
+   --  Set the keep messages property which controlls whether the faces messages
+   --  that are queued in the faces context must be preserved so they are accessible through
+   --  the flash instance at the next request.
+   procedure Set_Keep_Messages (Flash : in out Flash_Context;
+                                Value : in Boolean);
 
    --  Returns True if the <b>Redirect</b> property was set on the previous flash instance.
    function Is_Redirect (Flash : in Flash_Context) return Boolean;
@@ -110,6 +115,10 @@ private
    type Flash_Bean is new Util.Beans.Basic.Readonly_Bean with record
       --  Attributes bound to this flash instance.
       Attributes   : aliased Util.Beans.Objects.Maps.Map;
+
+      --  Messages that have been saved in the flash context.
+      Messages     : ASF.Applications.Messages.Vectors.Vector;
+
       Redirect     : Boolean := False;
    end record;
    type Flash_Bean_Access is access all Flash_Bean'Class;
@@ -137,6 +146,9 @@ private
 
       --  Whether the Do_Last_Phase_Actions action was done.
       Last_Phase_Done : Boolean := False;
+
+      --  Whether the messages that are queued in the faces context must be saved in the flash.
+      Keep_Messages   : Boolean := False;
    end record;
 
 end ASF.Contexts.Flash;

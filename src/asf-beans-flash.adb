@@ -39,7 +39,12 @@ package body ASF.Beans.Flash is
          return Util.Beans.Objects.Null_Object;
       end if;
       Flash := Ctx.Get_Flash;
-      return Flash.Get_Attribute (Name);
+      if Name = KEEP_MESSAGES_ATTR_NAME then
+         return Util.Beans.Objects.To_Object (Flash.Is_Keep_Messages);
+
+      else
+         return Flash.Get_Attribute (Name);
+      end if;
    end Get_Value;
 
    --  ------------------------------

@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with ASF.Sessions;
+with ASF.Applications.Messages.Utils;
 package body ASF.Contexts.Flash is
 
    --  ------------------------------
@@ -89,6 +90,26 @@ package body ASF.Contexts.Flash is
    end Set_Redirect;
 
    --  ------------------------------
+   --  Returns True if the faces messages that are queued in the faces context must be
+   --  preserved so they are accessible through the flash instance at the next request.
+   --  ------------------------------
+   function Is_Keep_Messages (Flash : in Flash_Context) return Boolean is
+   begin
+      return Flash.Keep_Messages;
+   end Is_Keep_Messages;
+
+   --  ------------------------------
+   --  Set the keep messages property which controlls whether the faces messages
+   --  that are queued in the faces context must be preserved so they are accessible through
+   --  the flash instance at the next request.
+   --  ------------------------------
+   procedure Set_Keep_Messages (Flash : in out Flash_Context;
+                                Value : in Boolean) is
+   begin
+      Flash.Keep_Messages := Value;
+   end Set_Keep_Messages;
+
+   --  ------------------------------
    --  Perform any specific action before processing the phase referenced by <b>Phase</b>.
    --  This operation is used to restore the flash context for a new request.
    --  ------------------------------
@@ -109,6 +130,8 @@ package body ASF.Contexts.Flash is
                B := Util.Beans.Objects.To_Bean (Flash.Object);
                if B /= null and then B.all in Flash_Bean'Class then
                   Flash.Previous := Flash_Bean'Class (B.all)'Unchecked_Access;
+
+                  Context.Add_Messages ("", Flash.Previous.Messages);
                end if;
             end if;
          end;
@@ -138,6 +161,20 @@ package body ASF.Contexts.Flash is
                                     Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
       S : ASF.Sessions.Session := Context.Get_Session;
    begin
+      --  If we have to keep the messages, save them in the flash bean context if there are any.
+      if Flash.Keep_Messages then
+         declare
+            Messages : constant Applications.Messages.Vectors.Cursor := Context.Get_Messages ("");
+         begin
+            if ASF.Applications.Messages.Vectors.Has_Element (Messages) then
+               if Flash.Next = null then
+                  Flash.Next := new Flash_Bean;
+               end if;
+               ASF.Applications.Messages.Utils.Copy (Flash.Next.Messages, Messages);
+            end if;
+         end;
+      end if;
+
       if S.Is_Valid then
          S.Set_Attribute ("asf.flash.bean", Util.Beans.Objects.Null_Object);
       elsif Flash.Next /= null then

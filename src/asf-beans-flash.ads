@@ -24,6 +24,9 @@ package ASF.Beans.Flash is
    --  Context variable giving access to the request headers.
    FLASH_ATTRIBUTE_NAME    : constant String := "flash";
 
+   KEEP_MESSAGES_ATTR_NAME : constant String := "keepMessages";
+   REDIRECT_ATTR_NAME      : constant String := "redirect";
+
    --  ------------------------------
    --  Flash Bean
    --  ------------------------------

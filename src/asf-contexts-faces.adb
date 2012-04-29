@@ -24,6 +24,7 @@ with ASF.Converters;
 with ASF.Contexts.Flash;
 with ASF.Contexts.Exceptions.Iterate;
 with ASF.Applications.Main;
+with ASF.Applications.Messages.Utils;
 package body ASF.Contexts.Faces is
 
    package Task_Context is new Ada.Task_Attributes
@@ -252,6 +253,46 @@ package body ASF.Contexts.Faces is
       ASF.Applications.Messages.Set_Summary (Msg, Message);
       Context.Add_Message (Client_Id, Msg);
    end Add_Message;
+
+   --  ------------------------------
+   --  Append the messages defined in <b>Messages</b> to the current list of messages
+   --  in the faces context.
+   --  ------------------------------
+   procedure Add_Messages (Context   : in out Faces_Context;
+                           Client_Id : in String;
+                           Messages  : in ASF.Applications.Messages.Vectors.Vector) is
+      Iter : constant ASF.Applications.Messages.Vectors.Cursor := Messages.First;
+      Id   : constant Unbounded_String := To_Unbounded_String (Client_Id);
+
+      procedure Append_Message (Key  : in Unbounded_String;
+                                List : in out Vectors.Vector);
+
+      --  ------------------------------
+      --  Append the message to the list.
+      --  ------------------------------
+      procedure Append_Message (Key  : in Unbounded_String;
+                                List : in out Vectors.Vector) is
+         pragma Unreferenced (Key);
+      begin
+         ASF.Applications.Messages.Utils.Copy (List, Iter);
+      end Append_Message;
+
+      Pos      : Message_Maps.Cursor;
+      Inserted : Boolean;
+   begin
+      if not ASF.Applications.Messages.Vectors.Has_Element (Iter) then
+         return;
+      end if;
+
+      --  Insert or get the messages associated with the client identifier.
+      Context.Messages.Insert (Key      => Id,
+                               Position => Pos,
+                               Inserted => Inserted);
+
+      --  Append the message in that list.
+      Context.Messages.Update_Element (Position => Pos,
+                                       Process  => Append_Message'Access);
+   end Add_Messages;
 
    --  ------------------------------
    --  Get an iterator for the messages associated with the specified client

@@ -21,6 +21,7 @@ with Ada.Task_Attributes;
 with Ada.Unchecked_Deallocation;
 
 with ASF.Converters;
+with ASF.Contexts.Flash;
 with ASF.Contexts.Exceptions.Iterate;
 with ASF.Applications.Main;
 package body ASF.Contexts.Faces is
@@ -177,11 +178,22 @@ package body ASF.Contexts.Faces is
       return Context.Response_Completed;
    end Get_Response_Completed;
 
+   --  ------------------------------
    --  Get the flash context allowing to add flash attributes.
-   function Get_Flash (Context : in Faces_Context) return Contexts.Flash.Flash_Context_Access is
+   --  ------------------------------
+   function Get_Flash (Context : in Faces_Context) return Flash_Context_Access is
    begin
-      return Context.Flash'Unrestricted_Access;
+      return Context.Flash;
    end Get_Flash;
+
+   --  ------------------------------
+   --  Set the flash context.
+   --  ------------------------------
+   procedure Set_Flash (Context : in out Faces_Context;
+                        Flash   : in Flash_Context_Access) is
+   begin
+      Context.Flash := Flash;
+   end Set_Flash;
 
    --  ------------------------------
    --  Append the message to the list of messages associated with the specified

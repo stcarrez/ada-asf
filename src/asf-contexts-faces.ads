@@ -26,7 +26,7 @@ with ASF.Applications.Messages;
 with ASF.Applications.Messages.Vectors;
 with ASF.Contexts.Writer;
 with ASF.Contexts.Exceptions;
-with ASF.Contexts.Flash;
+limited with ASF.Contexts.Flash;
 with ASF.Events.Exceptions;
 with ASF.Events.Phases;
 
@@ -52,6 +52,7 @@ package ASF.Contexts.Faces is
    use Ada.Strings.Unbounded;
 
    type Application_Access is access all ASF.Applications.Main.Application'Class;
+   type Flash_Context_Access is access all ASF.Contexts.Flash.Flash_Context'Class;
 
    type Faces_Context is tagged limited private;
 
@@ -124,7 +125,11 @@ package ASF.Contexts.Faces is
    function Get_Response_Completed (Context : in Faces_Context) return Boolean;
 
    --  Get the flash context allowing to add flash attributes.
-   function Get_Flash (Context : in Faces_Context) return ASF.Contexts.Flash.Flash_Context_Access;
+   function Get_Flash (Context : in Faces_Context) return Flash_Context_Access;
+
+   --  Set the flash context.
+   procedure Set_Flash (Context : in out Faces_Context;
+                        Flash   : in Flash_Context_Access);
 
    --  Append the message to the list of messages associated with the specified
    --  client identifier.  If <b>Client_Id</b> is empty, the message is global
@@ -276,7 +281,7 @@ private
       Root               : ASF.Components.Root.UIViewRoot;
 
       --  The flash context.
-      Flash              : aliased ASF.Contexts.Flash.Flash_Context;
+      Flash              : Flash_Context_Access;
 
       --  The current lifecycle phase.
       Phase              : ASF.Events.Phases.Phase_Type := ASF.Events.Phases.RESTORE_VIEW;

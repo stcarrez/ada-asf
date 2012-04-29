@@ -21,6 +21,7 @@ with Util.Beans.Basic;
 with Util.Beans.Objects.Maps;
 
 with ASF.Events.Phases;
+with ASF.Contexts.Faces;
 
 --  The <b>Flash</b> package implements the flash context scope which allows to pass
 --  temporary information between requests.  The <b>Flash</b> concept is taken from
@@ -62,37 +63,43 @@ package ASF.Contexts.Flash is
    type Flash_Context_Access is access all Flash_Context'Class;
 
    --  Set the attribute having given name with the value.
-   procedure Set_Attribute (Context : in out Flash_Context;
+   procedure Set_Attribute (Flash   : in out Flash_Context;
                             Name    : in String;
                             Value   : in Util.Beans.Objects.Object);
 
    --  Set the attribute having given name with the value.
-   procedure Set_Attribute (Context : in out Flash_Context;
+   procedure Set_Attribute (Flash   : in out Flash_Context;
                             Name    : in Unbounded_String;
                             Value   : in Util.Beans.Objects.Object);
 
    --  Keep in the flash context the request attribute identified by the name <b>Name</b>.
-   procedure Keep (Context : in out Flash_Context;
+   procedure Keep (Flash   : in out Flash_Context;
                    Name    : in String);
 
    --  Returns True if the <b>Redirect</b> property was set on the previous flash instance.
-   function Is_Redirect (Context : in Flash_Context) return Boolean;
+   function Is_Redirect (Flash : in Flash_Context) return Boolean;
 
    --  Set this property to True to indicate to the next request on this session will be
    --  a redirect.  After this call, the next request will return the <b>Redirect</b> value
    --  when the <b>Is_Redirect</b> function will be called.
-   procedure Set_Redirect (Context  : in out Flash_Context;
+   procedure Set_Redirect (Flash    : in out Flash_Context;
                            Redirect : in Boolean);
 
    --  Perform any specific action before processing the phase referenced by <b>Phase</b>.
    --  This operation is used to restore the flash context for a new request.
-   procedure Do_Pre_Phase_Actions (Context  : in out Flash_Context;
-                                   Phase    : in ASF.Events.Phases.Phase_Type);
+   procedure Do_Pre_Phase_Actions (Flash   : in out Flash_Context;
+                                   Phase   : in ASF.Events.Phases.Phase_Type;
+                                   Context : in out ASF.Contexts.Faces.Faces_Context'Class);
 
    --  Perform any specific action after processing the phase referenced by <b>Phase</b>.
    --  This operation is used to save the flash context
-   procedure Do_Post_Phase_Actions (Context  : in out Flash_Context;
-                                    Phase    : in ASF.Events.Phases.Phase_Type);
+   procedure Do_Post_Phase_Actions (Flash   : in out Flash_Context;
+                                    Phase   : in ASF.Events.Phases.Phase_Type;
+                                    Context : in out ASF.Contexts.Faces.Faces_Context'Class);
+
+   --  Perform the last actions that must be made to save the flash context in the session.
+   procedure Do_Last_Phase_Actions (Flash   : in out Flash_Context;
+                                    Context : in out ASF.Contexts.Faces.Faces_Context'Class);
 
 private
 
@@ -108,15 +115,16 @@ private
    function Get_Value (From : in Flash_Bean;
                        Name : in String) return Util.Beans.Objects.Object;
 
-   procedure Get_Active_Flash (Context : in out Flash_Context;
+   procedure Get_Active_Flash (Flash   : in out Flash_Context;
                                Result  : out Flash_Bean_Access);
 
-   procedure Get_Execute_Flash (Context : in out Flash_Context;
+   procedure Get_Execute_Flash (Flash   : in out Flash_Context;
                                 Result  : out Flash_Bean_Access);
 
    type Flash_Context is tagged limited record
       Previous     : Flash_Bean_Access := null;
       Next         : Flash_Bean_Access := null;
+      Object       : Util.Beans.Objects.Object;
    end record;
 
 end ASF.Contexts.Flash;

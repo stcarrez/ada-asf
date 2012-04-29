@@ -74,9 +74,18 @@ package body ASF.Lifecycles.Tests is
 
       Listener.Check_Get_Counters (T, 1);
       Listener.Check_Post_Counters (T, 0);
+
+      Handler.Remove_Phase_Listener (Listener'Unchecked_Access);
+
+   exception
+      when others =>
+         Handler.Remove_Phase_Listener (Listener'Unchecked_Access);
+         raise;
    end Test_Get_Lifecycle;
 
+   --  ------------------------------
    --  Test a GET+POST request with submitted values and an action method called on the bean.
+   --  ------------------------------
    procedure Test_Post_Lifecycle (T : in out Test) is
 
       Request  : ASF.Requests.Mockup.Request;
@@ -90,6 +99,22 @@ package body ASF.Lifecycles.Tests is
                                                 Storage => STATIC));
       Do_Get (Request, Reply, "/tests/form-text.html", "form-text.txt");
 
+      Request.Set_Parameter ("formText", "1");
+      Request.Set_Parameter ("name", "John");
+      Request.Set_Parameter ("password", "12345");
+      Request.Set_Parameter ("email", "john@gmail.com");
+      Request.Set_Parameter ("ok", "1");
+      Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post.txt");
+
+      Listener.Check_Post_Counters (T, 1);
+      Listener.Check_Get_Counters (T, 2);
+
+      Handler.Remove_Phase_Listener (Listener'Unchecked_Access);
+
+   exception
+      when others =>
+         Handler.Remove_Phase_Listener (Listener'Unchecked_Access);
+         raise;
    end Test_Post_Lifecycle;
 
    --  ------------------------------

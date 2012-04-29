@@ -62,12 +62,16 @@ package ASF.Applications.Tests is
    --  Verify that invalid requests raise an error.
    procedure Test_Ajax_Action_Error (T : in out Test);
 
+   --  Test a POST/REDIRECT/GET request with a flash information passed in between.
+   procedure Test_Flash_Object (T : in out Test);
+
    type Form_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
       Name     : Unbounded_String;
       Password : Unbounded_String;
       Email    : Unbounded_String;
       Called   : Natural := 0;
       Gender   : Unbounded_String;
+      Use_Flash : Boolean := False;
    end record;
    type Form_Bean_Access is access all Form_Bean'Class;
 

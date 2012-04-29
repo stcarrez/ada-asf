@@ -156,10 +156,10 @@ package body ASF.Contexts.Faces.Tests is
    --  Test the flash instance.
    --  ------------------------------
    procedure Test_Flash_Context (T : in out Test) is
-      use type ASF.Contexts.Flash.Flash_Context_Access;
+      use type ASF.Contexts.Faces.Flash_Context_Access;
 
       Ctx   : Faces_Context;
-      Flash : constant ASF.Contexts.Flash.Flash_Context_Access := Ctx.Get_Flash;
+      Flash : constant ASF.Contexts.Faces.Flash_Context_Access := Ctx.Get_Flash;
    begin
       T.Assert (Flash /= null, "Null flash context returned");
    end Test_Flash_Context;

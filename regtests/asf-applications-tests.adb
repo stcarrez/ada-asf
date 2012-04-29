@@ -23,7 +23,10 @@ with ASF.Events.Faces.Actions;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Applications.Main;
+with ASF.Applications.Main.Configs;
 with ASF.Models.Selects;
+with ASF.Contexts.Faces;
+with ASF.Contexts.Flash;
 package body ASF.Applications.Tests is
 
    use ASF.Tests;
@@ -57,6 +60,9 @@ package body ASF.Applications.Tests is
 
       Caller.Add_Test (Suite, "Test AJAX invalid requests",
                        Test_Ajax_Action_Error'Access);
+
+      Caller.Add_Test (Suite, "Test POST/REDIRECT/GET with flash object",
+                       Test_Flash_Object'Access);
    end Add_Tests;
 
    package Save_Binding is
@@ -148,9 +154,18 @@ package body ASF.Applications.Tests is
    --  ------------------------------
    procedure Save (Data    : in out Form_Bean;
                    Outcome : in out Unbounded_String) is
+      use Util.Beans.Objects;
    begin
       Outcome := To_Unbounded_String ("success");
       Data.Called := Data.Called + 1;
+      if Data.Use_Flash then
+         declare
+            Ctx : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
+         begin
+            Ctx.Get_Flash.Set_Attribute ("name", To_Object (Data.Name));
+            Ctx.Get_Flash.Set_Attribute ("email", To_Object (Data.Email));
+         end;
+      end if;
    end Save;
 
    --  ------------------------------
@@ -398,5 +413,44 @@ package body ASF.Applications.Tests is
       Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid error response 6");
 
    end Test_Ajax_Action_Error;
+
+   --  ------------------------------
+   --  Test a POST/REDIRECT/GET request with a flash information passed in between.
+   --  ------------------------------
+   procedure Test_Flash_Object (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-config.xml");
+      App     : constant ASF.Applications.Main.Application_Access := ASF.Tests.Get_Application;
+   begin
+      ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);
+
+      Form.Use_Flash := True;
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Do_Get (Request, Reply, "/tests/form-text-redirect.html", "form-text-flash.txt");
+
+      Assert_Matches (T, ".*<label for=.name.>Name</label>.*", Reply, "Wrong form content");
+      Assert_Matches (T, ".*<input type=.text. name=.name. value=.. id=.name.*",
+                      Reply, "Wrong form content");
+
+      Request.Set_Parameter ("formText", "1");
+      Request.Set_Parameter ("name", "John");
+      Request.Set_Parameter ("password", "12345");
+      Request.Set_Parameter ("email", "john@gmail.com");
+      Request.Set_Parameter ("ok", "1");
+      Do_Post (Request, Reply, "/tests/form-text-redirect.html", "form-text-post-flash.txt");
+
+      --  The navigation rule should redirect to the GET page.
+      Assert_Redirect (T, "/asfunit/tests/flash-data.html", Reply, "Invalid response");
+
+      Request.Set_Cookie (Reply);
+      Do_Get (Request, Reply, "/tests/flash-data.html", "flash-data.txt");
+
+   end Test_Flash_Object;
+
 
 end ASF.Applications.Tests;

@@ -80,7 +80,17 @@ private
    --  Use the concurrent arrays package so that we can insert phase listeners while
    --  we also have the lifecycle manager which invokes listeners for the existing requests.
    package Listener_Vectors is
-      new Util.Concurrent.Arrays (Element_Type => ASF.Events.Phases.Phase_Listener_Access);
+     new Util.Concurrent.Arrays (Element_Type => ASF.Events.Phases.Phase_Listener_Access);
+
+   --  Execute the lifecycle controller associated with the phase defined in <b>Phase</b>.
+   --  Before processing, setup the faces context to update the current phase, then invoke
+   --  the <b>Before_Phase</b> actions of the phase listeners.  After execution of the controller
+   --  invoke the <b>After_Phase</b> actions of the phase listeners.
+   --  If an exception is raised, catch it and save it in the faces context.
+   procedure Execute (Controller : in Lifecycle;
+                      Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
+                      Listeners  : in Listener_Vectors.Ref;
+                      Phase      : in Phase_Type);
 
    type Lifecycle is abstract new Ada.Finalization.Limited_Controlled with record
       Controllers : Phase_Controller_Array;

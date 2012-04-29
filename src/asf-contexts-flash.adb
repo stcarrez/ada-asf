@@ -45,6 +45,27 @@ package body ASF.Contexts.Flash is
       Flash.Set_Attribute (To_String (Name), Value);
    end Set_Attribute;
 
+   --  ------------------------------
+   --  Get the attribute with the given name from the 'previous' flash context.
+   --  ------------------------------
+   function Get_Attribute (Flash : in Flash_Context;
+                           Name  : in String) return Util.Beans.Objects.Object is
+   begin
+      if Flash.Previous = null then
+         return Util.Beans.Objects.Null_Object;
+      else
+         declare
+            Pos : constant Util.Beans.Objects.Maps.Cursor := Flash.Previous.Attributes.Find (Name);
+         begin
+            if Util.Beans.Objects.Maps.Has_Element (Pos) then
+               return Util.Beans.Objects.Maps.Element (Pos);
+            else
+               return Util.Beans.Objects.Null_Object;
+            end if;
+         end;
+      end if;
+   end Get_Attribute;
+
    --  Keep in the flash context the request attribute identified by the name <b>Name</b>.
    procedure Keep (Flash   : in out Flash_Context;
                    Name    : in String) is

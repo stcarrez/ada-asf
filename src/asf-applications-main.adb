@@ -34,6 +34,7 @@ with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
 with ASF.Beans.Params;
 with ASF.Beans.Headers;
+with ASF.Beans.Flash;
 
 with EL.Expressions;
 with EL.Contexts.Default;
@@ -493,6 +494,10 @@ package body ASF.Applications.Main is
 
       if Key = ASF.Beans.Headers.HEADER_ATTRIBUTE_NAME then
          return ASF.Beans.Headers.Instance;
+      end if;
+
+      if Key = ASF.Beans.Flash.FLASH_ATTRIBUTE_NAME then
+         return ASF.Beans.Flash.Instance;
       end if;
 
       Result := Resolver.Request.Get_Attribute (Key);

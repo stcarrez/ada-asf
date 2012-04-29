@@ -72,6 +72,10 @@ package ASF.Contexts.Flash is
                             Name    : in Unbounded_String;
                             Value   : in Util.Beans.Objects.Object);
 
+   --  Get the attribute with the given name from the 'previous' flash context.
+   function Get_Attribute (Flash : in Flash_Context;
+                           Name  : in String) return Util.Beans.Objects.Object;
+
    --  Keep in the flash context the request attribute identified by the name <b>Name</b>.
    procedure Keep (Flash   : in out Flash_Context;
                    Name    : in String);

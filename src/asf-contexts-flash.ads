@@ -126,9 +126,17 @@ private
                                 Result  : out Flash_Bean_Access);
 
    type Flash_Context is tagged limited record
-      Previous     : Flash_Bean_Access := null;
-      Next         : Flash_Bean_Access := null;
-      Object       : Util.Beans.Objects.Object;
+      --  When not null, the previous flash information.
+      Previous        : Flash_Bean_Access := null;
+
+      --  The next flash information to save (initialized on the first use).
+      Next            : Flash_Bean_Access := null;
+
+      --  The previous flash information (kept as an object for reference counting).
+      Object          : Util.Beans.Objects.Object;
+
+      --  Whether the Do_Last_Phase_Actions action was done.
+      Last_Phase_Done : Boolean := False;
    end record;
 
 end ASF.Contexts.Flash;

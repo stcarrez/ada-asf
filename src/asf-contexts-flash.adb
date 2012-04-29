@@ -115,20 +115,25 @@ package body ASF.Contexts.Flash is
       end if;
    end Do_Pre_Phase_Actions;
 
+   --  ------------------------------
    --  Perform any specific action after processing the phase referenced by <b>Phase</b>.
    --  This operation is used to save the flash context
+   --  ------------------------------
    procedure Do_Post_Phase_Actions (Flash   : in out Flash_Context;
                                     Phase   : in ASF.Events.Phases.Phase_Type;
                                     Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
       use type ASF.Events.Phases.Phase_Type;
    begin
-      if Phase = ASF.Events.Phases.INVOKE_APPLICATION then
+      if (Phase = ASF.Events.Phases.INVOKE_APPLICATION
+          or Phase = ASF.Events.Phases.RENDER_RESPONSE) and then not Flash.Last_Phase_Done then
          Flash.Do_Last_Phase_Actions (Context);
       end if;
    end Do_Post_Phase_Actions;
 
 
+   --  ------------------------------
    --  Perform the last actions that must be made to save the flash context in the session.
+   --  ------------------------------
    procedure Do_Last_Phase_Actions (Flash   : in out Flash_Context;
                                     Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
       S : ASF.Sessions.Session := Context.Get_Session;
@@ -142,6 +147,7 @@ package body ASF.Contexts.Flash is
       if Flash.Next /= null then
          S.Set_Attribute ("asf.flash.bean", Util.Beans.Objects.To_Object (Flash.Next.all'Access));
       end if;
+      Flash.Last_Phase_Done := True;
    end Do_Last_Phase_Actions;
 
    procedure Get_Active_Flash (Flash   : in out Flash_Context;
@@ -166,6 +172,7 @@ package body ASF.Contexts.Flash is
    --  If the name cannot be found, the method should return the Null object.
    function Get_Value (From : in Flash_Bean;
                        Name : in String) return Util.Beans.Objects.Object is
+      pragma Unreferenced (From, Name);
    begin
       return Util.Beans.Objects.Null_Object;
    end Get_Value;

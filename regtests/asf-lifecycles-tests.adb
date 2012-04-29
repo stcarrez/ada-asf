@@ -55,8 +55,11 @@ package body ASF.Lifecycles.Tests is
       end if;
    end Set_Up;
 
+   --  ------------------------------
    --  Test a GET request and the lifecycles that this implies.
+   --  ------------------------------
    procedure Test_Get_Lifecycle (T : in out Test) is
+      use ASF.Events.Phases;
 
       Request  : ASF.Requests.Mockup.Request;
       Reply    : ASF.Responses.Mockup.Response;
@@ -69,7 +72,8 @@ package body ASF.Lifecycles.Tests is
                                                 Storage => STATIC));
       Do_Get (Request, Reply, "/tests/form-text.html", "form-text.txt");
 
-
+      Listener.Check_Get_Counters (T, 1);
+      Listener.Check_Post_Counters (T, 0);
    end Test_Get_Lifecycle;
 
    --  Test a GET+POST request with submitted values and an action method called on the bean.
@@ -88,22 +92,72 @@ package body ASF.Lifecycles.Tests is
 
    end Test_Post_Lifecycle;
 
+   --  ------------------------------
+   --  Check that the RESTORE_VIEW and RENDER_RESPONSE counters have the given value.
+   --  ------------------------------
+   procedure Check_Get_Counters (Listener : in Test_Phase_Listener;
+                                 T        : in out Test'Class;
+                                 Value    : in Natural) is
+      use ASF.Events.Phases;
+   begin
+      Util.Tests.Assert_Equals (T, Value, Listener.Before_Count (RESTORE_VIEW),
+                                "Invalid before RESTORE_VIEW count");
+      Util.Tests.Assert_Equals (T, Value, Listener.After_Count (RESTORE_VIEW),
+                                "Invalid after RESTORE_VIEW count");
+      Util.Tests.Assert_Equals (T, Value, Listener.Before_Count (RENDER_RESPONSE),
+                                "Invalid before RENDER_RESPONSE count");
+      Util.Tests.Assert_Equals (T, Value, Listener.After_Count (RENDER_RESPONSE),
+                                "Invalid after RENDER_RESPONSE count");
+   end Check_Get_Counters;
+
+   --  ------------------------------
+   --  Check that the APPLY_REQUESTS .. INVOKE_APPLICATION counters have the given value.
+   --  ------------------------------
+   procedure Check_Post_Counters (Listener : in Test_Phase_Listener;
+                                  T        : in out Test'Class;
+                                  Value    : in Natural) is
+      use ASF.Events.Phases;
+   begin
+      Util.Tests.Assert_Equals (T, Value, Listener.Before_Count (APPLY_REQUEST_VALUES),
+                                "Invalid before APPLY_REQUEST_VALUES count");
+      Util.Tests.Assert_Equals (T, Value, Listener.After_Count (APPLY_REQUEST_VALUES),
+                                "Invalid after APPLY_REQUEST_VALUES count");
+      Util.Tests.Assert_Equals (T, Value, Listener.Before_Count (PROCESS_VALIDATION),
+                                "Invalid before PROCESS_VALIDATION count");
+      Util.Tests.Assert_Equals (T, Value, Listener.After_Count (PROCESS_VALIDATION),
+                                "Invalid after PROCESS_VALIDATION count");
+      Util.Tests.Assert_Equals (T, Value, Listener.Before_Count (UPDATE_MODEL_VALUES),
+                                "Invalid before UPDATE_MODEL_VALUES count");
+      Util.Tests.Assert_Equals (T, Value, Listener.After_Count (UPDATE_MODEL_VALUES),
+                                "Invalid after UPDATE_MODEL_VALUES count");
+      Util.Tests.Assert_Equals (T, Value, Listener.Before_Count (INVOKE_APPLICATION),
+                                "Invalid before INVOKE_APPLICATION count");
+      Util.Tests.Assert_Equals (T, Value, Listener.After_Count (INVOKE_APPLICATION),
+                                "Invalid after INVOKE_APPLICATION count");
+   end Check_Post_Counters;
+
+   --  ------------------------------
    --  Notifies that the lifecycle phase described by the event is about to begin.
+   --  ------------------------------
    procedure Before_Phase (Listener : in Test_Phase_Listener;
                            Event    : in ASF.Events.Phases.Phase_Event'Class) is
    begin
       Listener.Before_Count (Event.Phase) := Listener.Before_Count (Event.Phase) + 1;
    end Before_Phase;
 
+   --  ------------------------------
    --  Notifies that the lifecycle phase described by the event has finished.
+   --  ------------------------------
    procedure After_Phase (Listener : in Test_Phase_Listener;
                           Event    : in ASF.Events.Phases.Phase_Event'Class) is
    begin
-      Listener.After_Count (Event.Phase) := Listener.Before_Count (Event.Phase) + 1;
+      Listener.After_Count (Event.Phase) := Listener.After_Count (Event.Phase) + 1;
    end After_Phase;
 
+   --  ------------------------------
    --  Return the phase that this listener is interested in processing the <b>Phase_Event</b>
    --  events.  If the listener is interested by several events, it should return <b>ANY_PHASE</b>.
+   --  ------------------------------
    function Get_Phase (Listener : in Test_Phase_Listener) return ASF.Events.Phases.Phase_Type is
    begin
       return Listener.Phase;

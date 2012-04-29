@@ -38,12 +38,26 @@ package ASF.Lifecycles.Tests is
    type Phase_Counters is array (ASF.Events.Phases.Phase_Type) of Natural;
    type Phase_Counters_Array is access all Phase_Counters;
 
+   --  A phase listener used to count the number of calls made to Before/After phase
+   --  in various configurations.  The phase listener is a readonly instance because it is
+   --  shared by multiple concurrent requests.  For the test, we have to use indirect
+   --  access to update the counters.
    type Test_Phase_Listener is new Ada.Finalization.Limited_Controlled
      and ASF.Events.Phases.Phase_Listener with record
       Before_Count : Phase_Counters_Array := null;
       After_Count  : Phase_Counters_Array := null;
       Phase        : ASF.Events.Phases.Phase_Type := ASF.Events.Phases.ANY_PHASE;
    end record;
+
+   --  Check that the RESTORE_VIEW and RENDER_RESPONSE counters have the given value.
+   procedure Check_Get_Counters (Listener : in Test_Phase_Listener;
+                                 T        : in out Test'Class;
+                                 Value    : in Natural);
+
+   --  Check that the APPLY_REQUESTS .. INVOKE_APPLICATION counters have the given value.
+   procedure Check_Post_Counters (Listener : in Test_Phase_Listener;
+                                 T        : in out Test'Class;
+                                 Value    : in Natural);
 
    --  Notifies that the lifecycle phase described by the event is about to begin.
    overriding

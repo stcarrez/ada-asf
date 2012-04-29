@@ -22,6 +22,7 @@ with Util.Log.Loggers;
 with ASF.Streams;
 with ASF.Sessions;
 with ASF.Contexts.Writer;
+with ASF.Contexts.Flash;
 with ASF.Components.Core;
 with ASF.Components.Core.Factory;
 with ASF.Components.Html.Factory;
@@ -580,6 +581,7 @@ package body ASF.Applications.Main is
       use Ada.Exceptions;
 
       Writer         : aliased ASF.Contexts.Writer.Response_Writer;
+      Flash          : aliased ASF.Contexts.Flash.Flash_Context;
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
@@ -606,6 +608,7 @@ package body ASF.Applications.Main is
       Context.Set_Ajax_Request (Request.Is_Ajax_Request);
       Context.Set_Request (Request'Unchecked_Access);
       Context.Set_Response (Response'Unchecked_Access);
+      Context.Set_Flash (Flash'Unchecked_Access);
       App.Set_Context (Context'Unchecked_Access);
 
       begin
@@ -620,19 +623,19 @@ package body ASF.Applications.Main is
       end;
       Contexts.Faces.Restore (Prev_Context);
       Writer.Flush;
-
-      declare
-         C : Bean_Vectors.Cursor := Beans.First;
-      begin
-         while Bean_Vectors.Has_Element (C) loop
-            declare
-               Bean : constant Bean_Object := Bean_Vectors.Element (C);
-            begin
-               Request.Remove_Attribute (Name => Bean.Key);
-            end;
-            Bean_Vectors.Next (C);
-         end loop;
-      end;
+--
+--        declare
+--           C : Bean_Vectors.Cursor := Beans.First;
+--        begin
+--           while Bean_Vectors.Has_Element (C) loop
+--              declare
+--                 Bean : constant Bean_Object := Bean_Vectors.Element (C);
+--              begin
+--                 Request.Remove_Attribute (Name => Bean.Key);
+--              end;
+--              Bean_Vectors.Next (C);
+--           end loop;
+--        end;
    end Dispatch;
 
    --  ------------------------------
@@ -661,6 +664,7 @@ package body ASF.Applications.Main is
       use Ada.Exceptions;
 
       Writer         : aliased ASF.Contexts.Writer.Response_Writer;
+      Flash          : aliased ASF.Contexts.Flash.Flash_Context;
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
@@ -686,6 +690,7 @@ package body ASF.Applications.Main is
 
       Context.Set_Request (Request'Unchecked_Access);
       Context.Set_Response (Response'Unchecked_Access);
+      Context.Set_Flash (Flash'Unchecked_Access);
       App.Set_Context (Context'Unchecked_Access);
 
       declare

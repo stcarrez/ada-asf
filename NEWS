@@ -4,6 +4,7 @@ Version 0.4     -
   - New component <h:inputFile>
   - New function util:hasMessage
   - Implement JSF phase events and phase listeners
+  - Implement JSF/RoR flash context
 
 Version 0.3     - Feb 2012
   - Add documentation and examples for the supported tags

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-root -- ASF Root View Component
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,8 +47,9 @@ package body ASF.Components.Root is
       end if;
 
       UI.Root := new Root_Holder '(Ref_Counter => 1,
+                                   Len         => Name'Length,
                                    View        => Root,
-                                   Name        => To_Unbounded_String (Name));
+                                   Name        => Name);
    end Set_Root;
 
    --  ------------------------------
@@ -56,7 +57,7 @@ package body ASF.Components.Root is
    --  ------------------------------
    function Get_View_Id (UI : in UIViewRoot) return String is
    begin
-      return To_String (UI.Root.Name);
+      return UI.Root.Name;
    end Get_View_Id;
 
    --  ------------------------------

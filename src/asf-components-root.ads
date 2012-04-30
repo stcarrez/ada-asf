@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-root -- ASF Root View Component
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,10 +38,10 @@ package ASF.Components.Root is
 
 private
 
-   type Root_Holder is limited record
+   type Root_Holder (Len : Natural) is limited record
       Ref_Counter : Natural;
-      Name        : Unbounded_String;
       View        : access ASF.Components.Base.UIComponent'Class;
+      Name        : String (1 .. Len);
    end record;
    type Root_Holder_Access is access all Root_Holder;
 

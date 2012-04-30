@@ -28,29 +28,35 @@ package ASF.Applications.Messages.Factory is
 
    --  Build a localized message.
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
-                         Message_Id : in String) return Message;
+                         Message_Id : in String;
+                         Severity   : in Messages.Severity := ERROR) return Message;
 
    --  Build a localized message and format the message with one argument.
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String;
-                         Param1     : in String) return Message;
+                         Param1     : in String;
+                         Severity   : in Messages.Severity := ERROR) return Message;
 
    --  Build a localized message and format the message with two argument.
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String;
                          Param1     : in String;
-                         Param2     : in String) return Message;
+                         Param2     : in String;
+                         Severity   : in Messages.Severity := ERROR) return Message;
 
    --  Build a localized message and format the message with some arguments.
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String;
-                         Args       : in ASF.Utils.Object_Array) return Message;
+                         Args       : in ASF.Utils.Object_Array;
+                         Severity   : in Messages.Severity := ERROR) return Message;
 
    --  Add a localized global message in the current faces context.
-   procedure Add_Message (Message_Id : in String);
+   procedure Add_Message (Message_Id : in String;
+                          Severity   : in Messages.Severity := ERROR);
 
    --  Add a localized global message in the faces context.
    procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
-                          Message_Id : in String);
+                          Message_Id : in String;
+                          Severity   : in Messages.Severity := ERROR);
 
 end ASF.Applications.Messages.Factory;

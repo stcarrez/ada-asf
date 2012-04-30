@@ -64,11 +64,13 @@ package body ASF.Applications.Messages.Factory is
    --  Build a localized message.
    --  ------------------------------
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
-                         Message_Id : in String) return Message is
+                         Message_Id : in String;
+                         Severity   : in Messages.Severity := ERROR) return Message is
       Msg    : constant String := Get_Message (Context, Message_Id);
       Result : Message;
    begin
       Result.Summary := Ada.Strings.Unbounded.To_Unbounded_String (Msg);
+      Result.Kind    := Severity;
       return Result;
    end Get_Message;
 
@@ -77,11 +79,12 @@ package body ASF.Applications.Messages.Factory is
    --  ------------------------------
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String;
-                         Param1     : in String) return Message is
+                         Param1     : in String;
+                         Severity   : in Messages.Severity := ERROR) return Message is
       Args : ASF.Utils.Object_Array (1 .. 1);
    begin
       Args (1) := Util.Beans.Objects.To_Object (Param1);
-      return Get_Message (Context, Message_Id, Args);
+      return Get_Message (Context, Message_Id, Args, Severity);
    end Get_Message;
 
    --  ------------------------------
@@ -90,12 +93,13 @@ package body ASF.Applications.Messages.Factory is
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String;
                          Param1     : in String;
-                         Param2     : in String) return Message is
+                         Param2     : in String;
+                         Severity   : in Messages.Severity := ERROR) return Message is
       Args : ASF.Utils.Object_Array (1 .. 2);
    begin
       Args (1) := Util.Beans.Objects.To_Object (Param1);
       Args (2) := Util.Beans.Objects.To_Object (Param2);
-      return Get_Message (Context, Message_Id, Args);
+      return Get_Message (Context, Message_Id, Args, Severity);
    end Get_Message;
 
    --  ------------------------------
@@ -103,10 +107,12 @@ package body ASF.Applications.Messages.Factory is
    --  ------------------------------
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String;
-                         Args       : in ASF.Utils.Object_Array) return Message is
+                         Args       : in ASF.Utils.Object_Array;
+                         Severity   : in Messages.Severity := ERROR) return Message is
       Msg    : constant String := Get_Message (Context, Message_Id);
       Result : Message;
    begin
+      Result.Kind := Severity;
       ASF.Utils.Formats.Format (Msg, Args, Result.Summary);
       return Result;
    end Get_Message;
@@ -115,19 +121,21 @@ package body ASF.Applications.Messages.Factory is
    --  Add a localized global message in the faces context.
    --  ------------------------------
    procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
-                          Message_Id : in String) is
-      Msg     : constant Message := Get_Message (Context, Message_Id);
+                          Message_Id : in String;
+                          Severity   : in Messages.Severity := ERROR) is
+      Msg     : constant Message := Get_Message (Context, Message_Id, Severity);
    begin
-      Context.Add_Message (Client_Id => "", Message   => Msg);
+      Context.Add_Message (Client_Id => "", Message  => Msg);
    end Add_Message;
 
    --  ------------------------------
    --  Add a localized global message in the current faces context.
    --  ------------------------------
-   procedure Add_Message (Message_Id : in String) is
+   procedure Add_Message (Message_Id : in String;
+                          Severity   : in Messages.Severity := ERROR) is
       Context : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
    begin
-      Add_Message (Context.all, Message_Id);
+      Add_Message (Context.all, Message_Id, Severity);
    end Add_Message;
 
 end ASF.Applications.Messages.Factory;

@@ -233,8 +233,39 @@ package body ASF.Components.Core.Views is
          UI.Log_Error ("A <f:metadata> component was already registered.");
 --           Delete (UI.Meta);
       end if;
+      Meta.Root := UI'Unchecked_Access;
       UI.Meta := Meta;
       UI.Add_Facet ("metadata", Meta.all'Access, Tag);
    end Set_Metadata;
+
+   --  ------------------------------
+   --  Start encoding the UIComponent.
+   --  ------------------------------
+   overriding
+   procedure Encode_Begin (UI      : in UIViewMetaData;
+                           Context : in out Faces_Context'Class) is
+   begin
+      UI.Root.Encode_Begin (Context);
+   end Encode_Begin;
+
+   --  ------------------------------
+   --  Encode the children of this component.
+   --  ------------------------------
+   overriding
+   procedure Encode_Children (UI      : in UIViewMetaData;
+                              Context : in out Faces_Context'Class) is
+   begin
+      UI.Root.Encode_Children (Context);
+   end Encode_Children;
+
+   --  ------------------------------
+   --  Finish encoding the component.
+   --  ------------------------------
+   overriding
+   procedure Encode_End (UI      : in UIViewMetaData;
+                         Context : in out Faces_Context'Class) is
+   begin
+      UI.Root.Encode_Begin (Context);
+   end Encode_End;
 
 end ASF.Components.Core.Views;

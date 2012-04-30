@@ -109,8 +109,35 @@ package ASF.Components.Core.Views is
    type UIViewParameter is new Html.Forms.UIInput with private;
    type UIViewParameter_Access is access all UIViewParameter'Class;
 
-   type UIViewMetaData is new Core.UIComponentBase with private;
+   --  ------------------------------
+   --  View Metadata Component
+   --  ------------------------------
+   --  The <b>UIViewMetaData</b> component defines the view meta data components.
+   --  These components defines how to handle some request parameters for a GET request
+   --  as well as some actions that must be made upon reception of a request.
+   --
+   --  From ASF lifecycle management, if the request is a GET, this component is used
+   --  as the root of the component tree.  The APPLY_REQUESTS .. INVOKE_APPLICATION actions
+   --  are called on that component tree.  It is also used for the RENDER_RESPONSE, and
+   --  we have to propagate the rendering on the real view root.  Therefore, the Encode_XXX
+   --  operations are overriden to propagate on the real root.
+   type UIViewMetaData is new UIView with private;
    type UIViewMetaData_Access is access all UIViewMetaData'Class;
+
+   --  Start encoding the UIComponent.
+   overriding
+   procedure Encode_Begin (UI      : in UIViewMetaData;
+                           Context : in out Faces_Context'Class);
+
+   --  Encode the children of this component.
+   overriding
+   procedure Encode_Children (UI      : in UIViewMetaData;
+                              Context : in out Faces_Context'Class);
+
+   --  Finish encoding the component.
+   overriding
+   procedure Encode_End (UI      : in UIViewMetaData;
+                         Context : in out Faces_Context'Class);
 
    --  Set the metadata facet on the UIView component.
    procedure Set_Metadata (UI    : in out UIView;
@@ -138,8 +165,8 @@ private
       Name : Ada.Strings.Unbounded.Unbounded_String;
    end record;
 
-   type UIViewMetaData is new Core.UIComponentBase with record
-      A : Natural;
+   type UIViewMetaData is new UIView with record
+      Root : UIView_Access := null;
    end record;
 
 end ASF.Components.Core.Views;

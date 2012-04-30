@@ -20,6 +20,7 @@ with Ada.IO_Exceptions;
 
 with Util.Test_Caller;
 
+with ASF.Contexts.Flash;
 package body ASF.Contexts.Faces.Tests is
 
    use Util.Tests;
@@ -159,9 +160,11 @@ package body ASF.Contexts.Faces.Tests is
       use type ASF.Contexts.Faces.Flash_Context_Access;
 
       Ctx   : Faces_Context;
-      Flash : constant ASF.Contexts.Faces.Flash_Context_Access := Ctx.Get_Flash;
+      Flash : aliased ASF.Contexts.Flash.Flash_Context;
    begin
-      T.Assert (Flash /= null, "Null flash context returned");
+      Ctx.Set_Flash (Flash'Unchecked_Access);
+
+      T.Assert (Ctx.Get_Flash /= null, "Null flash context returned");
    end Test_Flash_Context;
 
 end ASF.Contexts.Faces.Tests;

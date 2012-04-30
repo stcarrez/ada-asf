@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ with ASF.Components.Base;
 with ASF.Views.Nodes;
 with ASF.Views.Nodes.Jsf;
 with ASF.Components.Html.Selects;
+with ASF.Components.Core.Views;
 package body ASF.Components.Core.Factory is
 
    function Create_View return Base.UIComponent_Access;
@@ -32,7 +33,7 @@ package body ASF.Components.Core.Factory is
    --  ------------------------------
    function Create_View return Base.UIComponent_Access is
    begin
-      return new ASF.Components.Core.UIView;
+      return new ASF.Components.Core.Views.UIView;
    end Create_View;
 
    --  ------------------------------
@@ -75,11 +76,11 @@ package body ASF.Components.Core.Factory is
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => ATTRIBUTE_TAG'Access,
                Component => null,
-               Tag       => Views.Nodes.Jsf.Create_Attribute_Tag_Node'Access),
+               Tag       => ASF.Views.Nodes.Jsf.Create_Attribute_Tag_Node'Access),
 
          2 => (Name      => CONVERTER_TAG'Access,
                Component => null,
-               Tag       => Views.Nodes.Jsf.Create_Converter_Tag_Node'Access),
+               Tag       => ASF.Views.Nodes.Jsf.Create_Converter_Tag_Node'Access),
 
          3 => (Name      => PARAM_TAG'Access,
                Component => Create_Parameter'Access,
@@ -95,15 +96,15 @@ package body ASF.Components.Core.Factory is
 
          6 => (Name      => VALIDATE_LENGTH_TAG'Access,
                Component => null,
-               Tag       => Views.Nodes.Jsf.Create_Length_Validator_Tag_Node'Access),
+               Tag       => ASF.Views.Nodes.Jsf.Create_Length_Validator_Tag_Node'Access),
 
          7 => (Name      => VALIDATE_LONG_RANGE_TAG'Access,
                Component => null,
-               Tag       => Views.Nodes.Jsf.Create_Range_Validator_Tag_Node'Access),
+               Tag       => ASF.Views.Nodes.Jsf.Create_Range_Validator_Tag_Node'Access),
 
          8 => (Name      => VALIDATOR_TAG'Access,
                Component => null,
-               Tag       => Views.Nodes.Jsf.Create_Validator_Tag_Node'Access),
+               Tag       => ASF.Views.Nodes.Jsf.Create_Validator_Tag_Node'Access),
 
          9 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,

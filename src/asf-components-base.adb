@@ -27,6 +27,7 @@ with ASF.Contexts.Writer;
 with ASF.Contexts.Writer.String;
 with ASF.Components.Utils;
 with ASF.Components.Core;
+with ASF.Components.Core.Views;
 
 with EL.Variables;
 with EL.Contexts.Default;
@@ -835,14 +836,14 @@ package body ASF.Components.Base is
       if UI.First_Child = null then
          Root := null;
       elsif UI.First_Child.Next = null
-        and then UI.First_Child.all in ASF.Components.Core.UIView'Class then
+        and then UI.First_Child.all in ASF.Components.Core.Views.UIView'Class then
          Root := UI.First_Child;
          Root.Parent    := null;
          UI.First_Child := null;
          UI.Last_Child  := null;
       else
          declare
-            View  : constant ASF.Components.Core.UIView_Access := new ASF.Components.Core.UIView;
+            View  : constant Core.Views.UIView_Access := new Components.Core.Views.UIView;
             Child : UIComponent_Access := UI.First_Child;
          begin
             View.Set_Content_Type ("text/html");

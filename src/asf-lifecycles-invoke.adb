@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-invoke -- Invoke application phase
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
 with Ada.Exceptions;
 with ASF.Components.Root;
 with ASF.Components.Base;
-with ASF.Components.Core;
+with ASF.Components.Core.Views;
 with Util.Log.Loggers;
 
 --  The <b>ASF.Lifecycles.Invoke</b> package defines the behavior
@@ -47,15 +47,15 @@ package body ASF.Lifecycles.Invoke is
 
       procedure Process (Child : in Components.Base.UIComponent_Access) is
       begin
-         if Child.all in Components.Core.UIView'Class then
-            Components.Core.UIView'Class (Child.all).Process_Application (Context);
+         if Child.all in Components.Core.Views.UIView'Class then
+            Components.Core.Views.UIView'Class (Child.all).Process_Application (Context);
          end if;
       end Process;
 
       procedure Process_Application_Children is new Components.Base.Iterate (Process);
 
    begin
-      if Root.all in Components.Core.UIView'Class then
+      if Root.all in Components.Core.Views.UIView'Class then
          Process (Root.all'Unchecked_Access);
       else
          Process_Application_Children (Root.all);

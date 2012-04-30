@@ -29,6 +29,7 @@ with ASF.Components.Html.Factory;
 with ASF.Components.Utils.Factory;
 with ASF.Components.Ajax.Factory;
 with ASF.Components.Root;
+with ASF.Components.Core.Views;
 with ASF.Views.Nodes.Core;
 with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
@@ -731,7 +732,8 @@ package body ASF.Applications.Main is
          --  to decide what result view must be rendered for the response.
          if not Context.Get_Response_Completed then
             declare
-               Root      : constant Components.Core.UIView_Access := new Components.Core.UIView;
+               Root      : constant Components.Core.Views.UIView_Access
+                 := new Components.Core.Views.UIView;
                View      : Components.Root.UIViewRoot;
                View_Name : constant String := "/ajax/" & Name & "/" & Operation;
             begin

@@ -728,6 +728,18 @@ package body ASF.Components.Base is
    end Broadcast;
 
    --  ------------------------------
+   --  Finalize the object.
+   --  ------------------------------
+   overriding
+   procedure Finalize (UI : in out UIComponent) is
+      procedure Free is
+         new Ada.Unchecked_Deallocation (Object => Component_Maps.Map,
+                                         Name   => Component_Map_Access);
+   begin
+      Free (UI.Facets);
+   end Finalize;
+
+   --  ------------------------------
    --  Iterate over the children of the component and execute
    --  the <b>Process</b> procedure.
    --  ------------------------------

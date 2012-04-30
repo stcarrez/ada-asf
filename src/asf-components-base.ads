@@ -25,6 +25,9 @@
 --  for each request.  Unlike tag nodes, the component tree is not shared.
 
 with Ada.Finalization;
+with Ada.Strings.Hash;
+with Ada.Containers.Indefinite_Hashed_Maps;
+
 with EL.Objects;
 with Util.Beans.Objects;
 with EL.Expressions;
@@ -274,6 +277,10 @@ package ASF.Components.Base is
                         Event   : not null access ASF.Events.Faces.Faces_Event'Class;
                         Context : in out Faces_Context'Class);
 
+   --  Finalize the object.
+   overriding
+   procedure Finalize (UI : in out UIComponent);
+
    type UIComponent_Array is array (Natural range <>) of UIComponent_Access;
 
    type UIComponent_Array_Access is access UIComponent_Array;
@@ -342,15 +349,33 @@ private
       Child : UIComponent_Access := null;
    end record;
 
+   --  The facet map maintains a mapping between a facet name and a component tree.
+   --  The component tree is not directly visible (ie, it does not participate in the
+   --  JSF component traversal by default).  To be taken into account, the component has
+   --  to retrieve the facet and deal with it.
+   --
+   --  The facet map is not created by default and it is allocated only when a facet is
+   --  added to the component.  By doing this, we avoid the cost of holding a Hashed_Map
+   --  instance (even empty) in each UIComponent.F
+   package Component_Maps is
+      new Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => String,
+                                                 Element_Type    => UIComponent_Access,
+                                                 Hash            => Ada.Strings.Hash,
+                                                 Equivalent_Keys => "=",
+                                                 "="             => "=");
+
+   type Component_Map_Access is access Component_Maps.Map;
+
    type UIComponent is new Ada.Finalization.Limited_Controlled with record
       Id           : Unbounded_String;
       Id_Generated : Boolean := False;
-      Tag         : access ASF.Views.Nodes.Tag_Node'Class;
-      Parent      : UIComponent_Access := null;
-      First_Child : UIComponent_Access := null;
-      Last_Child  : UIComponent_Access := null;
-      Next        : UIComponent_Access := null;
-      Attributes  : UIAttribute_Access := null;
+      Tag          : access ASF.Views.Nodes.Tag_Node'Class;
+      Parent       : UIComponent_Access := null;
+      First_Child  : UIComponent_Access := null;
+      Last_Child   : UIComponent_Access := null;
+      Next         : UIComponent_Access := null;
+      Attributes   : UIAttribute_Access := null;
+      Facets       : Component_Map_Access := null;
    end record;
 
    type Cursor is record

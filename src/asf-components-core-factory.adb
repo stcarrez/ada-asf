@@ -83,6 +83,7 @@ package body ASF.Components.Core.Factory is
    URI                     : aliased constant String := "http://java.sun.com/jsf/core";
    ATTRIBUTE_TAG           : aliased constant String := "attribute";
    CONVERTER_TAG           : aliased constant String := "converter";
+   FACET_TAG               : aliased constant String := "facet";
    METADATA_TAG            : aliased constant String := "metadata";
    PARAM_TAG               : aliased constant String := "param";
    SELECT_ITEM_TAG         : aliased constant String := "selectItem";
@@ -102,41 +103,45 @@ package body ASF.Components.Core.Factory is
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Converter_Tag_Node'Access),
 
-         3 => (Name      => METADATA_TAG'Access,
-               Component => Create_ViewMetaData'Access,
+         3 => (Name      => FACET_TAG'Access,
+               Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Facet_Tag_Node'Access),
 
-         4 => (Name      => PARAM_TAG'Access,
+         4 => (Name      => METADATA_TAG'Access,
+               Component => Create_ViewMetaData'Access,
+               Tag       => ASF.Views.Nodes.Jsf.Create_Metadata_Tag_Node'Access),
+
+         5 => (Name      => PARAM_TAG'Access,
                Component => Create_Parameter'Access,
                Tag       => Create_Component_Node'Access),
 
-         5 => (Name      => SELECT_ITEM_TAG'Access,
+         6 => (Name      => SELECT_ITEM_TAG'Access,
                Component => Create_SelectItem'Access,
                Tag       => Create_Component_Node'Access),
 
-         6 => (Name      => SELECT_ITEMS_TAG'Access,
+         7 => (Name      => SELECT_ITEMS_TAG'Access,
                Component => Create_SelectItems'Access,
                Tag       => Create_Component_Node'Access),
 
-         7 => (Name      => VALIDATE_LENGTH_TAG'Access,
+         8 => (Name      => VALIDATE_LENGTH_TAG'Access,
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Length_Validator_Tag_Node'Access),
 
-         8 => (Name      => VALIDATE_LONG_RANGE_TAG'Access,
+         9 => (Name      => VALIDATE_LONG_RANGE_TAG'Access,
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Range_Validator_Tag_Node'Access),
 
-         9 => (Name      => VALIDATOR_TAG'Access,
+        10 => (Name      => VALIDATOR_TAG'Access,
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Validator_Tag_Node'Access),
 
-         10 => (Name      => VIEW_TAG'Access,
+        11 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access),
 
-         11 => (Name      => VIEW_PARAM_TAG'Access,
-                Component => Create_ViewParameter'Access,
-                Tag       => Create_Component_Node'Access)
+        12 => (Name      => VIEW_PARAM_TAG'Access,
+               Component => Create_ViewParameter'Access,
+               Tag       => Create_Component_Node'Access)
         );
 
    Core_Factory : aliased constant ASF.Factory.Factory_Bindings

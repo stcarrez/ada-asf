@@ -199,6 +199,29 @@ package ASF.Views.Nodes.Jsf is
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class);
 
+   --  ------------------------------
+   --  Metadata Tag
+   --  ------------------------------
+   --  The <b>Metadata_Tag_Node</b> is created in the facelet tree when
+   --  the <f:metadata> element is found.  This special component is inserted as a special
+   --  facet component on the UIView parent component.
+   type Metadata_Tag_Node is new Views.Nodes.Tag_Node with private;
+   type Metadata_Tag_Node_Access is access all Metadata_Tag_Node'Class;
+
+   --  Create the Metadata Tag
+   function Create_Metadata_Tag_Node (Name       : Unbounded_String;
+                                      Line       : Views.Line_Info;
+                                      Parent     : Views.Nodes.Tag_Node_Access;
+                                      Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                      return Views.Nodes.Tag_Node_Access;
+
+   --  Build the component tree from the tag node and attach it as a metadata information
+   --  facet for the UIView parent component.
+   overriding
+   procedure Build_Components (Node    : access Metadata_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class);
+
 private
 
    type Converter_Tag_Node is new Views.Nodes.Tag_Node with record
@@ -228,5 +251,7 @@ private
    type Facet_Tag_Node is new Views.Nodes.Tag_Node with record
       Facet_Name : Tag_Attribute_Access;
    end record;
+
+   type Metadata_Tag_Node is new Views.Nodes.Tag_Node with null record;
 
 end ASF.Views.Nodes.Jsf;

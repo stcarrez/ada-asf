@@ -22,6 +22,7 @@ with ASF.Lifecycles;
 with Util.Beans.Objects;
 with ASF.Components.Html.Forms;
 with ASF.Components.Core;
+with ASF.Views.Nodes;
 private with Ada.Containers.Vectors;
 package ASF.Components.Core.Views is
 
@@ -111,6 +112,11 @@ package ASF.Components.Core.Views is
    type UIViewMetaData is new Core.UIComponentBase with private;
    type UIViewMetaData_Access is access all UIViewMetaData'Class;
 
+   --  Set the metadata facet on the UIView component.
+   procedure Set_Metadata (UI    : in out UIView;
+                           Meta  : in UIViewMetaData_Access;
+                           Tag   : access ASF.Views.Nodes.Tag_Node'Class);
+
 private
 
    use ASF.Lifecycles;
@@ -125,6 +131,7 @@ private
    type UIView is new Core.UIComponentBase with record
       Content_Type : Util.Beans.Objects.Object;
       Phase_Events : Event_Queues;
+      Meta         : UIViewMetaData_Access := null;
    end record;
 
    type UIViewParameter is new Html.Forms.UIInput with record

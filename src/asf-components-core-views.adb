@@ -222,4 +222,19 @@ package body ASF.Components.Core.Views is
       end loop;
    end Clear_Events;
 
+   --  ------------------------------
+   --  Set the metadata facet on the UIView component.
+   --  ------------------------------
+   procedure Set_Metadata (UI    : in out UIView;
+                           Meta  : in UIViewMetaData_Access;
+                           Tag   : access ASF.Views.Nodes.Tag_Node'Class) is
+   begin
+      if UI.Meta /= null then
+         UI.Log_Error ("A <f:metadata> component was already registered.");
+--           Delete (UI.Meta);
+      end if;
+      UI.Meta := Meta;
+      UI.Add_Facet ("metadata", Meta.all'Access, Tag);
+   end Set_Metadata;
+
 end ASF.Components.Core.Views;

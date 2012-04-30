@@ -20,6 +20,7 @@ with ASF.Converters;
 with ASF.Validators.Texts;
 with ASF.Validators.Numbers;
 with ASF.Components.Holders;
+with ASF.Components.Core.Views;
 package body ASF.Views.Nodes.Jsf is
 
    use ASF;
@@ -386,6 +387,50 @@ package body ASF.Views.Nodes.Jsf is
                                Context : in out Contexts.Facelets.Facelet_Context'Class) is
    begin
       null;
+   end Build_Components;
+
+   --  ------------------------------
+   --  Metadata Tag
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the Metadata Tag
+   --  ------------------------------
+   function Create_Metadata_Tag_Node (Name       : Unbounded_String;
+                                      Line       : Views.Line_Info;
+                                      Parent     : Views.Nodes.Tag_Node_Access;
+                                      Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                      return Views.Nodes.Tag_Node_Access is
+      use ASF.Views.Nodes;
+
+      Node : constant Metadata_Tag_Node_Access := new Metadata_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      return Node.all'Access;
+   end Create_Metadata_Tag_Node;
+
+   --  ------------------------------
+   --  Build the component tree from the tag node and attach it as a metadata information
+   --  facet for the UIView parent component.
+   --  ------------------------------
+   overriding
+   procedure Build_Components (Node    : access Metadata_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class) is
+      use ASF.Components.Core.Views;
+   begin
+      if not (Parent.all in UIView'Class) then
+         Node.Error ("Parent component of <f:metadata> must be a <f:view>");
+         return;
+      end if;
+      declare
+         UI : constant UIViewMetaData_Access := new UIViewMetaData;
+      begin
+         UIView'Class (Parent.all).Set_Metadata (UI, Node);
+         Build_Attributes (UI.all, Node.all, Context);
+         UI.Initialize (UI.Get_Context.all);
+         Node.Build_Children (UI.all'Access, Context);
+      end;
    end Build_Components;
 
 end ASF.Views.Nodes.Jsf;

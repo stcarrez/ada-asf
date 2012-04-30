@@ -114,7 +114,8 @@ package ASF.Components.Base is
    --  component is deleted.
    procedure Add_Facet (UI    : in out UIComponent'Class;
                         Name  : in String;
-                        Facet : in UIComponent_Access);
+                        Facet : in UIComponent_Access;
+                        Tag   : access ASF.Views.Nodes.Tag_Node'Class);
 
    --  Check whether the component and its children must be rendered.
    function Is_Rendered (UI : UIComponent;

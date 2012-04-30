@@ -222,7 +222,8 @@ package body ASF.Components.Base is
    --  ------------------------------
    procedure Add_Facet (UI    : in out UIComponent'Class;
                         Name  : in String;
-                        Facet : in UIComponent_Access) is
+                        Facet : in UIComponent_Access;
+                        Tag   : access ASF.Views.Nodes.Tag_Node'Class) is
       Pos : Component_Maps.Cursor;
    begin
       Log.Debug ("Adding facet {0}", Name);
@@ -242,6 +243,9 @@ package body ASF.Components.Base is
       else
          UI.Facets.Insert (Name, Facet);
       end if;
+      Facet.Tag    := Tag;
+      Facet.Parent := UI'Unchecked_Access;
+      Facet.Next   := null;
    end Add_Facet;
 
    --  ------------------------------

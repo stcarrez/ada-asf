@@ -136,6 +136,11 @@ package ASF.Views.Nodes is
    --  tree.
    procedure Freeze (Node : access Tag_Node);
 
+   --  Build the component attributes from the facelet tag node and the facelet context.
+   procedure Build_Attributes (UI      : in out UIComponent'Class;
+                               Node    : in Tag_Node'Class;
+                               Context : in out Facelet_Context'Class);
+
    --  Build the component tree from the tag node and attach it as
    --  the last child of the given parent.  Calls recursively the
    --  method to create children.

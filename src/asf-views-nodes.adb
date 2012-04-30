@@ -394,14 +394,11 @@ package body ASF.Views.Nodes is
    end Error;
 
    --  ------------------------------
-   --  Build the component tree from the tag node and attach it as
-   --  the last child of the given parent.  Calls recursively the
-   --  method to create children.
+   --  Build the component attributes from the facelet tag node and the facelet context.
    --  ------------------------------
-   procedure Build_Components (Node    : access Tag_Node;
-                               Parent  : in UIComponent_Access;
+   procedure Build_Attributes (UI      : in out UIComponent'Class;
+                               Node    : in Tag_Node'Class;
                                Context : in out Facelet_Context'Class) is
-      UI : constant UIComponent_Access := Node.Factory.all;
 
       procedure Process_Attribute (Attr : in Tag_Attribute_Access);
 
@@ -429,10 +426,22 @@ package body ASF.Views.Nodes is
       --  Iterate over the attributes to resolve some value expressions.
       procedure Iterate_Attributes is
         new ASF.Views.Nodes.Iterate_Attributes (Process_Attribute);
+   begin
+      Iterate_Attributes (Node);
+   end Build_Attributes;
 
+   --  ------------------------------
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.
+   --  ------------------------------
+   procedure Build_Components (Node    : access Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Facelet_Context'Class) is
+      UI : constant UIComponent_Access := Node.Factory.all;
    begin
       Append (Parent, UI, Node);
-      Iterate_Attributes (Node.all);
+      Build_Attributes (UI.all, Node.all, Context);
       UI.Initialize (UI.Get_Context.all);
       Node.Build_Children (UI, Context);
    end Build_Components;

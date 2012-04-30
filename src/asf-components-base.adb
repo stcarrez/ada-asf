@@ -178,6 +178,73 @@ package body ASF.Components.Base is
    end Find_Child;
 
    --  ------------------------------
+   --  Get the number of facets that this component contains.
+   --  ------------------------------
+   function Get_Facet_Count (UI : in UIComponent'Class) return Natural is
+   begin
+      if UI.Facets = null then
+         return 0;
+      else
+         return Natural (UI.Facets.Length);
+      end if;
+   end Get_Facet_Count;
+
+   --  ------------------------------
+   --  Get the facet identified by the given name.
+   --  Returns null if there is no such facet.
+   --  ------------------------------
+   function Get_Facet (UI   : in UIComponent'Class;
+                       Name : in String) return UIComponent_Access is
+   begin
+      if UI.Facets = null then
+         Log.Debug ("Facet {0}, not found", Name);
+         return null;
+      else
+         declare
+            Pos : constant Component_Maps.Cursor := UI.Facets.Find (Name);
+         begin
+            if Component_Maps.Has_Element (Pos) then
+               Log.Debug ("Get facet {0}", Name);
+               return Component_Maps.Element (Pos);
+            else
+               Log.Debug ("Facet {0}, not found", Name);
+               return null;
+            end if;
+         end;
+      end if;
+   end Get_Facet;
+
+   --  ------------------------------
+   --  Add the facet represented by the root component <b>Facet</b> under the name <b>Name</b>.
+   --  The facet component is added to the facet map and it get be retrieved later on by
+   --  using the <b>Get_Facet</b> operation.  The facet component will be destroyed when this
+   --  component is deleted.
+   --  ------------------------------
+   procedure Add_Facet (UI    : in out UIComponent'Class;
+                        Name  : in String;
+                        Facet : in UIComponent_Access) is
+      Pos : Component_Maps.Cursor;
+   begin
+      Log.Debug ("Adding facet {0}", Name);
+
+      if UI.Facets = null then
+         UI.Facets := new Component_Maps.Map;
+      end if;
+      Pos := UI.Facets.Find (Name);
+      if Component_Maps.Has_Element (Pos) then
+         declare
+            Facet : UIComponent_Access := Component_Maps.Element (Pos);
+         begin
+            Delete (Facet);
+         end;
+         UI.Log_Error ("Facet {0} already part of the component tree.", Name);
+         UI.Facets.Replace_Element (Pos, Facet);
+      else
+         UI.Facets.Insert (Name, Facet);
+      end if;
+   end Add_Facet;
+
+   --  ------------------------------
    --  Search for and return the {@link UIComponent} with an <code>id</code>
    --  that matches the specified search expression (if any), according to
    --  the algorithm described below.
@@ -736,7 +803,21 @@ package body ASF.Components.Base is
          new Ada.Unchecked_Deallocation (Object => Component_Maps.Map,
                                          Name   => Component_Map_Access);
    begin
-      Free (UI.Facets);
+      --  If this component has some facets, we have to delete them.
+      if UI.Facets /= null then
+         loop
+            declare
+               Iter : Component_Maps.Cursor := UI.Facets.First;
+               Item : UIComponent_Access;
+            begin
+               exit when not Component_Maps.Has_Element (Iter);
+               Item := Component_Maps.Element (Iter);
+               Delete (Item);
+               UI.Facets.Delete (Iter);
+            end;
+         end loop;
+         Free (UI.Facets);
+      end if;
    end Finalize;
 
    --  ------------------------------

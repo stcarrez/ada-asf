@@ -100,6 +100,22 @@ package ASF.Components.Base is
    function Find_Child (UI : in UIComponent'Class;
                         Id : in String) return UIComponent_Access;
 
+   --  Get the number of facets that this component contains.
+   function Get_Facet_Count (UI : in UIComponent'Class) return Natural;
+
+   --  Get the facet identified by the given name.
+   --  Returns null if there is no such facet.
+   function Get_Facet (UI   : in UIComponent'Class;
+                       Name : in String) return UIComponent_Access;
+
+   --  Add the facet represented by the root component <b>Facet</b> under the name <b>Name</b>.
+   --  The facet component is added to the facet map and it get be retrieved later on by
+   --  using the <b>Get_Facet</b> operation.  The facet component will be destroyed when this
+   --  component is deleted.
+   procedure Add_Facet (UI    : in out UIComponent'Class;
+                        Name  : in String;
+                        Facet : in UIComponent_Access);
+
    --  Check whether the component and its children must be rendered.
    function Is_Rendered (UI : UIComponent;
                          Context : Faces_Context'Class) return Boolean;

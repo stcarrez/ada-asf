@@ -104,9 +104,12 @@ package ASF.Components.Core.Views is
    --  View Parameter Component
    --  ------------------------------
    --  The <b>UIViewParameter</b> component represents a request parameter that must be mapped
-   --  to a backed bean object.
+   --  to a backed bean object.  This component does not participate in the rendering.
    type UIViewParameter is new Html.Forms.UIInput with private;
    type UIViewParameter_Access is access all UIViewParameter'Class;
+
+   type UIViewMetaData is new Core.UIComponentBase with private;
+   type UIViewMetaData_Access is access all UIViewMetaData'Class;
 
 private
 
@@ -126,6 +129,10 @@ private
 
    type UIViewParameter is new Html.Forms.UIInput with record
       Name : Ada.Strings.Unbounded.Unbounded_String;
+   end record;
+
+   type UIViewMetaData is new Core.UIComponentBase with record
+      A : Natural;
    end record;
 
 end ASF.Components.Core.Views;

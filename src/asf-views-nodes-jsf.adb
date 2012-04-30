@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -348,6 +348,44 @@ package body ASF.Views.Nodes.Jsf is
             end if;
          end;
       end if;
+   end Build_Components;
+
+   --  ------------------------------
+   --  Facet Tag
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the Facet Tag
+   --  ------------------------------
+   function Create_Facet_Tag_Node (Name       : Unbounded_String;
+                                   Line       : Views.Line_Info;
+                                   Parent     : Views.Nodes.Tag_Node_Access;
+                                   Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                   return Views.Nodes.Tag_Node_Access is
+      use ASF.Views.Nodes;
+
+      Node : constant Facet_Tag_Node_Access := new Facet_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Node.Facet_Name := Find_Attribute (Attributes, "name");
+      if Node.Facet_Name = null then
+         Node.Error ("Missing 'name' attribute");
+      end if;
+      return Node.all'Access;
+   end Create_Facet_Tag_Node;
+
+
+   --  ------------------------------
+   --  Build the component tree from the tag node and attach it as
+   --  the facet component of the given parent.  Calls recursively the
+   --  method to create children.
+   --  ------------------------------
+   overriding
+   procedure Build_Components (Node    : access Facet_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class) is
+   begin
+      null;
    end Build_Components;
 
 end ASF.Views.Nodes.Jsf;

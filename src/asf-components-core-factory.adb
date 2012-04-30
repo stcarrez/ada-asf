@@ -104,7 +104,7 @@ package body ASF.Components.Core.Factory is
 
          3 => (Name      => METADATA_TAG'Access,
                Component => Create_ViewMetaData'Access,
-               Tag       => Create_Component_Node'Access),
+               Tag       => ASF.Views.Nodes.Jsf.Create_Facet_Tag_Node'Access),
 
          4 => (Name      => PARAM_TAG'Access,
                Component => Create_Parameter'Access,

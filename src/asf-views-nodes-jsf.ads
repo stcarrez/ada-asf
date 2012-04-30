@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,11 +21,16 @@ with ASF.Validators;
 
 --  The <b>ASF.Views.Nodes.Jsf</b> package implements various JSF Core Tag
 --  components which alter the component tree but don't need to create
---  new UI components.  The following components are supported:
+--  new UI components in the usual way.  The following components are supported:
 --
 --  <f:attribute name='...' value='...'/>
 --  <f:converter converterId='...'/>
+--  <f:validateXXX .../>
+--  <f:facet name='...'>...</f:facet>
 --
+--  The <b>f:attribute</b>, <b>f:converter</b> and <b>f:validateXXX</b> tags don't create any
+--  component.  The <b>f:facet</b> creates components that are inserted as a facet component
+--  in the component tree.
 package ASF.Views.Nodes.Jsf is
 
    --  ------------------------------
@@ -169,6 +174,31 @@ package ASF.Views.Nodes.Jsf is
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class);
 
+   --  ------------------------------
+   --  Facet Tag
+   --  ------------------------------
+   --  The <b>Facet_Tag_Node</b> is created in the facelet tree when
+   --  the <f:facet> element is found.  After building the component tree,
+   --  we have to add the component as a facet element of the parent component.
+   --
+   type Facet_Tag_Node is new Views.Nodes.Tag_Node with private;
+   type Facet_Tag_Node_Access is access all Facet_Tag_Node'Class;
+
+   --  Create the Facet Tag
+   function Create_Facet_Tag_Node (Name       : Unbounded_String;
+                                   Line       : Views.Line_Info;
+                                   Parent     : Views.Nodes.Tag_Node_Access;
+                                   Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+                                   return Views.Nodes.Tag_Node_Access;
+
+   --  Build the component tree from the tag node and attach it as
+   --  the facet component of the given parent.  Calls recursively the
+   --  method to create children.
+   overriding
+   procedure Build_Components (Node    : access Facet_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class);
+
 private
 
    type Converter_Tag_Node is new Views.Nodes.Tag_Node with record
@@ -193,6 +223,10 @@ private
       Attr       : aliased Tag_Attribute;
       Attr_Name  : Tag_Attribute_Access;
       Value      : Tag_Attribute_Access;
+   end record;
+
+   type Facet_Tag_Node is new Views.Nodes.Tag_Node with record
+      Facet_Name : Tag_Attribute_Access;
    end record;
 
 end ASF.Views.Nodes.Jsf;

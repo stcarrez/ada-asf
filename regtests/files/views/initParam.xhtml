@@ -1,0 +1,10 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <p>#{initParam['view.debug']}</p>
+    <c:if test="#{empty initParam['none']}">
+    <b>#{initParam['view.dir']}</b>
+    </c:if>
+  </body>
+</html>

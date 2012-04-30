@@ -35,6 +35,7 @@ with ASF.Lifecycles.Default;
 with ASF.Beans.Params;
 with ASF.Beans.Headers;
 with ASF.Beans.Flash;
+with ASF.Beans.Globals;
 
 with EL.Expressions;
 with EL.Contexts.Default;
@@ -498,6 +499,10 @@ package body ASF.Applications.Main is
 
       if Key = ASF.Beans.Flash.FLASH_ATTRIBUTE_NAME then
          return ASF.Beans.Flash.Instance;
+      end if;
+
+      if Key = ASF.Beans.Globals.INIT_PARAM_ATTRIBUTE_NAME then
+         return ASF.Beans.Globals.Instance;
       end if;
 
       Result := Resolver.Request.Get_Attribute (Key);

@@ -63,6 +63,9 @@ package body ASF.Applications.Tests is
 
       Caller.Add_Test (Suite, "Test POST/REDIRECT/GET with flash object",
                        Test_Flash_Object'Access);
+
+      Caller.Add_Test (Suite, "Test GET with view parameters",
+                       Test_View_Params'Access);
    end Add_Tests;
 
    package Save_Binding is
@@ -467,5 +470,27 @@ package body ASF.Applications.Tests is
 
    end Test_Flash_Object;
 
+   --  ------------------------------
+   --  Test a GET request with meta data and view parameters.
+   --  ------------------------------
+   procedure Test_View_Params (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-config.xml");
+      App     : constant ASF.Applications.Main.Application_Access := ASF.Tests.Get_Application;
+   begin
+      ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);
+
+      Form.Use_Flash := True;
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Request.Set_Parameter ("name", "John");
+      Request.Set_Parameter ("email", "john@gmail.com");
+      Request.Set_Parameter ("is_a", "male");
+      Do_Get (Request, Reply, "/tests/view-params.html", "view-params.txt");
+   end Test_View_Params;
 
 end ASF.Applications.Tests;

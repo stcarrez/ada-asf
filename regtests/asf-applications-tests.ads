@@ -65,6 +65,9 @@ package ASF.Applications.Tests is
    --  Test a POST/REDIRECT/GET request with a flash information passed in between.
    procedure Test_Flash_Object (T : in out Test);
 
+   --  Test a GET request with meta data and view parameters.
+   procedure Test_View_Params (T : in out Test);
+
    type Form_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
       Name     : Unbounded_String;
       Password : Unbounded_String;

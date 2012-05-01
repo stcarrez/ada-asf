@@ -495,6 +495,8 @@ package body ASF.Applications.Tests is
       Assert_Equals (T, "John", Form.Name, "View parameter for name was not set");
       Assert_Equals (T, "john@gmail.com", Form.Email, "View parameter for email was not set");
       Assert_Equals (T, "male", Form.Gender, "View parameter for gender was not set");
+      Assert_Matches (T, ".*Name: John Email: john@gmail.com Gender: male",
+                      Reply, "Wrong generated content");
    end Test_View_Params;
 
 end ASF.Applications.Tests;

@@ -44,7 +44,7 @@ package body ASF.Components.Utils is
       if Tag /= null then
          return Tag.Get_Line_Info;
       else
-         return Tag.Get_Line_Info;
+         return "?";
       end if;
    end Get_Line_Info;
 

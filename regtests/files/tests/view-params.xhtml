@@ -10,10 +10,10 @@
 </head>
 <body>
    <f:metadata>
-      <f:viewParam name="name" value="#{form.name}"/>
-      <f:viewParam name="email" value="#{form.email}"/>
-      <f:viewParam name="gender" value="#{form.gender}">
-         <f:validateLength minimum='4' maximum='10'/>
+      <f:viewParam id="name" value="#{form.name}"/>
+      <f:viewParam id="email" value="#{form.email}"/>
+      <f:viewParam id="is_a" value="#{form.gender}">
+         <f:validateLength minimum='2' maximum='10'/>
       </f:viewParam>
    </f:metadata>
 </body>

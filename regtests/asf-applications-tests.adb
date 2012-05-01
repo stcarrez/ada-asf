@@ -491,6 +491,10 @@ package body ASF.Applications.Tests is
       Request.Set_Parameter ("email", "john@gmail.com");
       Request.Set_Parameter ("is_a", "male");
       Do_Get (Request, Reply, "/tests/view-params.html", "view-params.txt");
+
+      Assert_Equals (T, "John", Form.Name, "View parameter for name was not set");
+      Assert_Equals (T, "john@gmail.com", Form.Email, "View parameter for email was not set");
+      Assert_Equals (T, "male", Form.Gender, "View parameter for gender was not set");
    end Test_View_Params;
 
 end ASF.Applications.Tests;

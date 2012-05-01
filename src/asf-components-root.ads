@@ -36,11 +36,20 @@ package ASF.Components.Root is
                        Root : access ASF.Components.Base.UIComponent'Class;
                        Name : in String);
 
+   --  Set the metadata component of the view.
+   procedure Set_Meta (UI   : in out UIViewRoot);
+
+   --  Returns True if the view has a metadata component.
+   function Has_Meta (UI : in UIViewRoot) return Boolean;
+
 private
 
+   --  The <b>Root_Holder</b> must be shared by multiple <b>UIViewRoot</b> instances.
+   --  If this happens, this is shared by the <b>same</b> task.
    type Root_Holder (Len : Natural) is limited record
       Ref_Counter : Natural;
       View        : access ASF.Components.Base.UIComponent'Class;
+      Meta        : access ASF.Components.Base.UIComponent'Class;
       Name        : String (1 .. Len);
    end record;
    type Root_Holder_Access is access all Root_Holder;

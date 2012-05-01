@@ -235,7 +235,7 @@ package body ASF.Components.Core.Views is
       end if;
       Meta.Root := UI'Unchecked_Access;
       UI.Meta := Meta;
-      UI.Add_Facet ("metadata", Meta.all'Access, Tag);
+      UI.Add_Facet (METADATA_FACET_NAME, Meta.all'Access, Tag);
    end Set_Metadata;
 
    --  ------------------------------

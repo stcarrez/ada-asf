@@ -18,6 +18,7 @@
 with Ada.Unchecked_Deallocation;
 
 with ASF.Components.Base;
+with ASF.Components.Core.Views;
 package body ASF.Components.Root is
 
    use ASF;
@@ -30,8 +31,10 @@ package body ASF.Components.Root is
    begin
       if UI.Root = null then
          return null;
-      else
+      elsif UI.Root.Meta = null then
          return UI.Root.View;
+      else
+         return UI.Root.Meta;
       end if;
    end Get_Root;
 
@@ -49,8 +52,43 @@ package body ASF.Components.Root is
       UI.Root := new Root_Holder '(Ref_Counter => 1,
                                    Len         => Name'Length,
                                    View        => Root,
+                                   Meta        => null,
                                    Name        => Name);
    end Set_Root;
+
+   --  ------------------------------
+   --  Set the metadata component of the view.
+   --  ------------------------------
+   procedure Set_Meta (UI   : in out UIViewRoot) is
+      Node : access Base.UIComponent'Class;
+   begin
+      if UI.Root /= null then
+         Node := UI.Root.View;
+         UI.Root.Meta := Node.Get_Facet (Core.Views.METADATA_FACET_NAME);
+         if UI.Root.Meta = null then
+            declare
+               Iter : Base.Cursor := Base.First (Node.all);
+            begin
+               while Base.Has_Element (Iter) loop
+                  UI.Root.Meta := Base.Element (Iter).Get_Facet (Core.Views.METADATA_FACET_NAME);
+                  exit when UI.Root.Meta /= null;
+                  Base.Next (Iter);
+               end loop;
+            end;
+         end if;
+         if UI.Root.Meta /= null then
+            Node.Log_Error ("Found metadata");
+         end if;
+      end if;
+   end Set_Meta;
+
+   --  ------------------------------
+   --  Returns True if the view has a metadata component.
+   --  ------------------------------
+   function Has_Meta (UI : in UIViewRoot) return Boolean is
+   begin
+      return UI.Root /= null and then UI.Root.Meta /= null;
+   end Has_Meta;
 
    --  ------------------------------
    --  Get the view identifier.

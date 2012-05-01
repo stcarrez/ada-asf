@@ -197,7 +197,6 @@ package body ASF.Components.Base is
                        Name : in String) return UIComponent_Access is
    begin
       if UI.Facets = null then
-         Log.Debug ("Facet {0}, not found", Name);
          return null;
       else
          declare

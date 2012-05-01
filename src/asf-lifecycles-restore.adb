@@ -17,7 +17,9 @@
 -----------------------------------------------------------------------
 with Ada.Exceptions;
 with ASF.Applications.Main;
+with ASF.Components.Base;
 with ASF.Components.Root;
+with ASF.Components.Core.Views;
 with ASF.Requests;
 with Util.Log.Loggers;
 package body ASF.Lifecycles.Restore is
@@ -45,6 +47,8 @@ package body ASF.Lifecycles.Restore is
    overriding
    procedure Execute (Controller : in Restore_Controller;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
+      use ASF.Components;
+      use ASF.Components.Base;
 
       Req     : constant ASF.Requests.Request_Access := Context.Get_Request;
       Page    : constant String := Req.Get_Path_Info;
@@ -54,9 +58,17 @@ package body ASF.Lifecycles.Restore is
 
       Context.Set_View_Root (View);
 
-      --  If this is not a postback, render the response immediately.
+      --  If this is not a postback, check for view parameters.
       if Req.Get_Method = "GET" then
-         Context.Render_Response;
+         --  We need to process the ASF lifecycle towards the meta data component tree.
+         --  This allows some Ada beans to be initialized from the request parameters
+         --  and have some component actions called on the http GET (See <f:viewActions)).
+         Components.Root.Set_Meta (View);
+
+         --  If the view has no meta data, render the response immediately.
+         if not Components.Root.Has_Meta (View) then
+            Context.Render_Response;
+         end if;
       end if;
 
    exception

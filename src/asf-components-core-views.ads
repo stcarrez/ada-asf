@@ -28,6 +28,10 @@ package ASF.Components.Core.Views is
 
    use ASF.Contexts.Faces;
 
+   --  Name of the facet that holds the metadata information
+   --  (we use the same name as JSF 2 specification).
+   METADATA_FACET_NAME : constant String := "javax_faces_metadata";
+
    --  ------------------------------
    --  View component
    --  ------------------------------

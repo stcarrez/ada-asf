@@ -138,6 +138,21 @@ package body ASF.Applications.Tests is
    end Get_Method_Bindings;
 
    --  ------------------------------
+   --  Create a list of forms.
+   --  ------------------------------
+   function Create_Form_List return Util.Beans.Basic.Readonly_Bean_Access is
+      Result : Form_Lists.List_Bean_Access := new Form_Lists.List_Bean;
+      Form   : Form_Bean;
+   begin
+      for I in 1 .. 100 loop
+         Form.Name := To_Unbounded_String ("Name" & Integer'Image (I));
+         Form.Email := To_Unbounded_String ("Joe"  & Integer'Image (I) & "@gmail.com");
+         Result.List.Append (Form);
+      end loop;
+      return Result.all'Access;
+   end Create_Form_List;
+
+   --  ------------------------------
    --  Initialize the test application
    --  ------------------------------
    overriding

@@ -18,6 +18,7 @@
 
 with Ada.Text_IO;
 with ASF.Applications.Main;
+with ASF.Applications.Tests;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Requests.Tools;
@@ -25,6 +26,8 @@ with ASF.Servlets.Faces;
 with Ada.Directories;
 
 with Util.Files;
+with Util.Beans.Basic;
+with Util.Beans.Objects;
 with Util.Measures;
 package body ASF.Applications.Views.Tests is
 
@@ -53,7 +56,12 @@ package body ASF.Applications.Views.Tests is
       Dir         : constant String := "regtests/files";
       Path        : constant String := Util.Tests.Get_Path (Dir);
       Faces       : aliased ASF.Servlets.Faces.Faces_Servlet;
+      List        : Util.Beans.Basic.Readonly_Bean_Access;
+      List_Bean   : Util.Beans.Objects.Object;
    begin
+      List := Applications.Tests.Create_Form_List;
+      List_Bean := Util.Beans.Objects.To_Object (List);
+
       Conf.Load_Properties ("regtests/view.properties");
       Conf.Set ("view.dir", Path);
       App.Initialize (Conf, App_Factory);
@@ -75,6 +83,7 @@ package body ASF.Applications.Views.Tests is
             Req.Set_Path_Info (View_Name);
             Req.Set_Parameter ("file-name", To_String (T.Name));
             Req.Set_Header ("file", To_String (T.Name));
+            Req.Set_Attribute ("list", List_Bean);
             App.Dispatch (Page     => View_Name,
                           Request  => Req,
                           Response => Rep);

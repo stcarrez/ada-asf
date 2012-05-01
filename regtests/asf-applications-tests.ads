@@ -20,6 +20,7 @@ with Util.Tests;
 with Util.Beans.Basic;
 with Util.Beans.Objects;
 with Util.Beans.Methods;
+with Util.Beans.Basic.Lists;
 with Ada.Strings.Unbounded;
 
 package ASF.Applications.Tests is
@@ -97,5 +98,12 @@ package ASF.Applications.Tests is
    --  Action to save the form
    procedure Save (Data    : in out Form_Bean;
                    Outcome : in out Unbounded_String);
+
+   --  Create a list of forms.
+   package Form_Lists is
+     new Util.Beans.Basic.Lists (Form_Bean);
+
+   --  Create a list of forms.
+   function Create_Form_List return Util.Beans.Basic.Readonly_Bean_Access;
 
 end ASF.Applications.Tests;

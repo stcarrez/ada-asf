@@ -1,0 +1,20 @@
+<f:view contentType="text/html; charset=UTF-8"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:util="http://code.google.com/p/ada-asf/util">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<h:body onload='foo();' onunload='bar()' styleClass="#{not empty pageStyle ? pageStyle : 'none'}">
+  <p>
+    Count: #{list.count}
+    <h:list var='item' value="#{list}">
+       <div>#{item.name}-#{item.email}</div>
+    </h:list>
+  </p>
+</h:body>
+</html>
+</f:view>

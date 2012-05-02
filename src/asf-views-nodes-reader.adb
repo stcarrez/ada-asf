@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with Ada.Unchecked_Deallocation;
-with Ada.Strings.Unbounded;
 with Unicode;
 
 with Ada.Exceptions;
@@ -89,12 +88,10 @@ package body ASF.Views.Nodes.Reader is
                           Name      : String) return Function_Access is
       use NS_Mapping;
 
-      NS  : Unbounded_String := To_Unbounded_String (Namespace);
-      Pos : constant NS_Mapping.Cursor := NS_Mapping.Find (Mapper.Mapping, NS);
+      Pos : constant NS_Mapping.Cursor := NS_Mapping.Find (Mapper.Mapping, Namespace);
    begin
       if Has_Element (Pos) then
-         NS := Element (Pos);
-         return Mapper.Mapper.Get_Function (To_String (NS), Name);
+         return Mapper.Mapper.Get_Function (Element (Pos), Name);
       end if;
       raise No_Function with "Function '" & Namespace & ':' & Name & "' not found";
    end Get_Function;
@@ -130,8 +127,7 @@ package body ASF.Views.Nodes.Reader is
    begin
       Log.Debug ("Add namespace {0}:{1}", Prefix, URI);
 
-      Mapper.Mapping.Include (To_Unbounded_String (Prefix),
-                              To_Unbounded_String (URI));
+      Mapper.Mapping.Include (Prefix, URI);
    end Set_Namespace;
 
    --  ------------------------------
@@ -140,8 +136,8 @@ package body ASF.Views.Nodes.Reader is
    procedure Remove_Namespace (Mapper : in out NS_Function_Mapper;
                                Prefix : in String) is
       use NS_Mapping;
-      NS  : constant Unbounded_String := To_Unbounded_String (Prefix);
-      Pos : NS_Mapping.Cursor := NS_Mapping.Find (Mapper.Mapping, NS);
+
+      Pos : NS_Mapping.Cursor := NS_Mapping.Find (Mapper.Mapping, Prefix);
    begin
       Log.Debug ("Remove namespace {0}", Prefix);
 

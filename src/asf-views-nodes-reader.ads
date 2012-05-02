@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,9 +26,8 @@ with EL.Contexts;
 with EL.Contexts.Default;
 with ASF.Factory;
 
-private with Ada.Strings.Unbounded.Hash;
-private with Ada.Containers.Indefinite_Hashed_Maps;
 private with EL.Functions;
+private with Util.Strings.Maps;
 package ASF.Views.Nodes.Reader is
 
    type Xhtml_Reader is new Sax.Readers.Reader with private;
@@ -159,11 +158,7 @@ private
    use EL.Functions;
    --  use ASF.Components.Factory;
 
-   package NS_Mapping is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type => Unbounded_String,
-                                            Element_Type => Unbounded_String,
-                                            Hash => Ada.Strings.Unbounded.Hash,
-                                            Equivalent_Keys => "=");
+   package NS_Mapping renames Util.Strings.Maps;
 
    --  Skip indicates the number of frames to skip in the saved locations
    --  stack

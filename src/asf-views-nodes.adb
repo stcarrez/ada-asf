@@ -511,7 +511,7 @@ package body ASF.Views.Nodes is
                Expr : constant EL.Expressions.Expression
                  := Content.Expr.Reduce_Expression (Ctx.all);
             begin
-               if Expr.Is_Constant then
+               if Expr /= Content.Expr then
                   if Expr_Table = null then
                      Expr_Table := new Expression_Access_Array (1 .. Node.Count);
                      UI.Set_Expression_Table (Expr_Table);

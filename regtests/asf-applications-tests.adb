@@ -66,6 +66,9 @@ package body ASF.Applications.Tests is
 
       Caller.Add_Test (Suite, "Test GET with view parameters",
                        Test_View_Params'Access);
+
+      Caller.Add_Test (Suite, "Test GET with view action",
+                       Test_View_Action'Access);
    end Add_Tests;
 
    package Save_Binding is
@@ -102,6 +105,8 @@ package body ASF.Applications.Tests is
             ASF.Models.Selects.Append (List, ASF.Models.Selects.Create_Select_Item ("Mss", "3"));
             return ASF.Models.Selects.To_Object (List);
          end;
+      elsif Name = "called" then
+         return Util.Beans.Objects.To_Object (From.Called);
       else
          return Util.Beans.Objects.Null_Object;
       end if;
@@ -513,5 +518,35 @@ package body ASF.Applications.Tests is
       Assert_Matches (T, ".*Name: John Email: john@gmail.com Gender: male",
                       Reply, "Wrong generated content");
    end Test_View_Params;
+
+   --  ------------------------------
+   --  Test a GET request with meta data and view action.
+   --  ------------------------------
+   procedure Test_View_Action (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-config.xml");
+      App     : constant ASF.Applications.Main.Application_Access := ASF.Tests.Get_Application;
+   begin
+      ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);
+
+      Form.Use_Flash := True;
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Request.Set_Parameter ("name", "John");
+      Request.Set_Parameter ("email", "john@gmail.com");
+      Request.Set_Parameter ("is_a", "male");
+      Do_Get (Request, Reply, "/tests/view-action.html", "view-action.txt");
+
+      Assert_Equals (T, 1, Form.Called, "View action was not called");
+      Assert_Equals (T, "John", Form.Name, "View parameter for name was not set");
+      Assert_Equals (T, "john@gmail.com", Form.Email, "View parameter for email was not set");
+      Assert_Equals (T, "male", Form.Gender, "View parameter for gender was not set");
+      Assert_Matches (T, ".*Name: John Email: john@gmail.com Gender: male",
+                      Reply, "Wrong generated content");
+   end Test_View_Action;
 
 end ASF.Applications.Tests;

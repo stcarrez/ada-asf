@@ -1,0 +1,23 @@
+<f:view contentType="text/html; charset=UTF-8"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:util="http://code.google.com/p/ada-asf/util">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+   <f:metadata>
+      <f:viewParam id="name" value="#{form.name}"/>
+      <f:viewParam id="email" value="#{form.email}"/>
+      <f:viewParam id="is_a" value="#{form.gender}">
+         <f:validateLength minimum='2' maximum='10'/>
+      </f:viewParam>
+      <f:viewAction action="#{form.save}"/>
+   </f:metadata>
+   <h:panelGroup>Name: #{form.name} Email: #{form.email} Gender: #{form.gender} Called: #{form.called}</h:panelGroup>
+</body>
+</html>
+</f:view>

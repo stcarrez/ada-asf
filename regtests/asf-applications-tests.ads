@@ -69,6 +69,9 @@ package ASF.Applications.Tests is
    --  Test a GET request with meta data and view parameters.
    procedure Test_View_Params (T : in out Test);
 
+   --  Test a GET request with meta data and view action.
+   procedure Test_View_Action (T : in out Test);
+
    type Form_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
       Name     : Unbounded_String;
       Password : Unbounded_String;

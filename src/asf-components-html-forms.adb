@@ -401,6 +401,7 @@ package body ASF.Components.Html.Forms is
       procedure Process_Part (Part : in ASF.Parts.Part'Class);
 
       procedure Process_Part (Part : in ASF.Parts.Part'Class) is
+         pragma Unreferenced (Part);
       begin
          UI.Is_Valid := True;
       end Process_Part;

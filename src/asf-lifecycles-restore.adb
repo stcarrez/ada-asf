@@ -17,9 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Exceptions;
 with ASF.Applications.Main;
-with ASF.Components.Base;
 with ASF.Components.Root;
-with ASF.Components.Core.Views;
 with ASF.Requests;
 with Util.Log.Loggers;
 package body ASF.Lifecycles.Restore is
@@ -48,7 +46,6 @@ package body ASF.Lifecycles.Restore is
    procedure Execute (Controller : in Restore_Controller;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
       use ASF.Components;
-      use ASF.Components.Base;
 
       Req     : constant ASF.Requests.Request_Access := Context.Get_Request;
       Page    : constant String := Req.Get_Path_Info;

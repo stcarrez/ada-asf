@@ -24,6 +24,7 @@ with ASF.Components.Core.Views;
 package body ASF.Components.Core.Factory is
 
    function Create_View return Base.UIComponent_Access;
+   function Create_ViewAction return Base.UIComponent_Access;
    function Create_ViewMetaData return Base.UIComponent_Access;
    function Create_ViewParameter return Base.UIComponent_Access;
    function Create_Parameter return Base.UIComponent_Access;
@@ -37,6 +38,14 @@ package body ASF.Components.Core.Factory is
    begin
       return new ASF.Components.Core.Views.UIView;
    end Create_View;
+
+   --  ------------------------------
+   --  Create an UIViewAction component
+   --  ------------------------------
+   function Create_ViewAction return Base.UIComponent_Access is
+   begin
+      return new ASF.Components.Core.Views.UIViewAction;
+   end Create_ViewAction;
 
    --  ------------------------------
    --  Create an UIViewMetaData component
@@ -92,6 +101,7 @@ package body ASF.Components.Core.Factory is
    VALIDATE_LONG_RANGE_TAG : aliased constant String := "validateLongRange";
    VALIDATOR_TAG           : aliased constant String := "validator";
    VIEW_TAG                : aliased constant String := "view";
+   VIEW_ACTION_TAG         : aliased constant String := "viewAction";
    VIEW_PARAM_TAG          : aliased constant String := "viewParam";
 
    Core_Bindings : aliased constant ASF.Factory.Binding_Array
@@ -139,7 +149,11 @@ package body ASF.Components.Core.Factory is
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access),
 
-        12 => (Name      => VIEW_PARAM_TAG'Access,
+        12 => (Name      => VIEW_ACTION_TAG'Access,
+                Component => Create_ViewAction'Access,
+                Tag       => Create_Component_Node'Access),
+
+        13 => (Name      => VIEW_PARAM_TAG'Access,
                Component => Create_ViewParameter'Access,
                Tag       => Create_Component_Node'Access)
         );

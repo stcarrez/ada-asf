@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ASF.Contexts.Faces;
 with ASF.Events.Faces;
 with ASF.Lifecycles;
 with Util.Beans.Objects;
@@ -25,8 +24,6 @@ with ASF.Components.Core;
 with ASF.Views.Nodes;
 private with Ada.Containers.Vectors;
 package ASF.Components.Core.Views is
-
-   use ASF.Contexts.Faces;
 
    --  Name of the facet that holds the metadata information
    --  (we use the same name as JSF 2 specification).
@@ -114,6 +111,19 @@ package ASF.Components.Core.Views is
    type UIViewParameter_Access is access all UIViewParameter'Class;
 
    --  ------------------------------
+   --  View Action Component
+   --  ------------------------------
+   --  The <b>UIViewAction</b> component implements the view action tag defined by Jave Server
+   --  Faces 2.2.  This action defined by that tag will be called
+   type UIViewAction is new Html.Forms.UICommand with private;
+   type UIViewAction_Access is access all UIViewAction'Class;
+
+   --  Decode the request and prepare for the execution for the view action.
+   overriding
+   procedure Process_Decodes (UI      : in out UIViewAction;
+                              Context : in out Faces_Context'Class);
+
+   --  ------------------------------
    --  View Metadata Component
    --  ------------------------------
    --  The <b>UIViewMetaData</b> component defines the view meta data components.
@@ -143,6 +153,24 @@ package ASF.Components.Core.Views is
    procedure Encode_End (UI      : in UIViewMetaData;
                          Context : in out Faces_Context'Class);
 
+   --  Queue an event for broadcast at the end of the current request
+   --  processing lifecycle phase.  The event object
+   --  will be freed after being dispatched.
+   overriding
+   procedure Queue_Event (UI    : in out UIViewMetaData;
+                          Event : not null access ASF.Events.Faces.Faces_Event'Class);
+
+   --  Broadcast the events after the specified lifecycle phase.
+   --  Events that were queued will be freed.
+   overriding
+   procedure Broadcast (UI      : in out UIViewMetaData;
+                        Phase   : in ASF.Lifecycles.Phase_Type;
+                        Context : in out Faces_Context'Class);
+
+   --  Clear the events that were queued.
+   overriding
+   procedure Clear_Events (UI : in out UIViewMetaData);
+
    --  Set the metadata facet on the UIView component.
    procedure Set_Metadata (UI    : in out UIView;
                            Meta  : in UIViewMetaData_Access;
@@ -168,6 +196,8 @@ private
    type UIViewParameter is new Html.Forms.UIInput with record
       Name : Ada.Strings.Unbounded.Unbounded_String;
    end record;
+
+   type UIViewAction is new Html.Forms.UICommand with null record;
 
    type UIViewMetaData is new UIView with record
       Root : UIView_Access := null;

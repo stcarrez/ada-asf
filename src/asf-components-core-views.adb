@@ -17,13 +17,19 @@
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 
+with Util.Log.Loggers;
+
 with ASF.Events.Phases;
 with ASF.Components.Base;
+with ASF.Events.Faces.Actions;
 
 package body ASF.Components.Core.Views is
 
    use ASF;
    use EL.Objects;
+
+   --  The logger
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Components.Core.Views");
 
    procedure Free is
      new Ada.Unchecked_Deallocation (Object => ASF.Events.Faces.Faces_Event'Class,
@@ -77,11 +83,11 @@ package body ASF.Components.Core.Views is
       Base.UIComponent (UI).Process_Decodes (Context);
 
       --  Dispatch events queued for this phase.
-      UI.Broadcast (ASF.Events.Phases.APPLY_REQUEST_VALUES, Context);
+      UIView'Class (UI).Broadcast (ASF.Events.Phases.APPLY_REQUEST_VALUES, Context);
 
       --  Drop other events if the response is to be returned.
       if Context.Get_Render_Response or Context.Get_Response_Completed then
-         UI.Clear_Events;
+         UIView'Class (UI).Clear_Events;
       end if;
    end Process_Decodes;
 
@@ -101,11 +107,11 @@ package body ASF.Components.Core.Views is
       Base.UIComponent (UI).Process_Validators (Context);
 
       --  Dispatch events queued for this phase.
-      UI.Broadcast (ASF.Events.Phases.PROCESS_VALIDATION, Context);
+      UIView'Class (UI).Broadcast (ASF.Events.Phases.PROCESS_VALIDATION, Context);
 
       --  Drop other events if the response is to be returned.
       if Context.Get_Render_Response or Context.Get_Response_Completed then
-         UI.Clear_Events;
+         UIView'Class (UI).Clear_Events;
       end if;
    end Process_Validators;
 
@@ -125,11 +131,11 @@ package body ASF.Components.Core.Views is
       Base.UIComponent (UI).Process_Updates (Context);
 
       --  Dispatch events queued for this phase.
-      UI.Broadcast (ASF.Events.Phases.UPDATE_MODEL_VALUES, Context);
+      UIView'Class (UI).Broadcast (ASF.Events.Phases.UPDATE_MODEL_VALUES, Context);
 
       --  Drop other events if the response is to be returned.
       if Context.Get_Render_Response or Context.Get_Response_Completed then
-         UI.Clear_Events;
+         UIView'Class (UI).Clear_Events;
       end if;
    end Process_Updates;
 
@@ -143,7 +149,7 @@ package body ASF.Components.Core.Views is
                                   Context : in out Faces_Context'Class) is
    begin
       --  Dispatch events queued for this phase.
-      UI.Broadcast (ASF.Events.Phases.INVOKE_APPLICATION, Context);
+      UIView'Class (UI).Broadcast (ASF.Events.Phases.INVOKE_APPLICATION, Context);
    end Process_Application;
 
    --  ------------------------------
@@ -239,6 +245,26 @@ package body ASF.Components.Core.Views is
    end Set_Metadata;
 
    --  ------------------------------
+   --  Decode the request and prepare for the execution for the view action.
+   --  ------------------------------
+   overriding
+   procedure Process_Decodes (UI      : in out UIViewAction;
+                              Context : in out Faces_Context'Class) is
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+      begin
+         ASF.Events.Faces.Actions.Post_Event (UI     => UI,
+                                              Method => UI.Get_Action_Expression (Context));
+
+      exception
+         when EL.Expressions.Invalid_Expression =>
+            null;
+      end;
+   end Process_Decodes;
+
+   --  ------------------------------
    --  Start encoding the UIComponent.
    --  ------------------------------
    overriding
@@ -267,5 +293,34 @@ package body ASF.Components.Core.Views is
    begin
       UI.Root.Encode_Begin (Context);
    end Encode_End;
+
+   --  ------------------------------
+   --  Queue an event for broadcast at the end of the current request
+   --  processing lifecycle phase.  The event object
+   --  will be freed after being dispatched.
+   --  ------------------------------
+   overriding
+   procedure Queue_Event (UI    : in out UIViewMetaData;
+                          Event : not null access ASF.Events.Faces.Faces_Event'Class) is
+   begin
+      UI.Root.Queue_Event (Event);
+   end Queue_Event;
+
+   --  Broadcast the events after the specified lifecycle phase.
+   --  Events that were queued will be freed.
+   overriding
+   procedure Broadcast (UI      : in out UIViewMetaData;
+                        Phase   : in ASF.Lifecycles.Phase_Type;
+                        Context : in out Faces_Context'Class) is
+   begin
+      UI.Root.Broadcast (Phase, Context);
+   end Broadcast;
+
+   --  Clear the events that were queued.
+   overriding
+   procedure Clear_Events (UI : in out UIViewMetaData) is
+   begin
+      UI.Root.Clear_Events;
+   end Clear_Events;
 
 end ASF.Components.Core.Views;

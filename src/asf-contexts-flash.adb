@@ -74,10 +74,12 @@ package body ASF.Contexts.Flash is
       null;
    end Keep;
 
+   --  ------------------------------
    --  Returns True if the <b>Redirect</b> property was set on the previous flash instance.
+   --  ------------------------------
    function Is_Redirect (Flash : in Flash_Context) return Boolean is
    begin
-      return False;
+      return Flash.Previous /= null and then Flash.Previous.Redirect;
    end Is_Redirect;
 
    --  Set this property to True to indicate to the next request on this session will be

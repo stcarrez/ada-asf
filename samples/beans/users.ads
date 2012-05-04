@@ -27,6 +27,7 @@ package Users is
    type User_Info is new Util.Beans.Basic.Readonly_Bean
      and Util.Beans.Methods.Method_Bean with null record;
 
+   --  Get the user information identified by the given name.
    overriding
    function Get_Value (From : in User_Info;
                        Name : in String) return Util.Beans.Objects.Object;

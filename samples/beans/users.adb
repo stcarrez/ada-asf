@@ -17,20 +17,28 @@
 -----------------------------------------------------------------------
 
 with ASF.Contexts.Faces;
+with ASF.Contexts.Flash;
 with ASF.Sessions;
 with ASF.Principals;
+with ASF.Cookies;
 with ASF.Events.Faces.Actions;
+with ASF.Applications.Messages.Factory;
 
 with Security.Openid;
+with Security.Filters;
 package body Users is
 
+   use Ada.Strings.Unbounded;
+   use Security.Openid;
+   use type ASF.Principals.Principal_Access;
+   use type ASF.Contexts.Faces.Faces_Context_Access;
+
+   --  ------------------------------
+   --  Get the user information identified by the given name.
+   --  ------------------------------
    function Get_Value (From : in User_Info;
                        Name : in String) return Util.Beans.Objects.Object is
       pragma Unreferenced (From);
-
-      use Security.Openid;
-      use type ASF.Principals.Principal_Access;
-      use type ASF.Contexts.Faces.Faces_Context_Access;
 
       F : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
       S : ASF.Sessions.Session;
@@ -73,9 +81,24 @@ package body Users is
       if Name = "country" then
          return Util.Beans.Objects.To_Object (Get_Country (U.Get_Authentication));
       end if;
+      if Name = "sessionId" then
+         return Util.Beans.Objects.To_Object (S.Get_Id);
+      end if;
 
       return Util.Beans.Objects.To_Object (U.Get_Name);
    end Get_Value;
+
+   --  ------------------------------
+   --  Helper to send a remove cookie in the current response
+   --  ------------------------------
+   procedure Remove_Cookie (Name : in String) is
+      Ctx : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
+      C   : ASF.Cookies.Cookie := ASF.Cookies.Create (Name, "");
+   begin
+      ASF.Cookies.Set_Path (C, Ctx.Get_Request.Get_Context_Path);
+      ASF.Cookies.Set_Max_Age (C, 0);
+      Ctx.Get_Response.Add_Cookie (Cookie => C);
+   end Remove_Cookie;
 
    --  ------------------------------
    --  Logout by dropping the user session.
@@ -86,10 +109,23 @@ package body Users is
 
       F : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
       S : ASF.Sessions.Session := F.Get_Session;
+      P : ASF.Principals.Principal_Access := null;
+      U : Security.Openid.Principal_Access := null;
    begin
       if S.Is_Valid then
+         P := S.Get_Principal;
+         if P /= null then
+            U := Security.Openid.Principal'Class (P.all)'Access;
+         end if;
          S.Invalidate;
       end if;
+      if U /= null then
+         F.Get_Flash.Set_Keep_Messages (True);
+         ASF.Applications.Messages.Factory.Add_Message (F.all, "samples.openid_logout_message",
+                                                        Get_Full_Name (U.Get_Authentication));
+      end if;
+      Remove_Cookie (Security.Filters.SID_COOKIE);
+      Outcome := Ada.Strings.Unbounded.To_Unbounded_String ("logout_success");
    end Logout;
 
    package Logout_Binding is

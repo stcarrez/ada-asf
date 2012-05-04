@@ -108,4 +108,13 @@
       </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+      <from-view-id>/auth/login.xhtml</from-view-id>
+      <navigation-case>
+        <from-outcome>logout_success</from-outcome>
+        <to-view-id>/auth/logout.xhtml</to-view-id>
+        <redirect/>
+      </navigation-case>
+    </navigation-rule>
+
 </web-app>

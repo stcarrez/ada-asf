@@ -7,6 +7,11 @@
     <ui:param name="pageStyle" value="sample-openid"/>
     <ui:param name="tab" value="openid"/>
 
+    <ui:define name="meta">
+        <f:metadata>
+            <f:viewAction action="#{user.logout}"/>
+        </f:metadata>
+    </ui:define>
     <!-- Main page body -->
     <ui:define name="demoBody">
 

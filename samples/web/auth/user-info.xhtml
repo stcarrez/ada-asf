@@ -1,0 +1,36 @@
+<div xmlns:c="http://java.sun.com/jstl/core">
+    <c:choose>
+        <c:when test="#{user.authenticated}">
+            <h3>#{samplesMsg.openid_success_message}</h3>
+            <div class='openid-info'>
+                <dl>
+                    <dt>#{samplesMsg.openid_id_label}</dt>
+                    <dd>#{user.id}</dd>
+                    <dt>#{samplesMsg.openid_email_label}</dt>
+                    <dd>#{user.email}</dd>
+                    <dt>#{samplesMsg.openid_full_name_label}</dt>
+                    <dd>#{user.full_name}</dd>
+                    <dt>#{samplesMsg.openid_first_name_label}</dt>
+                    <dd>#{user.first_name}</dd>
+                    <dt>#{samplesMsg.openid_last_name_label}</dt>
+                    <dd>#{user.last_name}</dd>
+                    <dt>#{samplesMsg.openid_language_label}</dt>
+                    <dd>#{user.language}</dd>
+                    <dt>#{samplesMsg.openid_country_label}</dt>
+                    <dd>#{user.country}</dd>
+                    <dt>#{samplesMsg.session_ident_label}</dt>
+                    <dd>#{user.sessionId}</dd>
+                </dl>
+            </div>
+
+            <div class='openid-retry'>
+                <a href="#{contextPath}/auth/login.html">#{samplesMsg.openid_ask_login}</a>
+            </div>
+        </c:when>
+
+        <c:otherwise>
+            <h3>#{samplesMsg.openid_not_authenticated_message}</h3>
+            <a href="#{contextPath}/auth/login.html">#{samplesMsg.openid_ask_login}</a>
+        </c:otherwise>
+    </c:choose>
+</div>

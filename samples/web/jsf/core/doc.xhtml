@@ -97,6 +97,20 @@
         </ui:decorate>
     </c:when>
 
+    <c:when test="#{param['code'] eq 'metadata'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:metadata"/>
+            <ui:define name="description">
+                Declares the metadata facet for the view.
+            </ui:define>
+            <ui:define name="attributes">
+                <li>
+                    none
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
     <c:when test="#{param['code'] eq 'param'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="f:param"/>

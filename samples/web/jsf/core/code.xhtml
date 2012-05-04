@@ -34,6 +34,13 @@
         <code class="prettyprint lang-converter linenums:1"><util:file src="/jsf/core/converter.xhtml" escape="true"/>
         </code>
     </c:when>
+    <c:when test="#{param['code'] eq 'metadata'}">
+        <util:script>
+            Sample_Highlight('metadata','f:metadata');
+        </util:script>
+        <code class="prettyprint lang-metadata linenums:1"><util:file src="/jsf/core/metadata.xhtml" escape="true"/>
+        </code>
+    </c:when>
     <c:when test="#{param['code'] eq 'param'}">
         <util:script>
             Sample_Highlight('param','f:param');

@@ -223,9 +223,9 @@ package body ASF.Components.Html.Factory is
    OUTPUT_LINK_TAG    : aliased constant String := "outputLink";
    OUTPUT_TEXT_TAG    : aliased constant String := "outputText";
    PANEL_GROUP_TAG    : aliased constant String := "panelGroup";
+   SELECT_BOOLEAN_TAG  : aliased constant String := "selectBooleanCheckbox";
    SELECT_ONE_MENU_TAG : aliased constant String := "selectOneMenu";
    SELECT_ONE_RADIO_TAG : aliased constant String := "selectOneRadio";
-   SELECT_BOOLEAN_TAG  : aliased constant String := "selectBooleanCheckbox";
 
    Html_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => BODY_TAG'Access,

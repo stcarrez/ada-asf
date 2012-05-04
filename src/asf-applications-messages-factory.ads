@@ -57,6 +57,12 @@ package ASF.Applications.Messages.Factory is
    --  Add a localized global message in the faces context.
    procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
                           Message_Id : in String;
+                          Param1     : in String;
+                          Severity   : in Messages.Severity := ERROR);
+
+   --  Add a localized global message in the faces context.
+   procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
+                          Message_Id : in String;
                           Severity   : in Messages.Severity := ERROR);
 
 end ASF.Applications.Messages.Factory;

@@ -122,6 +122,18 @@ package body ASF.Applications.Messages.Factory is
    --  ------------------------------
    procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
                           Message_Id : in String;
+                          Param1     : in String;
+                          Severity   : in Messages.Severity := ERROR) is
+      Msg     : constant Message := Get_Message (Context, Message_Id, Param1, Severity);
+   begin
+      Context.Add_Message (Client_Id => "", Message  => Msg);
+   end Add_Message;
+
+   --  ------------------------------
+   --  Add a localized global message in the faces context.
+   --  ------------------------------
+   procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;
+                          Message_Id : in String;
                           Severity   : in Messages.Severity := ERROR) is
       Msg     : constant Message := Get_Message (Context, Message_Id, Severity);
    begin

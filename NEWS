@@ -1,7 +1,7 @@
 Version 0.4     -
   - Support for shared or static build configuration
   - Support for file upload
-  - New component <h:inputFile>
+  - New component <h:inputFile>, <f:metadata>, <f:viewParam>, <f:viewAction>
   - New function util:hasMessage
   - Implement JSF phase events and phase listeners
   - Implement JSF/RoR flash context

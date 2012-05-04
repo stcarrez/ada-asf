@@ -403,6 +403,27 @@
         </ui:decorate>
     </c:when>
 
+    <c:when test="#{param['code'] eq 'viewParam'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:viewParam"/>
+            <ui:define name="description">
+                The viewParam element is used in a medata facet.  It allows to initialize
+                a bean attribute from a request parameter.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="../html/doc-converter.xhtml"/>
+                <ui:include src="../html/doc-common.xhtml"/>
+                <ui:include src="../html/doc-input.xhtml"/>
+
+                <li class="attr-unimpl">
+                    <b>binding</b>
+                    <i>ValueExpression</i>
+                    <span>A <tt>ValueExpression</tt> that evaluates to a UIComponent.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
     <c:when test="#{param['code'] eq 'script'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="util:script"/>

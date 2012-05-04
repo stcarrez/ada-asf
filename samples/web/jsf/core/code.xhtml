@@ -90,6 +90,13 @@
         <code class="prettyprint lang-view linenums:1"><util:file src="/jsf/core/view-example.xhtml" escape="true"/>
         </code>
     </c:when>
+    <c:when test="#{param['code'] eq 'viewParam'}">
+        <util:script>
+            Sample_Highlight('viewParam','f:viewParam');
+        </util:script>
+        <code class="prettyprint lang-viewParam linenums:1"><util:file src="/jsf/core/viewParam.xhtml" escape="true"/>
+        </code>
+    </c:when>
 
     <c:otherwise>
         <p>

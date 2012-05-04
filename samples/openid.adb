@@ -26,14 +26,11 @@ with ASF.Servlets.Faces;
 with ASF.Servlets.Files;
 with ASF.Servlets.Measures;
 with ASF.Filters.Dump;
-with ASF.Principals;
-with ASF.Sessions;
-with ASF.Contexts.Faces;
 
-with Util.Beans.Basic;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 
+with Users;
 with AWS.Net.SSL;
 with Security.Openid;
 with Security.Openid.Servlets;
@@ -41,70 +38,12 @@ procedure Openid is
 
    use ASF.Applications;
 
-   --  A bean that expose information about the user
-   type User_Info is new Util.Beans.Basic.Readonly_Bean with null record;
-   function Get_Value (From : in User_Info;
-                       Name : in String) return Util.Beans.Objects.Object;
-
-   function Get_Value (From : in User_Info;
-                       Name : in String) return Util.Beans.Objects.Object is
-      pragma Unreferenced (From);
-
-      use Security.Openid;
-      use type ASF.Principals.Principal_Access;
-      use type ASF.Contexts.Faces.Faces_Context_Access;
-
-      F : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
-      S : ASF.Sessions.Session;
-      P : ASF.Principals.Principal_Access := null;
-      U : Security.Openid.Principal_Access := null;
-   begin
-      if F /= null then
-         S := F.Get_Session;
-         if S.Is_Valid then
-            P := S.Get_Principal;
-            if P /= null then
-               U := Security.Openid.Principal'Class (P.all)'Access;
-            end if;
-         end if;
-      end if;
-      if Name = "authenticated" then
-         return Util.Beans.Objects.To_Object (U /= null);
-      end if;
-      if U = null then
-         return Util.Beans.Objects.Null_Object;
-      end if;
-      if Name = "email" then
-         return Util.Beans.Objects.To_Object (U.Get_Email);
-      end if;
-      if Name = "language" then
-         return Util.Beans.Objects.To_Object (Get_Language (U.Get_Authentication));
-      end if;
-      if Name = "first_name" then
-         return Util.Beans.Objects.To_Object (Get_First_Name (U.Get_Authentication));
-      end if;
-      if Name = "last_name" then
-         return Util.Beans.Objects.To_Object (Get_Last_Name (U.Get_Authentication));
-      end if;
-      if Name = "full_name" then
-         return Util.Beans.Objects.To_Object (Get_Full_Name (U.Get_Authentication));
-      end if;
-      if Name = "id" then
-         return Util.Beans.Objects.To_Object (Get_Claimed_Id (U.Get_Authentication));
-      end if;
-      if Name = "country" then
-         return Util.Beans.Objects.To_Object (Get_Country (U.Get_Authentication));
-      end if;
-
-      return Util.Beans.Objects.To_Object (U.Get_Name);
-   end Get_Value;
-
    Log          : Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Openid");
 
    CONTEXT_PATH : constant String := "/openid";
    CONFIG_PATH  : constant String := "samples.properties";
 
-   User         : aliased User_Info;
+   User         : aliased Users.User_Info;
    App          : aliased ASF.Applications.Main.Application;
    Factory      : ASF.Applications.Main.Application_Factory;
    C            : ASF.Applications.Config;
@@ -196,7 +135,7 @@ begin
 
    App.Close;
 exception
-   when E: others =>
+   when E : others =>
       Ada.Text_IO.Put_Line ("Exception in server: " &
                             Ada.Exceptions.Exception_Name (E) & ": " &
                             Ada.Exceptions.Exception_Message (E));

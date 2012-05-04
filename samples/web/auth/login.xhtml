@@ -2,20 +2,25 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jstl/core"
-                template="/WEB-INF/layouts/layout.xhtml">
+                template="/WEB-INF/layouts/demo.xhtml">
     <ui:param name="title" value="#{samplesMsg.openid_title}" />
     <ui:param name="pageStyle" value="sample-openid"/>
+    <ui:param name="tab" value="openid"/>
 
     <!-- Main page body -->
-    <ui:define name="pageBody">
+    <ui:define name="demoBody">
 
        <div id='awa-content'>
+           <h:messages/>
           <h3>#{samplesMsg.openid_message}</h3>
           <c:if test="#{user.authenticated}">
-            <h3><h:outputFormat value="#{samplesMsg.openid_logged_message}">
-                   <f:param value="#{user.email}"/>
-                </h:outputFormat>
-            </h3>
+              <h:form>
+                  <h:commandButton action="#{user.logout}" value="#{samplesMsg.openid_logout}"/>
+              </h:form>
+              <h3><h:outputFormat value="#{samplesMsg.openid_logged_message}">
+                  <f:param value="#{user.email}"/>
+              </h:outputFormat>
+              </h3>
           </c:if>
           <div class='openid-login'>
              <a href="#{contextPath}/auth/auth/google" title="#{samplesMsg.openid_google_auth}" class='openid-google'>

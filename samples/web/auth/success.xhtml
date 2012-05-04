@@ -2,12 +2,13 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jstl/core"
-                template="/WEB-INF/layouts/layout.xhtml">
+                template="/WEB-INF/layouts/demo.xhtml">
     <ui:param name="title" value="#{samplesMsg.openid_title}" />
     <ui:param name="pageStyle" value="sample-openid"/>
+    <ui:param name="tab" value="openid"/>
 
     <!-- Main page body -->
-    <ui:define name="pageBody">
+    <ui:define name="demoBody">
 
 		<div id='awa-content'>
 		  <c:choose>
@@ -31,7 +32,7 @@
                     <dd>#{user.country}</dd>
 				</dl>
 				</div>
-				
+
 				<div class='openid-retry'>
 				   <a href="#{contextPath}/auth/login.html">#{samplesMsg.openid_ask_login}</a>
                 </div>

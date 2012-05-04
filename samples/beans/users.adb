@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  users - A simple memory-based forum
+--  users - Gives access to the OpenID principal through an Ada bean
 --  Copyright (C) 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -19,6 +19,8 @@
 with ASF.Contexts.Faces;
 with ASF.Sessions;
 with ASF.Principals;
+with ASF.Events.Faces.Actions;
+
 with Security.Openid;
 package body Users is
 
@@ -74,5 +76,39 @@ package body Users is
 
       return Util.Beans.Objects.To_Object (U.Get_Name);
    end Get_Value;
+
+   --  ------------------------------
+   --  Logout by dropping the user session.
+   --  ------------------------------
+   procedure Logout (From    : in out User_Info;
+                     Outcome : in out Ada.Strings.Unbounded.Unbounded_String) is
+      pragma Unreferenced (From);
+
+      F : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
+      S : ASF.Sessions.Session := F.Get_Session;
+   begin
+      if S.Is_Valid then
+         S.Invalidate;
+      end if;
+   end Logout;
+
+   package Logout_Binding is
+     new ASF.Events.Faces.Actions.Action_Method.Bind (Bean   => User_Info,
+                                                      Method => Logout,
+                                                      Name   => "logout");
+
+   Binding_Array : aliased constant Util.Beans.Methods.Method_Binding_Array
+     := (1 => Logout_Binding.Proxy'Unchecked_Access);
+
+   --  ------------------------------
+   --  This bean provides some methods that can be used in a Method_Expression
+   --  ------------------------------
+   overriding
+   function Get_Method_Bindings (From : in User_Info)
+                                 return Util.Beans.Methods.Method_Binding_Array_Access is
+      pragma Unreferenced (From);
+   begin
+      return Binding_Array'Access;
+   end Get_Method_Bindings;
 
 end Users;

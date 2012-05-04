@@ -52,36 +52,13 @@
                 Renders an HTML <tt>input</tt> element.
             </ui:define>
             <ui:define name="attributes">
-                <li class="attr-optional">
-                    <b>action</b>
-                    <i>MethodExpression</i>
-                    <span>MethodExpression representing the application action to invoke when this
-                        component is activated by the user. The expression must evaluate to a public
-                        method that takes no parameters, and returns an Object (the toString() of
-                        which is called to derive the logical outcome) which is passed to the
-                        NavigationHandler for this application.
-                        </span>
-                </li>
-                <ui:include src="doc-lang.xhtml"/>
-                <li class="attr-unimpl">
-                    <b>actionListener</b>
-                    <i>MethodExpression</i>
-                    <span>MethodExpression representing an action listener method that will be notified
-                        when this component is activated by the user. The expression must evaluate to
-                        a public method that takes an ActionEvent parameter, with a return type of void,
-                        or to a public method that takes no arguments with a return type of void.
-                        In the latter case, the method has no way of easily knowing where the event came from,
-                        but this can be useful in cases where a notification is needed that "some action happened".
-
-                        </span>
-                </li>
-                <ui:include src="doc-common.xhtml"/>
                 <li class="attr-required">
                     <b>value</b>
                     <i>ValueExpression</i>
                     <span>The current value of this component.
                     </span>
                 </li>
+                <ui:include src="doc-actions.xhtml"/>
                 <ui:include src="doc-key.xhtml"/>
                 <li class="attr-optional">
                     <b>alt</b>

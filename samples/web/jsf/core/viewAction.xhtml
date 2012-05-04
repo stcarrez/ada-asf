@@ -1,0 +1,25 @@
+<f:view xmlns:f="http://java.sun.com/jsf/core">
+    <f:metadata>
+        <f:viewParam id='height' value='#{compute.height}'>
+            <f:converter converterId="float" />
+        </f:viewParam>
+        <f:viewParam id='radius' value='#{compute.radius}'>
+            <f:converter converterId="float" />
+        </f:viewParam>
+        <f:viewAction action="#{compute.run}"/>
+    </f:metadata>
+    <dl>
+        <dt>Height</dt>
+        <dd>
+            #{compute.height}
+        </dd>
+         <dt>Radius</dt>
+        <dd>
+            #{compute.radius}
+        </dd>
+        <dt>Volume</dt>
+        <dd>
+            #{compute.volume}
+        </dd>
+    </dl>
+</f:view>

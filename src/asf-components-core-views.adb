@@ -196,19 +196,26 @@ package body ASF.Components.Core.Views is
          end if;
       end Broadcast;
 
-   begin
-      --  Dispatch events in the order in which they were queued.
-      --  More events could be queued as a result of the dispatch.
-      --  After dispatching an event, it is freed but not removed
-      --  from the event queue (the access will be cleared).
-      loop
-         exit when Pos > UI.Phase_Events (Phase).Last_Index;
-         UI.Phase_Events (Phase).Update_Element (Pos, Broadcast'Access);
-         Pos := Pos + 1;
-      end loop;
+      use type Base.UIComponent_Access;
 
-      --  Now, clear the queue.
-      UI.Phase_Events (Phase).Clear;
+      Parent : constant Base.UIComponent_Access := UI.Get_Parent;
+   begin
+      if Parent /= null then
+         UIView'Class (Parent.all).Broadcast (Phase, Context);
+      else
+         --  Dispatch events in the order in which they were queued.
+         --  More events could be queued as a result of the dispatch.
+         --  After dispatching an event, it is freed but not removed
+         --  from the event queue (the access will be cleared).
+         loop
+            exit when Pos > UI.Phase_Events (Phase).Last_Index;
+            UI.Phase_Events (Phase).Update_Element (Pos, Broadcast'Access);
+            Pos := Pos + 1;
+         end loop;
+
+         --  Now, clear the queue.
+         UI.Phase_Events (Phase).Clear;
+      end if;
    end Broadcast;
 
    --  ------------------------------

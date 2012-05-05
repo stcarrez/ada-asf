@@ -2,6 +2,10 @@ h1 {
     clear: both;
     padding-top: 15px;
 }
+#awa-this-source {
+    float: left;
+    margin-left: 10%;
+}
 #awa-content h3 {
 	padding-bottom: 40px;
 	padding-top: 40px;
@@ -252,8 +256,9 @@ li.attr-required {
 li.attr-optional {
     color: #888;
 }
-li.attr-unimpl {
+ul.tag-doc li.attr-unimpl {
     color: #ddd;
+    display: none;
 }
 li.attr-required b {
     font-weight: bold;

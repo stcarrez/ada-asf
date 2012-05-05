@@ -43,7 +43,7 @@ package body Upload_Servlet is
 
       --  Render the form.  If we have some existing Radius or Height
       --  use them to set the initial values.
-      Output.Write ("<p>Enter the height and radius of the cylinder</p>"
+      Output.Write ("<p>Identifies images, PDF, tar, tar.gz, zip</p>"
                     & "<form method='post' enctype='multipart/form-data'>"
                     & "<table>"
                     & "<tr><td>File 1</td>"
@@ -53,7 +53,7 @@ package body Upload_Servlet is
                     & "</tr><tr><td>File 3</td>"
                     & "<td><input type='file' size='50' name='file3' maxlength='100000'/></td>"
                     & "</tr>"
-                    & "<tr><td></td><td><input type='submit' value='Compute'></input></td></tr>"
+                    & "<tr><td></td><td><input type='submit' value='Identify'></input></td></tr>"
                     & "</table></form>"
                     & "</body></html>");
       Response.Set_Status (Responses.SC_OK);
@@ -127,7 +127,8 @@ package body Upload_Servlet is
               or Name (Ext_Pos .. Name'Last) = ".png" then
                return IMAGE;
 
-            elsif Name (Ext_Pos .. Name'Last) = ".zip" then
+            elsif Name (Ext_Pos .. Name'Last) = ".zip"
+              or Name (Ext_Pos .. Name'Last) = ".jar" then
                return ZIP;
 
             elsif Name (Ext_Pos .. Name'Last) = ".pdf" then
@@ -195,6 +196,7 @@ package body Upload_Servlet is
       for I in 1 .. Request.Get_Part_Count loop
          Request.Process_Part (I, Process_Part'Access);
       end loop;
+      Output.Write ("<tr><td colspan='5'><a href='upload.html'>Upload new files</a></td></tr>");
       Output.Write ("</table>");
       Output.Write ("</body></html>");
    end Do_Post;

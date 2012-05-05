@@ -1,0 +1,14 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/demo.xhtml">
+    <ui:param name="title" value="#{samplesMsg.sample_ajax_page_title}" />
+    <ui:param name="tab" value="upload"/>
+    <ui:param name="source_file" value="uploading.xhtml"/>
+    <!-- Main page body -->
+    <ui:define name="demoBody">
+        <iframe src="#{contextPath}/upload.html" width='100%' height='100%'/>
+    </ui:define>
+</ui:composition>

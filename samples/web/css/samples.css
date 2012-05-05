@@ -109,6 +109,7 @@ div.openid-retry {
 .sample-jsf-core #nav #nav-jsf-core a,
 .sample-jsf-html #nav #nav-jsf-html a,
 .sample-ajax #nav #nav-ajax a,
+.sample-upload #nav #nav-upload a,
 .sample-utf8 #nav #nav-utf8 a {
     background-color: #ccc;
     color: #f0f0f0;
@@ -126,6 +127,7 @@ div.openid-retry {
 .sample-jsf-core #nav #nav-jsf-core,
 .sample-jsf-html #nav #nav-jsf-html,
 .sample-util #nav #nav-util,
+.sample-upload #nav #nav-upload,
 .sample-utf8 #nav #nav-utf8 {
      background-color: #fff;
     /* -webkit-border-radius: 6px 6px; */

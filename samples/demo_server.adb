@@ -33,6 +33,7 @@ with Security.Openid.Servlets;
 with Util.Beans.Objects;
 with Util.Log.Loggers;
 
+with Upload_Servlet;
 with Countries;
 with Volume;
 with Messages;
@@ -55,6 +56,7 @@ procedure Demo_Server is
    Auth         : aliased Security.Openid.Servlets.Request_Auth_Servlet;
    Verify_Auth  : aliased Security.Openid.Servlets.Verify_Auth_Servlet;
    Perf         : aliased ASF.Servlets.Measures.Measure_Servlet;
+   Upload       : aliased Upload_Servlet.Servlet;
 
    --  Debug filters.
    Dump         : aliased ASF.Filters.Dump.Dump_Filter;
@@ -98,6 +100,7 @@ begin
    App.Add_Servlet (Name => "perf", Server => Perf'Unchecked_Access);
    App.Add_Filter (Name => "perf", Filter => Perf'Unchecked_Access);
    App.Add_Servlet (Name => "auth", Server => Auth'Unchecked_Access);
+   App.Add_Servlet (Name => "upload", Server => Upload'Unchecked_Access);
    App.Add_Servlet (Name => "verify-auth", Server => Verify_Auth'Unchecked_Access);
 
    --  Define servlet mappings
@@ -108,6 +111,7 @@ begin
    App.Add_Mapping (Name => "verify-auth", Pattern => "/auth/verify");
    App.Add_Mapping (Name => "auth", Pattern => "/auth/auth/*");
    App.Add_Mapping (Name => "perf", Pattern => "/statistics.xml");
+   App.Add_Mapping (Name => "upload", Pattern => "upload.html");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.js");
 

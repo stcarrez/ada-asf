@@ -13,16 +13,16 @@
 
        <div id='awa-content'>
            <h:messages/>
-          <h3>#{samplesMsg.openid_message}</h3>
-          <c:if test="#{user.authenticated}">
-              <h:form>
-                  <h:commandButton action="#{user.logout}" value="#{samplesMsg.openid_logout}"/>
-              </h:form>
-              <h3><h:outputFormat value="#{samplesMsg.openid_logged_message}">
-                  <f:param value="#{user.email}"/>
-              </h:outputFormat>
-              </h3>
+           <c:if test="#{user.authenticated}">
+               <h3><h:outputFormat value="#{samplesMsg.openid_logged_message}">
+                   <f:param value="#{user.email}"/>
+               </h:outputFormat>
+               </h3>
+               <h:form>
+                   <h:commandButton action="#{user.logout}" value="#{samplesMsg.openid_logout}"/>
+               </h:form>
           </c:if>
+           <h3>#{samplesMsg.openid_message}</h3>
           <div class='openid-login'>
              <a href="#{contextPath}/auth/auth/google" title="#{samplesMsg.openid_google_auth}" class='openid-google'>
                 #{samplesMsg.openid_google_auth_label}

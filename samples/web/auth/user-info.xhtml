@@ -1,7 +1,13 @@
-<div xmlns:c="http://java.sun.com/jstl/core">
+<div xmlns:c="http://java.sun.com/jstl/core"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
     <c:choose>
         <c:when test="#{user.authenticated}">
-            <h3>#{samplesMsg.openid_success_message}</h3>
+            <h3>
+                <h:outputFormat value="#{samplesMsg.openid_success_message}">
+                    <f:param value="#{user.full_name}"/>
+                </h:outputFormat>
+            </h3>
             <div class='openid-info'>
                 <dl>
                     <dt>#{samplesMsg.openid_id_label}</dt>

@@ -25,6 +25,16 @@ package Upload_Servlet is
 
    use ASF;
 
+   type File_Type is (IMAGE, PDF, TAR_GZ, TAR, ZIP, UNKNOWN);
+
+   --  Guess a file type depending on a content type or a file name.
+   function Get_File_Type (Content_Type : in String;
+                           Name         : in String) return File_Type;
+
+   --  Execute a command and write the result to the output stream.
+   procedure Execute (Command : in String;
+                      Output  : in out ASF.Streams.Print_Stream);
+
    --  The <b>Servlet</b> represents the component that will handle
    --  an HTTP request received by the server.
    type Servlet is new ASF.Servlets.Servlet with null record;
@@ -43,18 +53,8 @@ package Upload_Servlet is
 
 private
 
-   type File_Type is (IMAGE, PDF, TAR_GZ, TAR, ZIP, UNKNOWN);
-
-   --  Guess a file type depending on a content type or a file name.
-   function Get_File_Type (Content_Type : in String;
-                           Name         : in String) return File_Type;
-
    --  Write the upload form page with an optional response message.
    procedure Write (Response : in out Responses.Response'Class;
                     Message  : in String);
-
-   --  Execute a command and write the result to the output stream.
-   procedure Execute (Command : in String;
-                      Output  : in out ASF.Streams.Print_Stream);
 
 end Upload_Servlet;

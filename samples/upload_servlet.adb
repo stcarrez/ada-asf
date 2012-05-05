@@ -106,6 +106,8 @@ package body Upload_Servlet is
          return PDF;
       elsif Content_Type = "image/png" or Content_Type = "image/jpeg" then
          return IMAGE;
+      elsif Content_Type = "image/gif" then
+         return IMAGE;
       elsif Content_Type = "application/zip" then
          return ZIP;
       end if;

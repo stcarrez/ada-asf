@@ -274,6 +274,12 @@ div.doc-conformity {
     font-size: 0.8em;
     color: #888;
 }
+ul.collapsed {
+    display: none;
+}
+h2.collapsed {
+    background-color: #f0f0f0;
+}
 h2 {
     margin-bottom: 5px;
     margin-top: 10px;

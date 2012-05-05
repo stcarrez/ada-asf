@@ -1,4 +1,5 @@
-<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:util="http://code.google.com/p/ada-asf/util">
 
     <h2 class='tag-name'>Tag: #{name}</h2>
     <p>
@@ -8,4 +9,10 @@
     <ul class="tag-doc">
         <ui:insert name="attributes"/>
     </ul>
+    <util:script>
+        $('.tag-attr').click(function() {
+            $('.tag-doc').toggleClass('collapsed');
+            $('.tag-attr').toggleClass('collapsed');
+        });
+    </util:script>
 </ui:composition>

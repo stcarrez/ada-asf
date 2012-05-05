@@ -1,8 +1,10 @@
 <div xmlns:util="http://code.google.com/p/ada-asf/util"
      xmlns:h="http://java.sun.com/jsf/html">
     <h:form>
-        <input type="submit" name="file" value="Display 'file'" onclick="return ASF.Submit(this);"/>
-        <input type="submit" name="escape" value="Display 'escape'" onclick="return ASF.Submit(this);"/>
+        <input type="submit" name="file" value="Display 'file.xhtml'"
+               onclick="return ASF.Submit(this);"/>
+        <input type="submit" name="escape" value="Display 'escape.xhtml'"
+               onclick="return ASF.Submit(this);"/>
         <div  style='overflow: hidden; width: 100%;'>
             <code>
                 <util:file src="/util/file.xhtml" escape="true"

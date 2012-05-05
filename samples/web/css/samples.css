@@ -216,6 +216,13 @@ li.active {
 #form-block {
     margin-right: 50px;
 }
+.ui-tabs .ui-tabs-panel {
+    padding-right: 0;
+}
+.ui-tabs-panel div.grid_8 {
+    float: right;
+    width: 66%;
+}
 ul.tag-doc {
     float: left;
     display: block;
@@ -226,13 +233,13 @@ ul.tag-doc {
 ul.tag-doc b {
     display: inline-block;
     float: left;
-    width: 10%;
+    width: 15%;
     font-weight: normal;
 }
 ul.tag-doc i {
     display: inline-block;
     float: left;
-    width: 20%;
+    width: 15%;
     font-weight: normal;
     font-style: normal;
 }

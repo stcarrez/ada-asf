@@ -29,7 +29,7 @@
             <ui:param name="basename" value="jsf/html"/>
             <ui:param name="compliance" value="JSF 2.0"/>
             <ui:define name="tabs">
-                <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+                <li class="ui-state-default ui-corner-top">
                     <a href="#" onclick="return sample_select(this, 'body');">
                         h:body
                     </a>
@@ -39,7 +39,7 @@
                         h:commandButton
                     </a>
                 </li>
-                <li class="ui-state-default ui-corner-top">
+                <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
                     <a href="#" onclick="return sample_select(this, 'form');">
                         h:form
                     </a>
@@ -134,7 +134,7 @@
                 <ajax:include src="/jsf/html/doc.xhtml"/>
             </ui:define>
             <ui:define name="example">
-                <ajax:include src="/jsf/html/body.xhtml"/>
+                <ajax:include src="/jsf/html/form.xhtml"/>
                 <div id="result"/>
             </ui:define>
             <ui:define name="xhtml">

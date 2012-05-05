@@ -19,7 +19,7 @@
           xmlns:h="http://java.sun.com/jsf/html"
           xmlns:util="http://code.google.com/p/ada-asf/util">
     <!-- For security reasons, check that the code parameter matches what is allowed  -->
-    <c:when test="#{empty param['code'] or param['code'] eq 'body'}">
+    <c:when test="#{param['code'] eq 'body'}">
         <util:script>
             Sample_Highlight('body', 'h:body');
             prettyPrint();
@@ -34,7 +34,7 @@
         <code class="prettyprint lang-commandButton linenums:1"><util:file src="/jsf/html/commandButton.xhtml" escape="true"/>
         </code>
     </c:when>
-    <c:when test="#{param['code'] eq 'form'}">
+    <c:when test="#{empty param['code'] or param['code'] eq 'form'}">
         <util:script>
             Sample_Highlight('form','h:form');
         </util:script>

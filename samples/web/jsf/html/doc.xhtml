@@ -21,7 +21,7 @@
           xmlns:util="http://code.google.com/p/ada-asf/util">
     <!-- For security reasons, check that the code parameter matches what is allowed  -->
 
-    <c:when test="#{empty param['code'] or param['code'] eq 'body'}">
+    <c:when test="#{param['code'] eq 'body'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="h:body"/>
             <ui:define name="description">
@@ -132,7 +132,7 @@
         </ui:decorate>
     </c:when>
 
-    <c:when test="#{param['code'] eq 'form'}">
+    <c:when test="#{empty param['code'] or param['code'] eq 'form'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="h:form"/>
             <ui:define name="description">

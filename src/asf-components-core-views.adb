@@ -17,8 +17,6 @@
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 
-with Util.Log.Loggers;
-
 with ASF.Events.Phases;
 with ASF.Components.Base;
 with ASF.Events.Faces.Actions;
@@ -27,9 +25,6 @@ package body ASF.Components.Core.Views is
 
    use ASF;
    use EL.Objects;
-
-   --  The logger
-   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Components.Core.Views");
 
    procedure Free is
      new Ada.Unchecked_Deallocation (Object => ASF.Events.Faces.Faces_Event'Class,
@@ -272,13 +267,29 @@ package body ASF.Components.Core.Views is
    end Process_Decodes;
 
    --  ------------------------------
+   --  Get the root component.
+   --  ------------------------------
+   function Get_Root (UI      : in UIViewMetaData) return Base.UIComponent_Access is
+      use type Base.UIComponent_Access;
+
+      Result : Base.UIComponent_Access := UI.Get_Parent;
+      Parent : Base.UIComponent_Access := Result.Get_Parent;
+   begin
+      while Parent /= null loop
+         Result := Parent;
+         Parent := Parent.Get_Parent;
+      end loop;
+      return Result;
+   end Get_Root;
+
+   --  ------------------------------
    --  Start encoding the UIComponent.
    --  ------------------------------
    overriding
    procedure Encode_Begin (UI      : in UIViewMetaData;
                            Context : in out Faces_Context'Class) is
    begin
-      UI.Root.Encode_Begin (Context);
+      UI.Get_Root.Encode_Begin (Context);
    end Encode_Begin;
 
    --  ------------------------------
@@ -288,7 +299,7 @@ package body ASF.Components.Core.Views is
    procedure Encode_Children (UI      : in UIViewMetaData;
                               Context : in out Faces_Context'Class) is
    begin
-      UI.Root.Encode_Children (Context);
+      UI.Get_Root.Encode_Children (Context);
    end Encode_Children;
 
    --  ------------------------------
@@ -298,7 +309,7 @@ package body ASF.Components.Core.Views is
    procedure Encode_End (UI      : in UIViewMetaData;
                          Context : in out Faces_Context'Class) is
    begin
-      UI.Root.Encode_Begin (Context);
+      UI.Get_Root.Encode_Begin (Context);
    end Encode_End;
 
    --  ------------------------------
@@ -313,8 +324,10 @@ package body ASF.Components.Core.Views is
       UI.Root.Queue_Event (Event);
    end Queue_Event;
 
+   --  ------------------------------
    --  Broadcast the events after the specified lifecycle phase.
    --  Events that were queued will be freed.
+   --  ------------------------------
    overriding
    procedure Broadcast (UI      : in out UIViewMetaData;
                         Phase   : in ASF.Lifecycles.Phase_Type;
@@ -323,7 +336,9 @@ package body ASF.Components.Core.Views is
       UI.Root.Broadcast (Phase, Context);
    end Broadcast;
 
+   --  ------------------------------
    --  Clear the events that were queued.
+   --  ------------------------------
    overriding
    procedure Clear_Events (UI : in out UIViewMetaData) is
    begin

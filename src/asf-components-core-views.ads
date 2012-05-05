@@ -171,6 +171,9 @@ package ASF.Components.Core.Views is
    overriding
    procedure Clear_Events (UI : in out UIViewMetaData);
 
+   --  Get the root component.
+   function Get_Root (UI      : in UIViewMetaData) return Base.UIComponent_Access;
+
    --  Set the metadata facet on the UIView component.
    procedure Set_Metadata (UI    : in out UIView;
                            Meta  : in UIViewMetaData_Access;

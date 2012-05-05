@@ -270,6 +270,10 @@ ul.tag-doc li.attr-unimpl {
 li.attr-required b {
     font-weight: bold;
 }
+div.doc-conformity {
+    font-size: 0.8em;
+    color: #888;
+}
 h2 {
     margin-bottom: 5px;
     margin-top: 10px;

@@ -43,7 +43,6 @@ procedure Openid is
    CONTEXT_PATH : constant String := "/openid";
    CONFIG_PATH  : constant String := "samples.properties";
 
-   User         : aliased Users.User_Info;
    App          : aliased ASF.Applications.Main.Application;
    Factory      : ASF.Applications.Main.Application_Factory;
    C            : ASF.Applications.Config;
@@ -83,7 +82,7 @@ begin
    App.Set_Global ("sampleName", "openid");
 
    App.Set_Global ("version", "0.1");
-   App.Set_Global ("user", Util.Beans.Objects.To_Object (User'Unchecked_Access,
+   App.Set_Global ("user", Util.Beans.Objects.To_Object (Users.User'Access,
      Util.Beans.Objects.STATIC));
 
    --  Register the servlets and filters

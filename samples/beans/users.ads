@@ -23,6 +23,11 @@ with Util.Beans.Methods;
 
 package Users is
 
+   --  Given an Email address, return the Gravatar link to the user image.
+   --  (See http://en.gravatar.com/site/implement/hash/ and
+   --  http://en.gravatar.com/site/implement/images/)
+   function Get_Gravatar_Link (Email : in String) return String;
+
    --  A bean that expose information about the user
    type User_Info is new Util.Beans.Basic.Readonly_Bean
      and Util.Beans.Methods.Method_Bean with null record;

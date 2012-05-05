@@ -24,14 +24,30 @@ with ASF.Cookies;
 with ASF.Events.Faces.Actions;
 with ASF.Applications.Messages.Factory;
 
+with GNAT.MD5;
+
 with Security.Openid;
 with Security.Filters;
+
+with Util.Strings.Transforms;
 package body Users is
 
    use Ada.Strings.Unbounded;
    use Security.Openid;
    use type ASF.Principals.Principal_Access;
    use type ASF.Contexts.Faces.Faces_Context_Access;
+
+   --  ------------------------------
+   --  Given an Email address, return the Gravatar link to the user image.
+   --  (See http://en.gravatar.com/site/implement/hash/ and
+   --  http://en.gravatar.com/site/implement/images/)
+   --  ------------------------------
+   function Get_Gravatar_Link (Email : in String) return String is
+      E : constant String := Util.Strings.Transforms.To_Lower_Case (Email);
+      C : constant GNAT.MD5.Message_Digest := GNAT.MD5.Digest (E);
+   begin
+      return "http://www.gravatar.com/avatar/" & C;
+   end Get_Gravatar_Link;
 
    --  ------------------------------
    --  Get the user information identified by the given name.
@@ -83,6 +99,9 @@ package body Users is
       end if;
       if Name = "sessionId" then
          return Util.Beans.Objects.To_Object (S.Get_Id);
+      end if;
+      if Name = "gravatar" then
+         return Util.Beans.Objects.To_Object (Get_Gravatar_Link (U.Get_Email));
       end if;
 
       return Util.Beans.Objects.To_Object (U.Get_Name);

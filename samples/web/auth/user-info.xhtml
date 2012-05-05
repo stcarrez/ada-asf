@@ -8,6 +8,9 @@
                     <f:param value="#{user.full_name}"/>
                 </h:outputFormat>
             </h3>
+            <div class='openid-gravatar'>
+                <img src="#{user.gravatar}?d=identicon"/>
+            </div>
             <div class='openid-info'>
                 <dl>
                     <dt>#{samplesMsg.openid_id_label}</dt>

@@ -37,10 +37,15 @@ a.openid-google em {
 	overflow: hidden;
 }
 
+div.openid-gravatar {
+    float: left;
+    padding-right: 2%;
+}
 div.openid-info {
     float: left;
-    padding: 20px;
+    width: 80%;
     border: 1px solid #ccc;
+    padding: 1%;
 }
 div.openid-info dt {
     float: left;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.views -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+
+with Util.Locales;
 
 with ASF.Components.Root;
 with ASF.Contexts.Faces;
@@ -58,6 +60,12 @@ package ASF.Applications.Views is
    procedure Render_View (Handler : in out View_Handler;
                           Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                           View    : in ASF.Components.Root.UIViewRoot);
+
+   --  Compute the locale that must be used according to the <b>Accept-Language</b> request
+   --  header and the application supported locales.
+   function Calculate_Locale (Handler : in View_Handler;
+                              Context : in ASF.Contexts.Faces.Faces_Context'Class)
+                              return Util.Locales.Locale;
 
    --  Get the URL suitable for encoding and rendering the view specified by the <b>View</b>
    --  identifier.

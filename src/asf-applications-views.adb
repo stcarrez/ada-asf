@@ -21,6 +21,7 @@ with ASF.Contexts.Facelets;
 with ASF.Applications.Main;
 with ASF.Components.Base;
 with ASF.Components.Core;
+with ASF.Requests;
 package body ASF.Applications.Views is
 
    use ASF.Components;
@@ -176,6 +177,48 @@ package body ASF.Applications.Views is
          Root.Encode_All (Context);
       end if;
    end Render_View;
+
+   --  ------------------------------
+   --  Compute the locale that must be used according to the <b>Accept-Language</b> request
+   --  header and the application supported locales.
+   --  ------------------------------
+   function Calculate_Locale (Handler : in View_Handler;
+                              Context : in ASF.Contexts.Faces.Faces_Context'Class)
+                              return Util.Locales.Locale is
+      pragma Unreferenced (Handler);
+      use Util.Locales;
+      use ASF.Requests;
+
+      procedure Process_Locales (Locale  : in Util.Locales.Locale;
+                                 Quality : in ASF.Requests.Quality_Type);
+
+      App           : constant ASF.Contexts.Faces.Application_Access := Context.Get_Application;
+      Locales       : constant Locale_Array := App.Get_Supported_Locales;
+      Found_Locale  : Util.Locales.Locale := App.Get_Default_Locale;
+      Found_Quality : ASF.Requests.Quality_Type := 0.0;
+
+      procedure Process_Locales (Locale  : in Util.Locales.Locale;
+                                 Quality : in ASF.Requests.Quality_Type) is
+      begin
+         if Found_Quality >= Quality then
+            return;
+         end if;
+         for I in Locales'Range loop
+            if Locales (I) = Locale then
+               Found_Locale := Locale;
+               Found_Quality := Quality;
+               return;
+            end if;
+         end loop;
+      end Process_Locales;
+
+      Req : constant ASF.Requests.Request_Access := Context.Get_Request;
+   begin
+      if Req /= null then
+         Req.Accept_Locales (Process_Locales'Access);
+      end if;
+      return Found_Locale;
+   end Calculate_Locale;
 
    --  ------------------------------
    --  Compose a URI path with two components.  Unlike the Ada.Directories.Compose,

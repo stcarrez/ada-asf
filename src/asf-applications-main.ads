@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 
 with Util.Beans.Basic;
+with Util.Locales;
+
 with EL.Objects;
 with EL.Contexts;
 with EL.Functions;
@@ -168,6 +170,17 @@ package ASF.Applications.Main is
                         Context : in EL.Contexts.ELContext'Class)
                         return EL.Objects.Object;
 
+   --  Get the list of supported locales for this application.
+   function Get_Supported_Locales (App : in Application)
+                                   return Util.Locales.Locale_Array;
+
+   --  Get the default locale defined by the application.
+   function Get_Default_Locale (App : in Application) return Util.Locales.Locale;
+
+   --  Set the default locale defined by the application.
+   procedure Set_Default_Locale (App    : in out Application;
+                                 Locale : in Util.Locales.Locale);
+
    --  Register a bundle and bind it to a facelet variable.
    procedure Register (App    : in out Application;
                        Name   : in String;
@@ -295,6 +308,9 @@ private
 
       --  The permission manager.
       Permissions     : Security.Permissions.Permission_Manager_Access := null;
+
+      --  The default locale used by the application.
+      Default_Locale  : Util.Locales.Locale := Util.Locales.ENGLISH;
    end record;
 
 end ASF.Applications.Main;

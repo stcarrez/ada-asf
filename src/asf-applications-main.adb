@@ -353,6 +353,33 @@ package body ASF.Applications.Main is
    end Get_Global;
 
    --  ------------------------------
+   --  Get the list of supported locales for this application.
+   --  ------------------------------
+   function Get_Supported_Locales (App : in Application)
+                                   return Util.Locales.Locale_Array is
+      R : Util.Locales.Locale_Array (1 .. 1) := (others => App.Default_Locale);
+   begin
+      return R;
+   end Get_Supported_Locales;
+
+   --  ------------------------------
+   --  Get the default locale defined by the application.
+   --  ------------------------------
+   function Get_Default_Locale (App : in Application) return Util.Locales.Locale is
+   begin
+      return App.Default_Locale;
+   end Get_Default_Locale;
+
+   --  ------------------------------
+   --  Set the default locale defined by the application.
+   --  ------------------------------
+   procedure Set_Default_Locale (App    : in out Application;
+                                 Locale : in Util.Locales.Locale) is
+   begin
+      App.Default_Locale := Locale;
+   end Set_Default_Locale;
+
+   --  ------------------------------
    --  Create a bean by using the create operation registered for the name
    --  ------------------------------
    procedure Create (App     : in Application;

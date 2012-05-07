@@ -78,7 +78,8 @@ package ASF.Applications.Main.Configs is
    end record;
    type Application_Config_Access is access all Application_Config;
 
-   type Application_Fields is (TAG_MESSAGE_BUNDLE, TAG_MESSAGE_VAR);
+   type Application_Fields is (TAG_MESSAGE_BUNDLE, TAG_MESSAGE_VAR,
+                               TAG_DEFAULT_LOCALE, TAG_SUPPORTED_LOCALE);
 
    --  Save in the application config object the value associated with the given field.
    --  When the <b>TAG_MESSAGE_BUNDLE</b> field is reached, insert the new bundle definition

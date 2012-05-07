@@ -30,6 +30,13 @@ package body ASF.Applications.Main.Configs is
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Applications.Main.Configs");
 
+   function Get_Locale (Value : in Util.Beans.Objects.Object) return Util.Locales.Locale is
+      Name   : constant String := Util.Beans.Objects.To_String (Value);
+      Locale : constant Util.Locales.Locale := Util.Locales.Get_Locale (Name);
+   begin
+      return Locale;
+   end Get_Locale;
+
    --  ------------------------------
    --  Save in the application config object the value associated with the given field.
    --  When the <b>TAG_MESSAGE_BUNDLE</b> field is reached, insert the new bundle definition
@@ -56,6 +63,16 @@ package body ASF.Applications.Main.Configs is
                end if;
                N.Name := Util.Beans.Objects.Null_Object;
             end;
+
+         when TAG_DEFAULT_LOCALE =>
+            declare
+               L : Util.Locales.Locale := Get_Locale (Value);
+            begin
+               N.App.Set_Default_Locale (L);
+            end;
+
+         when TAG_SUPPORTED_LOCALE =>
+            null;
 
       end case;
    end Set_Member;
@@ -152,4 +169,6 @@ package body ASF.Applications.Main.Configs is
 begin
    AMapper.Add_Mapping ("application/message-bundle/@var", TAG_MESSAGE_VAR);
    AMapper.Add_Mapping ("application/message-bundle", TAG_MESSAGE_BUNDLE);
+   AMapper.Add_Mapping ("application/locale-config/default-locale", TAG_DEFAULT_LOCALE);
+   AMapper.Add_Mapping ("application/locale-config/supported-locale", TAG_SUPPORTED_LOCALE);
 end ASF.Applications.Main.Configs;

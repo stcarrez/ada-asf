@@ -15,10 +15,11 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Util.Beans.Objects;
+with Util.Locales;
 
 with ASF.Events.Faces;
 with ASF.Lifecycles;
-with Util.Beans.Objects;
 with ASF.Components.Html.Forms;
 with ASF.Components.Core;
 with ASF.Views.Nodes;
@@ -42,6 +43,13 @@ package ASF.Components.Core.Views is
    --  Set the content type returned by the view.
    procedure Set_Content_Type (UI     : in out UIView;
                                Value  : in String);
+
+   --  Get the locale to be used when rendering messages in the view.
+   function Get_Locale (UI     : in UIView) return Util.Locales.Locale;
+
+   --  Set the locale to be used when rendering messages in the view.
+   procedure Set_Locale (UI     : in out UIView;
+                         Locale : in Util.Locales.Locale);
 
    --  Encode the begining of the view.  Set the response content type.
    overriding
@@ -194,6 +202,7 @@ private
       Content_Type : Util.Beans.Objects.Object;
       Phase_Events : Event_Queues;
       Meta         : UIViewMetaData_Access := null;
+      Locale       : Util.Locales.Locale := Util.Locales.ENGLISH;
    end record;
 
    type UIViewParameter is new Html.Forms.UIInput with record

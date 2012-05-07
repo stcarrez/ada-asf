@@ -53,6 +53,23 @@ package body ASF.Components.Core.Views is
    end Set_Content_Type;
 
    --  ------------------------------
+   --  Get the locale to be used when rendering messages in the view.
+   --  ------------------------------
+   function Get_Locale (UI     : in UIView) return Util.Locales.Locale is
+   begin
+      return UI.Locale;
+   end Get_Locale;
+
+   --  ------------------------------
+   --  Set the locale to be used when rendering messages in the view.
+   --  ------------------------------
+   procedure Set_Locale (UI     : in out UIView;
+                         Locale : in Util.Locales.Locale) is
+   begin
+      UI.Locale := Locale;
+   end Set_Locale;
+
+   --  ------------------------------
    --  Encode the begining of the view.  Set the response content type.
    --  ------------------------------
    overriding

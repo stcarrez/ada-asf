@@ -36,6 +36,17 @@ package ASF.Requests is
 
    use Ada.Strings.Unbounded;
 
+   type Quality_Type is digits 4 range 0.0 .. 1.0;
+
+   --  Split an accept like header into multiple tokens and a quality value.
+   --  Invoke the <b>Process</b> procedure for each token.  Example:
+   --   Accept-Language: de, en;q=0.7, jp, fr;q=0.8, ru
+   --  The <b>Process</b> will be called for "de", "en" with quality 0.7,
+   --  and "jp", "fr" with quality 0.8 and then "ru" with quality 1.0.
+   procedure Split_Header (Header  : in String;
+                           Process : access procedure (Item : in String;
+                                                       Quality : in Quality_Type));
+
    --  ------------------------------
    --  Request
    --  ------------------------------
@@ -171,6 +182,13 @@ package ASF.Requests is
    --  provide an Accept-Language header, this method returns an Enumeration containing
    --  one Locale, the default locale for the server.
    function Get_Locales (Req : in Request) return Util.Locales.Locale;
+
+   --  From the <b>Accept-Language</b> request header, find the locales that are recognized
+   --  by the client and execute the <b>Process</b> procedure with each locale and the
+   --  associated quality value (ranging from 0.0 to 1.0).
+   procedure Accept_Locales (Req     : in Request;
+                             Process : access procedure (Item    : in Util.Locales.Locale;
+                                                         Quality : in Quality_Type));
 
    --  Returns a boolean indicating whether this request was made using a secure
    --  channel, such as HTTPS.

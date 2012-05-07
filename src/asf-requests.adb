@@ -16,9 +16,13 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
+with Ada.Strings.Fixed;
+
 with ASF.Servlets;
 
 with Util.Strings;
+with Util.Strings.Transforms;
+with Util.Strings.Tokenizers;
 
 --  The <b>ASF.Requests</b> package is an Ada implementation of
 --  the Java servlet request (JSR 315 3. The Request).
@@ -246,49 +250,72 @@ package body ASF.Requests is
    begin
       return Request'Class (Req).Get_Remote_Addr;
    end Get_Remote_Host;
---
---     --
---     procedure Compute_Locale (Req : in Request) is
---        H : constant String := Req.Get_Header ("Accept-Language");
---        P : Natural;
---        I : Positive := H'First;
---     begin
---        while I < H'Last loop
---           P := Util.Strings.Index (Source => H,
---                                    Char   => ';',
---                                    From   => I);
---           if P = 0 then
---              P := H'Last + 1;
---           end if;
---           Check_Locale (Req, H (I .. P - 1));
---           I := P + 1;
---        end loop;
---     end Compute_Locale;
 
-   --
-   procedure Compute_Locale (Req : in Request) is
-      H    : constant String := Req.Get_Header ("Accept-Language");
-      P    : Natural;
-      I    : Positive := H'First;
-      Last : Natural := Util.Strings.Index (H, ';');
+   --  ------------------------------
+   --  Split an accept like header into multiple tokens and a quality value.
+   --  Invoke the <b>Process</b> procedure for each token.  Example:
+   --   Accept-Language: de, en;q=0.7, jp, fr;q=0.8, ru
+   --  The <b>Process</b> will be called for "de", "en" with quality 0.7,
+   --  and "jp", "fr" with quality 0.8 and then "ru" with quality 1.0.
+   --  ------------------------------
+   procedure Split_Header (Header  : in String;
+                           Process : access procedure (Item : in String;
+                                                       Quality : in Quality_Type)) is
+      use Util.Strings;
+      procedure Process_Token (Token : in String;
+                               Done  : out Boolean);
+
+      Quality : Quality_Type := 1.0;
+
+      procedure Process_Token (Token : in String;
+                               Done  : out Boolean) is
+         Name : constant String := Ada.Strings.Fixed.Trim (Token, Ada.Strings.Both);
+      begin
+         Process (Name, Quality);
+         Done := False;
+      end Process_Token;
+
+      Q, N, Pos  : Natural;
+      Last    : Natural := Header'First;
    begin
-      --  Limited calculation of the locale.
-      if Last = 0 then
-         Last := H'Last;
-      else
-         Last := Last - 1;
-      end if;
-      while I <= Last loop
-         P := Util.Strings.Index (Source => H,
-                                  Char   => ',',
-                                  From   => I);
-         if P = 0 or P > Last then
-            P := Last + 1;
+      while Last < Header'Last loop
+         Quality := 1.0;
+         Pos := Index (Header, ';', Last);
+         if Pos > 0 then
+            N := Index (Header, ',', Pos);
+            if N = 0 then
+               N := Header'Last;
+            end if;
+            Q := Pos + 1;
+            while Q < N loop
+               if Header (Q .. Q + 1) = "q=" then
+                  begin
+                     Quality := Quality_Type'Value (Header (Q + 2 .. N - 1));
+                  exception
+                     when others =>
+                        null;
+                  end;
+                  exit;
+
+               elsif Header (Q) /= ' ' then
+                  exit;
+
+               end if;
+               Q := Q + 1;
+            end loop;
+
+            Util.Strings.Tokenizers.Iterate_Tokens (Content => Header (Last .. Pos - 1),
+                                                    Pattern => ",",
+                                                    Process => Process_Token'Access);
+            Last := N + 1;
+         else
+            Util.Strings.Tokenizers.Iterate_Tokens (Content => Header (Last .. Header'Last),
+                                                    Pattern => ",",
+                                                    Process => Process_Token'Access);
+            return;
          end if;
---           Check_Locale (Req, H (I .. P - 1));
-         I := P + 1;
       end loop;
-   end Compute_Locale;
+   end Split_Header;
 
    --  Returns the preferred Locale that the client will accept content in, based
    --  on the Accept-Language header. If the client request doesn't provide an
@@ -298,6 +325,45 @@ package body ASF.Requests is
    begin
       return Util.Locales.ENGLISH;
    end Get_Locale;
+
+   --  ------------------------------
+   --  From the <b>Accept-Language</b> request header, find the locales that are recognized
+   --  by the client and execute the <b>Process</b> procedure with each locale and the
+   --  associated quality value (ranging from 0.0 to 1.0).
+   --  ------------------------------
+   procedure Accept_Locales (Req     : in Request;
+                             Process : access procedure (Item    : in Util.Locales.Locale;
+                                                         Quality : in Quality_Type)) is
+      use Util.Strings.Transforms;
+
+      procedure Process_Locale (Name    : in String;
+                                Quality : in Quality_Type);
+
+      procedure Process_Locale (Name    : in String;
+                                Quality : in Quality_Type) is
+         use Util.Locales;
+
+         Locale : Util.Locales.Locale := Util.Locales.Get_Locale (Name);
+      begin
+         if Locale = Util.Locales.NULL_LOCALE and then Name'Length > 2
+           and then Name (Name'First + 2) = '-' then
+
+            Locale := Get_Locale (Name (Name'First .. Name'First + 1) & "_"
+                                  & To_Upper_Case (Name (Name'First + 3 .. Name'Last)));
+         end if;
+         if Locale /= Util.Locales.NULL_LOCALE then
+            Process (Locale, Quality);
+         end if;
+      end Process_Locale;
+
+      H : constant String := Request'Class (Req).Get_Header ("Accept-Language");
+   begin
+      if H'Length > 0 then
+         Split_Header (H, Process_Locale'Access);
+      else
+         Process (Util.Locales.ENGLISH, 1.0);
+      end if;
+   end Accept_Locales;
 
    --  Returns an Enumeration of Locale objects indicating, in decreasing order
    --  starting with the preferred locale, the locales that are acceptable to the

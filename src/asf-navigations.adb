@@ -138,6 +138,50 @@ package body ASF.Navigations is
    --  ------------------------------
 
    --  ------------------------------
+   --  Provide a default navigation rules for the view and the outcome when no application
+   --  navigation was found.  The default looks for an XHTML file in the same directory as
+   --  the view and which has the base name defined by <b>Outcome</b>.
+   --  ------------------------------
+   procedure Handle_Default_Navigation (Handler : in Navigation_Handler;
+                                        View    : in String;
+                                        Outcome : in String;
+                                        Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
+      Pos          : constant Natural := Util.Strings.Rindex (View, '/');
+      Root         : Components.Root.UIViewRoot;
+      View_Handler : access ASF.Applications.Views.View_Handler'Class := Handler.View_Handler;
+   begin
+      if View_Handler = null then
+         View_Handler := Handler.Application.Get_View_Handler;
+      end if;
+
+      if Pos > 0 then
+         declare
+            Name : constant String := View (View'First .. Pos) & Outcome;
+         begin
+            Log.Debug ("Using default navigatation from view {0} to {1}", View, Name);
+
+            View_Handler.Create_View (Name, Context, Root);
+         end;
+      else
+         Log.Debug ("Using default navigatation from view {0} to {1}", View, View);
+
+         View_Handler.Create_View (Outcome, Context, Root);
+      end if;
+
+      --  If the 'outcome' refers to a real view, use it.  Otherwise keep the current view.
+      if Components.Root.Get_Root (Root) /= null then
+         Context.Set_View_Root (Root);
+      end if;
+
+      exception
+         when others =>
+         Log.Debug ("No suitable navigation rule to navigate from view {0}: {1}",
+                    View, Outcome);
+         raise;
+
+   end Handle_Default_Navigation;
+
+   --  ------------------------------
    --  After executing an action and getting the action outcome, proceed to the navigation
    --  to the next page.
    --  ------------------------------
@@ -191,6 +235,8 @@ package body ASF.Navigations is
       else
          Log.Debug ("No navigation rule found for view {0}, action {1} and outcome {2}",
                     Name, Action, Outcome);
+
+         Navigation_Handler'Class (Handler).Handle_Default_Navigation (Name, Outcome, Context);
       end if;
    end Handle_Navigation;
 
@@ -261,7 +307,11 @@ package body ASF.Navigations is
          Navigator.Action := new String '(Action);
       end if;
 
-      Navigator.View_Handler := Handler.Application.Get_View_Handler;
+      if Handler.View_Handler = null then
+         Handler.View_Handler := Handler.Application.Get_View_Handler;
+      end if;
+
+      Navigator.View_Handler := Handler.View_Handler;
       declare
          View : constant Unbounded_String := To_Unbounded_String (From);
          Pos  : constant Rule_Map.Cursor := Handler.Rules.Rules.Find (View);

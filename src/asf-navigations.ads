@@ -48,6 +48,14 @@ package ASF.Navigations is
                                 Outcome : in String;
                                 Context : in out ASF.Contexts.Faces.Faces_Context'Class);
 
+   --  Provide a default navigation rules for the view and the outcome when no application
+   --  navigation was found.  The default looks for an XHTML file in the same directory as
+   --  the view and which has the base name defined by <b>Outcome</b>.
+   procedure Handle_Default_Navigation (Handler : in Navigation_Handler;
+                                        View    : in String;
+                                        Outcome : in String;
+                                        Context : in out ASF.Contexts.Faces.Faces_Context'Class);
+
    --  Initialize the the lifecycle handler.
    procedure Initialize (Handler : in out Navigation_Handler;
                          App     : access ASF.Applications.Main.Application'Class);
@@ -152,8 +160,9 @@ private
    type Navigation_Rules_Access is access all Navigation_Rules;
 
    type Navigation_Handler is new Ada.Finalization.Limited_Controlled with record
-      Rules       : Navigation_Rules_Access;
-      Application : access ASF.Applications.Main.Application'Class;
+      Rules        : Navigation_Rules_Access;
+      Application  : access ASF.Applications.Main.Application'Class;
+      View_Handler : access ASF.Applications.Views.View_Handler'Class;
    end record;
 
 end ASF.Navigations;

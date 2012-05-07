@@ -21,7 +21,6 @@ with ASF.Contexts.Facelets;
 with ASF.Applications.Main;
 with ASF.Components.Base;
 with ASF.Components.Core;
-with ASF.Responses;
 package body ASF.Applications.Views is
 
    use ASF.Components;
@@ -123,9 +122,10 @@ package body ASF.Applications.Views is
                              Name    => View_Name,
                              Context => Ctx,
                              Result  => Tree);
+
+      --  If the view could not be found, do not report any error yet.
+      --  The SC_NOT_FOUND response will be returned when rendering the response.
       if Facelets.Is_Null (Tree) then
-         Context.Get_Response.Send_Error (ASF.Responses.SC_NOT_FOUND);
-         Context.Response_Completed;
          return;
       end if;
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-response -- Response phase
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 with Ada.Exceptions;
 with ASF.Applications.Main;
 with ASF.Components.Root;
+with ASF.Responses;
 with Util.Log.Loggers;
 
 --  The <b>ASF.Lifecycles.Response</b> package defines the behavior
@@ -49,7 +50,12 @@ package body ASF.Lifecycles.Response is
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
       View    : constant Components.Root.UIViewRoot := Context.Get_View_Root;
    begin
-      Controller.View_Handler.Render_View (Context, View);
+      if Components.Root.Get_Root (View) = null then
+         Context.Get_Response.Send_Error (ASF.Responses.SC_NOT_FOUND);
+         Context.Response_Completed;
+      else
+         Controller.View_Handler.Render_View (Context, View);
+      end if;
 
    exception
       when E : others =>

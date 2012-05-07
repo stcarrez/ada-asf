@@ -66,6 +66,9 @@ package ASF.Applications.Tests is
    --  Test a POST/REDIRECT/GET request with a flash information passed in between.
    procedure Test_Flash_Object (T : in out Test);
 
+   --  Test a GET+POST request with the default navigation rule based on the outcome.
+   procedure Test_Default_Navigation_Rule (T : in out Test);
+
    --  Test a GET request with meta data and view parameters.
    procedure Test_View_Params (T : in out Test);
 
@@ -79,6 +82,7 @@ package ASF.Applications.Tests is
       Called   : Natural := 0;
       Gender   : Unbounded_String;
       Use_Flash : Boolean := False;
+      Def_Nav   : Boolean := False;
    end record;
    type Form_Bean_Access is access all Form_Bean'Class;
 

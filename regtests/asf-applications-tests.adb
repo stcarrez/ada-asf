@@ -64,6 +64,9 @@ package body ASF.Applications.Tests is
       Caller.Add_Test (Suite, "Test POST/REDIRECT/GET with flash object",
                        Test_Flash_Object'Access);
 
+      Caller.Add_Test (Suite, "Test GET+POST request with the default navigation",
+                       Test_Default_Navigation_Rule'Access);
+
       Caller.Add_Test (Suite, "Test GET with view parameters",
                        Test_View_Params'Access);
 
@@ -179,7 +182,11 @@ package body ASF.Applications.Tests is
                    Outcome : in out Unbounded_String) is
       use Util.Beans.Objects;
    begin
-      Outcome := To_Unbounded_String ("success");
+      if Data.Def_Nav then
+         Outcome := To_Unbounded_String ("form-default-result");
+      else
+         Outcome := To_Unbounded_String ("success");
+      end if;
       Data.Called := Data.Called + 1;
       if Data.Use_Flash then
          declare
@@ -489,6 +496,36 @@ package body ASF.Applications.Tests is
                       Reply, "Wrong form content");
 
    end Test_Flash_Object;
+
+   --  ------------------------------
+   --  Test a GET+POST request with the default navigation rule based on the outcome.
+   --  ------------------------------
+   procedure Test_Default_Navigation_Rule (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+   begin
+      Form.Def_Nav := True;
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Do_Get (Request, Reply, "/tests/form-text-default.html", "form-text-default.txt");
+
+      Assert_Matches (T, ".*<label for=.name.>Name</label>.*", Reply, "Wrong form content");
+      Assert_Matches (T, ".*<input type=.text. name=.name. value=.. id=.name.*",
+                      Reply, "Wrong form content");
+
+      Request.Set_Parameter ("formText", "1");
+      Request.Set_Parameter ("name", "John");
+      Request.Set_Parameter ("password", "12345");
+      Request.Set_Parameter ("email", "john@gmail.com");
+      Request.Set_Parameter ("ok", "1");
+      Do_Post (Request, Reply, "/tests/form-text-default.html", "form-text-post-default.txt");
+
+      Assert_Matches (T, ".*Email: john@gmail.com Name: John.*",
+                      Reply, "Wrong form content");
+   end Test_Default_Navigation_Rule;
 
    --  ------------------------------
    --  Test a GET request with meta data and view parameters.

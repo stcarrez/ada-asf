@@ -30,6 +30,8 @@ package body ASF.Applications.Main.Configs is
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Applications.Main.Configs");
 
+   function Get_Locale (Value : in Util.Beans.Objects.Object) return Util.Locales.Locale;
+
    function Get_Locale (Value : in Util.Beans.Objects.Object) return Util.Locales.Locale is
       Name   : constant String := Util.Beans.Objects.To_String (Value);
       Locale : constant Util.Locales.Locale := Util.Locales.Get_Locale (Name);
@@ -65,14 +67,10 @@ package body ASF.Applications.Main.Configs is
             end;
 
          when TAG_DEFAULT_LOCALE =>
-            declare
-               L : Util.Locales.Locale := Get_Locale (Value);
-            begin
-               N.App.Set_Default_Locale (L);
-            end;
+            N.App.Set_Default_Locale (Get_Locale (Value));
 
          when TAG_SUPPORTED_LOCALE =>
-            null;
+            N.App.Add_Supported_Locale (Get_Locale (Value));
 
       end case;
    end Set_Member;

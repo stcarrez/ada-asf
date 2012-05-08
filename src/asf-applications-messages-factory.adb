@@ -21,6 +21,7 @@ with Ada.Exceptions;
 with Util.Log.Loggers;
 with Util.Properties.Bundles;
 with Util.Beans.Objects;
+with Util.Locales;
 
 with ASF.Locales;
 with ASF.Applications.Main;
@@ -38,18 +39,19 @@ package body ASF.Applications.Messages.Factory is
    function Get_Message (Context    : in ASF.Contexts.Faces.Faces_Context'Class;
                          Message_Id : in String) return String is
       Pos    : constant Natural := Util.Strings.Index (Message_Id, '.');
+      Locale : constant Util.Locales.Locale := Context.Get_Locale;
       App    : constant access ASF.Applications.Main.Application'Class := Context.Get_Application;
       Bundle : ASF.Locales.Bundle;
    begin
       if Pos > 0 then
          App.Load_Bundle (Name   => Message_Id (Message_Id'First .. Pos - 1),
-                          Locale => "en",
+                          Locale => Util.Locales.To_String (Locale),
                           Bundle => Bundle);
          return Bundle.Get (Message_Id (Pos + 1 .. Message_Id'Last),
                             Message_Id (Pos + 1 .. Message_Id'Last));
       else
          App.Load_Bundle (Name   => "messages",
-                          Locale => "en",
+                          Locale => Util.Locales.To_String (Locale),
                           Bundle => Bundle);
          return Bundle.Get (Message_Id, Message_Id);
       end if;

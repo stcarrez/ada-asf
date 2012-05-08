@@ -939,24 +939,67 @@ package body ASF.Components.Base is
          UI.Last_Child  := null;
       else
          declare
-            View  : constant Core.Views.UIView_Access := new Components.Core.Views.UIView;
-            Child : UIComponent_Access := UI.First_Child;
+            View : Core.Views.UIView_Access;
+            Node : UIComponent_Access := UI.First_Child;
+            Prev : UIComponent_Access := null;
          begin
-            View.Set_Content_Type ("text/html");
+            while Node /= null and then not (Node.all in Core.Views.UIView'Class) loop
+               Prev := Node;
+               Node := Node.Next;
+            end loop;
+            if Node /= null then
+               View := Core.Views.UIView'Class (Node.all)'Access;
+
+               --  Move the left components below the <f:view> component.
+               if Prev /= null then
+                  Prev.Next := null;
+                  View.Set_Before_View (UI.First_Child);
+
+                  --  Reparent the left nodes to the real <f:view> root component.
+                  Node := UI.First_Child;
+                  loop
+                     Node.Parent := View.all'Access;
+                     Node := Node.Next;
+                     exit when Node = null;
+                  end loop;
+                  Node := View.all'Access;
+               end if;
+
+               --  Move the right components below the <f:view> component.
+               if Node.Next /= null then
+                  Node := Node.Next;
+                  View.Set_After_View (Node);
+
+                  loop
+                     Node.Parent := View.all'Access;
+                     Node := Node.Next;
+                     exit when Node = null;
+                  end loop;
+                  Node := View.all'Access;
+                  Node.Next := null;
+               end if;
+
+            else
+               View := new Components.Core.Views.UIView;
+               View.Set_Content_Type ("text/html");
+
+               Root := View.all'Access;
+               Root.First_Child := UI.First_Child;
+               Root.Last_Child  := UI.Last_Child;
+
+               Node := UI.First_Child;
+               --  Reparent the children.
+               while Node /= null loop
+                  Node.Parent := Root;
+                  Node := Node.Next;
+               end loop;
+            end if;
 
             Root := View.all'Access;
-            Root.First_Child := UI.First_Child;
-            Root.Last_Child  := UI.Last_Child;
-            Root.Parent      := null;
-
-            --  Reparent the children.
-            while Child /= null loop
-               Child.Parent := Root;
-               Child := Child.Next;
-            end loop;
+            Root.Parent    := null;
+            UI.First_Child := null;
+            UI.Last_Child  := null;
          end;
-         UI.First_Child := null;
-         UI.Last_Child  := null;
       end if;
    end Steal_Root_Component;
 

@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Finalization;
+
 limited with ASF.Components.Base;
 package ASF.Components.Root is
 

@@ -45,7 +45,12 @@ package ASF.Components.Core.Views is
                                Value  : in String);
 
    --  Get the locale to be used when rendering messages in the view.
-   function Get_Locale (UI     : in UIView) return Util.Locales.Locale;
+   --  If a locale was set explicitly, return it.
+   --  If the view component defines a <b>locale</b> attribute, evaluate and return its value.
+   --  If the locale is empty, calculate the locale by using the request context and the view
+   --  handler.
+   function Get_Locale (UI      : in UIView;
+                        Context : in Faces_Context'Class) return Util.Locales.Locale;
 
    --  Set the locale to be used when rendering messages in the view.
    procedure Set_Locale (UI     : in out UIView;
@@ -55,6 +60,11 @@ package ASF.Components.Core.Views is
    overriding
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class);
+
+   --  Encode the end of the view.
+   overriding
+   procedure Encode_End (UI      : in UIView;
+                         Context : in out Faces_Context'Class);
 
    --  Decode any new state of the specified component from the request contained
    --  in the specified context and store that state on the component.
@@ -109,6 +119,16 @@ package ASF.Components.Core.Views is
 
    --  Clear the events that were queued.
    procedure Clear_Events (UI : in out UIView);
+
+   --  Set the component tree that must be rendered before this view.
+   --  This is an internal method used by Steal_Root_Component exclusively.
+   procedure Set_Before_View (UI   : in out UIView'Class;
+                              Tree : in Base.UIComponent_Access);
+
+   --  Set the component tree that must be rendered after this view.
+   --  This is an internal method used by Steal_Root_Component exclusively.
+   procedure Set_After_View (UI   : in out UIView'Class;
+                             Tree : in Base.UIComponent_Access);
 
    --  ------------------------------
    --  View Parameter Component
@@ -203,6 +223,8 @@ private
       Phase_Events : Event_Queues;
       Meta         : UIViewMetaData_Access := null;
       Locale       : Util.Locales.Locale := Util.Locales.ENGLISH;
+      Left_Tree    : Base.UIComponent_Access := null;
+      Right_Tree   : Base.UIComponent_Access := null;
    end record;
 
    type UIViewParameter is new Html.Forms.UIInput with record

@@ -20,11 +20,13 @@ with Ada.Unchecked_Deallocation;
 with ASF.Events.Phases;
 with ASF.Components.Base;
 with ASF.Events.Faces.Actions;
+with ASF.Applications.Main;
 
 package body ASF.Components.Core.Views is
 
    use ASF;
    use EL.Objects;
+   use type Base.UIComponent_Access;
 
    procedure Free is
      new Ada.Unchecked_Deallocation (Object => ASF.Events.Faces.Faces_Event'Class,
@@ -54,10 +56,39 @@ package body ASF.Components.Core.Views is
 
    --  ------------------------------
    --  Get the locale to be used when rendering messages in the view.
+   --  If a locale was set explicitly, return it.
+   --  If the view component defines a <b>locale</b> attribute, evaluate and return its value.
+   --  If the locale is empty, calculate the locale by using the request context and the view
+   --  handler.
    --  ------------------------------
-   function Get_Locale (UI     : in UIView) return Util.Locales.Locale is
+   function Get_Locale (UI      : in UIView;
+                        Context : in Faces_Context'Class) return Util.Locales.Locale is
+      use type Util.Locales.Locale;
    begin
-      return UI.Locale;
+      if UI.Locale /= Util.Locales.NULL_LOCALE then
+         return UI.Locale;
+      end if;
+      declare
+         Value : constant Util.Beans.Objects.Object := UI.Get_Attribute (Name    => "locale",
+                                                                         Context => Context);
+      begin
+         --  If the root view does not specify any locale, calculate it from the request.
+         if Util.Beans.Objects.Is_Null (Value) then
+            return Context.Get_Application.Get_View_Handler.Calculate_Locale (Context);
+         end if;
+
+         --  Resolve the locale.  If it is not valid, calculate it from the request.
+         declare
+            Name   : constant String := Util.Beans.Objects.To_String (Value);
+            Locale : constant Util.Locales.Locale := Util.Locales.Get_Locale (Name);
+         begin
+            if Locale /= Util.Locales.NULL_LOCALE then
+               return Locale;
+            else
+               return Context.Get_Application.Get_View_Handler.Calculate_Locale (Context);
+            end if;
+         end;
+      end;
    end Get_Locale;
 
    --  ------------------------------
@@ -78,7 +109,22 @@ package body ASF.Components.Core.Views is
       Content_Type : constant String := UI.Get_Content_Type (Context => Context);
    begin
       Context.Get_Response.Set_Content_Type (Content_Type);
+      if UI.Left_Tree /= null then
+         UI.Left_Tree.Encode_All (Context);
+      end if;
    end Encode_Begin;
+
+   --  ------------------------------
+   --  Encode the end of the view.
+   --  ------------------------------
+   overriding
+   procedure Encode_End (UI      : in UIView;
+                         Context : in out Faces_Context'Class) is
+   begin
+      if UI.Right_Tree /= null then
+         UI.Right_Tree.Encode_All (Context);
+      end if;
+   end Encode_End;
 
    --  ------------------------------
    --  Decode any new state of the specified component from the request contained
@@ -171,8 +217,6 @@ package body ASF.Components.Core.Views is
    --  ------------------------------
    procedure Queue_Event (UI    : in out UIView;
                           Event : not null access ASF.Events.Faces.Faces_Event'Class) is
-      use type Base.UIComponent_Access;
-
       Parent : constant Base.UIComponent_Access := UI.Get_Parent;
    begin
       if Parent /= null then
@@ -207,8 +251,6 @@ package body ASF.Components.Core.Views is
             Free (Ev);
          end if;
       end Broadcast;
-
-      use type Base.UIComponent_Access;
 
       Parent : constant Base.UIComponent_Access := UI.Get_Parent;
    begin
@@ -246,6 +288,32 @@ package body ASF.Components.Core.Views is
          UI.Phase_Events (Phase).Clear;
       end loop;
    end Clear_Events;
+
+   --  ------------------------------
+   --  Set the component tree that must be rendered before this view.
+   --  This is an internal method used by Steal_Root_Component exclusively.
+   --  ------------------------------
+   procedure Set_Before_View (UI   : in out UIView'Class;
+                              Tree : in Base.UIComponent_Access) is
+   begin
+      if UI.Left_Tree /= null then
+         UI.Log_Error ("Set_Before_View called while there is a tree");
+      end if;
+      UI.Left_Tree := Tree;
+   end Set_Before_View;
+
+   --  ------------------------------
+   --  Set the component tree that must be rendered after this view.
+   --  This is an internal method used by Steal_Root_Component exclusively.
+   --  ------------------------------
+   procedure Set_After_View (UI   : in out UIView'Class;
+                             Tree : in Base.UIComponent_Access) is
+   begin
+      if UI.Right_Tree /= null then
+         UI.Log_Error ("Set_Before_View called while there is a tree");
+      end if;
+      UI.Right_Tree := Tree;
+   end Set_After_View;
 
    --  ------------------------------
    --  Set the metadata facet on the UIView component.
@@ -287,8 +355,6 @@ package body ASF.Components.Core.Views is
    --  Get the root component.
    --  ------------------------------
    function Get_Root (UI      : in UIViewMetaData) return Base.UIComponent_Access is
-      use type Base.UIComponent_Access;
-
       Result : Base.UIComponent_Access := UI.Get_Parent;
       Parent : Base.UIComponent_Access := Result.Get_Parent;
    begin
@@ -326,7 +392,7 @@ package body ASF.Components.Core.Views is
    procedure Encode_End (UI      : in UIViewMetaData;
                          Context : in out Faces_Context'Class) is
    begin
-      UI.Get_Root.Encode_Begin (Context);
+      UI.Get_Root.Encode_End (Context);
    end Encode_End;
 
    --  ------------------------------

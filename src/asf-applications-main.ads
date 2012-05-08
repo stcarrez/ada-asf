@@ -174,12 +174,22 @@ package ASF.Applications.Main is
    function Get_Supported_Locales (App : in Application)
                                    return Util.Locales.Locale_Array;
 
+   --  Add the locale to the list of supported locales.
+   procedure Add_Supported_Locale (App    : in out Application;
+                                   Locale : in Util.Locales.Locale);
+
    --  Get the default locale defined by the application.
    function Get_Default_Locale (App : in Application) return Util.Locales.Locale;
 
    --  Set the default locale defined by the application.
    procedure Set_Default_Locale (App    : in out Application;
                                  Locale : in Util.Locales.Locale);
+
+   --  Compute the locale that must be used according to the <b>Accept-Language</b> request
+   --  header and the application supported locales.
+   function Calculate_Locale (Handler : in Application;
+                              Context : in ASF.Contexts.Faces.Faces_Context'Class)
+                              return Util.Locales.Locale;
 
    --  Register a bundle and bind it to a facelet variable.
    procedure Register (App    : in out Application;
@@ -309,8 +319,6 @@ private
       --  The permission manager.
       Permissions     : Security.Permissions.Permission_Manager_Access := null;
 
-      --  The default locale used by the application.
-      Default_Locale  : Util.Locales.Locale := Util.Locales.ENGLISH;
    end record;
 
 end ASF.Applications.Main;

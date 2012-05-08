@@ -27,6 +27,8 @@ package ASF.Applications.Views is
 
    No_View : exception;
 
+   type Local_Array_Access is access Util.Locales.Locale_Array;
+
    --  ------------------------------
    --  View Handler
    --  ------------------------------
@@ -102,6 +104,7 @@ private
       Paths     : Ada.Strings.Unbounded.Unbounded_String;
       View_Ext  : Ada.Strings.Unbounded.Unbounded_String;
       File_Ext  : Ada.Strings.Unbounded.Unbounded_String;
+      Locales   : Local_Array_Access := null;
    end record;
 
 end ASF.Applications.Views;

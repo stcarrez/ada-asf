@@ -357,17 +357,25 @@ package body ASF.Applications.Main is
    --  ------------------------------
    function Get_Supported_Locales (App : in Application)
                                    return Util.Locales.Locale_Array is
-      R : Util.Locales.Locale_Array (1 .. 1) := (others => App.Default_Locale);
    begin
-      return R;
+      return ASF.Locales.Get_Supported_Locales (App.Locales);
    end Get_Supported_Locales;
+
+   --  ------------------------------
+   --  Add the locale to the list of supported locales.
+   --  ------------------------------
+   procedure Add_Supported_Locale (App    : in out Application;
+                                   Locale : in Util.Locales.Locale) is
+   begin
+      ASF.Locales.Add_Supported_Locale (App.Locales, Locale);
+   end Add_Supported_Locale;
 
    --  ------------------------------
    --  Get the default locale defined by the application.
    --  ------------------------------
    function Get_Default_Locale (App : in Application) return Util.Locales.Locale is
    begin
-      return App.Default_Locale;
+      return ASF.Locales.Get_Default_Locale (App.Locales);
    end Get_Default_Locale;
 
    --  ------------------------------
@@ -376,8 +384,17 @@ package body ASF.Applications.Main is
    procedure Set_Default_Locale (App    : in out Application;
                                  Locale : in Util.Locales.Locale) is
    begin
-      App.Default_Locale := Locale;
+      ASF.Locales.Set_Default_Locale (App.Locales, Locale);
    end Set_Default_Locale;
+
+   --  Compute the locale that must be used according to the <b>Accept-Language</b> request
+   --  header and the application supported locales.
+   function Calculate_Locale (Handler : in Application;
+                              Context : in ASF.Contexts.Faces.Faces_Context'Class)
+                              return Util.Locales.Locale is
+   begin
+      return ASF.Locales.Calculate_Locale (Handler.Locales, Context.Get_Request.all);
+   end Calculate_Locale;
 
    --  ------------------------------
    --  Create a bean by using the create operation registered for the name

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +20,18 @@ with Util.Beans.Objects;
 with Util.Beans.Basic;
 with Util.Strings.Maps;
 with Util.Properties.Bundles;
+with Util.Locales;
 with ASF.Beans;
+with ASF.Requests;
 
 --  The <b>ASF.Locales</b> package manages everything related to the locales.
 --  It allows to register bundles that contains localized messages and be able
 --  to use the in the facelet views.
 package ASF.Locales is
+
+   --  To keep the implementation simple, the maximum list of supported locales by the
+   --  application is limited to 32.  Most applications support 1 or 2 languages.
+   MAX_SUPPORTED_LOCALES : constant Positive := 32;
 
    type Bundle is new Util.Properties.Bundles.Manager
      and Util.Beans.Basic.Readonly_Bean with null record;
@@ -59,11 +65,41 @@ package ASF.Locales is
                           Locale : in String;
                           Result : out Bundle);
 
+   --  Compute the locale that must be used according to the <b>Accept-Language</b> request
+   --  header and the application supported locales.
+   function Calculate_Locale (Fac : in Factory;
+                              Req : in ASF.Requests.Request'Class)
+                              return Util.Locales.Locale;
+
+   --  Get the list of supported locales for this application.
+   function Get_Supported_Locales (From : in Factory)
+                                   return Util.Locales.Locale_Array;
+
+   --  Add the locale to the list of supported locales.
+   procedure Add_Supported_Locale (Into   : in out Factory;
+                                   Locale : in Util.Locales.Locale);
+
+   --  Get the default locale defined by the application.
+   function Get_Default_Locale (From : in Factory) return Util.Locales.Locale;
+
+   --  Set the default locale defined by the application.
+   procedure Set_Default_Locale (Into   : in out Factory;
+                                 Locale : in Util.Locales.Locale);
+
 private
 
    type Factory is limited record
       Factory : aliased Util.Properties.Bundles.Loader;
       Bundles : Util.Strings.Maps.Map;
+
+      --  The default locale used by the application.
+      Default_Locale  : Util.Locales.Locale := Util.Locales.ENGLISH;
+
+      --  Number of supported locales.
+      Nb_Locales      : Natural := 0;
+
+      --  The list of supported locales.
+      Locales         : Util.Locales.Locale_Array (1 .. MAX_SUPPORTED_LOCALES);
    end record;
 
    type Factory_Access is access all Factory;

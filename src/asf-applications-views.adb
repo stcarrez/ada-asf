@@ -193,38 +193,10 @@ package body ASF.Applications.Views is
                               Context : in ASF.Contexts.Faces.Faces_Context'Class)
                               return Util.Locales.Locale is
       pragma Unreferenced (Handler);
-      use Util.Locales;
-      use ASF.Requests;
 
-      procedure Process_Locales (Locale  : in Util.Locales.Locale;
-                                 Quality : in ASF.Requests.Quality_Type);
-
-      App           : constant ASF.Contexts.Faces.Application_Access := Context.Get_Application;
-      Locales       : constant Locale_Array := App.Get_Supported_Locales;
-      Found_Locale  : Util.Locales.Locale := App.Get_Default_Locale;
-      Found_Quality : ASF.Requests.Quality_Type := 0.0;
-
-      procedure Process_Locales (Locale  : in Util.Locales.Locale;
-                                 Quality : in ASF.Requests.Quality_Type) is
-      begin
-         if Found_Quality >= Quality then
-            return;
-         end if;
-         for I in Locales'Range loop
-            if Locales (I) = Locale then
-               Found_Locale := Locale;
-               Found_Quality := Quality;
-               return;
-            end if;
-         end loop;
-      end Process_Locales;
-
-      Req : constant ASF.Requests.Request_Access := Context.Get_Request;
+      App : constant ASF.Contexts.Faces.Application_Access := Context.Get_Application;
    begin
-      if Req /= null then
-         Req.Accept_Locales (Process_Locales'Access);
-      end if;
-      return Found_Locale;
+      return App.Calculate_Locale (Context);
    end Calculate_Locale;
 
    --  ------------------------------

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,6 +57,42 @@ package body ASF.Locales is
       end loop;
    end Initialize;
 
+   --  ------------------------------
+   --  Compute the locale that must be used according to the <b>Accept-Language</b> request
+   --  header and the application supported locales.
+   --  ------------------------------
+   function Calculate_Locale (Fac : in Factory;
+                              Req : in ASF.Requests.Request'Class)
+                              return Util.Locales.Locale is
+      use Util.Locales;
+      use type ASF.Requests.Quality_Type;
+
+      procedure Process_Locales (Locale  : in Util.Locales.Locale;
+                                 Quality : in ASF.Requests.Quality_Type);
+
+      Found_Locale  : Util.Locales.Locale := Fac.Default_Locale;
+      Found_Quality : ASF.Requests.Quality_Type := 0.0;
+
+      procedure Process_Locales (Locale  : in Util.Locales.Locale;
+                                 Quality : in ASF.Requests.Quality_Type) is
+      begin
+         if Found_Quality >= Quality then
+            return;
+         end if;
+         for I in 1 .. Fac.Nb_Locales loop
+            if Fac.Locales (I) = Locale then
+               Found_Locale := Locale;
+               Found_Quality := Quality;
+               return;
+            end if;
+         end loop;
+      end Process_Locales;
+
+   begin
+      Req.Accept_Locales (Process_Locales'Access);
+      return Found_Locale;
+   end Calculate_Locale;
+
    procedure Register (Fac    : in out Factory;
                        Beans  : in out ASF.Beans.Bean_Factory;
                        Name   : in String;
@@ -83,6 +119,42 @@ package body ASF.Locales is
                    Name    => Name,
                    Bundle  => Result);
    end Load_Bundle;
+
+   --  ------------------------------
+   --  Get the list of supported locales for this application.
+   --  ------------------------------
+   function Get_Supported_Locales (From : in Factory)
+                                   return Util.Locales.Locale_Array is
+   begin
+      return From.Locales (1 .. From.Nb_Locales);
+   end Get_Supported_Locales;
+
+   --  ------------------------------
+   --  Add the locale to the list of supported locales.
+   --  ------------------------------
+   procedure Add_Supported_Locale (Into   : in out Factory;
+                                   Locale : in Util.Locales.Locale) is
+   begin
+      Into.Nb_Locales := Into.Nb_Locales + 1;
+      Into.Locales (Into.Nb_Locales) := Locale;
+   end Add_Supported_Locale;
+
+   --  ------------------------------
+   --  Get the default locale defined by the application.
+   --  ------------------------------
+   function Get_Default_Locale (From : in Factory) return Util.Locales.Locale is
+   begin
+      return From.Default_Locale;
+   end Get_Default_Locale;
+
+   --  ------------------------------
+   --  Set the default locale defined by the application.
+   --  ------------------------------
+   procedure Set_Default_Locale (Into   : in out Factory;
+                                 Locale : in Util.Locales.Locale) is
+   begin
+      Into.Default_Locale := Locale;
+   end Set_Default_Locale;
 
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;

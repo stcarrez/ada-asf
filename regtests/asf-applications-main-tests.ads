@@ -50,4 +50,7 @@ package ASF.Applications.Main.Tests is
    --  Test application configuration and registration of resource bundles.
    procedure Test_Bundle_Configuration (T : in out Test);
 
+   --  Test locales.
+   procedure Test_Locales (T : in out Test);
+
 end ASF.Applications.Main.Tests;

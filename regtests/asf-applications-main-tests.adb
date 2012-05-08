@@ -26,6 +26,7 @@ with EL.Contexts.Default;
 
 with ASF.Applications.Tests;
 with ASF.Applications.Main.Configs;
+with ASF.Requests.Mockup;
 package body ASF.Applications.Main.Tests is
 
    use Util.Tests;
@@ -44,6 +45,8 @@ package body ASF.Applications.Main.Tests is
                        Test_Load_Bundle'Access);
       Caller.Add_Test (Suite, "Test ASF.Applications.Main.Register,Load_Bundle",
                        Test_Bundle_Configuration'Access);
+      Caller.Add_Test (Suite, "Test ASF.Applications.Main.Get_Supported_Locales",
+                       Test_Locales'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -182,5 +185,51 @@ package body ASF.Applications.Main.Tests is
                     Scope   => Scope);
       T.Assert (Result /= null, "The defaultMsg bundle was not created");
    end Test_Bundle_Configuration;
+
+   --  ------------------------------
+   --  Test locales.
+   --  ------------------------------
+   procedure Test_Locales (T : in out Test) is
+      use Util.Locales;
+
+      Path      : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-locales.xml");
+      Req       : aliased ASF.Requests.Mockup.Request;
+      View      : constant access Applications.Views.View_Handler'Class := T.App.Get_View_Handler;
+      Context   : aliased ASF.Contexts.Faces.Faces_Context;
+      ELContext : aliased EL.Contexts.Default.Default_Context;
+      Locale    : Util.Locales.Locale;
+   begin
+      ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
+
+      Util.Tests.Assert_Equals (T, To_String (Util.Locales.FRENCH),
+                                To_String (T.App.Get_Default_Locale),
+                                "Invalid default locale");
+
+      Context.Set_ELContext (ELContext'Unchecked_Access);
+      Context.Set_Request (Req'Unchecked_Access);
+      Req.Set_Header ("Accept-Language", "da, en-gb;q=0.3, fr;q=0.7");
+      T.App.Set_Context (Context'Unchecked_Access);
+      Locale := View.Calculate_Locale (Context);
+
+      Util.Tests.Assert_Equals (T, To_String (Util.Locales.FRENCH),
+                                To_String (Locale),
+                                "Invalid calculated locale");
+
+      Req.Set_Header ("Accept-Language", "da, en-gb, en;q=0.8, fr;q=0.7");
+      T.App.Set_Context (Context'Unchecked_Access);
+      Locale := View.Calculate_Locale (Context);
+
+      Util.Tests.Assert_Equals (T, To_String (Util.Locales.ENGLISH),
+                                To_String (Locale),
+                                "Invalid calculated locale");
+
+      Req.Set_Header ("Accept-Language", "da, ru, it;q=0.8, de;q=0.7");
+      T.App.Set_Context (Context'Unchecked_Access);
+      Locale := View.Calculate_Locale (Context);
+
+      Util.Tests.Assert_Equals (T, To_String (Util.Locales.FRENCH),
+                                To_String (Locale),
+                                "Invalid calculated locale");
+   end Test_Locales;
 
 end ASF.Applications.Main.Tests;

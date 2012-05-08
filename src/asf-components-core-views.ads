@@ -222,7 +222,7 @@ private
       Content_Type : Util.Beans.Objects.Object;
       Phase_Events : Event_Queues;
       Meta         : UIViewMetaData_Access := null;
-      Locale       : Util.Locales.Locale := Util.Locales.ENGLISH;
+      Locale       : Util.Locales.Locale := Util.Locales.NULL_LOCALE;
       Left_Tree    : Base.UIComponent_Access := null;
       Right_Tree   : Base.UIComponent_Access := null;
    end record;

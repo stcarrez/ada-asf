@@ -142,9 +142,11 @@ package body ASF.Applications.Views is
                               Root    => Root'Unchecked_Access);
          ASF.Components.Base.Steal_Root_Component (Root, Node);
          ASF.Components.Root.Set_Root (View, Node, View_Name);
-         if Context.Get_Locale /= NULL_LOCALE then
+         if Context.Get_Locale = NULL_LOCALE then
             if Node.all in Core.Views.UIView'Class then
                Context.Set_Locale (Core.Views.UIView'Class (Node.all).Get_Locale (Context));
+            else
+               Context.Set_Locale (Handler.Calculate_Locale (Context));
             end if;
          end if;
       end;

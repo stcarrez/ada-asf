@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-
+with ASF.Contexts.Faces;
 with Ada.Strings.Unbounded;
 package body ASF.Locales is
 
@@ -160,14 +160,22 @@ package body ASF.Locales is
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access) is
       pragma Unreferenced (Name);
+      use type ASF.Contexts.Faces.Faces_Context_Access;
 
-      B      : constant Bundle_Access := new Bundle;
-      Locale : constant String := "en";
+      Context : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
+      B       : constant Bundle_Access := new Bundle;
    begin
-      Load_Bundle (Factory => Factory.Loader.all,
-                   Locale  => Locale,
-                   Name    => Ada.Strings.Unbounded.To_String (Factory.Name),
-                   Bundle  => B.all);
+      if Context = null then
+         Load_Bundle (Factory => Factory.Loader.all,
+                      Locale  => "en",
+                      Name    => Ada.Strings.Unbounded.To_String (Factory.Name),
+                      Bundle  => B.all);
+      else
+         Load_Bundle (Factory => Factory.Loader.all,
+                      Locale  => Util.Locales.To_String (Context.Get_Locale),
+                      Name    => Ada.Strings.Unbounded.To_String (Factory.Name),
+                      Bundle  => B.all);
+      end if;
       Result := B.all'Access;
    end Create;
 

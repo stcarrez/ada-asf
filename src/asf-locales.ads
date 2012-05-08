@@ -26,7 +26,7 @@ with ASF.Requests;
 
 --  The <b>ASF.Locales</b> package manages everything related to the locales.
 --  It allows to register bundles that contains localized messages and be able
---  to use the in the facelet views.
+--  to use them in the facelet views.
 package ASF.Locales is
 
    --  To keep the implementation simple, the maximum list of supported locales by the

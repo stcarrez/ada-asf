@@ -22,10 +22,10 @@ package body ASF.Locales is
 
    use Util.Properties.Bundles;
 
-   type Locale_Binding is new ASF.Beans.Class_Binding with record
+   type Locale_Binding (Len : Natural) is new ASF.Beans.Class_Binding with record
       Loader  : Loader_Access;
       Scope   : ASF.Beans.Scope_Type;
-      Name    : Ada.Strings.Unbounded.Unbounded_String;
+      Name    : String (1 .. Len);
    end record;
    type Locale_Binding_Access is access all Locale_Binding;
 
@@ -89,7 +89,9 @@ package body ASF.Locales is
       end Process_Locales;
 
    begin
-      Req.Accept_Locales (Process_Locales'Access);
+      if Fac.Nb_Locales > 0 then
+         Req.Accept_Locales (Process_Locales'Access);
+      end if;
       return Found_Locale;
    end Calculate_Locale;
 
@@ -97,12 +99,12 @@ package body ASF.Locales is
                        Beans  : in out ASF.Beans.Bean_Factory;
                        Name   : in String;
                        Bundle : in String) is
-      L : constant Locale_Binding_Access := new Locale_Binding;
+      L : constant Locale_Binding_Access := new Locale_Binding (Len => Bundle'Length);
       P : ASF.Beans.Parameter_Bean_Ref.Ref;
    begin
       L.Loader := Fac.Factory'Unchecked_Access;
       L.Scope  := ASF.Beans.REQUEST_SCOPE;
-      L.Name   := Ada.Strings.Unbounded.To_Unbounded_String (Bundle);
+      L.Name   := Bundle;
       ASF.Beans.Register (Beans, Name, L.all'Access, P);
    end Register;
 
@@ -168,12 +170,12 @@ package body ASF.Locales is
       if Context = null then
          Load_Bundle (Factory => Factory.Loader.all,
                       Locale  => "en",
-                      Name    => Ada.Strings.Unbounded.To_String (Factory.Name),
+                      Name    => Factory.Name,
                       Bundle  => B.all);
       else
          Load_Bundle (Factory => Factory.Loader.all,
                       Locale  => Util.Locales.To_String (Context.Get_Locale),
-                      Name    => Ada.Strings.Unbounded.To_String (Factory.Name),
+                      Name    => Factory.Name,
                       Bundle  => B.all);
       end if;
       Result := B.all'Access;

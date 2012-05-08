@@ -10,42 +10,42 @@
     <!-- Main page body -->
     <ui:define name="demoBody">
   <div>
-      <h1>Compute the volume of a cylinder</h1>
+      <h1>#{samplesMsg.compute_message}</h1>
       <p>Shows the <tt>&amp;lt;ajax:include&gt;&lt;/ajax:include&gt;</tt> form</p>
       <div class='sample'>
           <ajax:include id='container' src='compute-form'/>
       </div>
 
-      <h1>AJAX Form open</h1>
+      <h1>#{samplesMsg.demo_ajax_form_message}</h1>
       <p>Shows the <tt>ASF.Update</tt> javascript operation</p>
       <div class='sample'>
           <div class='asf-container'>
               <div onclick="ASF.Update(this, '#{contextPath}/compute-form.html')">
-                  Click compute-form
+                  #{samplesMsg.demo_click_form_message}
               </div>
           </div>
       </div>
 
-      <h1>AJAX JSON Response</h1>
+      <h1>#{samplesMsg.demo_ajax_json_message}</h1>
       <p>Shows the <tt>ASF.Update</tt> javascript with a JSON response</p>
       <div class='sample'>
           <div class='asf-container' onclick="ASF.Update(this, '#{contextPath}/json-response.html')">
-              Click here to trigger the json response
+              #{samplesMsg.demo_click_json_message}
           </div>
           <div>
-              <div id='item1' style='display: none'>Div is hidden</div>
-              <div id='item2' style='display: block'>Div is visible</div>
-              <div id='item3' style='display: block'>Div is visible</div>
+              <div id='item1' style='display: none'>#{samplesMsg.demo_div_hidden_message}</div>
+              <div id='item2' style='display: block'>#{samplesMsg.demo_div_visible_message}</div>
+              <div id='item3' style='display: block'>#{samplesMsg.demo_div_visible_message}</div>
           </div>
       </div>
 
 
-      <h1>Dialog box</h1>
+      <h1>#{samplesMsg.demo_dialog_message}</h1>
       <p>Shows the <tt>ASF.Update</tt> javascript with a JSON response</p>
       <div class='sample'>
           <div class='asf-container' id='result'
                onclick="return ASF.OpenDialog(this, 'computeDialog', '#{contextPath}/compute-form.html');">
-              Click here to trigger the json response
+              #{samplesMsg.demo_click_json_message}
           </div>
       </div>
   </div>

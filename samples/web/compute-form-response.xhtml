@@ -9,7 +9,7 @@
  { "action": "closeDialog", "id": "#computeDialog" },
  { "action": "update", "id": "#result", "data": "<util:escape>
      <h:panelGroup rendered="#{not empty compute.volume}">
-         <h2>The cylinder volume is
+         <h2>#{samplesMsg.compute_result_message}
              <h:outputText value="#{compute.volume}">
                 <f:converter converterId="float"/>
              </h:outputText>

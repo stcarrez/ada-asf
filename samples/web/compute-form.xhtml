@@ -7,14 +7,14 @@
 
      <h:form id='compute'>
          <dl>
-	    <dt>Height</dt>
+	    <dt>#{samplesMsg.compute_height_label}</dt>
 	    <dd>
 	      <h:inputText id='height' size='10' value='#{compute.height}'>
 		<f:converter converterId="float" />
 	      </h:inputText>
               <h:message for='height'/>
 	    </dd>
-	    <dt>Radius</dt>
+	    <dt>#{samplesMsg.compute_radius_label}</dt>
             <dd>
                 <h:inputText id='radius' size='10' value='#{compute.radius}'>
                    <f:converter converterId="float"/>

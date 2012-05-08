@@ -4,6 +4,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
+    <application>
+        <locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>en</supported-locale>
+            <supported-locale>fr</supported-locale>
+        </locale-config>
+        <message-bundle>samples</message-bundle>
+    </application>
+
     <context-param>
         <param-name>facelets.VIEW_MAPPINGS</param-name>
         <param-value>*.xhtml</param-value>

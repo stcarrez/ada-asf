@@ -32,6 +32,7 @@ with ASF.Events.Phases;
 
 with EL.Objects;
 with EL.Contexts;
+with Util.Locales;
 
 with Ada.Exceptions;
 with Ada.Strings.Unbounded;
@@ -182,6 +183,14 @@ package ASF.Contexts.Faces is
    procedure Set_Current_Phase (Context : in out Faces_Context;
                                 Phase   : in ASF.Events.Phases.Phase_Type);
 
+   --  Get the locale defined by the view root component.
+   --  Returns the NULL_LOCALE if there is no view root component.
+   function Get_Locale (Context : in Faces_Context) return Util.Locales.Locale;
+
+   --  Set the locale that must be used when rendering the view components.
+   procedure Set_Locale (Context : in out Faces_Context;
+                         Locale  : in Util.Locales.Locale);
+
    --  Get the component view root.
    function Get_View_Root (Context : in Faces_Context)
                            return ASF.Components.Root.UIViewRoot;
@@ -291,6 +300,10 @@ private
 
       --  The current lifecycle phase.
       Phase              : ASF.Events.Phases.Phase_Type := ASF.Events.Phases.RESTORE_VIEW;
+
+      --  The locale defined by the view root component.  Unlike JSF, we store the locale
+      --  in the faces context.  This is easier for the implementation.
+      Locale             : Util.Locales.Locale := Util.Locales.NULL_LOCALE;
    end record;
 
    --  Release any storage held by this context.

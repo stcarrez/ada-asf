@@ -377,6 +377,24 @@ package body ASF.Contexts.Faces is
    end Set_Current_Phase;
 
    --  ------------------------------
+   --  Get the locale defined by the view root component.
+   --  Returns the NULL_LOCALE if there is no view root component.
+   --  ------------------------------
+   function Get_Locale (Context : in Faces_Context) return Util.Locales.Locale is
+   begin
+      return Context.Locale;
+   end Get_Locale;
+
+   --  ------------------------------
+   --  Set the locale that must be used when rendering the view components.
+   --  ------------------------------
+   procedure Set_Locale (Context : in out Faces_Context;
+                         Locale  : in Util.Locales.Locale) is
+   begin
+      Context.Locale := Locale;
+   end Set_Locale;
+
+   --  ------------------------------
    --  Get the component view root.
    --  ------------------------------
    function Get_View_Root (Context : in Faces_Context)

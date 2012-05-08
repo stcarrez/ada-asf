@@ -130,6 +130,10 @@ package ASF.Components.Core.Views is
    procedure Set_After_View (UI   : in out UIView'Class;
                              Tree : in Base.UIComponent_Access);
 
+   --  Finalize the object.
+   overriding
+   procedure Finalize (UI : in out UIView);
+
    --  ------------------------------
    --  View Parameter Component
    --  ------------------------------

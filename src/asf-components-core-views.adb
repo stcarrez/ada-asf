@@ -316,6 +316,22 @@ package body ASF.Components.Core.Views is
    end Set_After_View;
 
    --  ------------------------------
+   --  Finalize the object.
+   --  ------------------------------
+   overriding
+   procedure Finalize (UI : in out UIView) is
+
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => Base.UIComponent'Class,
+                                        Name   => Base.UIComponent_Access);
+
+   begin
+      Free (UI.Left_Tree);
+      Free (UI.Right_Tree);
+      Base.UIComponent (UI).Finalize;
+   end Finalize;
+
+   --  ------------------------------
    --  Set the metadata facet on the UIView component.
    --  ------------------------------
    procedure Set_Metadata (UI    : in out UIView;

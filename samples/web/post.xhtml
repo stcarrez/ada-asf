@@ -2,20 +2,20 @@
      xmlns:h="http://java.sun.com/jsf/html">
     <h:form id='textarea-form'>
         <dl>
-            <dt><label for='email'>Email</label> <h:message for='email'/></dt>
+            <dt><label for='email'>#{samplesMsg.demo_email_label}</label> <h:message for='email'/></dt>
             <dd>
                 <h:inputText id='email' size='80' value='#{message.email}'
                              styleClass="ui-corner-all">
                 </h:inputText>
             </dd>
-            <dt><label for='message'>Message</label> <h:message for='message'/></dt>
+            <dt><label for='message'>#{samplesMsg.demo_message_label}</label> <h:message for='message'/></dt>
             <dd>
                 <h:inputTextarea id='message' rows='3' cols='80' value='#{message.text}'/>
             </dd>
         </dl>
         <ul class='buttons'>
             <li>
-                <h:commandButton id='send' value='Send' action="#{message.post}"
+                <h:commandButton id='send' value='#{samplesMsg.demo_send_button}' action="#{message.post}"
                                  styleClass="ui-button ui-state-default ui-corner-all"/>
             </li>
         </ul>

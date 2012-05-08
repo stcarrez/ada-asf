@@ -1,4 +1,4 @@
-Version 0.4     -
+Version 0.4     - May 2012
   - Support for shared or static build configuration
   - Support for file upload
   - New component <h:inputFile>, <f:metadata>, <f:viewParam>, <f:viewAction>

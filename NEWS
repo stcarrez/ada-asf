@@ -6,6 +6,8 @@ Version 0.4     -
   - Implement JSF phase events and phase listeners
   - Implement JSF/RoR flash context
   - Add pre-defined JSF beans: initParam, flash
+  - Support for locales and honor the Accept-Language
+  - Demos available in French and English
 
 Version 0.3     - Feb 2012
   - Add documentation and examples for the supported tags

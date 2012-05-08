@@ -21,6 +21,7 @@ with ASF.Contexts.Facelets;
 with ASF.Applications.Main;
 with ASF.Components.Base;
 with ASF.Components.Core;
+with ASF.Components.Core.Views;
 with ASF.Requests;
 package body ASF.Applications.Views is
 
@@ -111,6 +112,7 @@ package body ASF.Applications.Views is
                            View    : out ASF.Components.Root.UIViewRoot) is
 
       use ASF.Views;
+      use Util.Locales;
 
       Ctx       : Facelet_Context;
       Tree      : Facelets.Facelet;
@@ -140,6 +142,11 @@ package body ASF.Applications.Views is
                               Root    => Root'Unchecked_Access);
          ASF.Components.Base.Steal_Root_Component (Root, Node);
          ASF.Components.Root.Set_Root (View, Node, View_Name);
+         if Context.Get_Locale /= NULL_LOCALE then
+            if Node.all in Core.Views.UIView'Class then
+               Context.Set_Locale (Core.Views.UIView'Class (Node.all).Get_Locale (Context));
+            end if;
+         end if;
       end;
    end Restore_View;
 

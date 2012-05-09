@@ -330,7 +330,7 @@ package body ASF.Applications.Tests is
       Assert_Matches (T, ".*<input type=.text. name=.name. value=.John. id=.name.*",
                       Reply, "Wrong form content");
 
-      Assert_Matches (T, ".*Password: Validation Error: Length is less than "
+      Assert_Matches (T, ".*Validation Error: Length is less than "
                       & "allowable minimum of '4'.*",
                       Reply, "Missing error message");
 
@@ -356,7 +356,7 @@ package body ASF.Applications.Tests is
       Request.Set_Parameter ("name", "1222222222");
       Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post-3.txt");
 
-      Assert_Matches (T, ".*Password: Validation Error: Length is greater than "
+      Assert_Matches (T, ".*Validation Error: Length is greater than "
                       & "allowable maximum of '10'.*",
                       Reply, "Invalid error message for password");
 

@@ -37,7 +37,7 @@ with Upload_Servlet;
 with Countries;
 with Volume;
 with Messages;
-with Images;
+--  with Images;
 with Users;
 procedure Demo_Server is
 
@@ -123,7 +123,7 @@ begin
 
    App.Add_Converter (Name => "float", Converter => Conv'Unchecked_Access);
 
-   App.Register_Class (Name => "Image_Bean", Handler => Images.Create_Image_Bean'Access);
+   --  App.Register_Class (Name => "Image_Bean", Handler => Images.Create_Image_Bean'Access);
    App.Register_Class (Name => "Message_Bean", Handler => Messages.Create_Message_Bean'Access);
    App.Register_Class (Name => "Message_List", Handler => Messages.Create_Message_List'Access);
    App.Register (Name => "message", Class => "Message_Bean", Params => None);

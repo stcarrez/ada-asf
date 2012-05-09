@@ -69,6 +69,7 @@ package body Volume_Servlet is
    procedure Do_Get (Server   : in Servlet;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server, Request);
    begin
       Write (Response, "", "", "");
    end Do_Get;
@@ -80,13 +81,15 @@ package body Volume_Servlet is
    procedure Do_Post (Server   : in Servlet;
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server);
+
       Height : constant String := Request.Get_Parameter ("height");
       Radius : constant String := Request.Get_Parameter ("radius");
    begin
       declare
-         H : Float := Float'Value (Height);
-         R : Float := Float'Value (Radius);
-         V : Float := Ada.Numerics.Pi * R * R * H;
+         H : constant Float := Float'Value (Height);
+         R : constant Float := Float'Value (Radius);
+         V : constant Float := Ada.Numerics.Pi * R * R * H;
       begin
          Write (Response, "The cylinder volume is: " & Float'Image (V), Height, Radius);
       end;

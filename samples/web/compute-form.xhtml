@@ -3,7 +3,7 @@
      xmlns:c="http://java.sun.com/jstl/core"
      xmlns:u="http://code.google.com/p/ada-asf/util"
      xmlns:h="http://java.sun.com/jsf/html"
-     title="Compute the volume of a cylinder">
+     title="#{samplesMsg.compute_message}">
 
      <h:form id='compute'>
          <dl>
@@ -24,7 +24,7 @@
             <dt>
             </dt>
             <dd>
-              <h:commandButton id='run' value='Compute' action="#{compute.run}"/>
+              <h:commandButton id='run' value='#{samplesMsg.compute_button}' action="#{compute.run}"/>
             </dd>
         </dl>
      </h:form>

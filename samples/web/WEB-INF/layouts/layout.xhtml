@@ -1,10 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <f:view contentType="text/html; charset=UTF-8"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:c="http://java.sun.com/jstl/core"
 	    xmlns:u="http://code.google.com/p/ada-asf/util"
         xmlns:h="http://java.sun.com/jsf/html">
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <ui:insert name="meta"/>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -40,23 +40,8 @@
     <ui:insert name="pageBody"/>
     <div id="awa-clfooter"></div>
 </div>
-<div id="awa-footer">
-    <div id="blk_footer">
-        <div id="awa-copyright">
-            <span>#{samplesMsg.layout_copyright}</span>
-        </div>
-        <div id="awa-this-source">
-            <a href="http://code.google.com/p/ada-asf/source/browse/trunk/samples/web/#{source_file}">
-                #{samplesMsg.layout_view_this_source}
-            </a>
-        </div>
-        <div id="awa-footer_content">
-            <span>#{samplesMsg.layout_served_by}</span>
-            <a href="http://code.google.com/p/ada-asf">ASF</a> |
-            <a href="http://libre.adacore.com/libre/tools/aws/">AWS</a>
-        </div>
-    </div>
-</div>
+<ui:include src="footer.xhtml"/>
+
 <script type="text/javascript" src="#{contextPath}/js/jquery-1.6.js"></script>
 <script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.core.js"></script>
 <script type="text/javascript" src="#{contextPath}/js/jquery-ui/jquery.ui.widget.js"></script>

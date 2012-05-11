@@ -1,7 +1,7 @@
 Ada Server Faces
 
 Ada Server Faces allows to create web applications using the same pattern
-as the Java Server Faces (See JSR 252). 
+as the Java Server Faces (See JSR 252, JSR 314 and JSR 344). 
 
 To build ASF, you will need:
 

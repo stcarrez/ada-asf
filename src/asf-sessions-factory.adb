@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.sessions.factory -- ASF Sessions factory
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Util.Encoders.Base64;
+with Util.Log.Loggers;
 
 --  The <b>ASF.Sessions.Factory</b> package is a factory for creating, searching
 --  and deleting sessions.
@@ -24,6 +25,9 @@ package body ASF.Sessions.Factory is
 
    use Ada.Finalization;
    use Ada.Strings.Unbounded;
+
+   --  The logger
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Sessions.Factory");
 
    --  ------------------------------
    --  Allocate a unique and random session identifier.  The default implementation
@@ -66,6 +70,7 @@ package body ASF.Sessions.Factory is
          Id (Natural (I + 1)) := Character'Val (Buffer (I));
       end loop;
 
+      Log.Info ("Allocated session {0}", Id.all);
    end Allocate_Session_Id;
 
    --  ------------------------------
@@ -123,6 +128,9 @@ package body ASF.Sessions.Factory is
 
       if Result.Is_Valid then
          Result.Impl.Access_Time := Ada.Calendar.Clock;
+         Log.Info ("Found active session {0}", Id);
+      else
+         Log.Info ("Invalid session {0}", Id);
       end if;
    end Find_Session;
 

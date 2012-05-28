@@ -23,7 +23,6 @@ with ASF.Sessions.Tests;
 with ASF.Servlets.Tests;
 with ASF.Requests.Tests;
 with ASF.Contexts.Faces.Tests;
-with ASF.Cookies.Tests;
 with ASF.Applications.Tests;
 with ASF.Lifecycles.Tests;
 with ASF.Models.Selects.Tests;
@@ -39,7 +38,6 @@ package body ASF.Testsuite is
    function Suite return Util.Tests.Access_Test_Suite is
       Ret : constant Util.Tests.Access_Test_Suite := Tests'Access;
    begin
-      ASF.Cookies.Tests.Add_Tests (Ret);
       ASF.Requests.Tests.Add_Tests (Ret);
       ASF.Contexts.Writer.Tests.Add_Tests (Ret);
       ASF.Contexts.Faces.Tests.Add_Tests (Ret);

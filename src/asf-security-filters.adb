@@ -24,7 +24,7 @@ with ASF.Cookies;
 with ASF.Applications.Main;
 
 with Security.Contexts;
-package body Security.Filters is
+package body ASF.Security.Filters is
 
    use Util.Log;
 
@@ -65,7 +65,7 @@ package body Security.Filters is
                         Response : in out ASF.Responses.Response'Class;
                         Chain    : in out ASF.Servlets.Filter_Chain) is
       use Ada.Strings.Unbounded;
-      use Security.Permissions;
+      use Permissions;
       use type ASF.Principals.Principal_Access;
 
       Session : ASF.Sessions.Session;
@@ -90,7 +90,7 @@ package body Security.Filters is
          end if;
       end Fetch_Cookie;
 
-      Context : aliased Security.Contexts.Security_Context;
+      Context : aliased Contexts.Security_Context;
    begin
       Request.Iterate_Cookies (Fetch_Cookie'Access);
 
@@ -177,4 +177,4 @@ package body Security.Filters is
       Principal := null;
    end Authenticate;
 
-end Security.Filters;
+end ASF.Security.Filters;

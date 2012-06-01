@@ -22,12 +22,12 @@ with ASF.Responses;
 with ASF.Servlets;
 with ASF.Sessions;
 with ASF.Principals;
-with Security.Permissions;
+with Security.Permissions;  use Security;
 
 --  The <b>Security.Filters</b> package defines a servlet filter that can be activated
 --  on requests to authenticate users and verify they have the permission to view
 --  a page.
-package Security.Filters is
+package ASF.Security.Filters is
 
    SID_COOKIE : constant String := "SID";
 
@@ -43,7 +43,7 @@ package Security.Filters is
 
    --  Set the permission manager that must be used to verify the permission.
    procedure Set_Permission_Manager (Filter  : in out Auth_Filter;
-                                     Manager : in Security.Permissions.Permission_Manager_Access);
+                                     Manager : in Permissions.Permission_Manager_Access);
 
    --  Filter the request to make sure the user is authenticated.
    --  Invokes the <b>Do_Login</b> procedure if there is no user.
@@ -84,7 +84,7 @@ package Security.Filters is
 private
 
    type Auth_Filter is new ASF.Filters.Filter with record
-      Manager : Security.Permissions.Permission_Manager_Access := null;
+      Manager : Permissions.Permission_Manager_Access := null;
    end record;
 
-end Security.Filters;
+end ASF.Security.Filters;

@@ -63,7 +63,7 @@ with ASF.Principals;
 --
 --  </ul>
 --
-package Security.Openid.Servlets is
+package ASF.Security.Openid.Servlets is
 
    --  ------------------------------
    --  OpenID Servlet
@@ -113,7 +113,7 @@ package Security.Openid.Servlets is
    --  by the <b>Auth</b> information.  The principal will be attached to the session
    --  and will be destroyed when the session is closed.
    procedure Create_Principal (Server : in Verify_Auth_Servlet;
-                               Auth   : in Authentication;
+                               Auth   : in Openid.Authentication;
                                Result : out ASF.Principals.Principal_Access);
 
 private
@@ -130,4 +130,4 @@ private
    type Request_Auth_Servlet is new Openid_Servlet with null record;
    type Verify_Auth_Servlet is new Openid_Servlet with null record;
 
-end Security.Openid.Servlets;
+end ASF.Security.Openid.Servlets;

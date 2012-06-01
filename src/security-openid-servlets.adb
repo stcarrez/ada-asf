@@ -132,11 +132,25 @@ package body Security.Openid.Servlets is
                      Request  : in out ASF.Requests.Request'Class;
                      Response : in out ASF.Responses.Response'Class) is
 
+      type Auth_Params is new Security.Openid.Parameters with null record;
+
+      overriding
+      function Get_Parameter (Params : in Auth_Params;
+                              Name   : in String) return String;
+
+      overriding
+      function Get_Parameter (Params : in Auth_Params;
+                              Name   : in String) return String is
+      begin
+         return Request.Get_Parameter (Name);
+      end Get_Parameter;
+
       Session : ASF.Sessions.Session := Request.Get_Session (Create => False);
       Bean    : Util.Beans.Objects.Object;
       Mgr     : Security.Openid.Manager;
       Assoc   : Association_Access;
       Auth    : Security.Openid.Authentication;
+      Params  : Auth_Params;
       Ctx     : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
    begin
       Log.Info ("Verify openid authentication");
@@ -161,7 +175,7 @@ package body Security.Openid.Servlets is
       Server.Initialize (Mgr);
 
       --  Verify that what we receive through the callback matches the association key.
-      Mgr.Verify (Assoc.all, Request, Auth);
+      Mgr.Verify (Assoc.all, Params, Auth);
       if Get_Status (Auth) /= AUTHENTICATED then
          Log.Info ("Authentication has failed");
          Response.Set_Status (ASF.Responses.SC_FORBIDDEN);

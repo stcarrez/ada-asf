@@ -19,6 +19,7 @@
 with ASF.Servlets;
 with ASF.Requests;
 with ASF.Responses;
+with ASF.Principals;
 
 --  The <b>Security.Openid.Servlets</b> package defines two servlets that can be used
 --  to implement an OpenID 2.0 authentication with an OpenID provider such as Google,
@@ -88,6 +89,7 @@ package Security.Openid.Servlets is
    --  during which a private key is obtained from the OpenID provider.
    --  After OpenID discovery and association, the user will be redirected to
    --  the OpenID provider.
+   overriding
    procedure Do_Get (Server   : in Request_Auth_Servlet;
                      Request  : in out ASF.Requests.Request'Class;
                      Response : in out ASF.Responses.Response'Class);
@@ -102,6 +104,7 @@ package Security.Openid.Servlets is
    --  Verify the authentication result that was returned by the OpenID provider.
    --  If the authentication succeeded and the signature was correct, sets a
    --  user principals on the session.
+   overriding
    procedure Do_Get (Server   : in Verify_Auth_Servlet;
                      Request  : in out ASF.Requests.Request'Class;
                      Response : in out ASF.Responses.Response'Class);

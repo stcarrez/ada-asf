@@ -21,7 +21,7 @@ package ASF.Principals is
    --  ------------------------------
    --  Principal
    --  ------------------------------
-   type Principal is abstract new Security.Permissions.Principal with null record;
-   type Principal_Access is access all Principal'Class;
+   subtype Principal is Security.Permissions.Principal;
+   subtype Principal_Access is Security.Permissions.Principal_Access;
 
 end ASF.Principals;

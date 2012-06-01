@@ -2,6 +2,7 @@ with "config";
 with "@UTIL_DIR@util";
 with "@UTIL_DIR@util_http";
 with "@EL_DIR@el";
+with "@SECURITY_DIR@security";
 @WITH_SERVER@
 
 project Asf is

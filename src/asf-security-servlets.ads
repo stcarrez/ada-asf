@@ -21,6 +21,8 @@ with ASF.Requests;
 with ASF.Responses;
 with ASF.Principals;
 
+with Security.Openid; use Security;
+
 --  The <b>Security.Openid.Servlets</b> package defines two servlets that can be used
 --  to implement an OpenID 2.0 authentication with an OpenID provider such as Google,
 --  Yahoo!, Verisign, Orange, ...
@@ -63,7 +65,7 @@ with ASF.Principals;
 --
 --  </ul>
 --
-package ASF.Security.Openid.Servlets is
+package ASF.Security.Servlets is
 
    --  ------------------------------
    --  OpenID Servlet
@@ -121,13 +123,13 @@ private
                               Request  : in ASF.Requests.Request'Class) return String;
 
    procedure Initialize (Server  : in Openid_Servlet;
-                         Manager : in out Security.Openid.Manager);
+                         Manager : in out Openid.Manager);
 
    type Openid_Servlet is new ASF.Servlets.Servlet with record
-      Manager : Security.Openid.Manager;
+      Manager : Openid.Manager;
    end record;
 
    type Request_Auth_Servlet is new Openid_Servlet with null record;
    type Verify_Auth_Servlet is new Openid_Servlet with null record;
 
-end ASF.Security.Openid.Servlets;
+end ASF.Security.Servlets;

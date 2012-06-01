@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-openid-servlets - Servlets for OpenID 2.0 Authentication
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ with ASF.Sessions;
 with Util.Beans.Objects;
 with Util.Beans.Objects.Records;
 with Util.Log.Loggers;
-package body Security.Openid.Servlets is
+package body ASF.Security.Servlets is
 
    use Util.Log;
 
@@ -29,7 +29,7 @@ package body Security.Openid.Servlets is
    Log : constant Loggers.Logger := Loggers.Create ("Security.Openid.Servlets");
 
    --  Make a package to store the Association in the session.
-   package Association_Bean is new Util.Beans.Objects.Records (Security.Openid.Association);
+   package Association_Bean is new Util.Beans.Objects.Records (Openid.Association);
 
    subtype Association_Access is Association_Bean.Element_Type_Access;
 
@@ -53,7 +53,7 @@ package body Security.Openid.Servlets is
    OPENID_ASSOC_ATTRIBUTE : constant String := "openid-assoc";
 
    procedure Initialize (Server  : in Openid_Servlet;
-                         Manager : in out Security.Openid.Manager) is
+                         Manager : in out Openid.Manager) is
       Ctx          : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
       Callback_URI : constant String := Ctx.Get_Init_Parameter (OPENID_VERIFY_URL);
       Realm        : constant String := Ctx.Get_Init_Parameter (OPENID_REALM);
@@ -95,8 +95,8 @@ package body Security.Openid.Servlets is
       end if;
 
       declare
-         Mgr   : Security.Openid.Manager;
-         OP    : Security.Openid.End_Point;
+         Mgr   : Openid.Manager;
+         OP    : Openid.End_Point;
          Bean  : constant Util.Beans.Objects.Object := Association_Bean.Create;
          Assoc : constant Association_Access := Association_Bean.To_Element_Access (Bean);
       begin
@@ -131,8 +131,9 @@ package body Security.Openid.Servlets is
    procedure Do_Get (Server   : in Verify_Auth_Servlet;
                      Request  : in out ASF.Requests.Request'Class;
                      Response : in out ASF.Responses.Response'Class) is
+      use type Openid.Auth_Result;
 
-      type Auth_Params is new Security.Openid.Parameters with null record;
+      type Auth_Params is new Openid.Parameters with null record;
 
       overriding
       function Get_Parameter (Params : in Auth_Params;
@@ -141,15 +142,16 @@ package body Security.Openid.Servlets is
       overriding
       function Get_Parameter (Params : in Auth_Params;
                               Name   : in String) return String is
+         pragma Unreferenced (Params);
       begin
          return Request.Get_Parameter (Name);
       end Get_Parameter;
 
       Session : ASF.Sessions.Session := Request.Get_Session (Create => False);
       Bean    : Util.Beans.Objects.Object;
-      Mgr     : Security.Openid.Manager;
+      Mgr     : Openid.Manager;
       Assoc   : Association_Access;
-      Auth    : Security.Openid.Authentication;
+      Auth    : Openid.Authentication;
       Params  : Auth_Params;
       Ctx     : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
    begin
@@ -176,13 +178,13 @@ package body Security.Openid.Servlets is
 
       --  Verify that what we receive through the callback matches the association key.
       Mgr.Verify (Assoc.all, Params, Auth);
-      if Get_Status (Auth) /= AUTHENTICATED then
+      if Openid.Get_Status (Auth) /= Openid.AUTHENTICATED then
          Log.Info ("Authentication has failed");
          Response.Set_Status (ASF.Responses.SC_FORBIDDEN);
          return;
       end if;
 
-      Log.Info ("Authentication succeeded for {0}", Get_Email (Auth));
+      Log.Info ("Authentication succeeded for {0}", Openid.Get_Email (Auth));
 
       --  Get a user principal and set it on the session.
       declare
@@ -203,14 +205,13 @@ package body Security.Openid.Servlets is
    --  and will be destroyed when the session is closed.
    --  ------------------------------
    procedure Create_Principal (Server : in Verify_Auth_Servlet;
-                               Auth   : in Authentication;
+                               Auth   : in Openid.Authentication;
                                Result : out ASF.Principals.Principal_Access) is
       pragma Unreferenced (Server);
 
-      P : constant Principal_Access := new Principal;
+      P : constant Openid.Principal_Access := Openid.Create_Principal (Auth);
    begin
-      P.Auth := Auth;
       Result := P.all'Access;
    end Create_Principal;
 
-end Security.Openid.Servlets;
+end ASF.Security.Servlets;

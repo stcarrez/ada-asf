@@ -1,0 +1,33 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/demo.xhtml">
+    <ui:param name="title" value="#{samplesMsg.sample_ajax_page_title}" />
+    <ui:param name="tab" value="forum"/>
+    <ui:param name="source_file" value="friends.xhtml"/>
+    <!-- Main page body -->
+    <ui:define name="demoBody">
+        <div>
+            <h1>#{samplesMsg.demo_friends_messages}</h1>
+            <div class="grid_12 ui-widget forum">
+                <c:choose>
+                    <c:when test="#{facebook.isAuthentified}">
+                        <h:list value="#{friends}" var="friend" reverse="true">
+                            <div class="friend">
+                                <div class="name">
+                                    #{friend.name}
+                                </div>
+
+                            </div>
+                        </h:list>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="#{facebook.authenticate_url}" title="Auth">Auth with Facebook</a>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

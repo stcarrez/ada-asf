@@ -37,6 +37,7 @@ with ASF.Beans.Params;
 with ASF.Beans.Headers;
 with ASF.Beans.Flash;
 with ASF.Beans.Globals;
+with ASF.Security;
 
 with EL.Expressions;
 with EL.Contexts.Default;
@@ -46,6 +47,7 @@ with EL.Utils;
 with Ada.Exceptions;
 with Ada.Containers.Indefinite_Vectors;
 with Ada.Unchecked_Deallocation;
+
 package body ASF.Applications.Main is
 
    use Util.Log;
@@ -103,10 +105,10 @@ package body ASF.Applications.Main is
    --  creates a <b>Security.Permissions.Permission_Manager</b> object.
    --  ------------------------------
    function Create_Permission_Manager (App : in Application_Factory)
-                                       return Security.Permissions.Permission_Manager_Access is
+                                       return Permissions.Permission_Manager_Access is
       pragma Unreferenced (App);
    begin
-      return new Security.Permissions.Permission_Manager;
+      return new Permissions.Permission_Manager;
    end Create_Permission_Manager;
 
    --  ------------------------------
@@ -152,7 +154,7 @@ package body ASF.Applications.Main is
    --  Get the permission manager associated with this application.
    --  ------------------------------
    function Get_Permission_Manager (App : in Application)
-                                    return Security.Permissions.Permission_Manager_Access is
+                                    return Permissions.Permission_Manager_Access is
    begin
       return App.Permissions;
    end Get_Permission_Manager;
@@ -290,7 +292,7 @@ package body ASF.Applications.Main is
 
       ASF.Components.Utils.Factory.Set_Functions (App.Functions);
       ASF.Views.Nodes.Core.Set_Functions (App.Functions);
---        Security.Permissions.Set_Functions (App.Functions);
+      ASF.Security.Set_Functions (App.Functions);
    end Initialize_Components;
 
    --  ------------------------------
@@ -885,8 +887,8 @@ package body ASF.Applications.Main is
       procedure Free is new Ada.Unchecked_Deallocation (ASF.Lifecycles.Lifecycle'Class,
                                                         ASF.Lifecycles.Lifecycle_Access);
       procedure Free is
-        new Ada.Unchecked_Deallocation (Security.Permissions.Permission_Manager'Class,
-                                        Security.Permissions.Permission_Manager_Access);
+        new Ada.Unchecked_Deallocation (Permissions.Permission_Manager'Class,
+                                        Permissions.Permission_Manager_Access);
    begin
       Free (App.Navigation);
       Free (App.Lifecycle);

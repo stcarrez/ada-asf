@@ -40,7 +40,7 @@ with ASF.Requests;
 with ASF.Responses;
 with ASF.Servlets;
 with ASF.Events.Faces.Actions;
-with Security.Permissions;
+with Security.Permissions;  use Security;
 
 package ASF.Applications.Main is
 

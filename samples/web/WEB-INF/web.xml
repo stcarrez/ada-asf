@@ -82,6 +82,12 @@
       <url-pattern>*.html</url-pattern>
     </filter-mapping>
 
+  <managed-bean>
+    <managed-bean-name>friends</managed-bean-name>
+    <managed-bean-class>Friends_Bean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+
     <!-- Navigation rules are defined in faces-config.xml in a JSF application.
          Make it simple and allow such definition here.  -->
 

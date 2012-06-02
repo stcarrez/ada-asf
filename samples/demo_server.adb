@@ -27,16 +27,18 @@ with ASF.Beans;
 with ASF.Applications;
 with ASF.Applications.Main;
 with ASF.Applications.Main.Configs;
-with Security.Openid;
-with Security.Openid.Servlets;
+with ASF.Security.Servlets;
 
 with Util.Beans.Objects;
 with Util.Log.Loggers;
+
+with AWS.Net.SSL;
 
 with Upload_Servlet;
 with Countries;
 with Volume;
 with Messages;
+with Facebook;
 --  with Images;
 with Users;
 procedure Demo_Server is
@@ -53,14 +55,15 @@ procedure Demo_Server is
    App          : aliased ASF.Applications.Main.Application;
    Faces        : aliased ASF.Servlets.Faces.Faces_Servlet;
    Files        : aliased ASF.Servlets.Files.File_Servlet;
-   Auth         : aliased Security.Openid.Servlets.Request_Auth_Servlet;
-   Verify_Auth  : aliased Security.Openid.Servlets.Verify_Auth_Servlet;
+   Auth         : aliased ASF.Security.Servlets.Request_Auth_Servlet;
+   Verify_Auth  : aliased ASF.Security.Servlets.Verify_Auth_Servlet;
    Perf         : aliased ASF.Servlets.Measures.Measure_Servlet;
    Upload       : aliased Upload_Servlet.Servlet;
 
    --  Debug filters.
    Dump         : aliased ASF.Filters.Dump.Dump_Filter;
 
+   FB_Auth      : aliased Facebook.Facebook_Auth;
    Bean         : aliased Volume.Compute_Bean;
    Conv         : aliased Volume.Float_Converter;
    None         : ASF.Beans.Parameter_Bean_Ref.Ref;
@@ -68,6 +71,12 @@ procedure Demo_Server is
    --  Web application server
    WS           : ASF.Server.Web.AWS_Container;
 begin
+   if not AWS.Net.SSL.Is_Supported then
+      Log.Error ("SSL is not supported by AWS.");
+      Log.Error ("SSL is required for the OpenID connector to connect to OpenID providers.");
+      Log.Error ("Please, rebuild AWS with SSL support.");
+      return;
+   end if;
    C.Set (ASF.Applications.VIEW_EXT, ".html");
    C.Set (ASF.Applications.VIEW_DIR, "samples/web");
    C.Set ("web.dir", "samples/web");
@@ -84,6 +93,15 @@ begin
    App.Set_Global ("contextPath", CONTEXT_PATH);
    App.Set_Global ("compute",
                    Util.Beans.Objects.To_Object (Bean'Unchecked_Access,
+                                                 Util.Beans.Objects.STATIC));
+
+   FB_Auth.Set_Application_Identifier (C.Get ("facebook.client_id"));
+   FB_Auth.Set_Application_Secret (C.Get ("facebook.secret"));
+   FB_Auth.Set_Application_Callback (C.Get ("facebook.callback"));
+   FB_Auth.Set_Provider_URI ("https://graph.facebook.com/oauth/access_token");
+
+   App.Set_Global ("facebook",
+                   Util.Beans.Objects.To_Object (FB_Auth'Unchecked_Access,
                                                  Util.Beans.Objects.STATIC));
 
    App.Set_Global ("countries", Util.Beans.Objects.To_Object (Countries.Create_Country_List));
@@ -126,6 +144,7 @@ begin
    --  App.Register_Class (Name => "Image_Bean", Handler => Images.Create_Image_Bean'Access);
    App.Register_Class (Name => "Message_Bean", Handler => Messages.Create_Message_Bean'Access);
    App.Register_Class (Name => "Message_List", Handler => Messages.Create_Message_List'Access);
+   App.Register_Class (Name => "Friends_Bean", Handler => Facebook.Create_Friends_Bean'Access);
    App.Register (Name => "message", Class => "Message_Bean", Params => None);
    App.Register (Name => "messages", Class => "Message_List", Params => None);
    App.Register (Name => "image", Class => "Image_Bean", Params => None);

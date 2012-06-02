@@ -27,7 +27,7 @@ with ASF.Applications.Messages.Factory;
 with GNAT.MD5;
 
 with Security.Openid;
-with Security.Filters;
+with ASF.Security.Filters;
 
 with Util.Strings.Transforms;
 package body Users is
@@ -143,7 +143,7 @@ package body Users is
          ASF.Applications.Messages.Factory.Add_Message (F.all, "samples.openid_logout_message",
                                                         Get_Full_Name (U.Get_Authentication));
       end if;
-      Remove_Cookie (Security.Filters.SID_COOKIE);
+      Remove_Cookie (ASF.Security.Filters.SID_COOKIE);
       Outcome := Ada.Strings.Unbounded.To_Unbounded_String ("logout_success");
    end Logout;
 

@@ -26,9 +26,7 @@ with ASF.Contexts.Faces.Tests;
 with ASF.Applications.Tests;
 with ASF.Lifecycles.Tests;
 with ASF.Models.Selects.Tests;
-#if ASF_SERVER = "aws"
-with ASF.Clients.Tests;
-#end if;
+
 package body ASF.Testsuite is
 
    Tests : aliased Util.Tests.Test_Suite;
@@ -46,10 +44,6 @@ package body ASF.Testsuite is
       ASF.Applications.Views.Tests.Add_Tests (Ret);
       ASF.Sessions.Tests.Add_Tests (Ret);
       ASF.Servlets.Tests.Add_Tests (Ret);
-
-#if ASF_SERVER = "aws"
-      ASF.Clients.Tests.Add_Tests (Ret);
-#end if;
 
       --  Run the application tests at the end.
       ASF.Applications.Tests.Add_Tests (Ret);

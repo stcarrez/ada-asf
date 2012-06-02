@@ -32,8 +32,7 @@ with Util.Log.Loggers;
 
 with Users;
 with AWS.Net.SSL;
-with Security.Openid;
-with Security.Openid.Servlets;
+with ASF.Security.Servlets;
 procedure Openid is
 
    use ASF.Applications;
@@ -51,8 +50,8 @@ procedure Openid is
    Faces        : aliased ASF.Servlets.Faces.Faces_Servlet;
    Files        : aliased ASF.Servlets.Files.File_Servlet;
    Perf         : aliased ASF.Servlets.Measures.Measure_Servlet;
-   Auth         : aliased Security.Openid.Servlets.Request_Auth_Servlet;
-   Verify_Auth  : aliased Security.Openid.Servlets.Verify_Auth_Servlet;
+   Auth         : aliased ASF.Security.Servlets.Request_Auth_Servlet;
+   Verify_Auth  : aliased ASF.Security.Servlets.Verify_Auth_Servlet;
 
    --  Debug filters.
    Dump         : aliased ASF.Filters.Dump.Dump_Filter;

@@ -88,6 +88,12 @@
     <managed-bean-scope>request</managed-bean-scope>
   </managed-bean>
 
+  <managed-bean>
+    <managed-bean-name>feeds</managed-bean-name>
+    <managed-bean-class>Feeds_Bean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+
     <!-- Navigation rules are defined in faces-config.xml in a JSF application.
          Make it simple and allow such definition here.  -->
 
@@ -128,6 +134,14 @@
       <navigation-case>
         <from-outcome>logout_success</from-outcome>
         <to-view-id>/auth/logout.xhtml</to-view-id>
+        <redirect/>
+      </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+      <from-view-id>/oauth_callback.xhtml</from-view-id>
+      <navigation-case>
+        <to-view-id>/friends.xhtml</to-view-id>
         <redirect/>
       </navigation-case>
     </navigation-rule>

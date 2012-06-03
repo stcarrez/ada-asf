@@ -25,10 +25,18 @@ with Util.Beans.Basic.Lists;
 with Security.OAuth.Clients;
 package Facebook is
 
+   --  Get the access token from the user session.
+   function Get_Access_Token return String;
+
+   --  ------------------------------
+   --  Friend information
+   --  ------------------------------
+   --  The JSON data contains: { "name": "John", "id": "680918286" }
    type Friend_Info is new Util.Beans.Basic.Readonly_Bean with record
       Name : Util.Beans.Objects.Object;
       Id   : Util.Beans.Objects.Object;
    end record;
+   type Friend_Info_Access is access all Friend_Info;
 
    --  Get the value identified by the name.
    --  If the name cannot be found, the method should return the Null object.
@@ -52,7 +60,38 @@ package Facebook is
    --  Create a Friend_List bean instance.
    function Create_Friends_Bean return Util.Beans.Basic.Readonly_Bean_Access;
 
-   --  Authenticate this application on OAuth Facebook
+   --  ------------------------------
+   --  Feed information
+   --  ------------------------------
+   --  The JSON structure is a little bit more complex.  We only map a subset of it.
+   type Feed_Info is new Util.Beans.Basic.Readonly_Bean with record
+      Id   : Util.Beans.Objects.Object;
+      From : Util.Beans.Objects.Object;
+      Message : Util.Beans.Objects.Object;
+      Picture : Util.Beans.Objects.Object;
+      Link    : Util.Beans.Objects.Object;
+      Description : Util.Beans.Objects.Object;
+   end record;
+   type Feed_Info_Access is access all Feed_Info;
+
+   --  Get the value identified by the name.
+   --  If the name cannot be found, the method should return the Null object.
+   overriding
+   function Get_Value (From : in Feed_Info;
+                       Name : in String) return Util.Beans.Objects.Object;
+
+   package Feed_List is new Util.Beans.Basic.Lists (Element_Type => Feed_Info);
+
+   --  Build and return a Facebook feed list.
+   function Create_Feed_List_Bean return Util.Beans.Basic.Readonly_Bean_Access;
+
+   --  ------------------------------
+   --  Facebook Auth
+   --  ------------------------------
+   --  Authenticate this application on OAuth Facebook.  This is a global bean shared
+   --  by several concurrent requests.  It gives access to the Facebook authenticate URI
+   --  that must be used and provides the authenticate method that must be invoked upon
+   --  successfully authentication by the user (ie, through the OAuth callback).
    type Facebook_Auth is new Security.OAuth.Clients.Application
      and Util.Beans.Basic.Readonly_Bean
      and Util.Beans.Methods.Method_Bean with private;

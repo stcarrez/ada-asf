@@ -16,6 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Log.Loggers;
+with Util.Http.Clients;
+with Util.Http.Rest;
+with Util.Serialize.Mappers.Record_Mapper;
+with Util.Serialize.Mappers.Vector_Mapper;
 
 with ASF.Sessions;
 with ASF.Contexts.Faces;
@@ -24,6 +28,118 @@ with ASF.Events.Faces.Actions;
 package body Facebook is
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Facebook");
+
+   type Friend_Field_Type is (FIELD_NAME, FIELD_ID);
+   type Feed_Field_Type is (FIELD_ID, FIELD_FROM, FIELD_MESSAGE,
+                            FIELD_PICTURE, FIELD_LINK, FIELD_DESCRIPTION);
+
+   procedure Set_Member (Into : in out Friend_Info;
+                         Field : in Friend_Field_Type;
+                         Value : in Util.Beans.Objects.Object);
+
+   procedure Set_Member (Into : in out Feed_Info;
+                         Field : in Feed_Field_Type;
+                         Value : in Util.Beans.Objects.Object);
+
+   procedure Set_Member (Into : in out Friend_Info;
+                         Field : in Friend_Field_Type;
+                         Value : in Util.Beans.Objects.Object) is
+   begin
+      case Field is
+         when FIELD_ID =>
+            Into.Id := Value;
+
+         when FIELD_NAME =>
+            Into.Name := Value;
+
+      end case;
+   end Set_Member;
+
+   procedure Set_Member (Into : in out Feed_Info;
+                         Field : in Feed_Field_Type;
+                         Value : in Util.Beans.Objects.Object) is
+   begin
+      case Field is
+         when FIELD_ID =>
+            Into.Id := Value;
+
+         when FIELD_FROM =>
+            Into.From := Value;
+
+         when FIELD_MESSAGE =>
+            Into.Message := Value;
+
+         when FIELD_LINK =>
+            Into.Link := Value;
+
+         when FIELD_PICTURE =>
+            Into.Picture := Value;
+
+         when FIELD_DESCRIPTION =>
+            Into.Description := Value;
+
+      end case;
+   end Set_Member;
+
+   package Friend_Mapper is
+     new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Friend_Info,
+                                               Element_Type_Access => Friend_Info_Access,
+                                               Fields              => Friend_Field_Type,
+                                               Set_Member          => Set_Member);
+
+   package Friend_Vector_Mapper is
+      new Util.Serialize.Mappers.Vector_Mapper (Vectors        => Friend_List.Vectors,
+                                                Element_Mapper => Friend_Mapper);
+
+   package Feed_Mapper is
+     new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Feed_Info,
+                                               Element_Type_Access => Feed_Info_Access,
+                                               Fields              => Feed_Field_Type,
+                                               Set_Member          => Set_Member);
+
+   package Feed_Vector_Mapper is
+     new Util.Serialize.Mappers.Vector_Mapper (Vectors        => Feed_List.Vectors,
+                                               Element_Mapper => Feed_Mapper);
+
+   Friend_Map        : aliased Friend_Mapper.Mapper;
+   Friend_Vector_Map : aliased Friend_Vector_Mapper.Mapper;
+   Feed_Map          : aliased Feed_Mapper.Mapper;
+   Feed_Vector_Map   : aliased Feed_Vector_Mapper.Mapper;
+
+   procedure Get_Friends is
+     new Util.Http.Rest.Rest_Get_Vector (Vector_Mapper => Friend_Vector_Mapper);
+
+   procedure Get_Feeds is
+     new Util.Http.Rest.Rest_Get_Vector (Vector_Mapper => Feed_Vector_Mapper);
+
+   --  ------------------------------
+   --  Get the access token from the user session.
+   --  ------------------------------
+   function Get_Access_Token return String is
+      use type ASF.Contexts.Faces.Faces_Context_Access;
+
+      Context : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
+   begin
+      if Context = null then
+         return "";
+      end if;
+      declare
+         S : ASF.Sessions.Session := Context.Get_Session;
+      begin
+         if not S.Is_Valid then
+            return "";
+         end if;
+         declare
+            Token : Util.Beans.Objects.Object := S.Get_Attribute ("access_token");
+         begin
+            if Util.Beans.Objects.Is_Null (Token) then
+               return "";
+            else
+               return Util.Beans.Objects.To_String (Token);
+            end if;
+         end;
+      end;
+   end Get_Access_Token;
 
    --  ------------------------------
    --  Get the value identified by the name.
@@ -47,6 +163,31 @@ package body Facebook is
    --  If the name cannot be found, the method should return the Null object.
    --  ------------------------------
    overriding
+   function Get_Value (From : in Feed_Info;
+                       Name : in String) return Util.Beans.Objects.Object is
+   begin
+      if Name = "id" then
+         return From.Id;
+      elsif Name = "from" then
+         return From.From;
+      elsif Name = "message" then
+         return From.Message;
+      elsif Name = "picture" then
+         return From.Picture;
+      elsif Name = "link" then
+         return From.Link;
+      elsif Name = "description" then
+         return From.Description;
+      else
+         return Util.Beans.Objects.Null_Object;
+      end if;
+   end Get_Value;
+
+   --  ------------------------------
+   --  Get the value identified by the name.
+   --  If the name cannot be found, the method should return the Null object.
+   --  ------------------------------
+   overriding
    function Get_Value (From : in Friend_List_Bean;
                        Name : in String) return Util.Beans.Objects.Object is
    begin
@@ -60,23 +201,47 @@ package body Facebook is
    --  Create a Friend_List bean instance.
    --  ------------------------------
    function Create_Friends_Bean return Util.Beans.Basic.Readonly_Bean_Access is
-      List : Friend_List_Bean_Access := new Friend_List_Bean;
-      F    : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
-      S    : ASF.Sessions.Session;
+      List  : Friend_List_Bean_Access := new Friend_List_Bean;
+      Token : constant String := Get_Access_Token;
    begin
---        if F /= null then
---           S := F.Get_Session;
---           if S.Is_Valid then
---              S.Get_Attribute ("facebook_access");
---              P := S.Get_Principal;
---              if P /= null then
---                 U := Security.Openid.Principal'Class (P.all)'Access;
---              end if;
---           end if;
---        end if;
+      if Token'Length > 0 then
+         declare
+            C : Util.Http.Rest.Client;
+         begin
+            Log.Info ("Getting the Facebook friends");
+
+            Get_Friends ("https://graph.facebook.com/me/friends?access_token="
+                         & Token,
+                         Friend_Vector_Map'Access,
+                         "/data",
+                         List.List'Access);
+         end;
+      end if;
 
       return List.all'Access;
    end Create_Friends_Bean;
+
+   --  Build and return a Facebook feed list.
+   function Create_Feed_List_Bean return Util.Beans.Basic.Readonly_Bean_Access is
+      List  : Feed_List.List_Bean_Access := new Feed_List.List_Bean;
+      Token : constant String := Get_Access_Token;
+   begin
+      if Token'Length > 0 then
+         declare
+            C : Util.Http.Rest.Client;
+         begin
+            Log.Info ("Getting the Facebook friends");
+
+            Get_Feeds ("https://graph.facebook.com/me/feed?access_token="
+                       & Token,
+                       Feed_Vector_Map'Access,
+                       "/data",
+                       List.List'Access);
+         end;
+      end if;
+
+      return List.all'Access;
+   end Create_Feed_List_Bean;
 
    --  ------------------------------
    --  Get the user information identified by the given name.
@@ -100,6 +265,17 @@ package body Facebook is
             return Util.Beans.Objects.To_Object ("https://www.facebook.com/dialog/oauth?"
                                                  & Params);
          end;
+      elsif F /= null and Name = "isAuthenticated" then
+         declare
+            S      : ASF.Sessions.Session := F.Get_Session (False);
+         begin
+            if S.Is_Valid and
+            then not Util.Beans.Objects.Is_Null (S.Get_Attribute ("access_token")) then
+               return Util.Beans.Objects.To_Object (True);
+            else
+               return Util.Beans.Objects.To_Object (False);
+            end if;
+         end;
       end if;
       return Util.Beans.Objects.Null_Object;
    end Get_Value;
@@ -109,6 +285,8 @@ package body Facebook is
    --  ------------------------------
    procedure Authenticate (From    : in out Facebook_Auth;
                            Outcome : in out Ada.Strings.Unbounded.Unbounded_String) is
+      use type Security.OAuth.Clients.Access_Token_Access;
+
       F       : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
       Session : ASF.Sessions.Session := F.Get_Session;
       State   : constant String := F.Get_Parameter (Security.OAuth.State);
@@ -121,7 +299,11 @@ package body Facebook is
                Acc : Security.OAuth.Clients.Access_Token_Access
                  := From.Request_Access_Token (Code);
             begin
-               Log.Info ("Access token is {0}", Acc.Get_Name);
+               if Acc /= null then
+                  Log.Info ("Access token is {0}", Acc.Get_Name);
+                  Session.Set_Attribute ("access_token",
+                                         Util.Beans.Objects.To_Object (Acc.Get_Name));
+               end if;
             end;
          end if;
       end if;
@@ -145,4 +327,15 @@ package body Facebook is
       return Binding_Array'Access;
    end Get_Method_Bindings;
 
+begin
+   Friend_Map.Add_Default_Mapping;
+   Friend_Vector_Map.Set_Mapping (Friend_Map'Access);
+
+   Feed_Map.Add_Mapping ("id", FIELD_ID);
+   Feed_Map.Add_Mapping ("message", FIELD_MESSAGE);
+   Feed_Map.Add_Mapping ("description", FIELD_DESCRIPTION);
+   Feed_Map.Add_Mapping ("from/name", FIELD_FROM);
+   Feed_Map.Add_Mapping ("picture", FIELD_PICTURE);
+   Feed_Map.Add_Mapping ("link", FIELD_MESSAGE);
+   Feed_Vector_Map.Set_Mapping (Feed_Map'Access);
 end Facebook;

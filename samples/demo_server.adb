@@ -82,6 +82,7 @@ begin
    C.Set ("web.dir", "samples/web");
    begin
       C.Load_Properties (CONFIG_PATH);
+      Util.Log.Loggers.Initialize (CONFIG_PATH);
 
    exception
       when Ada.IO_Exceptions.Name_Error =>
@@ -145,6 +146,8 @@ begin
    App.Register_Class (Name => "Message_Bean", Handler => Messages.Create_Message_Bean'Access);
    App.Register_Class (Name => "Message_List", Handler => Messages.Create_Message_List'Access);
    App.Register_Class (Name => "Friends_Bean", Handler => Facebook.Create_Friends_Bean'Access);
+   App.Register_Class (Name => "Feeds_Bean", Handler => Facebook.Create_Feed_List_Bean'Access);
+
    App.Register (Name => "message", Class => "Message_Bean", Params => None);
    App.Register (Name => "messages", Class => "Message_List", Params => None);
    App.Register (Name => "image", Class => "Image_Bean", Params => None);

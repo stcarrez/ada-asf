@@ -30,8 +30,8 @@ package body Facebook is
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Facebook");
 
    type Friend_Field_Type is (FIELD_NAME, FIELD_ID);
-   type Feed_Field_Type is (FIELD_ID, FIELD_FROM, FIELD_MESSAGE,
-                            FIELD_PICTURE, FIELD_LINK, FIELD_DESCRIPTION);
+   type Feed_Field_Type is (FIELD_ID, FIELD_NAME, FIELD_FROM, FIELD_MESSAGE,
+                            FIELD_PICTURE, FIELD_LINK, FIELD_DESCRIPTION, FIELD_ICON);
 
    procedure Set_Member (Into : in out Friend_Info;
                          Field : in Friend_Field_Type;
@@ -59,9 +59,15 @@ package body Facebook is
                          Field : in Feed_Field_Type;
                          Value : in Util.Beans.Objects.Object) is
    begin
+      Log.Info ("Set field {0} to {1}", Feed_Field_Type'Image (Field),
+                Util.Beans.Objects.To_String (Value));
+
       case Field is
          when FIELD_ID =>
             Into.Id := Value;
+
+         when FIELD_NAME =>
+            Into.Name := Value;
 
          when FIELD_FROM =>
             Into.From := Value;
@@ -74,6 +80,9 @@ package body Facebook is
 
          when FIELD_PICTURE =>
             Into.Picture := Value;
+
+         when FIELD_ICON =>
+            Into.Icon := Value;
 
          when FIELD_DESCRIPTION =>
             Into.Description := Value;
@@ -168,6 +177,8 @@ package body Facebook is
    begin
       if Name = "id" then
          return From.Id;
+      elsif Name = "name" then
+         return From.Name;
       elsif Name = "from" then
          return From.From;
       elsif Name = "message" then
@@ -178,6 +189,8 @@ package body Facebook is
          return From.Link;
       elsif Name = "description" then
          return From.Description;
+      elsif Name = "icon" then
+         return From.Icon;
       else
          return Util.Beans.Objects.Null_Object;
       end if;
@@ -221,7 +234,9 @@ package body Facebook is
       return List.all'Access;
    end Create_Friends_Bean;
 
+   --  ------------------------------
    --  Build and return a Facebook feed list.
+   --  ------------------------------
    function Create_Feed_List_Bean return Util.Beans.Basic.Readonly_Bean_Access is
       List  : Feed_List.List_Bean_Access := new Feed_List.List_Bean;
       Token : constant String := Get_Access_Token;
@@ -230,9 +245,9 @@ package body Facebook is
          declare
             C : Util.Http.Rest.Client;
          begin
-            Log.Info ("Getting the Facebook friends");
+            Log.Info ("Getting the Facebook feeds");
 
-            Get_Feeds ("https://graph.facebook.com/me/feed?access_token="
+            Get_Feeds ("https://graph.facebook.com/me/home?access_token="
                        & Token,
                        Feed_Vector_Map'Access,
                        "/data",
@@ -258,7 +273,7 @@ package body Facebook is
             S      : ASF.Sessions.Session := F.Get_Session (True);
             Id     : constant String := S.Get_Id;
             State  : constant String := From.Get_State (Id);
-            Params : constant String := From.Get_Auth_Params (State, "");
+            Params : constant String := From.Get_Auth_Params (State, "read_stream");
          begin
             Log.Info ("OAuth params: {0}", Params);
 
@@ -332,10 +347,12 @@ begin
    Friend_Vector_Map.Set_Mapping (Friend_Map'Access);
 
    Feed_Map.Add_Mapping ("id", FIELD_ID);
+   Feed_Map.Add_Mapping ("name", FIELD_NAME);
    Feed_Map.Add_Mapping ("message", FIELD_MESSAGE);
    Feed_Map.Add_Mapping ("description", FIELD_DESCRIPTION);
    Feed_Map.Add_Mapping ("from/name", FIELD_FROM);
    Feed_Map.Add_Mapping ("picture", FIELD_PICTURE);
-   Feed_Map.Add_Mapping ("link", FIELD_MESSAGE);
+   Feed_Map.Add_Mapping ("link", FIELD_LINK);
+   Feed_Map.Add_Mapping ("icon", FIELD_ICON);
    Feed_Vector_Map.Set_Mapping (Feed_Map'Access);
 end Facebook;

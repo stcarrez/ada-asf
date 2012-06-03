@@ -65,12 +65,14 @@ package Facebook is
    --  ------------------------------
    --  The JSON structure is a little bit more complex.  We only map a subset of it.
    type Feed_Info is new Util.Beans.Basic.Readonly_Bean with record
-      Id   : Util.Beans.Objects.Object;
-      From : Util.Beans.Objects.Object;
-      Message : Util.Beans.Objects.Object;
-      Picture : Util.Beans.Objects.Object;
-      Link    : Util.Beans.Objects.Object;
+      Id          : Util.Beans.Objects.Object;
+      From        : Util.Beans.Objects.Object;
+      Name        : Util.Beans.Objects.Object;
+      Message     : Util.Beans.Objects.Object;
+      Picture     : Util.Beans.Objects.Object;
+      Link        : Util.Beans.Objects.Object;
       Description : Util.Beans.Objects.Object;
+      Icon        : Util.Beans.Objects.Object;
    end record;
    type Feed_Info_Access is access all Feed_Info;
 

@@ -329,3 +329,16 @@ div.forum {
     padding-left: 2%;
     padding-right: 2%;
 }
+.friend {
+    float: left;
+    width: 49%;
+}
+.friend .name {
+    float: left;
+    width: 100%;
+}
+.feed {
+    float: left;
+    width: 100%;
+    border-bottom: 1px solid #bcd;
+}

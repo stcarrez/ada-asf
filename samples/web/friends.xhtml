@@ -10,21 +10,29 @@
     <!-- Main page body -->
     <ui:define name="demoBody">
         <div>
-            <h1>#{samplesMsg.demo_friends_messages}</h1>
             <div class="grid_12 ui-widget forum">
                 <c:choose>
-                    <c:when test="#{facebook.isAuthentified}">
-                        <h:list value="#{friends}" var="friend" reverse="true">
-                            <div class="friend">
-                                <div class="name">
-                                    #{friend.name}
-                                </div>
-
-                            </div>
-                        </h:list>
+                    <c:when test="#{facebook.isAuthenticated}">
+                        <h1>#{samplesMsg.demo_feeds_messages}</h1>
+                        <div class='sample'>
+                            <ajax:include src="facebook-feeds.html" async="true"/>
+                        </div>
+                        <h1>#{samplesMsg.demo_friends_messages}</h1>
+                        <div class='sample'>
+                            <ajax:include src="facebook-friends.html" async="true"/>
+                        </div>
                     </c:when>
                     <c:otherwise>
-                        <a href="#{facebook.authenticate_url}" title="Auth">Auth with Facebook</a>
+                        <p>
+                            #{samplesMsg.demo_facebook_grant}
+                        </p>
+                        <a href="#{facebook.authenticate_url}" title="Auth">
+                            <img src="#{contextPath}/images/f_logo.png" width="140" height="140" alt="Facebook"/>
+                            <span>
+                                #{samplesMsg.demo_auth_facebook}
+                            </span>
+                            Auth with Facebook
+                        </a>
                     </c:otherwise>
                 </c:choose>
             </div>

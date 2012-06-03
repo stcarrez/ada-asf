@@ -1,0 +1,31 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax">
+
+    <c:choose>
+        <c:when test="#{facebook.isAuthenticated}">
+            <h:list value="#{friends}" var="friend" reverse="true">
+                <div class="friend">
+                    <div class="name">
+                        #{friend.name}
+                    </div>
+
+                </div>
+            </h:list>
+        </c:when>
+        <c:otherwise>
+            <p>
+                #{samplesMsg.demo_facebook_grant}
+            </p>
+            <a href="#{facebook.authenticate_url}" title="Auth">
+                <img src="#{contextPath}/images/f_logo.png" width="140" height="140" alt="Facebook"/>
+                <span>
+                    #{samplesMsg.demo_auth_facebook}
+                </span>
+                Auth with Facebook
+            </a>
+        </c:otherwise>
+    </c:choose>
+</div>

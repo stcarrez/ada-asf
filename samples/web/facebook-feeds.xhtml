@@ -9,18 +9,20 @@
                 <div class="feed">
                     <div class="message">
                         <img src="#{feed.icon}"/>
-                        #{feed.message}
-                    </div>
-                    <div class="link">
-                        <a href="#{feed.link}">#{feed.name}</a>
+                        <img src="#{feed.picture}"/>
+                        <span>
+                            #{feed.message}
+                        </span>
+                        <span class="link">
+                            <a href="#{feed.link}">#{feed.name}</a>
+                        </span>
+                        <span class="description">
+                             #{feed.description}
+                         </span>
                     </div>
                     <div class="from">
-                        #{feed.from}
+                        By #{feed.from}
                     </div>
-                    <div class="description">
-                        #{feed.description}
-                    </div>
-
                 </div>
             </h:list>
         </c:when>

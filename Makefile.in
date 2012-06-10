@@ -84,15 +84,13 @@ autobuild:
 
 # Clean the root project of all build products.
 clean:	clean_test
-	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=static
-	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=relocatable
 	-rm -f lib/asf/*.a lib/asf/*.$(DLLEXT)
 	-rm -f lib/asfunit/*.a lib/asfunit/*.$(DLLEXT)
+	-rm -rf obj/* lib/*
 
 # Clean the files produced by the unit tests
 clean_test:
 	rm -rf regtests/result/*
-	$(GNATCLEAN) -q -Ptests
 
 # Clean root project and all imported projects too.
 clean_tree:

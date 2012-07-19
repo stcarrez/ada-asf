@@ -1,7 +1,7 @@
 Version 0.5     -
   - Moved the Security packages in a separate project: Ada Security
   - New demo to show OAuth and Facebook API integration
-  
+  - Integrated jQuery 1.7.2 and jQuery UI 1.8.21  
 
 Version 0.4     - May 2012
   - Support for shared or static build configuration

@@ -1,0 +1,18 @@
+/**
+ * asf.css - ASF component styles
+ * Copyright (C) 2012 Stephane Carrez
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ */
+
+/**
+ * The ui.editable component.
+ */
+div.asf-editable .asf-editable-input {
+    display: none;
+}
+div.asf-editing div.asf-editable-input {
+    display: block;
+}
+div.asf-editing div.asf-editable-message {
+    display: none;
+}

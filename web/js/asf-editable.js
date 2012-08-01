@@ -37,6 +37,8 @@
         },
 
         finishEdit: function(node) {
+            this.element.removeClass("asf-editing");
+            this.editing = false;
             return false;
         },
 
@@ -46,9 +48,9 @@
          */
         blur: function(event) {
             if (this.editing == true) {
-                this.element.removeClass("asf-editing");
-                this.editing = false;
+                this.finishEdit(null);
             }
+            return false;
         },
 
         /**
@@ -71,7 +73,7 @@
                     if (keycode == 13) {
                         // The Enter key was pressed.  Fire the submit action.
                         e.preventDefault();
-                        ASF.Submit(this.element.find("input[type = 'submit']")[0]);
+                        ASF.Submit(self.element.find("input[type = 'submit']")[0]);
                         return self.finishEdit(node);
                     } else {
                         // Pass through all other keypresses.

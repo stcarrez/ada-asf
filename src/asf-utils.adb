@@ -35,6 +35,7 @@ package body ASF.Utils is
    ON_MOUSE_OUT_ATTR  : aliased constant String := "onmouseout";
    ON_MOUSE_OVER_ATTR : aliased constant String := "onmouseover";
    ON_MOUSE_UP_ATTR   : aliased constant String := "onmouseup";
+   ON_CHANGE_ATTR     : aliased constant String := "onchange";
 
    ON_RESET_ATTR      : aliased constant String := "onreset";
    ON_SUBMIT_ATTR     : aliased constant String := "onsubmit";
@@ -96,6 +97,7 @@ package body ASF.Utils is
       Names.Insert (ON_FOCUS_ATTR'Access);
       Names.Insert (ON_DBLCLICK_ATTR'Access);
       Names.Insert (ON_CLICK_ATTR'Access);
+      Names.Insert (ON_CHANGE_ATTR'Access);
    end Set_Interactive_Attributes;
 
    --  ------------------------------

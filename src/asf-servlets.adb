@@ -503,6 +503,16 @@ package body ASF.Servlets is
    end Set_Init_Parameters;
 
    --  ------------------------------
+   --  Get access to the init parameters.
+   --  ------------------------------
+   procedure Get_Init_Parameters (Context : in Servlet_Registry;
+                                  Process : not null access
+                                    procedure (Params : in Util.Properties.Manager'Class)) is
+   begin
+      Process (Context.Config);
+   end Get_Init_Parameters;
+
+   --  ------------------------------
    --  Returns the absolute path of the resource identified by the given relative path.
    --  The resource is searched in a list of directories configured by the application.
    --  The path must begin with a "/" and is interpreted as relative to the current

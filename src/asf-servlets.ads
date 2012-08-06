@@ -337,6 +337,11 @@ package ASF.Servlets is
    procedure Set_Init_Parameters (Context : in out Servlet_Registry;
                                   Params  : in Util.Properties.Manager'Class);
 
+   --  Get access to the init parameters.
+   procedure Get_Init_Parameters (Context : in Servlet_Registry;
+                                  Process : not null access
+                                    procedure (Params : in Util.Properties.Manager'Class));
+
    --  Returns the absolute path of the resource identified by the given relative path.
    --  The resource is searched in a list of directories configured by the application.
    --  The path must begin with a "/" and is interpreted as relative to the current

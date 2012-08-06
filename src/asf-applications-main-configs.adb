@@ -83,6 +83,8 @@ package body ASF.Applications.Main.Configs is
    --  to read the servlet, managed beans and navigation rules.
    --  ------------------------------
    package body Reader_Config is
+      procedure Set_Property_Context (Params : in Util.Properties.Manager'Class);
+
       --  Get the navigation handler for the Navigation_Config instantiation
       --  GNAT crashes if the call is made in the instantation part.
       Nav     : constant ASF.Navigations.Navigation_Handler_Access := App.Get_Navigation_Handler;
@@ -102,10 +104,15 @@ package body ASF.Applications.Main.Configs is
 
       Config : aliased Application_Config;
 
+      procedure Set_Property_Context (Params : in Util.Properties.Manager'Class) is
+      begin
+         Prop_Context.Set_Properties (Params);
+      end Set_Property_Context;
+
    begin
       --  Install the property context that gives access
       --  to the application configuration properties
-      Prop_Context.Set_Properties (App.Conf);
+      App.Get_Init_Parameters (Set_Property_Context'Access);
       Context.Set_Resolver (Prop_Context'Unchecked_Access);
 
       Reader.Add_Mapping ("faces-config", AMapper'Access);

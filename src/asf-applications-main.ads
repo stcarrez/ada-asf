@@ -303,7 +303,6 @@ private
       Factory : aliased ASF.Beans.Bean_Factory;
       Locales : ASF.Locales.Factory;
       Globals : aliased EL.Variables.Default.Default_Variable_Mapper;
-      Conf    : Config;
 
       Functions : aliased EL.Functions.Default.Default_Function_Mapper;
 

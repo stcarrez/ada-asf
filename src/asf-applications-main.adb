@@ -214,8 +214,8 @@ package body ASF.Applications.Main is
                          Conf    : in Config;
                          Factory : in out Application_Factory'Class) is
       App_Access : constant Application_Access := App'Unchecked_Access;
+      Params     : Config := Conf;
    begin
-
       App.Action_Listener := App'Unchecked_Access;
 
       --  Create the lifecycle handler.
@@ -229,14 +229,12 @@ package body ASF.Applications.Main is
 
       Application'Class (App).Initialize_Components;
 
-      App.Conf := Conf;
-      Application'Class (App).Initialize_Config (App.Conf);
+      Application'Class (App).Initialize_Config (Params);
 
-      --  App.Conf := Conf;
-      App.Set_Init_Parameters (Params => App.Conf);
+      App.Set_Init_Parameters (Params => Params);
 
-      App.View.Initialize (App.Components'Unchecked_Access, App.Conf);
-      ASF.Locales.Initialize (App.Locales, App.Factory, App.Conf);
+      App.View.Initialize (App.Components'Unchecked_Access, Params);
+      ASF.Locales.Initialize (App.Locales, App.Factory, Params);
 
       --  Initialize the lifecycle handler.
       App.Lifecycle.Initialize (App_Access);
@@ -321,7 +319,7 @@ package body ASF.Applications.Main is
    function Get_Config (App   : Application;
                         Param : Config_Param) return String is
    begin
-      return App.Conf.Get (Param);
+      return App.Get_Init_Parameter (Param.Name.all, Param.Default.all);
    end Get_Config;
 
    --  ------------------------------

@@ -42,9 +42,69 @@ package body ASF.Contexts.Faces.Tests is
                        Test_Queue_Exception'Access);
       Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Get_Flash",
                        Test_Flash_Context'Access);
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Get_Attribute",
+                       Test_Get_Attribute'Access);
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Get_Bean",
+                       Test_Get_Bean'Access);
    end Add_Tests;
 
+   --  ------------------------------
+   --  Setup the faces context for the unit test.
+   --  ------------------------------
+   procedure Setup (T       : in out Test;
+                    Context : in out Faces_Context) is
+   begin
+      T.ELContext.Set_Resolver (T.Root_Resolver'Unchecked_Access);
+      T.ELContext.Set_Variable_Mapper (T.Variables'Unchecked_Access);
+      Context.Set_ELContext (T.ELContext'Unchecked_Access);
+
+      T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("dumbledore"),
+                                EL.Objects.To_Object (String '("albus")));
+
+      T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("potter"),
+                                EL.Objects.To_Object (String '("harry")));
+   end Setup;
+
+   --  ------------------------------
+   --  Test getting an attribute from the faces context.
+   --  ------------------------------
+   procedure Test_Get_Attribute (T : in out Test) is
+      Ctx   : Faces_Context;
+      Name  : EL.Objects.Object;
+   begin
+      T.Setup (Ctx);
+
+      Name := Ctx.Get_Attribute ("dumbledore");
+      T.Assert (not EL.Objects.Is_Null (Name), "Null attribute returned");
+      Util.Tests.Assert_Equals (T, "albus", EL.Objects.To_String (Name), "Invalid attribute");
+
+      Name := Ctx.Get_Attribute ("potter");
+      T.Assert (not EL.Objects.Is_Null (Name), "Null attribute returned");
+      Util.Tests.Assert_Equals (T, "harry", EL.Objects.To_String (Name), "Invalid attribute");
+
+      Name := Ctx.Get_Attribute ("voldemort");
+      T.Assert (EL.Objects.Is_Null (Name), "Oops... is there any horcrux left?");
+
+   end Test_Get_Attribute;
+
+   --  ------------------------------
+   --  Test getting a bean object from the faces context.
+   --  ------------------------------
+   procedure Test_Get_Bean (T : in out Test) is
+      use type Util.Beans.Basic.Readonly_Bean_Access;
+
+      Ctx   : Faces_Context;
+      Bean  : Util.Beans.Basic.Readonly_Bean_Access;
+   begin
+      T.Setup (Ctx);
+
+      Bean := Ctx.Get_Bean ("dumbledore");
+      T.Assert (Bean = null, "Dumbledore should not be a bean");
+   end Test_Get_Bean;
+
+   --  ------------------------------
    --  Test the faces message queue.
+   --  ------------------------------
    procedure Test_Add_Message (T : in out Test) is
       Ctx : Faces_Context;
    begin

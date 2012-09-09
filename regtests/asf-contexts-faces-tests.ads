@@ -18,11 +18,28 @@
 
 with Util.Tests;
 
+with EL.Contexts.Default;
+with EL.Variables.Default;
+
 package ASF.Contexts.Faces.Tests is
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);
 
-   type Test is new Util.Tests.Test with null record;
+   type Test is new Util.Tests.Test with record
+      ELContext      : aliased EL.Contexts.Default.Default_Context;
+      Variables      : aliased EL.Variables.Default.Default_Variable_Mapper;
+      Root_Resolver  : aliased EL.Contexts.Default.Default_ELResolver;
+   end record;
+
+   --  Setup the faces context for the unit test.
+   procedure Setup (T       : in out Test;
+                    Context : in out Faces_Context);
+
+   --  Test getting an attribute from the faces context.
+   procedure Test_Get_Attribute (T : in out Test);
+
+   --  Test getting a bean object from the faces context.
+   procedure Test_Get_Bean (T : in out Test);
 
    --  Test the faces message queue.
    procedure Test_Add_Message (T : in out Test);

@@ -46,6 +46,8 @@ package body ASF.Contexts.Faces.Tests is
                        Test_Get_Attribute'Access);
       Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Get_Bean",
                        Test_Get_Bean'Access);
+      Caller.Add_Test (Suite, "Test ASF.Helpers.Beans.Get_Bean",
+                       Test_Get_Bean_Helper'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -63,6 +65,9 @@ package body ASF.Contexts.Faces.Tests is
 
       T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("potter"),
                                 EL.Objects.To_Object (String '("harry")));
+      T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("hogwarts"),
+                                EL.Objects.To_Object (T.Form'Unchecked_Access,
+                                                      EL.Objects.STATIC));
    end Setup;
 
    --  ------------------------------
@@ -100,7 +105,32 @@ package body ASF.Contexts.Faces.Tests is
 
       Bean := Ctx.Get_Bean ("dumbledore");
       T.Assert (Bean = null, "Dumbledore should not be a bean");
+
+      Bean := Ctx.Get_Bean ("hogwarts");
+      T.Assert (Bean /= null, "hogwarts should be a bean");
    end Test_Get_Bean;
+
+   --  ------------------------------
+   --  Test getting a bean object from the faces context and doing a conversion.
+   --  ------------------------------
+   procedure Test_Get_Bean_Helper (T : in out Test) is
+      use type ASF.Applications.Tests.Form_Bean_Access;
+
+      Ctx   : aliased Faces_Context;
+      Bean  : ASF.Applications.Tests.Form_Bean_Access;
+   begin
+      T.Setup (Ctx);
+
+      Bean := Get_Form_Bean ("hogwarts");
+      T.Assert (Bean = null, "A bean was found while the faces context does not exist!");
+
+      ASF.Contexts.Faces.Set_Current (Ctx'Unchecked_Access, null);
+      Bean := Get_Form_Bean ("hogwarts");
+      T.Assert (Bean /= null, "hogwarts should be a bean");
+
+      Bean := Get_Form_Bean ("dumbledore");
+      T.Assert (Bean = null, "Dumbledore should not be a bean");
+   end Test_Get_Bean_Helper;
 
    --  ------------------------------
    --  Test the faces message queue.

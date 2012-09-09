@@ -21,14 +21,22 @@ with Util.Tests;
 with EL.Contexts.Default;
 with EL.Variables.Default;
 
+with ASF.Applications.Tests;
+with ASF.Helpers.Beans;
+
 package ASF.Contexts.Faces.Tests is
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);
+
+   function Get_Form_Bean is
+     new ASF.Helpers.Beans.Get_Bean (ASF.Applications.Tests.Form_Bean,
+                                     ASF.Applications.Tests.Form_Bean_Access);
 
    type Test is new Util.Tests.Test with record
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased EL.Variables.Default.Default_Variable_Mapper;
       Root_Resolver  : aliased EL.Contexts.Default.Default_ELResolver;
+      Form           : aliased ASF.Applications.Tests.Form_Bean;
    end record;
 
    --  Setup the faces context for the unit test.
@@ -40,6 +48,9 @@ package ASF.Contexts.Faces.Tests is
 
    --  Test getting a bean object from the faces context.
    procedure Test_Get_Bean (T : in out Test);
+
+   --  Test getting a bean object from the faces context and doing a conversion.
+   procedure Test_Get_Bean_Helper (T : in out Test);
 
    --  Test the faces message queue.
    procedure Test_Add_Message (T : in out Test);

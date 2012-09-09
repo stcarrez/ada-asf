@@ -89,6 +89,46 @@ package body ASF.Contexts.Faces is
    end Set_Attribute;
 
    --  ------------------------------
+   --  Get the attribute with the given name.
+   --  ------------------------------
+   function Get_Attribute (Context : in Faces_Context;
+                           Name    : in String) return EL.Objects.Object is
+   begin
+      return Context.Get_Attribute (To_Unbounded_String (Name));
+   end Get_Attribute;
+
+   --  ------------------------------
+   --  Get the attribute with the given name.
+   --  ------------------------------
+   function Get_Attribute (Context : in Faces_Context;
+                           Name    : in Unbounded_String) return EL.Objects.Object is
+
+      EL_Context : constant EL.Contexts.ELContext_Access := Context.Get_ELContext;
+      Resolver   : constant EL.Contexts.ELResolver_Access := EL_Context.Get_Resolver;
+   begin
+      return Resolver.Get_Value (Context => EL_Context.all,
+                                 Base    => null,
+                                 Name    => Name);
+   end Get_Attribute;
+
+   --  ------------------------------
+   --  Get the bean attribute with the given name.
+   --  Returns null if the attribute does not exist or is not a bean.
+   --  ------------------------------
+   function Get_Bean (Context : in Faces_Context;
+                      Name    : in String)
+                      return Util.Beans.Basic.Readonly_Bean_Access is
+      Value : constant EL.Objects.Object := Context.Get_Attribute (Name);
+      Bean  : constant access Util.Beans.Basic.Readonly_Bean'Class := EL.Objects.To_Bean (Value);
+   begin
+      if Bean /= null then
+         return Bean.all'Unchecked_Access;
+      else
+         return null;
+      end if;
+   end Get_Bean;
+
+   --  ------------------------------
    --  Get a request parameter
    --  ------------------------------
    function Get_Parameter (Context : Faces_Context;

@@ -33,6 +33,7 @@ with ASF.Events.Phases;
 with EL.Objects;
 with EL.Contexts;
 with Util.Locales;
+with Util.Beans.Basic;
 
 with Ada.Exceptions;
 with Ada.Strings.Unbounded;
@@ -84,6 +85,19 @@ package ASF.Contexts.Faces is
    procedure Set_Attribute (Context : in out Faces_Context;
                             Name    : in Unbounded_String;
                             Value   : in EL.Objects.Object);
+
+   --  Get the attribute with the given name.
+   function Get_Attribute (Context : in Faces_Context;
+                           Name    : in String) return EL.Objects.Object;
+
+   --  Get the attribute with the given name.
+   function Get_Attribute (Context : in Faces_Context;
+                           Name    : in Unbounded_String) return EL.Objects.Object;
+
+   --  Get the bean attribute with the given name.
+   --  Returns null if the attribute does not exist or is not a bean.
+   function Get_Bean (Context : in Faces_Context;
+                      Name    : in String) return Util.Beans.Basic.Readonly_Bean_Access;
 
    --  Get a request parameter
    function Get_Parameter (Context : Faces_Context;

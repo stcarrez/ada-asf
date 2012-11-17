@@ -15,13 +15,13 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Security.Permissions;
+with Security;
 package ASF.Principals is
 
    --  ------------------------------
    --  Principal
    --  ------------------------------
-   subtype Principal is Security.Permissions.Principal;
-   subtype Principal_Access is Security.Permissions.Principal_Access;
+   subtype Principal is Security.Principal;
+   subtype Principal_Access is Security.Principal_Access;
 
 end ASF.Principals;

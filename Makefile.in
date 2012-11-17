@@ -68,7 +68,7 @@ shared:
 	$(MAKE) LIBRARY_TYPE=relocatable build
 
 # Build and run the unit tests
-test:	build
+check test:	build
 	$(GNATMAKE) -p -Ptests
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
 

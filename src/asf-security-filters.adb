@@ -24,6 +24,7 @@ with ASF.Cookies;
 with ASF.Applications.Main;
 
 with Security.Contexts;
+with Security.Policies.Urls;
 package body ASF.Security.Filters is
 
    use Util.Log;
@@ -40,7 +41,7 @@ package body ASF.Security.Filters is
       use ASF.Applications.Main;
    begin
       if Context in Application'Class then
-         Server.Set_Permission_Manager (Application'Class (Context).Get_Permission_Manager);
+         Server.Set_Permission_Manager (Application'Class (Context).Get_Security_Manager);
       end if;
    end Initialize;
 
@@ -48,7 +49,7 @@ package body ASF.Security.Filters is
    --  Set the permission manager that must be used to verify the permission.
    --  ------------------------------
    procedure Set_Permission_Manager (Filter  : in out Auth_Filter;
-                                     Manager : in Permissions.Permission_Manager_Access) is
+                                     Manager : in Policies.Policy_Manager_Access) is
    begin
       Filter.Manager := Manager;
    end Set_Permission_Manager;
@@ -65,8 +66,8 @@ package body ASF.Security.Filters is
                         Response : in out ASF.Responses.Response'Class;
                         Chain    : in out ASF.Servlets.Filter_Chain) is
       use Ada.Strings.Unbounded;
-      use Permissions;
-      use type ASF.Principals.Principal_Access;
+      use Policies.Urls;
+      use type Policies.Policy_Manager_Access;
 
       Session : ASF.Sessions.Session;
       SID     : Unbounded_String;
@@ -117,10 +118,10 @@ package body ASF.Security.Filters is
          Context.Set_Context (F.Manager, Auth.all'Access);
          declare
             URI  : constant String := Request.Get_Path_Info;
-            Perm : constant URI_Permission (URI'Length)
+            Perm : constant Policies.URLs.URI_Permission (URI'Length)
               := URI_Permission '(Len => URI'Length, URI => URI);
          begin
-            if not F.Manager.Has_Permission (Context'Unchecked_Access, Perm) then
+            if not F.Manager.Has_Permission (Context, Perm) then
                Log.Info ("Deny access on {0}", URI);
 --                 Auth_Filter'Class (F).Do_Deny (Request, Response);
 --                 return;

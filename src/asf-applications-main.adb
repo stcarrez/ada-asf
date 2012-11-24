@@ -100,16 +100,16 @@ package body ASF.Applications.Main is
    end Create_Navigation_Handler;
 
    --  ------------------------------
-   --  Create the permission manager.  The permission manager is created during
+   --  Create the security policy manager.  The security policy manager is created during
    --  the initialization phase of the application.  The default implementation
-   --  creates a <b>Security.Permissions.Permission_Manager</b> object.
+   --  creates a <b>Security.Policies.Policy_Manager</b> object.
    --  ------------------------------
-   function Create_Permission_Manager (App : in Application_Factory)
-                                       return Permissions.Permission_Manager_Access is
+   function Create_Security_Manager (App : in Application_Factory)
+                                       return Policies.Policy_Manager_Access is
       pragma Unreferenced (App);
    begin
-      return new Permissions.Permission_Manager;
-   end Create_Permission_Manager;
+      return new Policies.Policy_Manager (Max_Policies => 10);
+   end Create_Security_Manager;
 
    --  ------------------------------
    --  Create the exception handler.  The exception handler is created during
@@ -153,11 +153,11 @@ package body ASF.Applications.Main is
    --  ------------------------------
    --  Get the permission manager associated with this application.
    --  ------------------------------
-   function Get_Permission_Manager (App : in Application)
-                                    return Permissions.Permission_Manager_Access is
+   function Get_Security_Manager (App : in Application)
+                                  return Policies.Policy_Manager_Access is
    begin
       return App.Permissions;
-   end Get_Permission_Manager;
+   end Get_Security_Manager;
 
    --  ------------------------------
    --  Get the action event listener responsible for processing action
@@ -225,7 +225,7 @@ package body ASF.Applications.Main is
       App.Navigation := Factory.Create_Navigation_Handler;
 
       --  Create the permission manager.
-      App.Permissions := Factory.Create_Permission_Manager;
+      App.Permissions := Factory.Create_Security_Manager;
 
       Application'Class (App).Initialize_Components;
 
@@ -885,8 +885,8 @@ package body ASF.Applications.Main is
       procedure Free is new Ada.Unchecked_Deallocation (ASF.Lifecycles.Lifecycle'Class,
                                                         ASF.Lifecycles.Lifecycle_Access);
       procedure Free is
-        new Ada.Unchecked_Deallocation (Permissions.Permission_Manager'Class,
-                                        Permissions.Permission_Manager_Access);
+        new Ada.Unchecked_Deallocation (Policies.Policy_Manager'Class,
+                                        Policies.Policy_Manager_Access);
    begin
       Free (App.Navigation);
       Free (App.Lifecycle);

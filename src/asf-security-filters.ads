@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-filters -- Security filter
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ with ASF.Responses;
 with ASF.Servlets;
 with ASF.Sessions;
 with ASF.Principals;
-with Security.Permissions;  use Security;
+with Security.Policies;  use Security;
 
 --  The <b>Security.Filters</b> package defines a servlet filter that can be activated
 --  on requests to authenticate users and verify they have the permission to view
@@ -43,7 +43,7 @@ package ASF.Security.Filters is
 
    --  Set the permission manager that must be used to verify the permission.
    procedure Set_Permission_Manager (Filter  : in out Auth_Filter;
-                                     Manager : in Permissions.Permission_Manager_Access);
+                                     Manager : in Policies.Policy_Manager_Access);
 
    --  Filter the request to make sure the user is authenticated.
    --  Invokes the <b>Do_Login</b> procedure if there is no user.
@@ -84,7 +84,7 @@ package ASF.Security.Filters is
 private
 
    type Auth_Filter is new ASF.Filters.Filter with record
-      Manager : Permissions.Permission_Manager_Access := null;
+      Manager : Policies.Policy_Manager_Access := null;
    end record;
 
 end ASF.Security.Filters;

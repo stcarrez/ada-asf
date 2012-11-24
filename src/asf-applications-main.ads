@@ -40,7 +40,7 @@ with ASF.Requests;
 with ASF.Responses;
 with ASF.Servlets;
 with ASF.Events.Faces.Actions;
-with Security.Permissions;  use Security;
+with Security.Policies;  use Security;
 
 package ASF.Applications.Main is
 
@@ -72,11 +72,11 @@ package ASF.Applications.Main is
    function Create_Navigation_Handler (App : in Application_Factory)
                                        return ASF.Navigations.Navigation_Handler_Access;
 
-   --  Create the permission manager.  The permission manager is created during
+   --  Create the security policy manager.  The security policy manager is created during
    --  the initialization phase of the application.  The default implementation
-   --  creates a <b>Security.Permissions.Permission_Manager</b> object.
-   function Create_Permission_Manager (App : in Application_Factory)
-                                       return Security.Permissions.Permission_Manager_Access;
+   --  creates a <b>Security.Policies.Policy_Manager</b> object.
+   function Create_Security_Manager (App : in Application_Factory)
+                                       return Security.Policies.Policy_Manager_Access;
 
    --  Create the exception handler.  The exception handler is created during
    --  the initialization phase of the application.  The default implementation
@@ -104,8 +104,8 @@ package ASF.Applications.Main is
                                     return ASF.Navigations.Navigation_Handler_Access;
 
    --  Get the permission manager associated with this application.
-   function Get_Permission_Manager (App : in Application)
-                                    return Security.Permissions.Permission_Manager_Access;
+   function Get_Security_Manager (App : in Application)
+                                    return Security.Policies.Policy_Manager_Access;
 
    --  Get the action event listener responsible for processing action
    --  events and triggering the navigation to the next view using the
@@ -316,7 +316,7 @@ private
       Navigation      : ASF.Navigations.Navigation_Handler_Access := null;
 
       --  The permission manager.
-      Permissions     : Security.Permissions.Permission_Manager_Access := null;
+      Permissions     : Security.Policies.Policy_Manager_Access := null;
 
    end record;
 

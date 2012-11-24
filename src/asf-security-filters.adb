@@ -118,8 +118,8 @@ package body ASF.Security.Filters is
          Context.Set_Context (F.Manager, Auth.all'Access);
          declare
             URI  : constant String := Request.Get_Path_Info;
-            Perm : constant Policies.URLs.URI_Permission (URI'Length)
-              := URI_Permission '(Len => URI'Length, URI => URI);
+            Perm : constant Policies.URLs.URI_Permission (1, URI'Length)
+              := URI_Permission '(1, Len => URI'Length, URI => URI);
          begin
             if not F.Manager.Has_Permission (Context, Perm) then
                Log.Info ("Deny access on {0}", URI);

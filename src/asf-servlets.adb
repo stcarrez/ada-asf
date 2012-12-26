@@ -426,7 +426,7 @@ package body ASF.Servlets is
          R.Mapping := Context.Find_Mapping (URI => Path);
          if R.Mapping = null then
             R.Path := To_Unbounded_String (Path);
-         elsif Path'First + R.Mapping.Path_Pos < Path'Last then
+         elsif Path'First + R.Mapping.Path_Pos <= Path'Last then
             R.Path := To_Unbounded_String
               (Path (Path'First + R.Mapping.Path_Pos - 1 .. Path'Last));
          else

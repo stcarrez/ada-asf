@@ -343,6 +343,13 @@ package body ASF.Components.Base is
                UI.Tag.Error ("Variable not found in expression: {0}",
                              Attribute.Expr.Get_Expression);
                return EL.Objects.Null_Object;
+
+            when E : others =>
+               Log.Error ("Evaluation error for '" & Attribute.Expr.Get_Expression & "'", E);
+               UI.Tag.Error ("Exception raised when evaluating expression: {0}",
+                             Attribute.Expr.Get_Expression);
+               return EL.Objects.Null_Object;
+
          end;
          Attribute := Attribute.Next_Attr;
       end loop;

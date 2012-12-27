@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-tests -  ASF Application tests using ASFUnit
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,11 @@ with ASF.Applications.Main;
 with ASF.Applications.Main.Configs;
 with ASF.Models.Selects;
 with ASF.Contexts.Faces;
+
+pragma Warnings (Off);  --  gcc complains that the package is not referenced but it is!
 with ASF.Contexts.Flash;
+pragma Warnings (On);
+
 package body ASF.Applications.Tests is
 
    use ASF.Tests;
@@ -149,7 +153,7 @@ package body ASF.Applications.Tests is
    --  Create a list of forms.
    --  ------------------------------
    function Create_Form_List return Util.Beans.Basic.Readonly_Bean_Access is
-      Result : Form_Lists.List_Bean_Access := new Form_Lists.List_Bean;
+      Result : constant Form_Lists.List_Bean_Access := new Form_Lists.List_Bean;
       Form   : Form_Bean;
    begin
       for I in 1 .. 100 loop

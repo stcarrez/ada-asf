@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-filters -- Security filter
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ with ASF.Cookies;
 with ASF.Applications.Main;
 
 with Security.Contexts;
-with Security.Policies.Urls;
+with Security.Policies.URLs;
 package body ASF.Security.Filters is
 
    use Util.Log;
@@ -66,7 +66,7 @@ package body ASF.Security.Filters is
                         Response : in out ASF.Responses.Response'Class;
                         Chain    : in out ASF.Servlets.Filter_Chain) is
       use Ada.Strings.Unbounded;
-      use Policies.Urls;
+      use Policies.URLs;
       use type Policies.Policy_Manager_Access;
 
       Session : ASF.Sessions.Session;
@@ -117,12 +117,12 @@ package body ASF.Security.Filters is
       if F.Manager /= null then
          Context.Set_Context (F.Manager, Auth.all'Access);
          declare
-            URI  : constant String := Request.Get_Path_Info;
-            Perm : constant Policies.URLs.URI_Permission (URI'Length)
-              := URI_Permission '(Len => URI'Length, URI => URI);
+            URL  : constant String := Request.Get_Path_Info;
+            Perm : constant Policies.URLs.URL_Permission (URL'Length)
+              := URL_Permission '(Len => URL'Length, URL => URL);
          begin
             if not F.Manager.Has_Permission (Context, Perm) then
-               Log.Info ("Deny access on {0}", URI);
+               Log.Info ("Deny access on {0}", URL);
 --                 Auth_Filter'Class (F).Do_Deny (Request, Response);
 --                 return;
             end if;

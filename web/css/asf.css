@@ -26,7 +26,6 @@ div.asf-list-action {
     width: 48px;
     visibility: hidden;
     display: block;
-    background: red;
 }
 div.asf-active div.ui-list-item div.asf-list-action {
     visibility: visible;
@@ -34,10 +33,17 @@ div.asf-active div.ui-list-item div.asf-list-action {
 .asf-icon {
     display: block;
     overflow: hidden;
-    width: 20px;
-    height: 20px;
-    background-color: blue;
+    width: 24px;
+    height: 24px;
     float: left;
+}
+
+/**
+ * The delete action icon.
+ */
+.asf-delete {
+    background: url(../images/delete-icon.png) 0 0 no-repeat;
+    opacity: 0.6;
 }
 
 /**

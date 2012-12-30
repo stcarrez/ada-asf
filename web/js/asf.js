@@ -265,8 +265,12 @@ var ASF = {};
                      /**
                       * Extract a title from the inner form to setup the dialog box.
                       */
-                     var dBox = $(div).children('div');
-                     var dTitle = $(dBox).children('h2');
+                     var dTitle, dBox = $(div).children('div');
+                     if (dBox.length == 0) {
+                        dTitle = $(div).children('h2');
+                     } else {
+                        dTitle = $(dBox).children('h2');
+                     }
                      if (dTitle.length > 0) {
                         $(div).dialog("option", "title", dTitle.html());
                         dTitle.remove();

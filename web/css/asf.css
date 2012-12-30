@@ -16,3 +16,33 @@ div.asf-editing div.asf-editable-input {
 div.asf-editing div.asf-editable-message {
     display: none;
 }
+div.ui-list div.ui-list-item {
+    position: relative;
+}
+div.asf-list-action {
+    position: absolute;
+    top: 0;
+    left: -48px; /* = -width */
+    width: 48px;
+    visibility: hidden;
+    display: block;
+    background: red;
+}
+div.asf-active div.ui-list-item div.asf-list-action {
+    visibility: visible;
+}
+.asf-icon {
+    display: block;
+    overflow: hidden;
+    width: 20px;
+    height: 20px;
+    background-color: blue;
+    float: left;
+}
+
+/**
+ * CSS that indicates the list element is being deleted.
+ */
+div.asf-deleting {
+    opacity: 0.5;
+}

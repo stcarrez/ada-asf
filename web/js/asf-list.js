@@ -54,9 +54,19 @@
             selectClass: "asf-selected",
 
             /**
-             * Relative URL to edit an item of the list.
+             * The CSS class that indicates an element is being deleted.
+             */
+            deletingClass: "asf-deleting",
+
+            /**
+             * URL to edit an item of the list.
              */
             editUrl: null,
+
+            /**
+             * URL to delete an item of the list.
+             */
+            deleteUrl: null,
 
             /**
              * Relative URL to refresh the item (after edit or view mode for example).
@@ -147,7 +157,7 @@
             if (node == null) {
                 return null;
             }
-            var id = node.id;
+            var id = $(node).attr('id');
             if (id == null) {
                 return null;
             }
@@ -181,26 +191,28 @@
             return null;
         },
 
+        /**
+         * Get the item list node that contains the inner element represented by <tt>node</tt>.
+         * Returns null if the node element is not part of a list item component.
+         */
         getTarget: function(node) {
             if (node == this.element[0]) {
                 return null;
             }
-            if (node && (node.id == null || node.id == "")) {
-                while (node) {
-                    var name = node.tagName;
-                    if (name) {
-                        name = name.toUpperCase();
-                        if (name == "DIV" || name == "DL") {
-                            if (node.id && node.id != "")
-                                break;
-                        } else if (name == "A") {
-                            break;
+            while (node) {
+                var name = node.tagName;
+                if (name) {
+                    name = name.toUpperCase();
+                    if (name == "DIV" || name == "DL") {
+                        var id = node.id;
+                        if (id && id.indexOf(this.options.itemPrefix) === 0) {
+                            return node;
                         }
                     }
-                    node = node.parentNode;
-                    if (node == this.element[0]) {
-                        return null;
-                    }
+                }
+                node = node.parentNode;
+                if (node == this.element[0]) {
+                    return null;
                 }
             }
             /* $("#current").html(node.id); */
@@ -208,7 +220,7 @@
         },
 
         _mouseOver: function(event) {
-            var node = this._getTargetNode(event.target);
+            var node = this.getTarget(event.target);
             if (node && this.currentNode != node) {
                 /* $("#current").html("Mover " + node.id); */
                 this.setActiveItem(node);
@@ -250,14 +262,48 @@
         getCategoryId: function() {
             return $(this.element).attr("data-id");
         },
+
+        /**
+         * Get the URL to execute an AJAX operation on the given item.  Override this operation to customize
+         * the URL.
+         *
+         * @param item the item
+         * @param oid the item identifier
+         * @param url the relative URL
+         * @return the URL to invoke an AJAX operation on the given item
+         */
+        getOperationUrl: function(item, oid, url) {
+            return url + oid;
+        },
         enterEdit: function(event) {
             var node = this.element.find(".am-list");
             var catId = this.getCategoryId();
             $("#current").html("Enter edit");
             ASF.Update(this.element, "/am/shoplist/edit-category.html?id=" + catId, node);
         },
-        enterDelete: function(event) {
 
+        /**
+         * Enter delete mode for the current active element.
+         * The 'deletingCss' is applied on the element being deleted.  The delete dialog box is opened
+         * to confirm the deletion of our item.  The 'deletingCSS' is removed once the dialog box is closed.
+         */
+        enterDelete: function(event) {
+            var item = this.activeItem;
+            var id   = this.getSelectedId(item);
+            if (id) {
+                var url = this.getOperationUrl(item, id, this.options.deleteUrl);
+                if (url) {
+                    var css = this.options.deletingClass;
+
+                    item.addClass(css);
+                    ASF.OpenDialog(item, 'deleteDialog_' + id, url, {
+                        close: function() {
+                            item.removeClass(css);
+                        }
+                    });
+                }
+            }
+            return false;
         },
         enterCreate: function(event) {
 
@@ -272,9 +318,9 @@
             var node = this._getTargetNode(event.target);
             if (node && this.currentNode != node) {
 
-                if ($(node).hasClass("am-edit")) {
+                if ($(node).hasClass("asf-edit")) {
                     this.enterEdit(event);
-                } else if ($(node).hasClass("am-delete")) {
+                } else if ($(node).hasClass("asf-delete")) {
                     this.enterDelete(event);
 
                 } else if ($(node).hasClass("asf-editable")) {
@@ -290,9 +336,9 @@
                 var name = event.target.tagName;
                 node = event.target;
 
-                if ($(node).hasClass("am-edit")) {
+                if ($(node).hasClass("asf-edit")) {
                     this.enterEdit(event);
-                } else if ($(node).hasClass("am-delete")) {
+                } else if ($(node).hasClass("asf-delete")) {
                     this.enterDelete(event);
                 }
 

@@ -81,7 +81,7 @@ package ASF.Servlets is
 
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
-   not overriding
+   --  not overriding
    procedure Initialize (Server  : in out Servlet;
                          Context : in Servlet_Registry'Class);
 

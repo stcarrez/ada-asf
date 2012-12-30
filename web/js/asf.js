@@ -68,6 +68,14 @@ var ASF = {};
         } else if (action.action === "redirect") {
             document.location = action.url;
 
+        } else if (action.action === "script") {
+            try {
+                alert(action.script);
+                eval(action.script);
+            } catch (e) {
+                alert(e);
+            }
+
 	    } else if (action.action === "clear") {
 	        $(id).each(function() {
                 switch (this.type) {
@@ -172,6 +180,11 @@ var ASF = {};
             } else {
                 params = node.name + "=1&" + $(f).serialize();
             }
+            /**
+             * Send notification on form to indicate a form submit is now in progress.
+             */
+            $(f).triggerHandler("notifySubmit", d);
+
             /* Perform the HTTP POST */
             jQuery.ajax({
                 type: "POST",
@@ -183,6 +196,7 @@ var ASF = {};
                     if (contentType == null) {
                         contentType = "text/html";
                     }
+                    $(f).triggerHandler("successSubmit", d);
                     if (contentType.match(/^text\/(html|xml)(;.*)?$/i)) {
                         d.fadeOut("fast", function() {
                             d.html(jqXHDR.responseText);
@@ -241,14 +255,28 @@ var ASF = {};
                         close: function() {
                             $(div).dialog('destroy');
                             $(div).remove();
+                            if (params && params.close) {
+                                params.close(node);
+                            }
                         }
                      });
 
                      $(div).html(jqXHDR.responseText);
-                     var dTitle = $(div).children('div').attr('title');
-                     if (dTitle != null) {
-                        $(div).dialog("option", "title", dTitle );
-                        /* $(div).attr('title', title); */
+
+                     /**
+                      * Extract a title from the inner form to setup the dialog box.
+                      */
+                     var dBox = $(div).children('div');
+                     var dTitle = $(dBox).children('h2');
+                     if (dTitle.length > 0) {
+                        $(div).dialog("option", "title", dTitle.html());
+                        dTitle.remove();
+                     } else {
+                        dTitle = $(div).children('div').attr('title');
+                        if (dTitle != null) {
+                            $(div).dialog("option", "title", dTitle );
+                            /* $(div).attr('title', title); */
+                        }
                      }
                      $(div).dialog('open');
 

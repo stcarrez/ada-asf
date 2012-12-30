@@ -70,7 +70,6 @@ var ASF = {};
 
         } else if (action.action === "script") {
             try {
-                alert(action.script);
                 eval(action.script);
             } catch (e) {
                 alert(e);

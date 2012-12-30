@@ -21,7 +21,7 @@ with ASF.Requests;
 with ASF.Responses;
 with ASF.Principals;
 
-with Security.Openid; use Security;
+with Security.OpenID; use Security;
 
 --  The <b>Security.Openid.Servlets</b> package defines two servlets that can be used
 --  to implement an OpenID 2.0 authentication with an OpenID provider such as Google,
@@ -76,6 +76,7 @@ package ASF.Security.Servlets is
 
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
+   overriding
    procedure Initialize (Server  : in out Openid_Servlet;
                          Context : in ASF.Servlets.Servlet_Registry'Class);
 
@@ -115,7 +116,7 @@ package ASF.Security.Servlets is
    --  by the <b>Auth</b> information.  The principal will be attached to the session
    --  and will be destroyed when the session is closed.
    procedure Create_Principal (Server : in Verify_Auth_Servlet;
-                               Auth   : in Openid.Authentication;
+                               Auth   : in OpenID.Authentication;
                                Result : out ASF.Principals.Principal_Access);
 
 private
@@ -123,10 +124,10 @@ private
                               Request  : in ASF.Requests.Request'Class) return String;
 
    procedure Initialize (Server  : in Openid_Servlet;
-                         Manager : in out Openid.Manager);
+                         Manager : in out OpenID.Manager);
 
    type Openid_Servlet is new ASF.Servlets.Servlet with record
-      Manager : Openid.Manager;
+      Manager : OpenID.Manager;
    end record;
 
    type Request_Auth_Servlet is new Openid_Servlet with null record;

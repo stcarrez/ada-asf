@@ -1,7 +1,7 @@
 Version 0.5     -
   - Moved the Security packages in a separate project: Ada Security
   - New demo to show OAuth and Facebook API integration
-  - Integrated jQuery 1.7.2 and jQuery UI 1.8.21
+  - Integrated jQuery 1.8.3 and jQuery UI 1.9.2
   - New converter to display file sizes
   - Javascript support for click-to-edit behavior
 

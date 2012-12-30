@@ -19,7 +19,7 @@
 
     /**
      * The editable component enters in edit mode when the user clicks on it.
-     * The editing mode is activated by the CSS 'asf-editing' which puts the component in editing mode
+     * The editing mode is activated by the 'asf-editing' CSS which puts the component in editing mode
      * and makes the input fields visible.
      */
     $.widget("ui.editable", {
@@ -34,8 +34,16 @@
             this.element.bind('click', function(event) {
                 return self.click(event);
             });
+
+            var f = $(this.element).closest('form');
+            $(f).bind("successSubmit", function(d) {
+                return self.finishEdit(null);
+            });
         },
 
+        /**
+         * Finish the edition by removing the asf-editing CSS and turning the component in view only mode.
+         */
         finishEdit: function(node) {
             this.element.removeClass("asf-editing");
             this.editing = false;
@@ -48,9 +56,13 @@
          */
         blur: function(event) {
             if (this.editing == true) {
-                this.finishEdit(null);
+                var node = $(event.currentTarget).closest(".asf-editing");
+                if (node.length == 0) {
+                   this.finishEdit(null);
+                   return false;
+                }
             }
-            return false;
+            return true;
         },
 
         /**
@@ -70,11 +82,11 @@
                 $(node).focus();
                 $(node).keypress(function (e) {
                     var keycode = e.keyCode || e.which;
-                    if (keycode == 13) {
+                    if (keycode == 13 && self.editing) {
                         // The Enter key was pressed.  Fire the submit action.
                         e.preventDefault();
                         ASF.Submit(self.element.find("input[type = 'submit']")[0]);
-                        return self.finishEdit(node);
+                        return false;
                     } else {
                         // Pass through all other keypresses.
                         return true;

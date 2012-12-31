@@ -49,6 +49,11 @@
             activeClass: "asf-active",
 
             /**
+             * The CSS class that is set on the list element when it has the focus.
+             */
+            activeListClass: "asf-active-list",
+
+            /**
              * The CSS class that is set on the selected element.
              */
             selectClass: "asf-selected",
@@ -80,7 +85,7 @@
             disableMouseover: false,
 
             /**
-             * Prefix for item ids in the DOM tree
+             * Prefix for item ids in the DOM tree.
              */
             itemPrefix: '',
 
@@ -231,7 +236,7 @@
             }
             if (this.isActive == false) {
                 this.isActive = true;
-                this.element.addClass(this.options.activeClass);
+                this.element.addClass(this.options.activeListClass);
             }
         } ,
 
@@ -252,7 +257,7 @@
                 }
                 if (node && node != document) {
                     this.isActive = false;
-                    this.element.removeClass(this.options.activeClass);
+                    this.element.removeClass(this.options.activeListClass);
                 }
             }
         },

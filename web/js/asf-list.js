@@ -117,7 +117,7 @@
              * Get the action element (a div in most cases) which contains the actions
              * to be displayed for the active/highlighted element.
              */
-            this.action = $(this.options["actionId"]);
+            this.action = $(this.options.actionId);
         },
 
         selectAction: function(node) {
@@ -163,10 +163,7 @@
                 return null;
             }
             var id = $(node).attr('id');
-            if (id == null) {
-                return null;
-            }
-            return id.substring(this.options.itemPrefix.length);
+            return id == null ? null : id.substring(this.options.itemPrefix.length);
         },
 
         /**
@@ -261,30 +258,33 @@
                 }
             }
         },
-        /**
-         * Get the shopping category.
-         */
-        getCategoryId: function() {
-            return $(this.element).attr("data-id");
-        },
 
         /**
          * Get the URL to execute an AJAX operation on the given item.  Override this operation to customize
          * the URL.
          *
          * @param item the item
-         * @param oid the item identifier
+         * @param id the item identifier
          * @param url the relative URL
          * @return the URL to invoke an AJAX operation on the given item
          */
-        getOperationUrl: function(item, oid, url) {
-            return url + oid;
+        getOperationUrl: function(item, id, url) {
+            return url ? url + id : null;
         },
+
+        /**
+         * Enter the edit mode for the current active list element.
+         */
         enterEdit: function(event) {
-            var node = this.element.find(".am-list");
-            var catId = this.getCategoryId();
-            $("#current").html("Enter edit");
-            ASF.Update(this.element, "/am/shoplist/edit-category.html?id=" + catId, node);
+            var url, item = this.activeItem,
+                id = this.getSelectedId(item);
+            if (id) {
+                url = this.getOperationUrl(item, id, this.options.editUrl);
+                if (url) {
+                    ASF.Update(item, url, item);
+                }
+            }
+            return false;
         },
 
         /**
@@ -293,12 +293,13 @@
          * to confirm the deletion of our item.  The 'deletingCSS' is removed once the dialog box is closed.
          */
         enterDelete: function(event) {
-            var item = this.activeItem;
-            var id   = this.getSelectedId(item);
+            var url, css,
+                item = this.activeItem,
+                id   = this.getSelectedId(item);
             if (id) {
-                var url = this.getOperationUrl(item, id, this.options.deleteUrl);
+                url = this.getOperationUrl(item, id, this.options.deleteUrl);
                 if (url) {
-                    var css = this.options.deletingClass;
+                    css = this.options.deletingClass;
 
                     item.addClass(css);
                     ASF.OpenDialog(item, 'deleteDialog_' + id, url, {
@@ -320,7 +321,7 @@
          * @param event the event that was clicked
          */
         click: function(event) {
-            var node = this._getTargetNode(event.target);
+            var name, node = this._getTargetNode(event.target);
             if (node && this.currentNode != node) {
 
                 if ($(node).hasClass("asf-edit")) {
@@ -338,7 +339,7 @@
                     this.selectAction(node);
                 }
             } else {
-                var name = event.target.tagName;
+                name = event.target.tagName;
                 node = event.target;
 
                 if ($(node).hasClass("asf-edit")) {
@@ -357,8 +358,8 @@
             }
         },
         destroy: function() {
-            this.element.removeClass( "ui-list" );
-            $.Widget.prototype.destroy.apply( this, arguments );
+            this.element.removeClass("ui-list");
+            $.Widget.prototype.destroy.apply(this, arguments);
         }
 
     });

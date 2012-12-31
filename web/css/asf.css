@@ -16,6 +16,10 @@ div.asf-editing div.asf-editable-input {
 div.asf-editing div.asf-editable-message {
     display: none;
 }
+
+/**
+ * The ui.list component.
+ */
 div.ui-list div.ui-list-item {
     position: relative;
 }
@@ -27,7 +31,7 @@ div.asf-list-action {
     visibility: hidden;
     display: block;
 }
-div.asf-active div.ui-list-item div.asf-list-action {
+div.asf-active-list div.asf-active div.asf-list-action {
     visibility: visible;
 }
 .asf-icon {

@@ -118,6 +118,9 @@
              * to be displayed for the active/highlighted element.
              */
             this.action = $(this.options.actionId);
+            if (this.options.currentItem != null) {
+                this.selectAction($(this.options.currentItem));
+            }
         },
 
         selectAction: function(node) {

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,10 +33,8 @@ with ASF.Applications.Main;
 with ASF.Applications.Views;
 package body ASF.Components.Html.Forms is
 
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Components.Html.Forms");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Components.Html.Forms");
 
    FORM_ATTRIBUTE_NAMES      : Util.Strings.String_Set.Set;
 
@@ -148,7 +146,7 @@ package body ASF.Components.Html.Forms is
          Val : constant String := Context.Get_Parameter (To_String (Id));
       begin
          if not UI.Is_Secret then
-            Log.Info ("Set input parameter {0} -> {1}", Id, Val);
+            Log.Debug ("Set input parameter {0} -> {1}", Id, Val);
          end if;
          UI.Submitted_Value := UI.Convert_Value (Val, Context);
          UI.Is_Valid := True;
@@ -192,14 +190,16 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    procedure Validate (UI      : in out UIInput;
                        Context : in out Faces_Context'Class) is
+      Id : constant String := Ada.Strings.Unbounded.To_String (UI.Get_Client_Id);
    begin
-      Log.Info ("validating input field {0}", UI.Get_Client_Id);
+      Log.Debug ("validating input field {0}", Id);
 
       if not EL.Objects.Is_Null (UI.Submitted_Value) then
          UIInput'Class (UI).Validate_Value (UI.Submitted_Value, Context);
 
          --  Render the response after the current phase if something is wrong.
          if not UI.Is_Valid then
+            Log.Info ("{0}: submitted value for {1} is invalid", Utils.Get_Line_Info (UI), Id);
             Context.Render_Response;
          end if;
       end if;

@@ -107,9 +107,9 @@
             });
             if (this.options.disableMouseover == false) {
                 this.element.bind('mouseover', function(event) {
-                    return self._mouseOver(event);
+                    return self.mouseOver(event);
                 }).bind('mouseout', function(event) {
-                    return self._mouseOut(event);
+                    return self.mouseOut(event);
                 });
             }
 
@@ -123,6 +123,11 @@
             }
         },
 
+        /**
+         * Select the list item identified by <tt>node</tt> as the current selected item.
+         *
+         * @param node the list item to select
+         */
         selectAction: function(node) {
             if (this.currentItem != null) {
                 $(this.currentItem).removeClass(this.options.selectClass);
@@ -224,15 +229,24 @@
             return node;
         },
 
-        _mouseOver: function(event) {
+        /**
+         * Mouse over callback invoked when the mouse over event is received on a list element.
+         *
+         * @param event the mouse over event
+         */
+        mouseOver: function(event) {
+            /*
+             * We want to know when a new list item is selected.  Find the list item which has the focus.
+             */
             var node = this.getTarget(event.target);
             if (node && this.currentNode != node) {
-                /* $("#current").html("Mover " + node.id); */
+                /* $("#current").html("Mover " + node.id + " Cnt=" + this.counter);*/
                 this.setActiveItem(node);
                 if (this.action[0]) {
                     this.action.detach();
                     this.action.prependTo(this.activeItem);
                 }
+                this.currentNode = node;
             }
             if (this.isActive == false) {
                 this.isActive = true;
@@ -240,13 +254,18 @@
             }
         } ,
 
-        _mouseOut: function(event) {
+        /**
+         * Mouse out callback invoked when the mouse out event is received on a list element.
+         *
+         * @param event the mouse out event
+         */
+        mouseOut: function(event) {
             if (!this.disableMouseover) {
                 var node = event.target;
                 while (node && node != document) {
                     if (node == this.activeItem) {
                         this.setActiveItem(null);
-                        /* $("#current").html("Mouse out"); */
+                        /* $("#current").html("Mouse out"  + " Cnt=" + this.counter);*/
                         break;
                     } else {
                         if (node == this.element[0]) {

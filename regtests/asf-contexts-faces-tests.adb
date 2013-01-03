@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,10 @@
 -----------------------------------------------------------------------
 
 with Ada.IO_Exceptions;
+with Ada.Unchecked_Deallocation;
 
 with Util.Test_Caller;
+with EL.Variables.Default;
 
 with ASF.Contexts.Flash;
 package body ASF.Contexts.Faces.Tests is
@@ -56,9 +58,13 @@ package body ASF.Contexts.Faces.Tests is
    procedure Setup (T       : in out Test;
                     Context : in out Faces_Context) is
    begin
-      T.ELContext.Set_Resolver (T.Root_Resolver'Unchecked_Access);
-      T.ELContext.Set_Variable_Mapper (T.Variables'Unchecked_Access);
-      Context.Set_ELContext (T.ELContext'Unchecked_Access);
+      T.Form          := new ASF.Applications.Tests.Form_Bean;
+      T.ELContext     := new EL.Contexts.Default.Default_Context;
+      T.Root_Resolver := new EL.Contexts.Default.Default_ELResolver;
+      T.Variables     := new EL.Variables.Default.Default_Variable_Mapper;
+      T.ELContext.Set_Resolver (T.Root_Resolver.all'Access);
+      T.ELContext.Set_Variable_Mapper (T.Variables.all'Access);
+      Context.Set_ELContext (T.ELContext.all'Access);
 
       T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("dumbledore"),
                                 EL.Objects.To_Object (String '("albus")));
@@ -66,9 +72,34 @@ package body ASF.Contexts.Faces.Tests is
       T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("potter"),
                                 EL.Objects.To_Object (String '("harry")));
       T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("hogwarts"),
-                                EL.Objects.To_Object (T.Form'Unchecked_Access,
+                                EL.Objects.To_Object (T.Form.all'Access,
                                                       EL.Objects.STATIC));
    end Setup;
+
+   --  ------------------------------
+   --  Cleanup the test instance.
+   --  ------------------------------
+   overriding
+   procedure Tear_Down (T : in out Test) is
+      procedure Free is
+        new Ada.Unchecked_Deallocation (EL.Contexts.Default.Default_Context'Class,
+                                        EL.Contexts.Default.Default_Context_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (EL.Variables.Variable_Mapper'Class,
+                                        EL.Variables.Variable_Mapper_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (EL.Contexts.Default.Default_ELResolver'Class,
+                                        EL.Contexts.Default.Default_ELResolver_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (ASF.Applications.Tests.Form_Bean'Class,
+                                        ASF.Applications.Tests.Form_Bean_Access);
+
+   begin
+      Free (T.ELContext);
+      Free (T.Variables);
+      Free (T.Root_Resolver);
+      Free (T.Form);
+   end Tear_Down;
 
    --  ------------------------------
    --  Test getting an attribute from the faces context.
@@ -130,6 +161,8 @@ package body ASF.Contexts.Faces.Tests is
 
       Bean := Get_Form_Bean ("dumbledore");
       T.Assert (Bean = null, "Dumbledore should not be a bean");
+
+      ASF.Contexts.Faces.Restore (null);
    end Test_Get_Bean_Helper;
 
    --  ------------------------------

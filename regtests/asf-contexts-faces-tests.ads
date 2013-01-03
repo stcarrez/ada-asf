@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 with Util.Tests;
 
 with EL.Contexts.Default;
-with EL.Variables.Default;
+with EL.Variables;
 
 with ASF.Applications.Tests;
 with ASF.Helpers.Beans;
@@ -33,11 +33,20 @@ package ASF.Contexts.Faces.Tests is
                                      ASF.Applications.Tests.Form_Bean_Access);
 
    type Test is new Util.Tests.Test with record
-      ELContext      : aliased EL.Contexts.Default.Default_Context;
-      Variables      : aliased EL.Variables.Default.Default_Variable_Mapper;
-      Root_Resolver  : aliased EL.Contexts.Default.Default_ELResolver;
-      Form           : aliased ASF.Applications.Tests.Form_Bean;
+      --  The ELContext, Variables, Resolver, Form area controlled object.
+      --  Due to AUnit implementation, we cannot store a controlled object in the Test object.
+      --  This is due to the 'for Obj'Address use Ret;' clause used by AUnit to allocate
+      --  a test object.
+      --  The application object is allocated dyanmically by Set_Up.
+      ELContext      : EL.Contexts.Default.Default_Context_Access;
+      Variables      : EL.Variables.Variable_Mapper_Access;
+      Root_Resolver  : EL.Contexts.Default.Default_ELResolver_Access;
+      Form           : ASF.Applications.Tests.Form_Bean_Access;
    end record;
+
+   --  Cleanup the test instance.
+   overriding
+   procedure Tear_Down (T : in out Test);
 
    --  Setup the faces context for the unit test.
    procedure Setup (T       : in out Test;

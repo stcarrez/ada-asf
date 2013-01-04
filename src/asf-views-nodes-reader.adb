@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -215,7 +215,11 @@ package body ASF.Views.Nodes.Reader is
                                    Prefix  : in Unicode.CES.Byte_Sequence;
                                    URI     : in Unicode.CES.Byte_Sequence) is
    begin
-      Handler.Functions.Set_Namespace (Prefix => Prefix, URI => URI);
+      if Prefix = "" then
+         Handler.Add_NS := To_Unbounded_String (URI);
+      else
+         Handler.Functions.Set_Namespace (Prefix => Prefix, URI => URI);
+      end if;
    end Start_Prefix_Mapping;
 
    --  ------------------------------
@@ -424,7 +428,14 @@ package body ASF.Views.Nodes.Reader is
       begin
          Factory := Handler.Functions.Find (Namespace => Namespace_URI,
                                             Name      => Local_Name);
-         Attributes := new Tag_Attribute_Array (1 .. Attr_Count);
+         if Length (Handler.Add_NS) > 0 then
+            Attributes := new Tag_Attribute_Array (0 .. Attr_Count);
+            Attributes (0).Name  := To_Unbounded_String ("xmlns");
+            Attributes (0).Value := Handler.Add_NS;
+            Handler.Add_NS := To_Unbounded_String ("");
+         else
+            Attributes := new Tag_Attribute_Array (1 .. Attr_Count);
+         end if;
          for I in 0 .. Attr_Count - 1 loop
             declare
                Attr  : constant Tag_Attribute_Access := Attributes (I + 1)'Access;
@@ -488,6 +499,12 @@ package body ASF.Views.Nodes.Reader is
                   Handler.Collect_Text ("<");
                end if;
                Handler.Collect_Text (Qname);
+               if Length (Handler.Add_NS) > 0 then
+                  Handler.Collect_Text (" xmlns=""");
+                  Handler.Collect_Text (To_String (Handler.Add_NS));
+                  Handler.Collect_Text ("""");
+                  Handler.Add_NS := To_Unbounded_String ("");
+               end if;
                if Attr_Count /= 0 then
                   for I in 0 .. Attr_Count - 1 loop
                      Handler.Collect_Text (" ");

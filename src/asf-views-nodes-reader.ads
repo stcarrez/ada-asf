@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -225,6 +225,12 @@ private
 
       --  Some pending white spaces to append to the current text.
       Spaces      : Unbounded_String;
+
+      --  When not empty, the 'xmlns' attribute to insert in the element.  The XML Sax parser
+      --  notifies us about 'xmlns' attributes through the Start_Prefix_Mapping operation.
+      --  When the default namespace with empty prefix is found, we have to add the corresponding
+      --  attribute in Start_Element so that it is written in the facelet tree.
+      Add_NS      : Unbounded_String;
 
       --  Whether the unknown tags are escaped using XML escape rules.
       Escape_Unknown_Tags : Boolean := True;

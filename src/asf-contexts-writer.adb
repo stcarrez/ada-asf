@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -454,6 +454,16 @@ package body ASF.Contexts.Writer is
       Close_Current (Stream);
       ASF.Streams.Print_Stream (Stream).Write (Item);
    end Write_Raw;
+
+   --  ------------------------------
+   --  Write a raw wide string on the stream.
+   --  ------------------------------
+   procedure Write_Wide_Raw (Stream : in out Response_Writer;
+                             Item   : in Wide_Wide_String) is
+   begin
+      Close_Current (Stream);
+      ASF.Streams.Print_Stream (Stream).Write_Wide (Item);
+   end Write_Wide_Raw;
 
    --  ------------------------------
    --  Write the java scripts that have been queued by <b>Queue_Script</b>

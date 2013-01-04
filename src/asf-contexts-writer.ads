@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -157,6 +157,10 @@ package ASF.Contexts.Writer is
    --  Write a raw string on the stream.
    procedure Write_Raw (Stream : in out Response_Writer;
                         Item   : in String);
+
+   --  Write a raw wide string on the stream.
+   procedure Write_Wide_Raw (Stream : in out Response_Writer;
+                             Item   : in Wide_Wide_String);
 
    --  ------------------------------
    --  Javascript Support

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF.Streams -- Print streams for servlets
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,6 +77,17 @@ package body ASF.Streams is
    begin
       Stream.Target.Write (Item);
    end Write;
+
+   --  ------------------------------
+   --  Write a raw string on the stream.
+   --  ------------------------------
+   procedure Write_Wide (Stream : in out Print_Stream;
+                         Item   : in Wide_Wide_String) is
+   begin
+      for I in Item'Range loop
+         Stream.Target.Write (Char => Character'Val (Wide_Wide_Character'Pos (Item (I))));
+      end loop;
+   end Write_Wide;
 
    --  ------------------------------
    --  Write the object converted into a string on the stream.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ASF.Streams -- Print streams for servlets
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  asf-streams -- Print streams for servlets
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,6 +61,10 @@ package ASF.Streams is
    --  Write a raw string on the stream.
    procedure Write (Stream : in out Print_Stream;
                     Item   : in String);
+
+   --  Write a raw string on the stream.
+   procedure Write_Wide (Stream : in out Print_Stream;
+                         Item   : in Wide_Wide_String);
 
    --  Write the object converted into a string on the stream.
    procedure Write (Stream : in out Print_Stream;

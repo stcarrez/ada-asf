@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -190,7 +190,12 @@ package body ASF.Applications.Main is
                                                      Param   => Outcome,
                                                      Context => Context.Get_ELContext.all);
 
-         Log.Info ("Action outcome is {0}", Outcome);
+         if Length (Outcome) = 0 then
+            Outcome := To_Unbounded_String ("success");
+            Log.Info ("Action outcome was empty, using 'success'");
+         else
+            Log.Info ("Action outcome is {0}", Outcome);
+         end if;
 
       exception
          when E : others =>

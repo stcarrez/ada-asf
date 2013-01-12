@@ -25,6 +25,7 @@ package body ASF.Contexts.Faces.Mockup is
    procedure Initialize (Context : in out Mockup_Faces_Context) is
    begin
       Faces_Context (Context).Initialize;
+      Context.Prev_Context := Current;
       Context.Request  := Context.Mock_Request'Unchecked_Access;
       Context.Response := Context.Mock_Response'Unchecked_Access;
       Context.Flash    := Context.Flash_Ctx'Unchecked_Access;
@@ -38,7 +39,6 @@ package body ASF.Contexts.Faces.Mockup is
       Context.Output.Initialize ("text/html", "UTF-8", Context.Response.Get_Output_Stream);
       Set_Current (Context     => Context'Unchecked_Access,
                    Application => ASF.Tests.Get_Application.all'Access);
-
    end Initialize;
 
    --  ------------------------------
@@ -48,7 +48,7 @@ package body ASF.Contexts.Faces.Mockup is
    procedure Finalize (Context : in out Mockup_Faces_Context) is
    begin
       Faces_Context (Context).Finalize;
-      Restore (null);
+      Restore (Context.Prev_Context);
    end Finalize;
 
    --  ------------------------------

@@ -71,7 +71,7 @@ private
       Variables     : aliased EL.Variables.Default.Default_Variable_Mapper;
       Output        : aliased ASF.Contexts.Writer.String.String_Writer;
       ELContext     : aliased EL.Contexts.Default.Default_Context;
-      Prev_Context  : Contexts.Faces.Faces_Context_Access := Contexts.Faces.Current;
+      Prev_Context  : Contexts.Faces.Faces_Context_Access;
    end record;
 
    --  Initialize the mockup context.

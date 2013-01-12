@@ -72,4 +72,7 @@ package ASF.Contexts.Faces.Tests is
    --  Test the flash instance.
    procedure Test_Flash_Context (T : in out Test);
 
+   --  Test the mockup faces context.
+   procedure Test_Mockup_Faces_Context (T : in out Test);
+
 end ASF.Contexts.Faces.Tests;

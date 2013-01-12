@@ -15,9 +15,14 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with EL.Variables.Default;
+with EL.Contexts.Default;
 
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
+with ASF.Beans.Resolvers;
+with ASF.Contexts.Flash;
+with ASF.Contexts.Writer.String;
 
 package ASF.Contexts.Faces.Mockup is
 
@@ -61,6 +66,12 @@ private
    type Mockup_Faces_Context is new ASF.Contexts.Faces.Faces_Context with record
       Mock_Request  : aliased ASF.Requests.Mockup.Request;
       Mock_Response : aliased ASF.Responses.Mockup.Response;
+      Resolver      : aliased ASF.Beans.Resolvers.ELResolver;
+      Flash_Ctx     : aliased ASF.Contexts.Flash.Flash_Context;
+      Variables     : aliased EL.Variables.Default.Default_Variable_Mapper;
+      Output        : aliased ASF.Contexts.Writer.String.String_Writer;
+      ELContext     : aliased EL.Contexts.Default.Default_Context;
+      Prev_Context  : Contexts.Faces.Faces_Context_Access := Contexts.Faces.Current;
    end record;
 
    --  Initialize the mockup context.

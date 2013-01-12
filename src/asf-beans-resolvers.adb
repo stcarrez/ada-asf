@@ -24,6 +24,18 @@ with ASF.Beans.Headers;
 package body ASF.Beans.Resolvers is
 
    --  ------------------------------
+   --  Initialize the EL resolver to use the application bean factory and the given request.
+   --  ------------------------------
+   procedure Initialize (Resolver : in out ELResolver;
+                         App      : in ASF.Applications.Main.Application_Access;
+                         Request  : in ASF.Requests.Request_Access) is
+   begin
+      Resolver.Application       := App;
+      Resolver.Request           := Request;
+      Resolver.Attributes_Access := Resolver.Attributes'Unchecked_Access;
+   end Initialize;
+
+   --  ------------------------------
    --  Resolve the name represented by <tt>Name</tt> according to a base object <tt>Base</tt>.
    --  The resolver tries to look first in pre-defined objects (params, flash, headers, initParam).
    --  It then looks in the request and session attributes for the value.  If the value was

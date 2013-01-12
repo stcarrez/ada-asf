@@ -23,6 +23,7 @@ with Util.Test_Caller;
 with EL.Variables.Default;
 
 with ASF.Contexts.Flash;
+with ASF.Contexts.Faces.Mockup;
 package body ASF.Contexts.Faces.Tests is
 
    use Util.Tests;
@@ -50,6 +51,8 @@ package body ASF.Contexts.Faces.Tests is
                        Test_Get_Bean'Access);
       Caller.Add_Test (Suite, "Test ASF.Helpers.Beans.Get_Bean",
                        Test_Get_Bean_Helper'Access);
+      Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Mockup",
+                       Test_Mockup_Faces_Context'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -289,5 +292,29 @@ package body ASF.Contexts.Faces.Tests is
 
       T.Assert (Ctx.Get_Flash /= null, "Null flash context returned");
    end Test_Flash_Context;
+
+
+   --  ------------------------------
+   --  Test the mockup faces context.
+   --  ------------------------------
+   procedure Test_Mockup_Faces_Context (T : in out Test) is
+      use type ASF.Requests.Request_Access;
+      use type ASF.Responses.Response_Access;
+      use type EL.Contexts.ELContext_Access;
+   begin
+      declare
+         Ctx   : Mockup.Mockup_Faces_Context;
+      begin
+         Ctx.Set_Method ("GET");
+         Ctx.Set_Path_Info ("something.html");
+         T.Assert (Current /= null, "There is no current faces context (mockup failed)");
+
+         T.Assert (Current.Get_Request /= null, "There is no current request");
+         T.Assert (Current.Get_Response /= null, "There is no current response");
+         T.Assert (Current.Get_Application /= null, "There is no current application");
+         T.Assert (Current.Get_ELContext /= null, "There is no current ELcontext");
+      end;
+      T.Assert (Current = null, "There is a current faces context but it shoudl be null");
+   end Test_Mockup_Faces_Context;
 
 end ASF.Contexts.Faces.Tests;

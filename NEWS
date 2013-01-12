@@ -4,6 +4,7 @@ Version 0.5     -
   - Integrated jQuery 1.8.3 and jQuery UI 1.9.2
   - New converter to display file sizes
   - Javascript support for click-to-edit behavior
+  - Add support for JSF session beans
 
 Version 0.4     - May 2012
   - Support for shared or static build configuration

@@ -25,10 +25,20 @@ package body ASF.Contexts.Faces.Mockup is
    procedure Initialize (Context : in out Mockup_Faces_Context) is
    begin
       Faces_Context (Context).Initialize;
-      Context.Request := Context.Mock_Request'Unchecked_Access;
+      Context.Request  := Context.Mock_Request'Unchecked_Access;
       Context.Response := Context.Mock_Response'Unchecked_Access;
+      Context.Flash    := Context.Flash_Ctx'Unchecked_Access;
+
+      Context.Resolver.Initialize (ASF.Tests.Get_Application, Context.Request);
+      Context.ELContext.Set_Resolver (Context.Resolver'Unchecked_Access);
+      Context.ELContext.Set_Variable_Mapper (Context.Variables'Unchecked_Access);
+
+      Context.Set_ELContext (Context.ELContext'Unchecked_Access);
+      Context.Set_Response_Writer (Context.Output'Unchecked_Access);
+      Context.Output.Initialize ("text/html", "UTF-8", Context.Response.Get_Output_Stream);
       Set_Current (Context     => Context'Unchecked_Access,
                    Application => ASF.Tests.Get_Application.all'Access);
+
    end Initialize;
 
    --  ------------------------------

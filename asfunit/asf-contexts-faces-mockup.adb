@@ -42,6 +42,15 @@ package body ASF.Contexts.Faces.Mockup is
    end Finalize;
 
    --  ------------------------------
+   --  Set the path info
+   --  ------------------------------
+   procedure Set_Path_Info (Req  : in out Mockup_Faces_Context;
+                            Path : in String) is
+   begin
+      Req.Mock_Request.Set_Path_Info (Path);
+   end Set_Path_Info;
+
+   --  ------------------------------
    --  Set the parameter
    --  ------------------------------
    procedure Set_Parameter (Req   : in out Mockup_Faces_Context;

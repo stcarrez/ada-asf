@@ -37,6 +37,7 @@ with ASF.Beans.Params;
 with ASF.Beans.Headers;
 with ASF.Beans.Flash;
 with ASF.Beans.Globals;
+with ASF.Beans.Resolvers;
 with ASF.Security;
 
 with EL.Expressions;
@@ -488,118 +489,118 @@ package body ASF.Applications.Main is
    begin
       ASF.Applications.Views.Close (App.View);
    end Close;
-
-   type Bean_Object (Length : Natural) is record
-      Bean : Util.Beans.Basic.Readonly_Bean_Access;
-      Key  : String (1 .. Length);
-   end record;
-
-   package Bean_Vectors is new Ada.Containers.Indefinite_Vectors
-     (Index_Type => Natural, Element_Type => Bean_Object);
-
-   type Bean_Vector_Access is access all Bean_Vectors.Vector;
+--
+--     type Bean_Object (Length : Natural) is record
+--        Bean : Util.Beans.Basic.Readonly_Bean_Access;
+--        Key  : String (1 .. Length);
+--     end record;
+--
+--     package Bean_Vectors is new Ada.Containers.Indefinite_Vectors
+--       (Index_Type => Natural, Element_Type => Bean_Object);
+--
+--     type Bean_Vector_Access is access all Bean_Vectors.Vector;
 
    --  ------------------------------
    --  Default Resolver
    --  ------------------------------
-   type Web_ELResolver is new EL.Contexts.ELResolver with record
-      Request     : ASF.Requests.Request_Access;
-      Application : Main.Application_Access;
-      Beans       : Bean_Vector_Access;
-   end record;
-
-   overriding
-   function Get_Value (Resolver : Web_ELResolver;
-                       Context  : EL.Contexts.ELContext'Class;
-                       Base     : access Util.Beans.Basic.Readonly_Bean'Class;
-                       Name     : Unbounded_String) return EL.Objects.Object;
-   overriding
-   procedure Set_Value (Resolver : in out Web_ELResolver;
-                        Context  : in EL.Contexts.ELContext'Class;
-                        Base     : access Util.Beans.Basic.Bean'Class;
-                        Name     : in Unbounded_String;
-                        Value    : in EL.Objects.Object);
+--     type Web_ELResolver is new EL.Contexts.ELResolver with record
+--        Request     : ASF.Requests.Request_Access;
+--        Application : Main.Application_Access;
+--        Beans       : Bean_Vector_Access;
+--     end record;
+--
+--     overriding
+--     function Get_Value (Resolver : Web_ELResolver;
+--                         Context  : EL.Contexts.ELContext'Class;
+--                         Base     : access Util.Beans.Basic.Readonly_Bean'Class;
+--                         Name     : Unbounded_String) return EL.Objects.Object;
+--     overriding
+--     procedure Set_Value (Resolver : in out Web_ELResolver;
+--                          Context  : in EL.Contexts.ELContext'Class;
+--                          Base     : access Util.Beans.Basic.Bean'Class;
+--                          Name     : in Unbounded_String;
+--                          Value    : in EL.Objects.Object);
 
    --  Get the value associated with a base object and a given property.
-   overriding
-   function Get_Value (Resolver : Web_ELResolver;
-                       Context  : EL.Contexts.ELContext'Class;
-                       Base     : access Util.Beans.Basic.Readonly_Bean'Class;
-                       Name     : Unbounded_String) return EL.Objects.Object is
-      use EL.Objects;
-      use Util.Beans.Basic;
-      use EL.Variables;
-
-      Result : Object;
-      Bean   : Util.Beans.Basic.Readonly_Bean_Access;
-      Scope  : Scope_Type;
-      Key    : constant String := To_String (Name);
-   begin
-      if Base /= null then
-         return Base.Get_Value (Key);
-      end if;
-
-      if Key = ASF.Beans.Params.PARAM_ATTRIBUTE_NAME then
-         return ASF.Beans.Params.Instance;
-      end if;
-
-      if Key = ASF.Beans.Headers.HEADER_ATTRIBUTE_NAME then
-         return ASF.Beans.Headers.Instance;
-      end if;
-
-      if Key = ASF.Beans.Flash.FLASH_ATTRIBUTE_NAME then
-         return ASF.Beans.Flash.Instance;
-      end if;
-
-      if Key = ASF.Beans.Globals.INIT_PARAM_ATTRIBUTE_NAME then
-         return ASF.Beans.Globals.Instance;
-      end if;
-
-      Result := Resolver.Request.Get_Attribute (Key);
-      if not EL.Objects.Is_Null (Result) then
-         return Result;
-      end if;
+--     overriding
+--     function Get_Value (Resolver : Web_ELResolver;
+--                         Context  : EL.Contexts.ELContext'Class;
+--                         Base     : access Util.Beans.Basic.Readonly_Bean'Class;
+--                         Name     : Unbounded_String) return EL.Objects.Object is
+--        use EL.Objects;
+--        use Util.Beans.Basic;
+--        use EL.Variables;
+--
+--        Result : Object;
+--        Bean   : Util.Beans.Basic.Readonly_Bean_Access;
+--        Scope  : Scope_Type;
+--        Key    : constant String := To_String (Name);
+--     begin
+--        if Base /= null then
+--           return Base.Get_Value (Key);
+--        end if;
+--
+--        if Key = ASF.Beans.Params.PARAM_ATTRIBUTE_NAME then
+--           return ASF.Beans.Params.Instance;
+--        end if;
+--
+--        if Key = ASF.Beans.Headers.HEADER_ATTRIBUTE_NAME then
+--           return ASF.Beans.Headers.Instance;
+--        end if;
+--
+--        if Key = ASF.Beans.Flash.FLASH_ATTRIBUTE_NAME then
+--           return ASF.Beans.Flash.Instance;
+--        end if;
+--
+--        if Key = ASF.Beans.Globals.INIT_PARAM_ATTRIBUTE_NAME then
+--           return ASF.Beans.Globals.Instance;
+--        end if;
+--
+--        Result := Resolver.Request.Get_Attribute (Key);
+--        if not EL.Objects.Is_Null (Result) then
+--           return Result;
+--        end if;
 
       --  If there is a session, look if the attribute is defined there.
-      declare
-         Session : constant ASF.Sessions.Session := Resolver.Request.Get_Session;
-      begin
-         if Session.Is_Valid then
-            Result := Session.Get_Attribute (Key);
-            if not Util.Beans.Objects.Is_Null (Result) then
-               return Result;
-            end if;
-         end if;
-      end;
-      Resolver.Application.Create (Name, Context, Bean, Scope);
-      if Bean = null then
-         return Resolver.Application.Get_Global (Name, Context);
+--        declare
+--           Session : constant ASF.Sessions.Session := Resolver.Request.Get_Session;
+--        begin
+--           if Session.Is_Valid then
+--              Result := Session.Get_Attribute (Key);
+--              if not Util.Beans.Objects.Is_Null (Result) then
+--                 return Result;
+--              end if;
+--           end if;
+--        end;
+--        Resolver.Application.Create (Name, Context, Bean, Scope);
+--        if Bean = null then
+--           return Resolver.Application.Get_Global (Name, Context);
          --           raise No_Variable
          --             with "Bean not found: '" & To_String (Name) & "'";
-      end if;
-      Resolver.Beans.Append (Bean_Object '(Key'Length, Bean, Key));
-      Result := To_Object (Bean);
-      Resolver.Request.Set_Attribute (Key, Result);
-      return Result;
-   end Get_Value;
+--        end if;
+--        Resolver.Beans.Append (Bean_Object '(Key'Length, Bean, Key));
+--        Result := To_Object (Bean);
+--        Resolver.Request.Set_Attribute (Key, Result);
+--        return Result;
+--     end Get_Value;
 
    --  Set the value associated with a base object and a given property.
-   overriding
-   procedure Set_Value (Resolver : in out Web_ELResolver;
-                        Context  : in EL.Contexts.ELContext'Class;
-                        Base     : access Util.Beans.Basic.Bean'Class;
-                        Name     : in Unbounded_String;
-                        Value    : in EL.Objects.Object) is
-      pragma Unreferenced (Context);
-
-      Key : constant String := To_String (Name);
-   begin
-      if Base /= null then
-         Base.Set_Value (Name => Key, Value => Value);
-      else
-         Resolver.Request.Set_Attribute (Name => Key, Value => Value);
-      end if;
-   end Set_Value;
+--     overriding
+--     procedure Set_Value (Resolver : in out Web_ELResolver;
+--                          Context  : in EL.Contexts.ELContext'Class;
+--                          Base     : access Util.Beans.Basic.Bean'Class;
+--                          Name     : in Unbounded_String;
+--                          Value    : in EL.Objects.Object) is
+--        pragma Unreferenced (Context);
+--
+--        Key : constant String := To_String (Name);
+--     begin
+--        if Base /= null then
+--           Base.Set_Value (Name => Key, Value => Value);
+--        else
+--           Resolver.Request.Set_Attribute (Name => Key, Value => Value);
+--        end if;
+--     end Set_Value;
 
    --  ------------------------------
    --  Set the current faces context before processing a view.
@@ -645,9 +646,7 @@ package body ASF.Applications.Main is
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
-      Root_Resolver  : aliased Web_ELResolver;
-
-      Beans          : aliased Bean_Vectors.Vector;
+      Root_Resolver  : aliased ASF.Beans.Resolvers.ELResolver;
 
       Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
 
@@ -655,9 +654,7 @@ package body ASF.Applications.Main is
    begin
       Log.Info ("Dispatch {0}", Page);
 
-      Root_Resolver.Application := App'Unchecked_Access;
-      Root_Resolver.Request := Request'Unchecked_Access;
-      Root_Resolver.Beans := Beans'Unchecked_Access;
+      Root_Resolver.Initialize (App'Unchecked_Access, Request'Unchecked_Access);
       ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
       ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
 
@@ -683,19 +680,6 @@ package body ASF.Applications.Main is
       end;
       Contexts.Faces.Restore (Prev_Context);
       Writer.Flush;
---
---        declare
---           C : Bean_Vectors.Cursor := Beans.First;
---        begin
---           while Bean_Vectors.Has_Element (C) loop
---              declare
---                 Bean : constant Bean_Object := Bean_Vectors.Element (C);
---              begin
---                 Request.Remove_Attribute (Name => Bean.Key);
---              end;
---              Bean_Vectors.Next (C);
---           end loop;
---        end;
    end Dispatch;
 
    --  ------------------------------
@@ -728,9 +712,7 @@ package body ASF.Applications.Main is
       Context        : aliased ASF.Contexts.Faces.Faces_Context;
       ELContext      : aliased EL.Contexts.Default.Default_Context;
       Variables      : aliased Default_Variable_Mapper;
-      Root_Resolver  : aliased Web_ELResolver;
-
-      Beans          : aliased Bean_Vectors.Vector;
+      Root_Resolver  : aliased ASF.Beans.Resolvers.ELResolver;
 
       Output         : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
 
@@ -738,9 +720,7 @@ package body ASF.Applications.Main is
    begin
       Log.Info ("Dispatch {0} - {1}", Name, Operation);
 
-      Root_Resolver.Application := App'Unchecked_Access;
-      Root_Resolver.Request := Request'Unchecked_Access;
-      Root_Resolver.Beans := Beans'Unchecked_Access;
+      Root_Resolver.Initialize (App'Unchecked_Access, Request'Unchecked_Access);
       ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
       ELContext.Set_Variable_Mapper (Variables'Unchecked_Access);
 
@@ -816,19 +796,6 @@ package body ASF.Applications.Main is
       end;
       Contexts.Faces.Restore (Prev_Context);
       Writer.Flush;
-
-      declare
-         C : Bean_Vectors.Cursor := Beans.First;
-      begin
-         while Bean_Vectors.Has_Element (C) loop
-            declare
-               Bean : constant Bean_Object := Bean_Vectors.Element (C);
-            begin
-               Request.Remove_Attribute (Name => Bean.Key);
-            end;
-            Bean_Vectors.Next (C);
-         end loop;
-      end;
    end Dispatch;
 
    --  ------------------------------

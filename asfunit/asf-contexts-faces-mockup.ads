@@ -23,6 +23,10 @@ package ASF.Contexts.Faces.Mockup is
 
    type Mockup_Faces_Context is new ASF.Contexts.Faces.Faces_Context with private;
 
+   --  Set the path info
+   procedure Set_Path_Info (Req  : in out Mockup_Faces_Context;
+                            Path : in String);
+
    --  Set the parameter
    procedure Set_Parameter (Req   : in out Mockup_Faces_Context;
                             Name  : in String;

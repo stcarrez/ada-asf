@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -424,7 +424,7 @@ private
    type Filter_List is array (Natural range <>) of Filter_Access;
    type Filter_List_Access is access all Filter_List;
 
-   type Mapping_Type is (MAP_URI_NODE, MAP_URI, MAP_WILDCARD, MAP_EXTENSION);
+   type Mapping_Type is (MAP_URI_NODE, MAP_URI, MAP_WILDCARD, MAP_EXTENSION, MAP_PATH_EXTENSION);
 
    type Mapping_Node;
    type Mapping_Access is access all Mapping_Node;

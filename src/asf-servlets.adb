@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -662,7 +662,7 @@ package body ASF.Servlets is
          when MAP_WILDCARD =>
             Log.Info ("{0} +- [*] => {2}", Indent, Name);
 
-         when MAP_EXTENSION =>
+         when MAP_EXTENSION | MAP_PATH_EXTENSION =>
             Log.Info ("{0} +- [*.{1}] => {2}", Indent, Map.URI.all, Name);
 
       end case;
@@ -732,6 +732,7 @@ package body ASF.Servlets is
                                      Server  => Mapping.Servlet);
                Copy_Mapping := Registry.Find_Mapping (URI => Pattern);
                Copy_Mapping.Path_Pos := 1;
+               Copy_Mapping.Map_Type := MAP_PATH_EXTENSION;
                if Mapping.Filters /= null then
                   for I in Mapping.Filters.all'Range loop
                      Copy_Mapping.Append_Filter (Mapping.Filters (I));
@@ -844,7 +845,7 @@ package body ASF.Servlets is
                      exit;
                   end if;
 
-               when MAP_WILDCARD | MAP_EXTENSION =>
+               when MAP_WILDCARD | MAP_EXTENSION | MAP_PATH_EXTENSION =>
                   null;
 
             end case;
@@ -987,7 +988,7 @@ package body ASF.Servlets is
                   return Node;
 
                --  We have an extension
-               when MAP_EXTENSION =>
+               when MAP_EXTENSION | MAP_PATH_EXTENSION =>
                   Pos  := Util.Strings.Rindex (Source => URI, Ch => '.');
                   if Pos > 0 and then
                     Node.URI (Node.URI'First + 1 .. Node.URI'Last) = URI (Pos .. URI'Last) then

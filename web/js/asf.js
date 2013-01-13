@@ -25,7 +25,10 @@ var ASF = {};
      * @param action the JSON action object
      */
     ASF.ExecuteOne = function(node, action) {
-        var id = action.id === null ? node : action.id;
+        var id = action.id ? action.id : node;
+        if (action.child) {
+            id = $(id).children(action.child);
+        }
         if (action.action === "update") {
 	        $(id).html(action.data);
 

@@ -2898,8 +2898,8 @@ ASF_LIBDIR="lib"
 # Check to enable/disable shared library
 ##########################################
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking library type" >&5
-$as_echo_n "checking library type... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking shared library support" >&5
+$as_echo_n "checking shared library support... " >&6; }
 ac_enable_shared=no
 # Check whether --enable-shared was given.
 if test "${enable_shared+set}" = set; then :
@@ -2946,8 +2946,8 @@ if test $? -ne 0 ; then
    as_fn_error $? "Ada Utility library not found in ${UTIL_DIR}" "$LINENO" 5
 fi
 rm -f t.gpr
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${UTIL_DIR}" >&5
-$as_echo "${UTIL_DIR}" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ok ${UTIL_DIR}" >&5
+$as_echo "ok ${UTIL_DIR}" >&6; }
 
 
 ##########################################
@@ -2981,8 +2981,8 @@ if test $? -ne 0 ; then
    as_fn_error $? "Ada Expression Language library not found in ${EL_DIR}" "$LINENO" 5
 fi
 rm -f t.gpr
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${EL_DIR}" >&5
-$as_echo "${EL_DIR}" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ok ${EL_DIR}" >&5
+$as_echo "ok ${EL_DIR}" >&6; }
 
 
 ##########################################
@@ -3016,8 +3016,8 @@ if test $? -ne 0 ; then
    as_fn_error $? "Ada Security library not found in ${SECURITY_DIR}" "$LINENO" 5
 fi
 rm -f t.gpr
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${SECURITY_DIR}" >&5
-$as_echo "${SECURITY_DIR}" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ok ${SECURITY_DIR}" >&5
+$as_echo "ok ${SECURITY_DIR}" >&6; }
 
 
 ##########################################
@@ -3058,12 +3058,14 @@ if test $? -ne 0 ; then
    AWS_DIR=
    WITH_SERVER="";
    ASF_SERVER=none
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: Not found" >&5
+$as_echo "Not found" >&6; }
 else
    WITH_SERVER="with \"${AWS_DIR}aws\";";
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok ${AWS_DIR}" >&5
+$as_echo "ok ${AWS_DIR}" >&6; }
 fi
 rm -f t.gpr
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${AWS_DIR}" >&5
-$as_echo "${AWS_DIR}" >&6; }
 
 
 

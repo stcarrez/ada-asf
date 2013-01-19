@@ -458,6 +458,16 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Write a raw wide string on the stream.
    --  ------------------------------
+   procedure Write_Raw (Stream : in out Response_Writer;
+                        Item   : in Ada.Strings.Wide_Wide_Unbounded.Unbounded_Wide_Wide_String) is
+   begin
+      Close_Current (Stream);
+      ASF.Streams.Print_Stream (Stream).Write (Item);
+   end Write_Raw;
+
+   --  ------------------------------
+   --  Write a raw wide string on the stream.
+   --  ------------------------------
    procedure Write_Wide_Raw (Stream : in out Response_Writer;
                              Item   : in Wide_Wide_String) is
    begin

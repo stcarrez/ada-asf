@@ -23,13 +23,13 @@ limited with ASF.Filters;
 
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
+with Ada.Strings.Hash;
 with Ada.Calendar;
 with Ada.Exceptions;
 
 with Util.Properties;
 
-private with Ada.Containers.Hashed_Maps;
-private with Ada.Strings.Unbounded.Hash;
+private with Ada.Containers.Indefinite_Hashed_Maps;
 
 --  The <b>ASF.Servlets</b> package implements a subset of the
 --  Java Servlet Specification adapted for the Ada language.
@@ -391,6 +391,11 @@ package ASF.Servlets is
                           Pattern  : in String;
                           Server   : in Servlet_Access);
 
+   --  Set the error page that will be used if a servlet returns an error.
+   procedure Set_Error_Page (Server : in out Servlet_Registry;
+                             Error  : in Integer;
+                             Page   : in String);
+
    --  Send the error page content defined by the response status.
    procedure Send_Error_Page (Server   : in Servlet_Registry;
                               Request  : in out Requests.Request'Class;
@@ -496,24 +501,24 @@ private
    end record;
 
    package Filter_Maps is new
-     Ada.Containers.Hashed_Maps (Key_Type     => Unbounded_String,
-                                 Element_Type => Filter_Access,
-                                 Hash         => Ada.Strings.Unbounded.Hash,
-                                 Equivalent_Keys => "=");
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => String,
+                                            Element_Type => Filter_Access,
+                                            Hash         => Ada.Strings.Hash,
+                                            Equivalent_Keys => "=");
 
    package Servlet_Maps is new
-     Ada.Containers.Hashed_Maps (Key_Type     => Unbounded_String,
-                                 Element_Type => Servlet_Access,
-                                 Hash         => Ada.Strings.Unbounded.Hash,
-                                 Equivalent_Keys => "=");
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => String,
+                                            Element_Type => Servlet_Access,
+                                            Hash         => Ada.Strings.Hash,
+                                            Equivalent_Keys => "=");
 
    function Hash (N : Integer) return Ada.Containers.Hash_Type;
 
    package Error_Maps is new
-     Ada.Containers.Hashed_Maps (Key_Type            => Integer,
-                                 Element_Type        => Unbounded_String,
-                                 Hash                => Hash,
-                                 Equivalent_Keys     => "=");
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type            => Integer,
+                                            Element_Type        => String,
+                                            Hash                => Hash,
+                                            Equivalent_Keys     => "=");
 
    type Servlet_Registry is new ASF.Sessions.Factory.Session_Factory with record
       Config            : Util.Properties.Manager;

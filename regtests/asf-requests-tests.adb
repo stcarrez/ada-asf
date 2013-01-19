@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-requests-tests - Unit tests for requests
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,13 @@
 
 with Util.Test_Caller;
 with Util.Log.Loggers;
-with Util.Measures;
 with ASF.Requests.Mockup;
 package body ASF.Requests.Tests is
 
    use Util.Tests;
-   use Util.Log;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Requests.Tests");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Requests.Tests");
 
    package Caller is new Util.Test_Caller (Test, "Requests");
 
@@ -87,6 +85,8 @@ package body ASF.Requests.Tests is
 
       procedure Process_Locale (Locale : in Util.Locales.Locale;
                                 Quality : in Quality_Type) is
+         pragma Unreferenced (Quality);
+
          Lang : constant String := Util.Locales.Get_Language (Locale);
       begin
          Log.Info ("Found locale: {0}", Util.Locales.To_String (Locale));

@@ -447,7 +447,7 @@ package body ASF.Servlets is
    function Get_Name_Dispatcher (Context : in Servlet_Registry;
                                  Name    : in String)
                                  return Request_Dispatcher is
-      Pos : constant Servlet_Maps.Cursor := Context.Servlets.Find (To_Unbounded_String (Name));
+      Pos : constant Servlet_Maps.Cursor := Context.Servlets.Find (Name);
    begin
       if not Servlet_Maps.Has_Element (Pos) then
          raise Servlet_Error with "No servlet " & Name;
@@ -559,7 +559,7 @@ package body ASF.Servlets is
 
       Server.Name := To_Unbounded_String (Name);
       Server.Context := Registry'Unchecked_Access;
-      Servlet_Maps.Include (Registry.Servlets, Server.Name, Server);
+      Servlet_Maps.Include (Registry.Servlets, Name, Server);
 
       Server.Initialize (Registry);
    end Add_Servlet;
@@ -573,7 +573,7 @@ package body ASF.Servlets is
    begin
       Log.Info ("Add servlet filter '{0}'", Name);
 
-      Filter_Maps.Include (Registry.Filters, To_Unbounded_String (Name),
+      Filter_Maps.Include (Registry.Filters, Name,
                            Filter.all'Unchecked_Access);
 
       Filter.Initialize (Registry);
@@ -708,8 +708,7 @@ package body ASF.Servlets is
    procedure Add_Filter_Mapping (Registry : in out Servlet_Registry;
                                  Pattern  : in String;
                                  Name     : in String) is
-      Key : constant Unbounded_String    := To_Unbounded_String (Name);
-      Pos : constant Filter_Maps.Cursor := Registry.Filters.Find (Key);
+      Pos : constant Filter_Maps.Cursor := Registry.Filters.Find (Name);
    begin
       Log.Info ("Add filter mapping {0} -> {1}", Pattern, Name);
 
@@ -758,8 +757,7 @@ package body ASF.Servlets is
    procedure Add_Mapping (Registry : in out Servlet_Registry;
                           Pattern  : in String;
                           Name     : in String) is
-      Key : constant Unbounded_String    := To_Unbounded_String (Name);
-      Pos : constant Servlet_Maps.Cursor := Registry.Servlets.Find (Key);
+      Pos : constant Servlet_Maps.Cursor := Registry.Servlets.Find (Name);
    begin
       if not Servlet_Maps.Has_Element (Pos) then
          Log.Error ("No servlet {0}", Name);
@@ -935,6 +933,16 @@ package body ASF.Servlets is
    end Add_Mapping;
 
    --  ------------------------------
+   --  Set the error page that will be used if a servlet returns an error.
+   --  ------------------------------
+   procedure Set_Error_Page (Server : in out Servlet_Registry;
+                             Error  : in Integer;
+                             Page   : in String) is
+   begin
+      Server.Error_Pages.Include (Error, Page);
+   end Set_Error_Page;
+
+   --  ------------------------------
    --  Find the servlet and filter mapping that must be used for the given URI.
    --  Search the mapping according to Ch 12/SRV 11. Mapping Requests to Servlets:
    --  o look for an exact match,
@@ -1041,9 +1049,9 @@ package body ASF.Servlets is
 
       if Error_Maps.Has_Element (Pos) then
          declare
-            Page       : constant Unbounded_String := Error_Maps.Element (Pos);
+            Page       : constant String := Error_Maps.Element (Pos);
             Dispatcher : constant Request_Dispatcher
-              := Server.Get_Request_Dispatcher (To_String (Page));
+              := Server.Get_Request_Dispatcher (Page);
          begin
             Forward (Dispatcher, Request, Response);
             return;

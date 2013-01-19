@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-filters -- Security filter
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,10 +27,8 @@ with Security.Contexts;
 with Security.Policies.URLs;
 package body ASF.Security.Filters is
 
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("Security.Filters");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Security.Filters");
 
    --  ------------------------------
    --  Called by the servlet container to indicate to a servlet that the servlet
@@ -94,38 +92,42 @@ package body ASF.Security.Filters is
       Context : aliased Contexts.Security_Context;
    begin
       Request.Iterate_Cookies (Fetch_Cookie'Access);
-
       Session := Request.Get_Session (Create => True);
 
       --  If the session does not have a principal, try to authenticate the user with
       --  the auto-login cookie.
       Auth := Session.Get_Principal;
-      if Auth = null then
+      if Auth = null and then Length (AID) > 0 then
          Auth_Filter'Class (F).Authenticate (Request, Response, Session, To_String (AID), Auth);
          if Auth /= null then
             Session.Set_Principal (Auth);
          end if;
       end if;
 
-      --  No principal, redirect to the login page.
-      if Auth = null then
-         Auth_Filter'Class (F).Do_Login (Request, Response);
-         return;
-      end if;
-
       --  A permission manager is installed, check that the user can display the page.
       if F.Manager /= null then
-         Context.Set_Context (F.Manager, Auth.all'Access);
+         if Auth = null then
+            Context.Set_Context (F.Manager, null);
+         else
+            Context.Set_Context (F.Manager, Auth.all'Access);
+         end if;
          declare
             URL  : constant String := Request.Get_Path_Info;
             Perm : constant Policies.URLs.URL_Permission (URL'Length)
               := URL_Permission '(Len => URL'Length, URL => URL);
          begin
             if not F.Manager.Has_Permission (Context, Perm) then
-               Log.Info ("Deny access on {0}", URL);
---                 Auth_Filter'Class (F).Do_Deny (Request, Response);
---                 return;
+               if Auth = null then
+                  --  No permission and no principal, redirect to the login page.
+                  Log.Info ("Page need authentication on {0}", URL);
+                  Auth_Filter'Class (F).Do_Login (Request, Response);
+               else
+                  Log.Info ("Deny access on {0}", URL);
+                  Auth_Filter'Class (F).Do_Deny (Request, Response);
+               end if;
+               return;
             end if;
+            Log.Debug ("Access granted on {0}", URL);
          end;
       end if;
 
@@ -142,8 +144,9 @@ package body ASF.Security.Filters is
    procedure Do_Login (F        : in Auth_Filter;
                        Request  : in out ASF.Requests.Request'Class;
                        Response : in out ASF.Responses.Response'Class) is
+      pragma Unreferenced (F, Request);
    begin
-      null;
+      Response.Send_Error (ASF.Responses.SC_UNAUTHORIZED);
    end Do_Login;
 
    --  ------------------------------

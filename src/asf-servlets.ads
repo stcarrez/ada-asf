@@ -21,8 +21,6 @@ with ASF.Sessions;
 with ASF.Sessions.Factory;
 limited with ASF.Filters;
 
-with Security.Permissions;
-
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
@@ -291,8 +289,6 @@ package ASF.Servlets is
                       Request    : in out Requests.Request'Class;
                       Response   : in out Responses.Response'Class);
 
---   type Servlet_Registry is tagged limited private;
-
    --  Returns a Request_Dispatcher object that acts as a wrapper for the resource
    --  located at the given path.  A Request_Dispatcher  object can be used to forward
    --  a request to the resource or to include the resource in a response.
@@ -416,6 +412,10 @@ package ASF.Servlets is
    --  Start the application.
    procedure Start (Registry : in out Servlet_Registry) is null;
 
+   --  Finalize the servlet registry releasing the internal mappings.
+   overriding
+   procedure Finalize (Registry : in out Servlet_Registry);
+
 private
 
    use Ada.Strings.Unbounded;
@@ -454,9 +454,6 @@ private
 
       --  The position of the first character to build the path info part of the request.
       Path_Pos  : Natural := 0;
-
-      --  The security permission to check
---        Permission         : Security.Permissions.Permission_Index;
    end record;
 
    overriding

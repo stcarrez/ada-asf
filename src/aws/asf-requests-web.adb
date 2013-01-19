@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -143,7 +143,7 @@ package body ASF.Requests.Web is
                            Position : in Positive;
                            Process  : not null access
                              procedure (Data : in ASF.Parts.Part'Class)) is
-       Attachs : constant AWS.Attachments.List := AWS.Status.Attachments (Req.Data.all);
+      Attachs : constant AWS.Attachments.List := AWS.Status.Attachments (Req.Data.all);
    begin
       ASF.Parts.Web.Process_Part (AWS.Attachments.Get (Attachs, Position), Process);
    end Process_Part;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Writer Tests - Unit tests for ASF.Contexts.Writer
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ with Ada.Text_IO;
 with Ada.Calendar;
 with Ada.Unchecked_Deallocation;
 
-with Util.Tests;
 with Util.Test_Caller;
 package body ASF.Contexts.Writer.Tests is
 

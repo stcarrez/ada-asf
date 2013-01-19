@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-events-exceptions -- Exceptions Events
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,7 @@ package body ASF.Events.Exceptions is
    --  ------------------------------
    function Create_Exception_Event (Ex : in Ada.Exceptions.Exception_Occurrence)
                                     return Exception_Event_Access is
-      Event : Exception_Event_Access := new Exception_Event;
+      Event : constant Exception_Event_Access := new Exception_Event;
    begin
       Ada.Exceptions.Save_Occurrence (Target => Event.Ex,
                                       Source => Ex);

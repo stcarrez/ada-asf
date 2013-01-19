@@ -52,6 +52,8 @@ package body ASF.Servlets is
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Servlets");
 
+   procedure Free_List (Map : in out Mapping_Access);
+
    No_Time : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (Year => 1901,
                                                                  Month => 1,
                                                                  Day   => 1);
@@ -612,21 +614,24 @@ package body ASF.Servlets is
    procedure Free is
      new Ada.Unchecked_Deallocation (Filter_List, Filter_List_Access);
 
-   procedure Finalize (Map : in out Mapping_Node) is
+   procedure Free is
+     new Ada.Unchecked_Deallocation (Mapping_Node, Mapping_Access);
 
-      procedure Free is
-        new Ada.Unchecked_Deallocation (Mapping_Node, Mapping_Access);
-
+   procedure Free_List (Map : in out Mapping_Access) is
    begin
-      loop
+      while Map /= null loop
          declare
-            N : Mapping_Access := Map.Child_Map;
+            Next : constant Mapping_Access := Map.Next_Map;
          begin
-            exit when N = null;
-            Map.Child_Map := N.Next_Map;
-            Free (N);
+            Free (Map);
+            Map := Next;
          end;
       end loop;
+   end Free_List;
+
+   procedure Finalize (Map : in out Mapping_Node) is
+   begin
+      Free_List (Map.Child_Map);
       Free (Map.URI);
       Free (Map.Filters);
    end Finalize;
@@ -1146,5 +1151,16 @@ package body ASF.Servlets is
    begin
       Registry.Context_Path := To_Unbounded_String (URI);
    end Register_Application;
+
+   --  ------------------------------
+   --  Finalize the servlet registry releasing the internal mappings.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Registry : in out Servlet_Registry) is
+   begin
+      Free_List (Registry.Mappings);
+      Free_List (Registry.Extension_Mapping);
+      ASF.Sessions.Factory.Session_Factory (Registry).Finalize;
+   end Finalize;
 
 end ASF.Servlets;

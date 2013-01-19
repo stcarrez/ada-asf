@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-dates -- Date Converters
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
 with Ada.Calendar;
 with Ada.Exceptions;
 
@@ -29,12 +28,10 @@ with ASF.Applications.Main;
 with ASF.Locales;
 package body ASF.Converters.Dates is
 
-   use Ada.Strings.Unbounded;
-
    use Util.Log;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Converters.Dates");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Converters.Dates");
 
    --  ------------------------------
    --  Get the date format pattern that must be used for formatting a date on the given component.
@@ -64,9 +61,10 @@ package body ASF.Converters.Dates is
       Pattern : constant String := Date_Converter'Class (Convert).Get_Pattern (Context, Component);
    begin
       begin
-         Context.Get_Application.Load_Bundle (Name   => "dates",
-                                              Locale => "en",
-                                              Bundle => Bundle);
+         ASF.Applications.Main.Load_Bundle (Context.Get_Application.all,
+                                            Name   => "dates",
+                                            Locale => "en",
+                                            Bundle => Bundle);
 
       exception
          when E : Util.Properties.Bundles.NO_BUNDLE =>

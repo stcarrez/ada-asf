@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.beans -- Bean Registration and Factory
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,8 @@
 with Util.Log.Loggers;
 package body ASF.Beans is
 
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Beans");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Beans");
 
    --  ------------------------------
    --  Register under the name identified by <b>Name</b> the class instance <b>Class</b>.
@@ -43,7 +41,7 @@ package body ASF.Beans is
    procedure Register_Class (Factory : in out Bean_Factory;
                              Name    : in String;
                              Handler : in Create_Bean_Access) is
-      Class : Default_Class_Binding_Access := new Default_Class_Binding;
+      Class : constant Default_Class_Binding_Access := new Default_Class_Binding;
    begin
       Class.Create := Handler;
       Register_Class (Factory, Name, Class.all'Access);

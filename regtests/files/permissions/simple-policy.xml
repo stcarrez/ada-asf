@@ -1,11 +1,20 @@
 <policy-rules>
-  <role-permission>
-    <name>admin</name>
-    <role>admin</role>
-    <role>manager</role>
-  </role-permission>
-  <policy id='1'>
-    <permission>admin</permission>
+  <grant-permission>
+    <name>anonymous</name>
+  </grant-permission>
+  <auth-permission>
+    <name>logged-user</name>
+  </auth-permission>
+  <url-policy id='1'>
+    <permission>logged-user</permission>
     <url-pattern>/admin/.*</url-pattern>
-  </policy>
+  </url-policy>
+  <url-policy id='3'>
+    <permission>logged-user</permission>
+    <url-pattern>/user/.*</url-pattern>
+  </url-policy>
+  <url-policy id='2'>
+    <permission>anonymous</permission>
+    <url-pattern>/.*</url-pattern>
+  </url-policy>
 </policy-rules>

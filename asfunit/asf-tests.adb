@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF tests - ASF Tests Framework
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ with GNAT.Regpat;
 with Ada.Strings.Unbounded;
 
 with Util.Files;
-with Util.Log.Loggers;
 
 with ASF.Streams;
 with ASF.Servlets.Faces;
@@ -37,8 +36,6 @@ package body ASF.Tests is
 
    use Ada.Strings.Unbounded;
    use Util.Tests;
-
-   Log      : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Tests");
 
    CONTEXT_PATH : constant String := "/asfunit";
 

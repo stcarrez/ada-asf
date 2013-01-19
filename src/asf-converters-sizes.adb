@@ -52,9 +52,10 @@ package body ASF.Converters.Sizes is
       Locale  : constant Util.Locales.Locale := Context.Get_Locale;
    begin
       begin
-         Context.Get_Application.Load_Bundle (Name   => "sizes",
-                                              Locale => Util.Locales.To_String (Locale),
-                                              Bundle => Bundle);
+         ASF.Applications.Main.Load_Bundle (Context.Get_Application.all,
+                                            Name   => "sizes",
+                                            Locale => Util.Locales.To_String (Locale),
+                                            Bundle => Bundle);
 
       exception
          when E : Util.Properties.Bundles.NO_BUNDLE =>

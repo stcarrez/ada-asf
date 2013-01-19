@@ -159,6 +159,10 @@ package ASF.Contexts.Writer is
                         Item   : in String);
 
    --  Write a raw wide string on the stream.
+   procedure Write_Raw (Stream : in out Response_Writer;
+                        Item   : in Ada.Strings.Wide_Wide_Unbounded.Unbounded_Wide_Wide_String);
+
+   --  Write a raw wide string on the stream.
    procedure Write_Wide_Raw (Stream : in out Response_Writer;
                              Item   : in Wide_Wide_String);
 

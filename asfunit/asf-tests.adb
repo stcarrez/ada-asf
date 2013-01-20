@@ -220,6 +220,7 @@ package body ASF.Tests is
                              Pattern : in String;
                              Reply   : in out ASF.Responses.Mockup.Response;
                              Message : in String := "Test failed";
+                             Status  : in Natural := ASF.Responses.SC_OK;
                              Source  : String := GNAT.Source_Info.File;
                              Line    : Natural := GNAT.Source_Info.Line) is
       use GNAT.Regpat;
@@ -232,7 +233,7 @@ package body ASF.Tests is
       Reply.Read_Content (Content);
       Stream.Write (Content);
 
-      Assert_Equals (T, ASF.Responses.SC_OK, Reply.Get_Status, "Invalid response", Source, Line);
+      Assert_Equals (T, Status, Reply.Get_Status, "Invalid response", Source, Line);
 
       T.Assert (Condition => Match (Regexp, To_String (Content)),
                 Message   => Message & ": does not match '" & Pattern & "'",

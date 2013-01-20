@@ -72,6 +72,7 @@ package ASF.Tests is
                              Pattern : in String;
                              Reply   : in out ASF.Responses.Mockup.Response;
                              Message : in String := "Test failed";
+                             Status  : in Natural := ASF.Responses.SC_OK;
                              Source  : String := GNAT.Source_Info.File;
                              Line    : Natural := GNAT.Source_Info.Line);
 

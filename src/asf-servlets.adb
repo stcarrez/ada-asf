@@ -717,7 +717,8 @@ package body ASF.Servlets is
          raise Servlet_Error with "No servlet filter " & Name;
       end if;
       declare
-         Mapping : Mapping_Access := Registry.Find_Mapping (URI => Pattern);
+         Wildcard     : constant Natural := Util.Strings.Index (Pattern, '*');
+         Mapping      : Mapping_Access := Registry.Find_Mapping (URI => Pattern);
          Copy_Mapping : Mapping_Access;
       begin
          if Mapping = null then
@@ -729,21 +730,26 @@ package body ASF.Servlets is
          --  mapping to some extension (*.html), and we want to install a filter
          --  for a specific page, we have to create a new URI mapping for that specific
          --  page so that it can have dedicated filters.
-         if Mapping.Map_Type = MAP_EXTENSION then
-            if Pattern'Length < 3 or else
-              Pattern (Pattern'First) /= '*' or else Pattern (Pattern'First + 1) /= '.' then
-               Registry.Add_Mapping (Pattern => Pattern,
-                                     Server  => Mapping.Servlet);
-               Copy_Mapping := Registry.Find_Mapping (URI => Pattern);
-               Copy_Mapping.Path_Pos := 1;
+         if (Mapping.Map_Type = MAP_EXTENSION and then
+               (Pattern'Length < 3 or else
+                  Pattern (Pattern'First) /= '*' or else Pattern (Pattern'First + 1) /= '.'))
+             or
+               (Mapping.Map_Type = MAP_PATH_EXTENSION and Wildcard = 0) then
+            Registry.Add_Mapping (Pattern => Pattern,
+                                  Server  => Mapping.Servlet);
+            Copy_Mapping := Registry.Find_Mapping (URI => Pattern);
+            Copy_Mapping.Path_Pos := 1;
+            if Wildcard /= 0 then
                Copy_Mapping.Map_Type := MAP_PATH_EXTENSION;
-               if Mapping.Filters /= null then
-                  for I in Mapping.Filters.all'Range loop
-                     Copy_Mapping.Append_Filter (Mapping.Filters (I));
-                  end loop;
-               end if;
-               Mapping := Copy_Mapping;
+            else
+               Mapping.Map_Type := MAP_URI;
             end if;
+            if Mapping.Filters /= null then
+               for I in Mapping.Filters.all'Range loop
+                  Copy_Mapping.Append_Filter (Mapping.Filters (I));
+               end loop;
+            end if;
+            Mapping := Copy_Mapping;
          end if;
          Mapping.Append_Filter (Filter_Maps.Element (Pos));
       end;

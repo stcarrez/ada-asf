@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  asf-locales -- Locale support
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,7 +80,10 @@ package body ASF.Locales is
             return;
          end if;
          for I in 1 .. Fac.Nb_Locales loop
-            if Fac.Locales (I) = Locale then
+            --  We need a match on the language.  The variant/country can be ignored and will
+            --  be honored by the resource bundle.
+            if Fac.Locales (I) = Locale
+              or Get_Language (Fac.Locales (I)) = Get_Language (Locale) then
                Found_Locale := Locale;
                Found_Quality := Quality;
                return;

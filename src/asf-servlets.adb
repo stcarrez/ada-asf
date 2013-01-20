@@ -939,6 +939,8 @@ package body ASF.Servlets is
                              Error  : in Integer;
                              Page   : in String) is
    begin
+      Log.Info ("Using page {0} for http error {1}", Page, Integer'Image (Error));
+
       Server.Error_Pages.Include (Error, Page);
    end Set_Error_Page;
 

@@ -13,4 +13,9 @@
     </navigation-case>
   </navigation-rule>
 
+  <error-page>
+    <error-code>404</error-code>
+    <location>/tests/404.html</location>
+  </error-page>
+
 </faces-config>

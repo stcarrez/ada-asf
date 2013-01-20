@@ -177,6 +177,8 @@ package body ASF.Applications.Tests is
       if ASF.Tests.Get_Application = null then
          ASF.Tests.Initialize (Util.Tests.Get_Properties, Factory => Fact);
       end if;
+      ASF.Applications.Main.Configs.Read_Configuration (App  => ASF.Tests.Get_Application.all,
+                                                        File => Util.Tests.Get_Path ("regtests/config/test-config.xml"));
    end Set_Up;
 
    --  ------------------------------
@@ -246,6 +248,8 @@ package body ASF.Applications.Tests is
    begin
       Do_Get (Request, Reply, "/file-does-not-exist.txt", "test-404.html");
       Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid response");
+      Assert_Matches (T, ".*This is a 404 error page.*", Reply, "Invalid 404 page returned",
+                      Status => ASF.Responses.SC_NOT_FOUND);
    end Test_Get_404;
 
    --  ------------------------------

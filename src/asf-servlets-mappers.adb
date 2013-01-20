@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-mappers -- Read servlet configuration files
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -82,7 +82,8 @@ package body ASF.Servlets.Mappers is
             null;
 
          when ERROR_PAGE =>
-            null;
+            N.Handler.Set_Error_Page (Error => To_Integer (N.Error_Code),
+                                      Page  => To_String (N.Location));
 
       end case;
    end Set_Member;

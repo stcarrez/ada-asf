@@ -434,7 +434,7 @@ private
    type Mapping_Node;
    type Mapping_Access is access all Mapping_Node;
 
-   type Mapping_Node is new Ada.Finalization.Limited_Controlled with record
+   type Mapping_Node (Len : Natural) is new Ada.Finalization.Limited_Controlled with record
       --  The next mapping node to check if the current node does not match.
       Next_Map         : Mapping_Access;
 
@@ -444,9 +444,6 @@ private
 
       --  The next mapping for the servlet
       Next_Servlet_Map : Mapping_Access;
-
-      --  The URI string component to check (or the extension part)
-      URI       : String_Access;
 
       --  The mapping type
       Map_Type  : Mapping_Type;
@@ -459,6 +456,9 @@ private
 
       --  The position of the first character to build the path info part of the request.
       Path_Pos  : Natural := 0;
+
+      --  The URI string component to check (or the extension part)
+      URI       : String (1 .. Len);
    end record;
 
    overriding

@@ -632,7 +632,6 @@ package body ASF.Servlets is
    procedure Finalize (Map : in out Mapping_Node) is
    begin
       Free_List (Map.Child_Map);
-      Free (Map.URI);
       Free (Map.Filters);
    end Finalize;
 
@@ -659,16 +658,16 @@ package body ASF.Servlets is
    begin
       case Map.Map_Type is
          when MAP_URI_NODE =>
-            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI.all, Name);
+            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI, Name);
 
          when MAP_URI =>
-            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI.all, Name);
+            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI, Name);
 
          when MAP_WILDCARD =>
             Log.Info ("{0} +- [*] => {2}", Indent, Name);
 
          when MAP_EXTENSION | MAP_PATH_EXTENSION =>
-            Log.Info ("{0} +- [*.{1}] => {2}", Indent, Map.URI.all, Name);
+            Log.Info ("{0} +- [*.{1}] => {2}", Indent, Map.URI, Name);
 
       end case;
       if Map.Child_Map /= null then
@@ -789,7 +788,6 @@ package body ASF.Servlets is
       Is_Last   : Boolean := False;
       Is_Wildcard : Boolean := False;
       Is_Extension : Boolean := False;
-      URI       : String_Access;
       Map       : Mapping_Access;
    begin
       if Pattern'Length = 0 or Server = null then
@@ -801,9 +799,9 @@ package body ASF.Servlets is
       --  Add an extension mapping
       if Pattern'Length >= 3 and then
          Pattern (Pattern'First) = '*' and then Pattern (Pattern'First + 1) = '.' then
-         URI := new String '(Pattern (Pattern'First + 2 .. Pattern'Last));
          Map := new Mapping_Node '(Limited_Controlled with
-                                   URI              => URI,
+                                   Len              => Pattern'Length - 2,
+                                   URI              => Pattern (Pattern'First + 2 .. Pattern'Last),
                                    Map_Type         => MAP_EXTENSION,
                                    Child_Map        => null,
                                    Next_Servlet_Map => Server.Mappings,
@@ -839,7 +837,7 @@ package body ASF.Servlets is
          while Node /= null loop
             case Node.Map_Type is
                when MAP_URI =>
-                  if Node.URI.all = Pattern (First_Pos .. Last_Pos) then
+                  if Node.URI = Pattern (First_Pos .. Last_Pos) then
                      Prev_Node := Node;
                      Node := Node.Child_Map;
                      First_Pos := Last_Pos + 2;
@@ -847,7 +845,7 @@ package body ASF.Servlets is
                   end if;
 
                when MAP_URI_NODE =>
-                  if not Is_Wildcard and Node.URI.all = Pattern (First_Pos .. Last_Pos) then
+                  if not Is_Wildcard and Node.URI = Pattern (First_Pos .. Last_Pos) then
                      Prev_Node := Node;
                      Node := Node.Child_Map;
                      First_Pos := Last_Pos + 2;
@@ -874,10 +872,10 @@ package body ASF.Servlets is
               and then Pattern (First_Pos + 1) = '.';
          end if;
 
-         URI := new String '(Pattern (First_Pos .. Last_Pos));
          if Is_Wildcard then
             Node :=  new Mapping_Node '(Limited_Controlled with
-                                        URI              => URI,
+                                        Len              => Last_Pos - First_Pos + 1,
+                                        URI              => Pattern (First_Pos .. Last_Pos),
                                         Map_Type         => MAP_WILDCARD,
                                         Child_Map        => null,
                                         Filters          => null,
@@ -888,7 +886,8 @@ package body ASF.Servlets is
 
          elsif Is_Extension then
             Node :=  new Mapping_Node '(Limited_Controlled with
-                                        URI              => URI,
+                                        Len              => Last_Pos - First_Pos + 1,
+                                        URI              => Pattern (First_Pos .. Last_Pos),
                                         Map_Type         => MAP_EXTENSION,
                                         Child_Map        => null,
                                         Filters          => null,
@@ -899,7 +898,8 @@ package body ASF.Servlets is
 
          elsif Is_Last then
             Node :=  new Mapping_Node '(Limited_Controlled with
-                                        URI              => URI,
+                                        Len              => Last_Pos - First_Pos + 1,
+                                        URI              => Pattern (First_Pos .. Last_Pos),
                                         Map_Type         => MAP_URI,
                                         Child_Map        => null,
                                         Filters          => null,
@@ -910,7 +910,8 @@ package body ASF.Servlets is
 
          else
             Node :=  new Mapping_Node '(Limited_Controlled with
-                                        URI              => URI,
+                                        Len              => Last_Pos - First_Pos + 1,
+                                        URI              => Pattern (First_Pos .. Last_Pos),
                                         Map_Type         => MAP_URI_NODE,
                                         Child_Map        => null,
                                         Filters          => null,
@@ -987,7 +988,7 @@ package body ASF.Servlets is
             case Node.Map_Type is
                --  Check for an exact match if this is the last component.
                when MAP_URI =>
-                  if Node.URI.all = URI (First_Pos .. Last_Pos) then
+                  if Node.URI = URI (First_Pos .. Last_Pos) then
                      if Is_Last then
                         return Node;
                      end if;
@@ -998,7 +999,7 @@ package body ASF.Servlets is
 
                --  Check for a component path, descend the map tree
                when MAP_URI_NODE =>
-                  if Node.URI.all = URI (First_Pos .. Last_Pos) then
+                  if Node.URI = URI (First_Pos .. Last_Pos) then
                      Node := Node.Child_Map;
                      First_Pos := Last_Pos + 2;
                      exit;
@@ -1028,7 +1029,7 @@ package body ASF.Servlets is
          Pos  := Pos + 1;
          Node := Registry.Extension_Mapping;
          while Node /= null loop
-            if Node.URI.all = URI (Pos .. URI'Last) then
+            if Node.URI = URI (Pos .. URI'Last) then
                return Node;
             end if;
             Node := Node.Next_Map;

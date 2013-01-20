@@ -165,20 +165,28 @@ package body ASF.Applications.Tests is
    end Create_Form_List;
 
    --  ------------------------------
-   --  Initialize the test application
+   --  Initialize the ASF application for the unit test.
    --  ------------------------------
-   overriding
-   procedure Set_Up (T : in out Test) is
-      pragma Unreferenced (T);
-
+   procedure Initialize_Test_Application is
       use type ASF.Applications.Main.Application_Access;
       Fact     : ASF.Applications.Main.Application_Factory;
+      Config   : constant String := Util.Tests.Get_Path ("regtests/config/test-config.xml");
    begin
       if ASF.Tests.Get_Application = null then
          ASF.Tests.Initialize (Util.Tests.Get_Properties, Factory => Fact);
       end if;
       ASF.Applications.Main.Configs.Read_Configuration (App  => ASF.Tests.Get_Application.all,
-                                                        File => Util.Tests.Get_Path ("regtests/config/test-config.xml"));
+                                                        File => Config);
+   end Initialize_Test_Application;
+
+   --  ------------------------------
+   --  Initialize the test application
+   --  ------------------------------
+   overriding
+   procedure Set_Up (T : in out Test) is
+      pragma Unreferenced (T);
+   begin
+      Initialize_Test_Application;
    end Set_Up;
 
    --  ------------------------------

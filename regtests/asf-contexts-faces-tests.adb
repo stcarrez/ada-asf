@@ -302,6 +302,7 @@ package body ASF.Contexts.Faces.Tests is
       use type ASF.Responses.Response_Access;
       use type EL.Contexts.ELContext_Access;
    begin
+      ASF.Applications.Tests.Initialize_Test_Application;
       declare
          Ctx   : Mockup.Mockup_Faces_Context;
       begin

@@ -113,4 +113,7 @@ package ASF.Applications.Tests is
    --  Create a list of forms.
    function Create_Form_List return Util.Beans.Basic.Readonly_Bean_Access;
 
+   --  Initialize the ASF application for the unit test.
+   procedure Initialize_Test_Application;
+
 end ASF.Applications.Tests;

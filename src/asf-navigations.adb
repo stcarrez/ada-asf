@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations -- Navigations
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +29,8 @@ package body ASF.Navigations is
    --  Navigation Case
    --  ------------------------------
 
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Navigations");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Navigations");
 
    --  ------------------------------
    --  Check if the navigator specific condition matches the current execution context.
@@ -158,12 +156,12 @@ package body ASF.Navigations is
          declare
             Name : constant String := View (View'First .. Pos) & Outcome;
          begin
-            Log.Debug ("Using default navigatation from view {0} to {1}", View, Name);
+            Log.Debug ("Using default navigation from view {0} to {1}", View, Name);
 
             View_Handler.Create_View (Name, Context, Root);
          end;
       else
-         Log.Debug ("Using default navigatation from view {0} to {1}", View, View);
+         Log.Debug ("Using default navigation from view {0} to {1}", View, View);
 
          View_Handler.Create_View (Outcome, Context, Root);
       end if;

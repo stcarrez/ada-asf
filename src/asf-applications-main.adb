@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Util.Log.Loggers;
+with Util.Strings.Transforms;
 
 with ASF.Streams;
 with ASF.Contexts.Writer;
@@ -44,11 +45,10 @@ with Ada.Unchecked_Deallocation;
 
 package body ASF.Applications.Main is
 
-   use Util.Log;
    use Ada.Strings.Unbounded;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Applications.Main");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Applications.Main");
 
    --  ------------------------------
    --  Factory for creation of lifecycle, view handler
@@ -192,13 +192,19 @@ package body ASF.Applications.Main is
          end if;
 
       exception
+            --  When an exception occurs, create an outcome built from the exception name.
+            --  This allows applications to setup a navigation rule for specific exceptions
+            --  in order to deal with them easily.
          when E : others =>
-            Log.Error ("Error when invoking action {0}: {1}: {2}", Action,
-                       Ada.Exceptions.Exception_Name (E),
-                       Ada.Exceptions.Exception_Message (E));
+            declare
+               Name : constant String := Ada.Exceptions.Exception_Name (E);
+            begin
+               Log.Error ("Error when invoking action {0}: {1}: {2}", Action, Name,
+                          Ada.Exceptions.Exception_Message (E));
 
-            Context.Queue_Exception (E);
-            Outcome := To_Unbounded_String ("failure");
+               Context.Queue_Exception (E);
+               Util.Strings.Transforms.To_Lower_Case (Content => Name, Into => Outcome);
+            end;
       end;
 
       Listener.Navigation.Handle_Navigation (Action  => Action,
@@ -386,8 +392,10 @@ package body ASF.Applications.Main is
       ASF.Locales.Set_Default_Locale (App.Locales, Locale);
    end Set_Default_Locale;
 
+   --  ------------------------------
    --  Compute the locale that must be used according to the <b>Accept-Language</b> request
    --  header and the application supported locales.
+   --  ------------------------------
    function Calculate_Locale (Handler : in Application;
                               Context : in ASF.Contexts.Faces.Faces_Context'Class)
                               return Util.Locales.Locale is

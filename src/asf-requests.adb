@@ -284,7 +284,7 @@ package body ASF.Requests is
          if Pos > 0 then
             N := Index (Header, ',', Pos);
             if N = 0 then
-               N := Header'Last;
+               N := Header'Last + 1;
             end if;
             Q := Pos + 1;
             while Q < N loop

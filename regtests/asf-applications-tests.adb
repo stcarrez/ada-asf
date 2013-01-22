@@ -213,6 +213,9 @@ package body ASF.Applications.Tests is
                              Message   => "Message saved in the flash context");
          end;
       end if;
+      if Data.Perm_Error then
+         raise Test_Exception;
+      end if;
    end Save;
 
    --  ------------------------------

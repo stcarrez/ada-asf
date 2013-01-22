@@ -26,6 +26,7 @@ with ASF.Requests.Tests;
 with ASF.Contexts.Faces.Tests;
 with ASF.Applications.Tests;
 with ASF.Lifecycles.Tests;
+with ASF.Navigations.Tests;
 with ASF.Models.Selects.Tests;
 
 package body ASF.Testsuite is
@@ -41,6 +42,7 @@ package body ASF.Testsuite is
       ASF.Models.Selects.Tests.Add_Tests (Ret);
       ASF.Views.Facelets.Tests.Add_Tests (Ret);
       ASF.Lifecycles.Tests.Add_Tests (Ret);
+      ASF.Navigations.Tests.Add_Tests (Ret);
       ASF.Applications.Main.Tests.Add_Tests (Ret);
       ASF.Applications.Views.Tests.Add_Tests (Ret);
       ASF.Sessions.Tests.Add_Tests (Ret);

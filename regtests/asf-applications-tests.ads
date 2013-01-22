@@ -27,6 +27,8 @@ package ASF.Applications.Tests is
 
    use Ada.Strings.Unbounded;
 
+   Test_Exception : exception;
+
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);
 
    type Test is new Util.Tests.Test with null record;
@@ -76,13 +78,14 @@ package ASF.Applications.Tests is
    procedure Test_View_Action (T : in out Test);
 
    type Form_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
-      Name     : Unbounded_String;
-      Password : Unbounded_String;
-      Email    : Unbounded_String;
-      Called   : Natural := 0;
-      Gender   : Unbounded_String;
-      Use_Flash : Boolean := False;
-      Def_Nav   : Boolean := False;
+      Name       : Unbounded_String;
+      Password   : Unbounded_String;
+      Email      : Unbounded_String;
+      Called     : Natural := 0;
+      Gender     : Unbounded_String;
+      Use_Flash  : Boolean := False;
+      Def_Nav    : Boolean := False;
+      Perm_Error : Boolean := False;
    end record;
    type Form_Bean_Access is access all Form_Bean'Class;
 

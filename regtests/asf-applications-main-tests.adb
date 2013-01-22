@@ -219,7 +219,15 @@ package body ASF.Applications.Main.Tests is
       T.App.Set_Context (Context'Unchecked_Access);
       Locale := View.Calculate_Locale (Context);
 
-      Util.Tests.Assert_Equals (T, To_String (Util.Locales.ENGLISH),
+      Util.Tests.Assert_Equals (T, "en_GB",
+                                To_String (Locale),
+                                "Invalid calculated locale");
+
+      Req.Set_Header ("Accept-Language", "da, fr;q=0.7, fr-fr;q=0.8");
+      T.App.Set_Context (Context'Unchecked_Access);
+      Locale := View.Calculate_Locale (Context);
+
+      Util.Tests.Assert_Equals (T, "fr_FR",
                                 To_String (Locale),
                                 "Invalid calculated locale");
 

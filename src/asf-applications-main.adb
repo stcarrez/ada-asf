@@ -203,6 +203,7 @@ package body ASF.Applications.Main is
                           Ada.Exceptions.Exception_Message (E));
 
                Context.Queue_Exception (E);
+               Ada.Strings.Unbounded.Set_Unbounded_String (Outcome, "");
                Util.Strings.Transforms.To_Lower_Case (Content => Name, Into => Outcome);
             end;
       end;

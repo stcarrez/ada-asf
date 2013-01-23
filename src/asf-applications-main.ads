@@ -23,6 +23,7 @@ with EL.Objects;
 with EL.Contexts;
 with EL.Functions;
 with EL.Functions.Default;
+with EL.Expressions;
 with EL.Variables.Default;
 with Ada.Strings.Unbounded;
 
@@ -119,6 +120,12 @@ package ASF.Applications.Main is
    overriding
    procedure Process_Action (Listener : in Application;
                              Event    : in ASF.Events.Faces.Actions.Action_Event'Class;
+                             Context  : in out Contexts.Faces.Faces_Context'Class);
+
+   --  Execute the action method.  The action returns and outcome which is then passed
+   --  to the navigation handler to navigate to the next view.
+   procedure Process_Action (Listener : in Application;
+                             Method   : in EL.Expressions.Method_Info;
                              Context  : in out Contexts.Faces.Faces_Context'Class);
 
    --  Initialize the application

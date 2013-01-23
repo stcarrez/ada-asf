@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-events-faces-actions -- Actions Events
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,6 +40,11 @@ package ASF.Events.Faces.Actions is
 
    --  Get the method expression to invoke
    function Get_Method (Event : in Action_Event) return EL.Expressions.Method_Expression;
+
+   --  Get the method binding with the Ada bean object to invoke.
+   function Get_Method_Info (Event : in Action_Event;
+                             Context : in Contexts.Faces.Faces_Context'Class)
+                             return EL.Expressions.Method_Info;
 
    --  Post an <b>Action_Event</b> on the component.
    procedure Post_Event (UI     : in out Components.Base.UIComponent'Class;

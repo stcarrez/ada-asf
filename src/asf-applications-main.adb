@@ -34,6 +34,7 @@ with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
 with ASF.Beans.Resolvers;
 with ASF.Security;
+with ASF.Events.Phases;
 
 with EL.Expressions;
 with EL.Contexts.Default;
@@ -173,16 +174,25 @@ package body ASF.Applications.Main is
    procedure Process_Action (Listener : in Application;
                              Event    : in ASF.Events.Faces.Actions.Action_Event'Class;
                              Context  : in out Contexts.Faces.Faces_Context'Class) is
-      Method  : constant EL.Expressions.Method_Expression := Event.Get_Method;
-      Action  : constant String := Method.Get_Expression;
+      Method : constant EL.Expressions.Method_Info := Event.Get_Method_Info (Context => Context);
+   begin
+      Listener.Process_Action (Method, Context);
+   end Process_Action;
+
+   --  ------------------------------
+   --  Execute the action method.  The action returns and outcome which is then passed
+   --  to the navigation handler to navigate to the next view.
+   --  ------------------------------
+   procedure Process_Action (Listener : in Application;
+                             Method   : in EL.Expressions.Method_Info;
+                             Context  : in out Contexts.Faces.Faces_Context'Class) is
       Outcome : Unbounded_String;
    begin
-      Log.Info ("Execute bean action {0}", Action);
+      Log.Info ("Execute bean action {0}", Method.Binding.Name.all);
 
       begin
          Events.Faces.Actions.Action_Method.Execute (Method  => Method,
-                                                     Param   => Outcome,
-                                                     Context => Context.Get_ELContext.all);
+                                                     Param   => Outcome);
 
          if Length (Outcome) = 0 then
             Outcome := To_Unbounded_String ("success");
@@ -199,7 +209,8 @@ package body ASF.Applications.Main is
             declare
                Name : constant String := Ada.Exceptions.Exception_Name (E);
             begin
-               Log.Error ("Error when invoking action {0}: {1}: {2}", Action, Name,
+               Log.Error ("Error when invoking action {0}: {1}: {2}", Method.Binding.Name.all,
+                          Name,
                           Ada.Exceptions.Exception_Message (E));
 
                Context.Queue_Exception (E);
@@ -208,7 +219,7 @@ package body ASF.Applications.Main is
             end;
       end;
 
-      Listener.Navigation.Handle_Navigation (Action  => Action,
+      Listener.Navigation.Handle_Navigation (Action  => Method.Binding.Name.all,
                                              Outcome => To_String (Outcome),
                                              Context => Context);
    end Process_Action;
@@ -627,8 +638,16 @@ package body ASF.Applications.Main is
          EL_Expr   : constant String := "#{" & Name & "." & Operation & "}";
          Expr      : EL.Expressions.Method_Expression;
          Method    : EL.Expressions.Method_Info;
-         Outcome   : Ada.Strings.Unbounded.Unbounded_String;
+         Root      : constant Components.Core.Views.UIView_Access
+           := new Components.Core.Views.UIView;
+         View      : Components.Root.UIViewRoot;
+         View_Name : constant String := "/ajax/" & Name & "/" & Operation;
       begin
+         ASF.Components.Root.Set_Root (UI   => View,
+                                       Root => Root,
+                                       Name => View_Name);
+         Context.Set_View_Root (View => View);
+
          --  Build a method expression and get a Method_Info to obtain the bean
          --  instance and the method descriptor.
          Expr := EL.Expressions.Create_Expression (Expr    => EL_Expr,
@@ -643,37 +662,17 @@ package body ASF.Applications.Main is
          end if;
 
          --  Execute the specified method on the bean and get the outcome result string.
-         Outcome := To_Unbounded_String ("success");
-         ASF.Events.Faces.Actions.Action_Method.Execute (Method => Method,
-                                                         Param  => Outcome);
+         App.Process_Action (Method, Context);
 
-         --  If the response was not produced by the action method, use the navigation handler
-         --  to decide what result view must be rendered for the response.
+         --  If the response was not produced by the action method, the navigation handler
+         --  may have computed a view to render, in that case render it.
          if not Context.Get_Response_Completed then
-            declare
-               Root      : constant Components.Core.Views.UIView_Access
-                 := new Components.Core.Views.UIView;
-               View      : Components.Root.UIViewRoot;
-               View_Name : constant String := "/ajax/" & Name & "/" & Operation;
-            begin
-               ASF.Components.Root.Set_Root (UI   => View,
-                                             Root => Root,
-                                             Name => View_Name);
-               Context.Set_View_Root (View => View);
-               App.Navigation.Handle_Navigation (Action  => Operation,
-                                                 Outcome => To_String (Outcome),
-                                                 Context => Context);
-
-               --  If the navigation indicates a view to render, render it.
-               if not Context.Get_Response_Completed then
-                  View := Context.Get_View_Root;
-                  if ASF.Components.Root.Get_View_Id (View) /= View_Name then
-                     App.Lifecycle.Render (Context);
-                  else
-                     Response.Set_Status (ASF.Responses.SC_OK);
-                  end if;
-               end if;
-            end;
+            View := Context.Get_View_Root;
+            if ASF.Components.Root.Get_View_Id (View) /= View_Name then
+               App.Lifecycle.Render (Context);
+            else
+               Response.Set_Status (ASF.Responses.SC_OK);
+            end if;
          end if;
 
       exception

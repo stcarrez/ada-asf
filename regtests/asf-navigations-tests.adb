@@ -43,6 +43,9 @@ package body ASF.Navigations.Tests is
       Caller.Add_Test (Suite, "Test navigation exception match (view, outcome)",
                        Test_Exception_Navigation'Access);
 
+      Caller.Add_Test (Suite, "Test navigation wildcard match (view, outcome)",
+                       Test_Wildcard_Navigation'Access);
+
    end Add_Tests;
 
    --  ------------------------------
@@ -111,5 +114,13 @@ package body ASF.Navigations.Tests is
    begin
       T.Check_Navigation ("form-nav-exception", ".*success exception.*", True);
    end Test_Exception_Navigation;
+
+   --  ------------------------------
+   --  Test a form navigation with a wildcard match on the URI (view, outcome).
+   --  ------------------------------
+   procedure Test_Wildcard_Navigation (T : in out Test) is
+   begin
+      T.Check_Navigation ("form-text", ".*success wildcard.*", False);
+   end Test_Wildcard_Navigation;
 
 end ASF.Navigations.Tests;

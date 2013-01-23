@@ -6,6 +6,7 @@ Version 0.5     -
   - Javascript support for click-to-edit behavior
   - Add support for JSF session beans
   - Add support for servlet error page customization
+  - Allow navigation rules to handle exceptions raised by Ada bean actions
 
 Version 0.4     - May 2012
   - Support for shared or static build configuration

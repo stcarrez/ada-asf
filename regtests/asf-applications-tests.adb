@@ -315,9 +315,9 @@ package body ASF.Applications.Tests is
       Request.Set_Parameter ("password", "12345");
       Request.Set_Parameter ("email", "john@gmail.com");
       Request.Set_Parameter ("ok", "1");
-      Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post.txt");
+      Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post-1.txt");
 
-      Assert_Matches (T, ".*<input type=.text. name=.name. value=.John. id=.name.*",
+      Assert_Matches (T, ".*success exact.*",
                       Reply, "Wrong form content");
 
       Assert_Equals (T, "John", Form.Name, "Form name not saved in the bean");

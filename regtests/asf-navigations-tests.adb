@@ -120,7 +120,7 @@ package body ASF.Navigations.Tests is
    --  ------------------------------
    procedure Test_Wildcard_Navigation (T : in out Test) is
    begin
-      T.Check_Navigation ("form-text", ".*success wildcard.*", False);
+      T.Check_Navigation ("form-nav-wildcard", ".*success wildcard.*", False);
    end Test_Wildcard_Navigation;
 
 end ASF.Navigations.Tests;

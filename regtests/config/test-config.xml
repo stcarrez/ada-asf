@@ -13,6 +13,14 @@
     </navigation-case>
   </navigation-rule>
 
+  <navigation-rule>
+    <from-view-id>/tests/form-text.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/tests/nav-success.xhtml</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
   <error-page>
     <error-code>404</error-code>
     <location>/tests/404.html</location>

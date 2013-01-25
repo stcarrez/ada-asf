@@ -40,6 +40,9 @@ package ASF.Navigations.Tests is
    --  Test a form navigation with a wildcard match on the URI (view, outcome).
    procedure Test_Wildcard_Navigation (T : in out Test);
 
+   --  Test a form navigation with a condition (view, outcome, condition).
+   procedure Test_Conditional_Navigation (T : in out Test);
+
    --  Check the navigation for an URI and expect the result to match the regular expression.
    procedure Check_Navigation (T     : in out Test;
                                Name  : in String;

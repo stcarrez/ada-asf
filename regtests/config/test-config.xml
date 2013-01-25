@@ -28,6 +28,11 @@
       <to-view-id>/tests/view-action.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
+
+    <navigation-case>
+      <if>#{not empty form.email}</if>
+      <to-view-id>/tests/view-action.xhtml</to-view-id>
+    </navigation-case>
   </navigation-rule>
 
   <error-page>

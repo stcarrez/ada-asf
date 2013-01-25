@@ -46,6 +46,9 @@ package body ASF.Navigations.Tests is
       Caller.Add_Test (Suite, "Test navigation wildcard match (view, outcome)",
                        Test_Wildcard_Navigation'Access);
 
+      Caller.Add_Test (Suite, "Test navigation condition match (view, outcome)",
+                       Test_Conditional_Navigation'Access);
+
    end Add_Tests;
 
    --  ------------------------------
@@ -122,5 +125,13 @@ package body ASF.Navigations.Tests is
    begin
       T.Check_Navigation ("form-nav-wildcard", ".*success wildcard.*", False);
    end Test_Wildcard_Navigation;
+
+   --  ------------------------------
+   --  Test a form navigation with a condition (view, outcome, condition).
+   --  ------------------------------
+   procedure Test_Conditional_Navigation (T : in out Test) is
+   begin
+      T.Check_Navigation ("form-nav-condition", ".*success condition.*", False);
+   end Test_Conditional_Navigation;
 
 end ASF.Navigations.Tests;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-reader -- Read XML navigation files
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -87,7 +87,8 @@ package body ASF.Navigations.Mappers is
                                               From      => To_String (N.From_View),
                                               Outcome   => To_String (N.Outcome),
                                               Action    => To_String (N.Action),
-                                              Condition => To_String (N.Condition));
+                                              Condition => To_String (N.Condition),
+                                              Context   => N.Context.all);
             end;
             Reset (N);
 

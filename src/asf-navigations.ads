@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations -- Navigations
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 
 with ASF.Contexts.Faces;
 with EL.Expressions;
+with EL.Contexts;
 with Ada.Finalization;
 with ASF.Applications.Views;
 with Ada.Strings.Unbounded;
@@ -74,7 +75,8 @@ package ASF.Navigations is
                                   To        : in String;
                                   Outcome   : in String := "";
                                   Action    : in String := "";
-                                  Condition : in String := "");
+                                  Condition : in String := "";
+                                  Context   : in EL.Contexts.ELContext'Class);
 
    --  ------------------------------
    --  Navigation Case
@@ -107,7 +109,8 @@ package ASF.Navigations is
                                   From      : in String;
                                   Outcome   : in String := "";
                                   Action    : in String := "";
-                                  Condition : in String := "");
+                                  Condition : in String := "";
+                                  Context   : in EL.Contexts.ELContext'Class);
 
 private
 

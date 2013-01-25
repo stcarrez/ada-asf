@@ -273,10 +273,11 @@ package body ASF.Navigations is
                                   To        : in String;
                                   Outcome   : in String := "";
                                   Action    : in String := "";
-                                  Condition : in String := "") is
+                                  Condition : in String := "";
+                                  Context   : in EL.Contexts.ELContext'Class) is
       C : constant Navigation_Access := Render.Create_Render_Navigator (To);
    begin
-      Handler.Add_Navigation_Case (C, From, Outcome, Action, Condition);
+      Handler.Add_Navigation_Case (C, From, Outcome, Action, Condition, Context);
    end Add_Navigation_Case;
 
    --  ------------------------------
@@ -292,9 +293,8 @@ package body ASF.Navigations is
                                   From      : in String;
                                   Outcome   : in String := "";
                                   Action    : in String := "";
-                                  Condition : in String := "") is
-      pragma Unreferenced (Condition);
-
+                                  Condition : in String := "";
+                                  Context   : in EL.Contexts.ELContext'Class) is
    begin
       Log.Info ("Add navigation from {0} with outcome {1}", From, Outcome);
 
@@ -307,6 +307,10 @@ package body ASF.Navigations is
 
       if Handler.View_Handler = null then
          Handler.View_Handler := Handler.Application.Get_View_Handler;
+      end if;
+
+      if Condition'Length > 0 then
+         Navigator.Condition := EL.Expressions.Create_Expression (Condition, Context);
       end if;
 
       Navigator.View_Handler := Handler.View_Handler;

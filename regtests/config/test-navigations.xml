@@ -59,6 +59,25 @@
   </navigation-rule>
 
   <navigation-rule>
+    <from-view-id>/tests/form-nav-condition.xhtml</from-view-id>
+    <navigation-case>
+      <if>#{empty form.email}</if>
+      <to-view-id>ERROR</to-view-id>
+    </navigation-case>
+
+    <navigation-case>
+      <if>#{empty form.name}</if>
+      <to-view-id>ERROR</to-view-id>
+    </navigation-case>
+
+    <from-view-id>/tests/form-nav-condition.xhtml</from-view-id>
+    <navigation-case>
+      <if>#{not empty form.email}</if>
+      <to-view-id>/tests/nav-condition.xhtml</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
     <from-view-id>/tests/*</from-view-id>
     <navigation-case>
       <from-outcome>asf.applications.tests.test_exception</from-outcome>

@@ -8,6 +8,7 @@ Version 0.5     -
   - Add support for servlet error page customization
   - Allow navigation rules to handle exceptions raised by Ada bean actions
   - Support the JSF 2.2 conditional navigation
+  - New functions fn:escapeXml and fn:replace
 
 Version 0.4     - May 2012
   - Support for shared or static build configuration

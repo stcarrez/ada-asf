@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-models-selects -- Data model for UISelectOne and UISelectMany
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -330,6 +330,7 @@ package body ASF.Models.Selects is
    overriding
    function Get_Value (From : in Select_Item_List;
                        Name : in String) return Util.Beans.Objects.Object is
+      pragma Unreferenced (From, Name);
    begin
       return Util.Beans.Objects.Null_Object;
    end Get_Value;

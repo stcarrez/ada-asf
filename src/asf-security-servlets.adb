@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-openid-servlets - Servlets for OpenID 2.0 Authentication
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,13 +23,11 @@ with Util.Beans.Objects.Records;
 with Util.Log.Loggers;
 package body ASF.Security.Servlets is
 
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("Security.Openid.Servlets");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Security.Servlets");
 
    --  Make a package to store the Association in the session.
-   package Association_Bean is new Util.Beans.Objects.Records (Openid.Association);
+   package Association_Bean is new Util.Beans.Objects.Records (OpenID.Association);
 
    subtype Association_Access is Association_Bean.Element_Type_Access;
 

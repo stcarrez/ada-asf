@@ -34,9 +34,7 @@ with ASF.Views.Nodes.Facelets;
 with ASF.Lifecycles.Default;
 with ASF.Beans.Resolvers;
 with ASF.Security;
-with ASF.Events.Phases;
 
-with EL.Expressions;
 with EL.Contexts.Default;
 with EL.Functions.Namespaces;
 with EL.Utils;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ with ASF.Applications.Main;
 with ASF.Components.Base;
 with ASF.Components.Core;
 with ASF.Components.Core.Views;
-with ASF.Requests;
 package body ASF.Applications.Views is
 
    use ASF.Components;

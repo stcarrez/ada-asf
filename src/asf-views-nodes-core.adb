@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-core -- Core nodes
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -285,13 +285,13 @@ package body ASF.Views.Nodes.Core is
    SUBSTRING_BEFORE_FN : aliased constant String := "substringBefore";
    TRIM_FN             : aliased constant String := "trim";
    INDEX_OF_FN         : aliased constant String := "indexOf";
+   ESCAPE_XML_FN       : aliased constant String := "escapeXml";
+   REPLACE_FN          : aliased constant String := "replace";
 
    --  JSFL function not implemented
-   CONTAINS_IGNORE_CASE_FN : aliased constant String := "containsIgnoreCase";
-   JOIN_FN             : aliased constant String := "join";
-   SPLIT_FN            : aliased constant String := "split";
-   REPLACE_FN          : aliased constant String := "replace";
-   ESCAPE_XML_FN       : aliased constant String := "escapeXml";
+   --     CONTAINS_IGNORE_CASE_FN : aliased constant String := "containsIgnoreCase";
+   --     JOIN_FN             : aliased constant String := "join";
+   --     SPLIT_FN            : aliased constant String := "split";
 
    function Length (Value : in EL.Objects.Object) return EL.Objects.Object;
    function Contains (Value : in EL.Objects.Object;
@@ -318,6 +318,35 @@ package body ASF.Views.Nodes.Core is
    function Substring (Value  : in EL.Objects.Object;
                        Start  : in EL.Objects.Object;
                        Finish : in EL.Objects.Object) return EL.Objects.Object;
+
+   --  Escapes characters that could be interpreted as XML markup.
+   function Escape_Xml (Value : in EL.Objects.Object) return EL.Objects.Object;
+
+   --  Returns a string resulting from replacing in an input string
+   --  all occurrences of a "before" string into an "after" substring.
+   function Replace (From, Before, After : in EL.Objects.Object) return EL.Objects.Object;
+
+   --  ------------------------------
+   --  Escapes characters that could be interpreted as XML markup.
+   --  ------------------------------
+   function Escape_Xml (Value : in EL.Objects.Object) return EL.Objects.Object is
+      use Ada.Strings;
+
+      Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
+   begin
+      case Of_Type is
+         when EL.Objects.TYPE_STRING =>
+            declare
+               S : constant String := EL.Objects.To_String (Value);
+            begin
+               return EL.Objects.To_Object (Util.Strings.Transforms.Escape_Xml (S));
+            end;
+
+         when others =>
+            return Value;
+
+      end case;
+   end Escape_Xml;
 
    --  ------------------------------
    --  Get the length of the object.
@@ -549,6 +578,37 @@ package body ASF.Views.Nodes.Core is
    end Trim;
 
    --  ------------------------------
+   --  Returns a string resulting from replacing in an input string
+   --  all occurrences of a "before" string into an "after" substring.
+   --  ------------------------------
+   function Replace (From, Before, After : in EL.Objects.Object) return EL.Objects.Object is
+      use Ada.Strings;
+
+      Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (From);
+   begin
+      case Of_Type is
+         when EL.Objects.TYPE_NULL =>
+            return From;
+
+         when others =>
+            declare
+               S : Unbounded_String := EL.Objects.To_Unbounded_String (From);
+               B : constant String := EL.Objects.To_String (Before);
+               A : constant String := EL.Objects.To_String (After);
+               I : Natural;
+            begin
+               loop
+                  I := Ada.Strings.Unbounded.Index (S, B);
+                  exit when I = 0;
+                  Ada.Strings.Unbounded.Replace_Slice (S, I, I + B'Length - 1, A);
+               end loop;
+               return EL.Objects.To_Object (S);
+            end;
+
+      end case;
+   end Replace;
+
+   --  ------------------------------
    --  Return the substring before the token string
    --  ------------------------------
    function Substring_Before (Value : in EL.Objects.Object;
@@ -644,6 +704,14 @@ package body ASF.Views.Nodes.Core is
       Mapper.Set_Function (Name      => COMPOSE_PATH_FN,
                            Namespace => FN_URI,
                            Func      => Compose_Path'Access);
+
+      Mapper.Set_Function (Name      => ESCAPE_XML_FN,
+                           Namespace => FN_URI,
+                           Func      => Escape_Xml'Access);
+
+      Mapper.Set_Function (Name      => REPLACE_FN,
+                           Namespace => FN_URI,
+                           Func      => Replace'Access);
    end Set_Functions;
 
 end ASF.Views.Nodes.Core;

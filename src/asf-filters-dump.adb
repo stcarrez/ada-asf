@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.filters.dump -- Filter to dump the request information
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
-
 with Util.Log.Loggers;
 with ASF.Requests.Tools;
 
@@ -26,11 +24,8 @@ with ASF.Requests.Tools;
 --  some log file before processing the request.
 package body ASF.Filters.Dump is
 
-   use Ada.Strings.Unbounded;
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Filters.Dump");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Filters.Dump");
 
    --  ------------------------------
    --  The Do_Filter method of the Filter is called by the container each time

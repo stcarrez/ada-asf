@@ -56,3 +56,11 @@ div.asf-active-list div.asf-active div.asf-list-action {
 div.asf-deleting {
     opacity: 0.5;
 }
+
+/**
+ * CSS for the ASF message.
+ */
+div.asf-message {
+    position: absolute;
+    z-index: 10;
+}

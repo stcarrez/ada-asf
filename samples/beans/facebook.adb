@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  facebook - Use Facebook Graph API
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Log.Loggers;
-with Util.Http.Clients;
 with Util.Http.Rest;
 with Util.Serialize.Mappers.Record_Mapper;
 with Util.Serialize.Mappers.Vector_Mapper;
@@ -133,13 +132,13 @@ package body Facebook is
          return "";
       end if;
       declare
-         S : ASF.Sessions.Session := Context.Get_Session;
+         S : constant ASF.Sessions.Session := Context.Get_Session;
       begin
          if not S.Is_Valid then
             return "";
          end if;
          declare
-            Token : Util.Beans.Objects.Object := S.Get_Attribute ("access_token");
+            Token : constant Util.Beans.Objects.Object := S.Get_Attribute ("access_token");
          begin
             if Util.Beans.Objects.Is_Null (Token) then
                return "";
@@ -218,17 +217,13 @@ package body Facebook is
       Token : constant String := Get_Access_Token;
    begin
       if Token'Length > 0 then
-         declare
-            C : Util.Http.Rest.Client;
-         begin
-            Log.Info ("Getting the Facebook friends");
+         Log.Info ("Getting the Facebook friends");
 
-            Get_Friends ("https://graph.facebook.com/me/friends?access_token="
-                         & Token,
-                         Friend_Vector_Map'Access,
-                         "/data",
-                         List.List'Access);
-         end;
+         Get_Friends ("https://graph.facebook.com/me/friends?access_token="
+                      & Token,
+                      Friend_Vector_Map'Access,
+                      "/data",
+                      List.List'Access);
       end if;
 
       return List.all'Access;
@@ -242,17 +237,13 @@ package body Facebook is
       Token : constant String := Get_Access_Token;
    begin
       if Token'Length > 0 then
-         declare
-            C : Util.Http.Rest.Client;
-         begin
-            Log.Info ("Getting the Facebook feeds");
+         Log.Info ("Getting the Facebook feeds");
 
-            Get_Feeds ("https://graph.facebook.com/me/home?access_token="
-                       & Token,
-                       Feed_Vector_Map'Access,
-                       "/data",
-                       List.List'Access);
-         end;
+         Get_Feeds ("https://graph.facebook.com/me/home?access_token="
+                    & Token,
+                    Feed_Vector_Map'Access,
+                    "/data",
+                    List.List'Access);
       end if;
 
       return List.all'Access;
@@ -270,7 +261,7 @@ package body Facebook is
    begin
       if F /= null and Name = "authenticate_url" then
          declare
-            S      : ASF.Sessions.Session := F.Get_Session (True);
+            S      : constant ASF.Sessions.Session := F.Get_Session (True);
             Id     : constant String := S.Get_Id;
             State  : constant String := From.Get_State (Id);
             Params : constant String := From.Get_Auth_Params (State, "read_stream");
@@ -282,7 +273,7 @@ package body Facebook is
          end;
       elsif F /= null and Name = "isAuthenticated" then
          declare
-            S      : ASF.Sessions.Session := F.Get_Session (False);
+            S      : constant ASF.Sessions.Session := F.Get_Session (False);
          begin
             if S.Is_Valid and
             then not Util.Beans.Objects.Is_Null (S.Get_Attribute ("access_token")) then
@@ -300,6 +291,8 @@ package body Facebook is
    --  ------------------------------
    procedure Authenticate (From    : in out Facebook_Auth;
                            Outcome : in out Ada.Strings.Unbounded.Unbounded_String) is
+      pragma Unreferenced (Outcome);
+
       use type Security.OAuth.Clients.Access_Token_Access;
 
       F       : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
@@ -311,7 +304,7 @@ package body Facebook is
       if Session.Is_Valid then
          if From.Is_Valid_State (Session.Get_Id, State) then
             declare
-               Acc : Security.OAuth.Clients.Access_Token_Access
+               Acc : constant Security.OAuth.Clients.Access_Token_Access
                  := From.Request_Access_Token (Code);
             begin
                if Acc /= null then
@@ -338,6 +331,7 @@ package body Facebook is
    overriding
    function Get_Method_Bindings (From : in Facebook_Auth)
                                  return Util.Beans.Methods.Method_Binding_Array_Access is
+      pragma Unreferenced (From);
    begin
       return Binding_Array'Access;
    end Get_Method_Bindings;

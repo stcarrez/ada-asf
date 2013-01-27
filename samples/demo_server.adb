@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  demo_server -- Demo server for Ada Server Faces
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -150,7 +150,6 @@ begin
 
    App.Register (Name => "message", Class => "Message_Bean", Params => None);
    App.Register (Name => "messages", Class => "Message_List", Params => None);
-   App.Register (Name => "image", Class => "Image_Bean", Params => None);
 
    ASF.Applications.Main.Configs.Read_Configuration (App, "samples/web/WEB-INF/web.xml");
    WS.Register_Application (CONTEXT_PATH, App'Unchecked_Access);

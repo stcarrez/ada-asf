@@ -1,6 +1,6 @@
 /*
  *  asf -- Ada Server Faces
- *  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+ *  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
  *  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,6 +70,9 @@ var ASF = {};
 
         } else if (action.action === "redirect") {
             document.location = action.url;
+
+        } else if (action.action === "message") {
+	        ASF.Message(node, action.id, action.data);
 
         } else if (action.action === "script") {
             try {
@@ -304,5 +307,25 @@ var ASF = {};
         return false;
     };
 
+    /**
+     * Create and display a popup message near the node element.
+     *
+     * @param node the element giving the location of the message
+     * @param id the message id or null
+     * @param message the HTML message content
+     */
+    ASF.Message = function(node, id, message) {
+        if (!id) {
+            id = "#asf-message";
+        }
+        var div = $(id);
+        if (div.length == 0) {
+            div = document.createElement("div");
+            div.id = id.substring(1);
+            $(document.body).append($(div));
+        }
+
+        $(div).html(message).message({}).message("attachment", node);
+    };
 })();
 

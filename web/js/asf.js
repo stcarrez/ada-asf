@@ -101,10 +101,21 @@ var ASF = {};
     };
 
     ASF.Execute = function(node, data) {
-        if (data != null) {
+        if (data) {
             for (var i = 0; i < data.length; i++) {
                 ASF.ExecuteOne(node, data[i]);
             }
+        }
+    };
+
+    /**
+     * Handle an AJAX operation that failed.
+     */
+    ASF.AjaxError = function(jqXHDR, node) {
+        var contentType = jqXHDR.getResponseHeader('Content-type');
+        if (contentType && contentType.match(/^application\/json(;.*)?$/i)) {
+            var data = $.parseJSON(jqXHDR.responseText);
+            ASF.Execute(node, data);
         }
     };
 
@@ -147,6 +158,9 @@ var ASF = {};
                     if (complete != null) {
                         complete(d, jqXHDR);
                     }
+               },
+               error: function(jqXHDR, status, error) {
+                   ASF.AjaxError(jqXHDR, d);
                }
             });
         }
@@ -211,6 +225,9 @@ var ASF = {};
                     } else if (contentType.match(/^application\/json(;.*)?$/i)) {
                         ASF.Execute(d, data);
                     }
+               },
+               error: function(jqXHDR, status, error) {
+                   ASF.AjaxError(jqXHDR, d);
                }
             });
         }
@@ -292,6 +309,9 @@ var ASF = {};
                 } else if (contentType.match(/^application\/json(;.*)?$/i)) {
                     ASF.Execute(node, data);
                 }
+            },
+            error: function(jqXHDR, status, error) {
+                ASF.AjaxError(jqXHDR, d);
             }
         });
         return false;

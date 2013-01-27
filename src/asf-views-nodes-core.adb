@@ -595,12 +595,13 @@ package body ASF.Views.Nodes.Core is
                S : Unbounded_String := EL.Objects.To_Unbounded_String (From);
                B : constant String := EL.Objects.To_String (Before);
                A : constant String := EL.Objects.To_String (After);
-               I : Natural;
+               I : Natural := 1;
             begin
                loop
-                  I := Ada.Strings.Unbounded.Index (S, B);
+                  I := Ada.Strings.Unbounded.Index (S, B, I);
                   exit when I = 0;
                   Ada.Strings.Unbounded.Replace_Slice (S, I, I + B'Length - 1, A);
+                  I := I + B'Length;
                end loop;
                return EL.Objects.To_Object (S);
             end;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -356,9 +356,12 @@ package ASF.Requests is
    function Get_Session (Req    : in Request;
                          Create : in Boolean := False) return ASF.Sessions.Session;
 
-   --  Set the path info
-   procedure Set_Path_Info (Req  : in out Request;
-                            Path : in String);
+   --  Set the path info.  The <tt>Path_Pos</tt> parameter indicates the optional starting
+   --  position for the path info.  When specified, the servlet path is built from the
+   --  beginning of the path up to that path position.
+   procedure Set_Path_Info (Req      : in out Request;
+                            Path     : in String;
+                            Path_Pos : in Natural := 0);
 
    --  Get the number of parts included in the request.
    function Get_Part_Count (Req : in Request) return Natural is abstract;
@@ -424,10 +427,11 @@ private
    type Request_Data_Access is access Request_Data;
 
    type Request is abstract new Ada.Finalization.Limited_Controlled with record
-      Attributes : Util.Beans.Objects.Maps.Map;
-      Path_Info  : Unbounded_String;
-      Servlet    : access ASF.Servlets.Servlet'Class;
-      Info       : Request_Data_Access := null;
+      Attributes  : Util.Beans.Objects.Maps.Map;
+      Path_Info   : Unbounded_String;
+      Path_Pos    : Natural := 0;
+      Servlet     : access ASF.Servlets.Servlet'Class;
+      Info        : Request_Data_Access := null;
    end record;
 
 end ASF.Requests;

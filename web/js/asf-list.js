@@ -344,7 +344,7 @@
          */
         click: function(event) {
             var name, node = this._getTargetNode(event.target);
-            if (node && this.currentNode != node) {
+            if (node) {
 
                 if ($(node).hasClass("asf-edit")) {
                     this.enterEdit(event);

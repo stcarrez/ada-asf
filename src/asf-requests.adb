@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -530,12 +530,19 @@ package body ASF.Requests is
       return "GET";
    end Get_Method;
 
+   --  ------------------------------
    --  Returns any extra path information associated with the URL the client sent when
    --  it made this request. The extra path information follows the servlet path but
    --  precedes the query string and will start with a "/" character.
+   --  ------------------------------
    function Get_Path_Info (Req : in Request) return String is
    begin
-      return To_String (Req.Path_Info);
+      if Req.Path_Pos = 0 then
+         return To_String (Req.Path_Info);
+      else
+         return Ada.Strings.Unbounded.Slice (Req.Path_Info, Req.Path_Pos + 1,
+                                             Length (Req.Path_Info));
+      end if;
    end Get_Path_Info;
 
    --  ------------------------------
@@ -658,7 +665,11 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_Servlet_Path (Req : in Request) return String is
    begin
-      return Req.Servlet.Get_Name;
+      if Req.Path_Pos = 0 then
+         return "";
+      else
+         return Ada.Strings.Unbounded.Slice (Req.Path_Info, 1, Req.Path_Pos);
+      end if;
    end Get_Servlet_Path;
 
 
@@ -726,12 +737,16 @@ package body ASF.Requests is
    end Get_Session;
 
    --  ------------------------------
-   --  Set the path info
+   --  Set the path info.  The <tt>Path_Pos</tt> parameter indicates the optional starting
+   --  position for the path info.  When specified, the servlet path is built from the
+   --  beginning of the path up to that path position.
    --  ------------------------------
-   procedure Set_Path_Info (Req  : in out Request;
-                            Path : in String) is
+   procedure Set_Path_Info (Req      : in out Request;
+                            Path     : in String;
+                            Path_Pos : in Natural := 0) is
    begin
       Req.Path_Info := To_Unbounded_String (Path);
+      Req.Path_Pos  := Path_Pos;
    end Set_Path_Info;
 
    --  ------------------------------

@@ -358,7 +358,7 @@ package body ASF.Servlets is
                       Request    : in out Requests.Request'Class;
                       Response   : in out Responses.Response'Class) is
    begin
-      Request.Set_Path_Info (To_String (Dispatcher.Path));
+      Request.Set_Path_Info (To_String (Dispatcher.Path), Dispatcher.Pos);
 
       if Dispatcher.Servlet /= null then
          ASF.Requests.Tools.Set_Context (Request, Dispatcher.Servlet.all'Access,
@@ -426,14 +426,12 @@ package body ASF.Servlets is
    begin
       return R : Request_Dispatcher do
          R.Mapping := Context.Find_Mapping (URI => Path);
-         if R.Mapping = null then
-            R.Path := To_Unbounded_String (Path);
-         elsif Path'First + R.Mapping.Path_Pos <= Path'Last then
-            R.Path := To_Unbounded_String
-              (Path (Path'First + R.Mapping.Path_Pos - 1 .. Path'Last));
+         if R.Mapping /= null and then R.Mapping.Path_Pos > 1 then
+            R.Pos := R.Mapping.Path_Pos - 1;
          else
-            R.Path := Null_Unbounded_String;
+            R.Pos := 0;
          end if;
+         R.Path := To_Unbounded_String (Path);
       end return;
    end Get_Request_Dispatcher;
 

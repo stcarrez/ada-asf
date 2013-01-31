@@ -492,6 +492,7 @@ private
       Mapping : Mapping_Access := null;
       Servlet : Servlet_Access := null;
       Path    : Unbounded_String;
+      Pos     : Natural := 0;
    end record;
 
    type Servlet is new Ada.Finalization.Limited_Controlled with record

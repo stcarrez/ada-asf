@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Sessions Tests - Unit tests for ASF.Sessions
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,6 +49,43 @@ package body ASF.Servlets.Tests is
    S2 : aliased Test_Servlet2;
 
    --  ------------------------------
+   --  Check that the request is done on the good servlet and with the correct servlet path
+   --  and path info.
+   --  ------------------------------
+   procedure Check_Request (T            : in out Test;
+                            Ctx          : in Servlet_Registry;
+                            URI          : in String;
+                            Servlet_Path : in String;
+                            Path_Info    : in String) is
+      Dispatcher : constant Request_Dispatcher
+        := Ctx.Get_Request_Dispatcher (Path => URI);
+      Req        : ASF.Requests.Mockup.Request;
+      Resp       : ASF.Responses.Mockup.Response;
+      Result     : Unbounded_String;
+   begin
+      T.Assert (Dispatcher.Mapping /= null, "No mapping found");
+
+      Req.Set_Request_URI ("test1");
+      Req.Set_Method ("GET");
+      Forward (Dispatcher, Req, Resp);
+
+      Assert_Equals (T, Servlet_Path, Req.Get_Servlet_Path, "Invalid servlet path");
+      Assert_Equals (T, Path_Info, Req.Get_Path_Info,
+                     "The request path info is invalid");
+
+      --  Check the response after the Test_Servlet1.Do_Get method execution.
+      Resp.Read_Content (Result);
+      Assert_Equals (T, ASF.Responses.SC_OK, Resp.Get_Status, "Invalid status");
+      Assert_Equals (T, "URI: test1", Result, "Invalid content");
+
+      Req.Set_Method ("POST");
+      Forward (Dispatcher, Req, Resp);
+
+      Assert_Equals (T, ASF.Responses.SC_METHOD_NOT_ALLOWED, Resp.Get_Status,
+                     "Invalid status for an operation not implemented");
+   end Check_Request;
+
+   --  ------------------------------
    --  Test request dispatcher and servlet invocation
    --  ------------------------------
    procedure Test_Request_Dispatcher (T : in out Test) is
@@ -60,32 +97,27 @@ package body ASF.Servlets.Tests is
 
       Ctx.Add_Mapping (Pattern => "*.jsf", Name => "Faces");
 
-      declare
-         Dispatcher : constant Request_Dispatcher
-           := Ctx.Get_Request_Dispatcher (Path => "/home/test.jsf");
-         Req        : ASF.Requests.Mockup.Request;
-         Resp       : ASF.Responses.Mockup.Response;
-         Result     : Unbounded_String;
-      begin
-         T.Assert (Dispatcher.Mapping /= null, "No mapping found");
+      Ctx.Add_Mapping (Pattern => "/p1/p2/p3/*", Name => "Faces");
 
-         Req.Set_Request_URI ("test1");
-         Req.Set_Method ("GET");
-         Forward (Dispatcher, Req, Resp);
-
-         --  Check the response after the Test_Servlet1.Do_Get method execution.
-         Resp.Read_Content (Result);
-         Assert_Equals (T, ASF.Responses.SC_OK, Resp.Get_Status, "Invalid status");
-         Assert_Equals (T, "URI: test1", Result, "Invalid content");
-
-         Req.Set_Method ("POST");
-         Forward (Dispatcher, Req, Resp);
-
-         Assert_Equals (T, ASF.Responses.SC_METHOD_NOT_ALLOWED, Resp.Get_Status,
-                        "Invalid status for an operation not implemented");
-
-      end;
+      Check_Request (T, Ctx, "/home/test.jsf", "", "/home/test.jsf");
    end Test_Request_Dispatcher;
+
+   --  ------------------------------
+   --  Test mapping and servlet path on a request.
+   --  ------------------------------
+   procedure Test_Servlet_Path (T : in out Test) is
+      Ctx : Servlet_Registry;
+
+      S1  : aliased Test_Servlet1;
+   begin
+      Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
+
+      Ctx.Add_Mapping (Pattern => "*.jsf", Name => "Faces");
+
+      Ctx.Add_Mapping (Pattern => "/p1/p2/p3/*", Name => "Faces");
+
+      Check_Request (T, Ctx, "/p1/p2/p3/home/test.html", "/p1/p2/p3", "/home/test.html");
+   end Test_Servlet_Path;
 
    --  ------------------------------
    --  Test add servlet
@@ -235,6 +267,8 @@ package body ASF.Servlets.Tests is
                        Test_Request_Dispatcher'Access);
       Caller.Add_Test (Suite, "Test ASF.Servlets.Get_Resource",
                        Test_Get_Resource'Access);
+      Caller.Add_Test (Suite, "Test ASF.Requests.Get_Servlet_Path",
+                       Test_Servlet_Path'Access);
    end Add_Tests;
 
 end ASF.Servlets.Tests;

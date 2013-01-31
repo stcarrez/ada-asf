@@ -112,8 +112,9 @@ package body ASF.Security.Filters is
             Context.Set_Context (F.Manager, Auth.all'Access);
          end if;
          declare
-            URL  : constant String := Request.Get_Path_Info;
-            Perm : constant Policies.URLs.URL_Permission (URL'Length)
+            Servlet : constant String := Request.Get_Servlet_Path;
+            URL     : constant String := Servlet & Request.Get_Path_Info;
+            Perm    : constant Policies.URLs.URL_Permission (URL'Length)
               := URL_Permission '(Len => URL'Length, URL => URL);
          begin
             if not F.Manager.Has_Permission (Context, Perm) then

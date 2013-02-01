@@ -643,6 +643,9 @@ package body ASF.Servlets is
       function Get_Name return String;
       pragma Inline (Get_Name);
 
+      function Get_Filters return String;
+      pragma Inline (Get_Filters);
+
       function Get_Name return String is
       begin
          if Map.Servlet /= null then
@@ -652,20 +655,29 @@ package body ASF.Servlets is
          end if;
       end Get_Name;
 
+      function Get_Filters return String is
+      begin
+         if Map.Filters /= null then
+            return " F(" & Natural'Image (Map.Filters'Length) & ")";
+         else
+            return "";
+         end if;
+      end Get_Filters;
+
       Name : constant String := Get_Name;
    begin
       case Map.Map_Type is
          when MAP_URI_NODE =>
-            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI, Name);
+            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI, Name & Get_Filters);
 
          when MAP_URI =>
-            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI, Name);
+            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI, Name & Get_Filters);
 
          when MAP_WILDCARD =>
-            Log.Info ("{0} +- [*] => {2}", Indent, Name);
+            Log.Info ("{0} +- [*] => {2}", Indent, Name & Get_Filters);
 
          when MAP_EXTENSION | MAP_PATH_EXTENSION =>
-            Log.Info ("{0} +- [*.{1}] => {2}", Indent, Map.URI, Name);
+            Log.Info ("{0} +- [*.{1}] => {2}", Indent, Map.URI, Name & Get_Filters);
 
       end case;
       if Map.Child_Map /= null then
@@ -739,7 +751,7 @@ package body ASF.Servlets is
             if Wildcard /= 0 then
                Copy_Mapping.Map_Type := MAP_PATH_EXTENSION;
             else
-               Mapping.Map_Type := MAP_URI;
+               Copy_Mapping.Map_Type := MAP_URI;
             end if;
             if Mapping.Filters /= null then
                for I in Mapping.Filters.all'Range loop
@@ -750,6 +762,12 @@ package body ASF.Servlets is
          end if;
          Mapping.Append_Filter (Filter_Maps.Element (Pos));
       end;
+      if Registry.Mappings /= null then
+         Dump_Map (Registry.Mappings.all, "");
+      end if;
+      if Registry.Extension_Mapping /= null then
+         Dump_Map (Registry.Extension_Mapping.all, "");
+      end if;
    end Add_Filter_Mapping;
 
    --  ------------------------------

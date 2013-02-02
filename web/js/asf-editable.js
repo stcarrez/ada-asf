@@ -1,6 +1,6 @@
 /*
  *  asf-editable -- Editable component
- *  Copyright (C) 2012 Stephane Carrez
+ *  Copyright (C) 2012, 2013 Stephane Carrez
  *  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,8 @@
 
             this.element.bind('click', function(event) {
                 return self.click(event);
+            }).bind("mouseleave", function(event) {
+                return self.finishEdit(null);
             });
 
             var f = $(this.element).closest('form');
@@ -48,21 +50,6 @@
             this.element.removeClass("asf-editing");
             this.editing = false;
             return false;
-        },
-
-        /**
-         * Blur action called when the component looses the focus.
-         * The 'asf-editing' CSS is removed from the element and the element goes back in normal display mode.
-         */
-        blur: function(event) {
-            if (this.editing == true) {
-                var node = $(event.currentTarget).closest(".asf-editing");
-                if (node.length == 0) {
-                   this.finishEdit(null);
-                   return false;
-                }
-            }
-            return true;
         },
 
         /**
@@ -91,8 +78,6 @@
                         // Pass through all other keypresses.
                         return true;
                     }
-                }).bind("blur", function(event) {
-                    return self.blur(event);
                 });
             }
         }

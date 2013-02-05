@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  users - Gives access to the OpenID principal through an Ada bean
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,16 +26,18 @@ with ASF.Applications.Messages.Factory;
 
 with GNAT.MD5;
 
-with Security.Openid;
+with Security.OpenID;
 with ASF.Security.Filters;
 
 with Util.Strings.Transforms;
 package body Users is
 
    use Ada.Strings.Unbounded;
-   use Security.Openid;
+   use Security.OpenID;
    use type ASF.Principals.Principal_Access;
    use type ASF.Contexts.Faces.Faces_Context_Access;
+
+   procedure Remove_Cookie (Name : in String);
 
    --  ------------------------------
    --  Given an Email address, return the Gravatar link to the user image.
@@ -59,14 +61,14 @@ package body Users is
       F : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
       S : ASF.Sessions.Session;
       P : ASF.Principals.Principal_Access := null;
-      U : Security.Openid.Principal_Access := null;
+      U : Security.OpenID.Principal_Access := null;
    begin
       if F /= null then
          S := F.Get_Session;
          if S.Is_Valid then
             P := S.Get_Principal;
             if P /= null then
-               U := Security.Openid.Principal'Class (P.all)'Access;
+               U := Security.OpenID.Principal'Class (P.all)'Access;
             end if;
          end if;
       end if;
@@ -129,12 +131,12 @@ package body Users is
       F : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
       S : ASF.Sessions.Session := F.Get_Session;
       P : ASF.Principals.Principal_Access := null;
-      U : Security.Openid.Principal_Access := null;
+      U : Security.OpenID.Principal_Access := null;
    begin
       if S.Is_Valid then
          P := S.Get_Principal;
          if P /= null then
-            U := Security.Openid.Principal'Class (P.all)'Access;
+            U := Security.OpenID.Principal'Class (P.all)'Access;
          end if;
          S.Invalidate;
       end if;

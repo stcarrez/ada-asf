@@ -112,6 +112,7 @@ package body ASF.Applications.Views is
 
       use ASF.Views;
       use Util.Locales;
+      use type ASF.Components.Base.UIComponent_Access;
 
       Ctx       : Facelet_Context;
       Tree      : Facelets.Facelet;
@@ -140,6 +141,12 @@ package body ASF.Applications.Views is
                               Context => Ctx,
                               Root    => Root'Unchecked_Access);
          ASF.Components.Base.Steal_Root_Component (Root, Node);
+
+         --  If there was some error while building the view, return now.
+         --  The SC_NOT_FOUND response will also be returned when rendering the response.
+         if Node = null then
+            return;
+         end if;
          ASF.Components.Root.Set_Root (View, Node, View_Name);
          if Context.Get_Locale = NULL_LOCALE then
             if Node.all in Core.Views.UIView'Class then

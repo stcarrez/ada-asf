@@ -53,6 +53,24 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
 
    --  ------------------------------
+   --  Find the form component which contains the input component.
+   --  Returns null if the input is not within a form component.
+   --  ------------------------------
+   function Get_Form (UI : in UIInput) return UIForm_Access is
+      use type ASF.Components.Base.UIComponent_Access;
+
+      Parent : ASF.Components.Base.UIComponent_Access := UI.Get_Parent;
+   begin
+      while Parent /= null loop
+         if Parent.all in UIForm'Class then
+            return UIForm'Class (Parent.all)'Access;
+         end if;
+         Parent := Parent.Get_Parent;
+      end loop;
+      return null;
+   end Get_Form;
+
+   --  ------------------------------
    --  Create an UIInput secret component
    --  ------------------------------
    function Create_Input_Secret return ASF.Components.Base.UIComponent_Access is

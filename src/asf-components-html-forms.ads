@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +32,38 @@ package ASF.Components.Html.Forms is
    --  Message displayed when the submitted value is required but is empty.
    REQUIRED_MESSAGE_ID          : constant String := "asf.faces.component.UIInput.REQUIRED";
 
+   --  ------------------------------
+   --  Form Component
+   --  ------------------------------
+   type UIForm is new UIHtmlComponent with private;
+   type UIForm_Access is access all UIForm'Class;
+
+   --  Check whether the form is submitted.
+   function Is_Submitted (UI : in UIForm) return Boolean;
+
+   --  Called during the <b>Apply Request</b> phase to indicate that this
+   --  form is submitted.
+   procedure Set_Submitted (UI : in out UIForm);
+
+   --  Get the action URL to set on the HTML form
+   function Get_Action (UI      : in UIForm;
+                        Context : in Faces_Context'Class) return String;
+
+   overriding
+   procedure Encode_Begin (UI      : in UIForm;
+                           Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Encode_End (UI      : in UIForm;
+                         Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Decode (UI      : in out UIForm;
+                     Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Process_Decodes (UI      : in out UIForm;
+                              Context : in out Faces_Context'Class);
 
    --  ------------------------------
    --  Input Component
@@ -45,6 +77,10 @@ package ASF.Components.Html.Forms is
    --  Check if this component has the required attribute set.
    function Is_Required (UI      : in UIInput;
                          Context : in Faces_Context'Class) return Boolean;
+
+   --  Find the form component which contains the input component.
+   --  Returns null if the input is not within a form component.
+   function Get_Form (UI : in UIInput) return UIForm_Access;
 
    --  Get the value of the component.  If the component has a submitted value, returns it.
    --  If the component has a local value which is not null, returns it.
@@ -190,38 +226,6 @@ package ASF.Components.Html.Forms is
    procedure Broadcast (UI      : in out UICommand;
                         Event   : not null access ASF.Events.Faces.Faces_Event'Class;
                         Context : in out Faces_Context'Class);
-
-   --  ------------------------------
-   --  Label Component
-   --  ------------------------------
-   type UIForm is new UIHtmlComponent with private;
-
-   --  Check whether the form is submitted.
-   function Is_Submitted (UI : in UIForm) return Boolean;
-
-   --  Called during the <b>Apply Request</b> phase to indicate that this
-   --  form is submitted.
-   procedure Set_Submitted (UI : in out UIForm);
-
-   --  Get the action URL to set on the HTML form
-   function Get_Action (UI      : in UIForm;
-                        Context : in Faces_Context'Class) return String;
-
-   overriding
-   procedure Encode_Begin (UI      : in UIForm;
-                           Context : in out Faces_Context'Class);
-
-   overriding
-   procedure Encode_End (UI      : in UIForm;
-                         Context : in out Faces_Context'Class);
-
-   overriding
-   procedure Decode (UI      : in out UIForm;
-                     Context : in out Faces_Context'Class);
-
-   overriding
-   procedure Process_Decodes (UI      : in out UIForm;
-                              Context : in out Faces_Context'Class);
 
 private
 

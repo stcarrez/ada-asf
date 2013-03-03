@@ -97,6 +97,15 @@ package body ASF.Contexts.Facelets is
       end if;
    end Set_Variable;
 
+   --  Set the attribute having given name with the expression.
+   procedure Set_Variable (Context : in out Facelet_Context;
+                           Name    : in String;
+                           Value   : in EL.Expressions.Expression) is
+      N : Unbounded_String := To_Unbounded_String (Name);
+   begin
+      Set_Variable (Context, N, Value);
+   end Set_Variable;
+
    --  ------------------------------
    --  Include the facelet from the given source file.
    --  The included views appended to the parent component tree.

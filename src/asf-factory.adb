@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,87 +16,48 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Log.Loggers;
+with Ada.Strings.Hash;
 package body ASF.Factory is
 
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Factory");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Factory");
 
    --  ------------------------------
-   --  Find the create function associated with the name.
-   --  Returns null if there is no binding associated with the name.
+   --  Compute a hash for the tag name.
    --  ------------------------------
-   function Find (Factory : Factory_Bindings;
-                  Name    : String) return Binding is
-      Left  : Natural := Factory.Bindings'First;
-      Right : Natural := Factory.Bindings'Last;
+   function Hash (Key : in Tag_Name) return Ada.Containers.Hash_Type is
+      use type Ada.Containers.Hash_Type;
+
+      H1 : constant Ada.Containers.Hash_Type := Ada.Strings.Hash (Key.URI.all);
+      H2 : constant Ada.Containers.Hash_Type := Ada.Strings.Hash (Key.Name.all);
    begin
-      while Left <= Right loop
-         declare
-            Pos  : constant Natural := (Left + Right + 1) / 2;
-            Item : constant Name_Access := Factory.Bindings (Pos).Name;
-         begin
-            if Name = Item.all then
-               return Factory.Bindings (Pos);
-            elsif Name < Item.all then
-               Right := Pos - 1;
-            else
-               Left := Pos + 1;
-            end if;
-         end;
-      end loop;
-      raise Unknown_Name;
-   end Find;
+      return H1 xor H2;
+   end Hash;
 
    --  ------------------------------
-   --  Check the definition of the component factory.
+   --  Returns true if both tag names are identical.
    --  ------------------------------
-   procedure Check (Factory : in Factory_Bindings) is
-      P : Name_Access := null;
+   function "=" (Left, Right : in Tag_Name) return Boolean is
    begin
-      Log.Debug ("Check binding for {0}", Factory.URI.all);
-
-
-      for I in Factory.Bindings'Range loop
-         declare
-            B : constant Binding := Factory.Bindings (I);
-         begin
-            if P /= null then
-               if B.Name.all = P.all then
-                  Log.Error ("In factory {0}, binding {1} registered twice",
-                             Factory.URI.all, P.all);
-                  raise Program_Error
-                    with Factory.URI.all & ": binding '" & P.all & "' registered twice";
-               end if;
-               if B.Name.all < P.all then
-                  Log.Error ("In factory {0}, binding {1} at position {2} "
-                             & "is not at the good place", Factory.URI.all, P.all,
-                             Natural'Image (I));
-                  raise Program_Error
-                    with Factory.URI.all & ": binding '" & B.Name.all
-                      & "' at position " & Natural'Image (I) & " not at the good place";
-               end if;
-            end if;
-            P := B.Name;
-         end;
-      end loop;
-   end Check;
+      return Left.URI.all = Right.URI.all and Left.Name.all = Right.Name.all;
+   end "=";
 
    --  ------------------------------
    --  Find the create function in bound to the name in the given URI namespace.
    --  Returns null if no such binding exist.
    --  ------------------------------
-   function Find (Factory : Component_Factory;
-                  URI     : String;
-                  Name    : String) return Binding is
-      NS  : aliased constant String := URI;
-      Pos : constant Factory_Maps.Cursor := Factory.Map.Find (NS'Unchecked_Access);
+   function Find (Factory : in Component_Factory;
+                  URI     : in String;
+                  Name    : in String) return Binding_Access is
+      Key : constant Tag_Name := Tag_Name '(URI  => URI'Unrestricted_Access,
+                                            Name => Name'Unrestricted_Access);
+      Pos : constant Factory_Maps.Cursor := Factory.Map.Find (Key);
    begin
-      if not Factory_Maps.Has_Element (Pos) then
-         raise Unknown_Name;
+      if Factory_Maps.Has_Element (Pos) then
+         return Factory_Maps.Element (Pos);
+      else
+         return null;
       end if;
-      return Find (Factory => Factory_Maps.Element (Pos).all, Name => Name);
    end Find;
 
    --  ------------------------------
@@ -107,8 +68,14 @@ package body ASF.Factory is
    begin
       Log.Info ("Register bindings: {0}", Bindings.URI.all);
 
-      Check (Bindings.all);
-      Factory.Map.Include (Bindings.URI, Bindings);
+      for I in Bindings.Bindings'Range loop
+         declare
+            Key : constant Tag_Name := Tag_Name '(URI  => Bindings.URI,
+                                                  Name => Bindings.Bindings (I).Name);
+         begin
+            Factory.Map.Include (Key, Bindings.Bindings (I)'Access);
+         end;
+      end loop;
    end Register;
 
    --  ------------------------------

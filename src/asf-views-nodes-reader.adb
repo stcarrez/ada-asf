@@ -25,7 +25,6 @@ with Util.Log.Loggers;
 with Util.Serialize.IO.XML;
 package body ASF.Views.Nodes.Reader is
 
-   use Util.Log;
    use Sax.Readers;
    use Sax.Exceptions;
    use Sax.Locators;
@@ -35,7 +34,7 @@ package body ASF.Views.Nodes.Reader is
    use Ada.Strings.Fixed;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Views.Nodes.Reader");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Views.Nodes.Reader");
 
    procedure Free is
      new Ada.Unchecked_Deallocation (Element_Context_Array,
@@ -114,7 +113,7 @@ package body ASF.Views.Nodes.Reader is
    --  ------------------------------
    function Find (Mapper    : NS_Function_Mapper;
                   Namespace : String;
-                  Name      : String) return ASF.Factory.Binding is
+                  Name      : String) return ASF.Views.Nodes.Binding_Access is
       use NS_Mapping;
    begin
       return ASF.Factory.Find (Mapper.Factory.all, Namespace, Name);
@@ -324,7 +323,7 @@ package body ASF.Views.Nodes.Reader is
             when HAS_CONTENT =>
                if Handler.Text = null then
                   Handler.Text := new Text_Tag_Node;
-                  Initialize (Handler.Text.all'Access, Null_Unbounded_String,
+                  Initialize (Handler.Text.all'Access, null,
                               Handler.Line, Handler.Current.Parent, null);
                   Handler.Text.Last := Handler.Text.Content'Access;
 
@@ -416,8 +415,7 @@ package body ASF.Views.Nodes.Reader is
       Attr_Count : Natural;
       Attributes : Tag_Attribute_Array_Access;
       Node       : Tag_Node_Access;
-      Name       : constant Unbounded_String := To_Unbounded_String (Local_Name);
-      Factory    : ASF.Factory.Binding;
+      Factory    : ASF.Views.Nodes.Binding_Access;
    begin
       Handler.Line.Line := Sax.Locators.Get_Line_Number (Handler.Locator);
       Handler.Line.Column := Sax.Locators.Get_Column_Number (Handler.Locator);
@@ -425,9 +423,9 @@ package body ASF.Views.Nodes.Reader is
       --  Push the current context to keep track where we are.
       Push (Handler);
       Attr_Count := Get_Length (Atts);
-      begin
-         Factory := Handler.Functions.Find (Namespace => Namespace_URI,
-                                            Name      => Local_Name);
+      Factory := Handler.Functions.Find (Namespace => Namespace_URI,
+                                         Name      => Local_Name);
+      if Factory /= null then
          if Length (Handler.Add_NS) > 0 then
             Attributes := new Tag_Attribute_Array (0 .. Attr_Count);
             Attributes (0).Name  := To_Unbounded_String ("xmlns");
@@ -440,9 +438,10 @@ package body ASF.Views.Nodes.Reader is
             declare
                Attr  : constant Tag_Attribute_Access := Attributes (I + 1)'Access;
                Value : constant String := Get_Value (Atts, I);
+               Name  : constant String := Get_Qname (Atts, I);
                Expr  : EL.Expressions.Expression_Access;
             begin
-               Attr.Name  := To_Unbounded_String (Get_Qname (Atts, I));
+               Attr.Name  := To_Unbounded_String (Name);
                if Index (Value, "#{") > 0 or Index (Value, "${") > 0 then
                   begin
                      Expr := new EL.Expressions.Expression;
@@ -469,11 +468,10 @@ package body ASF.Views.Nodes.Reader is
                end if;
             end;
          end loop;
-         Node := Factory.Tag (Name       => Name,
+         Node := Factory.Tag (Binding    => Factory,
                               Line       => Handler.Line,
                               Parent     => Handler.Current.Parent,
                               Attributes => Attributes);
-         Node.Factory   := Factory.Component;
          Handler.Current.Parent := Node;
          Handler.Current.Text   := False;
 
@@ -481,51 +479,50 @@ package body ASF.Views.Nodes.Reader is
          Handler.Spaces := Null_Unbounded_String;
          Handler.State  := Handler.Default_State;
 
-      exception
-         when Unknown_Name =>
-            declare
-               Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
-            begin
-               --  Optimization: we know in which state we are.
-               Handler.State := HAS_CONTENT;
-               Handler.Current.Text := True;
-               if Is_Unknown then
-                  Log.Error ("{0}: Element '{1}' not found",
-                             To_String (Handler.Locator), Qname);
-               end if;
-               if Handler.Escape_Unknown_Tags and Is_Unknown then
-                  Handler.Collect_Text ("&lt;");
-               else
-                  Handler.Collect_Text ("<");
-               end if;
-               Handler.Collect_Text (Qname);
-               if Length (Handler.Add_NS) > 0 then
-                  Handler.Collect_Text (" xmlns=""");
-                  Handler.Collect_Text (To_String (Handler.Add_NS));
-                  Handler.Collect_Text ("""");
-                  Handler.Add_NS := To_Unbounded_String ("");
-               end if;
-               if Attr_Count /= 0 then
-                  for I in 0 .. Attr_Count - 1 loop
-                     Handler.Collect_Text (" ");
-                     Handler.Collect_Text (Get_Qname (Atts, I));
-                     Handler.Collect_Text ("=""");
+      else
+         declare
+            Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
+         begin
+            --  Optimization: we know in which state we are.
+            Handler.State := HAS_CONTENT;
+            Handler.Current.Text := True;
+            if Is_Unknown then
+               Log.Error ("{0}: Element '{1}' not found",
+                          To_String (Handler.Locator), Qname);
+            end if;
+            if Handler.Escape_Unknown_Tags and Is_Unknown then
+               Handler.Collect_Text ("&lt;");
+            else
+               Handler.Collect_Text ("<");
+            end if;
+            Handler.Collect_Text (Qname);
+            if Length (Handler.Add_NS) > 0 then
+               Handler.Collect_Text (" xmlns=""");
+               Handler.Collect_Text (To_String (Handler.Add_NS));
+               Handler.Collect_Text ("""");
+               Handler.Add_NS := To_Unbounded_String ("");
+            end if;
+            if Attr_Count /= 0 then
+               for I in 0 .. Attr_Count - 1 loop
+                  Handler.Collect_Text (" ");
+                  Handler.Collect_Text (Get_Qname (Atts, I));
+                  Handler.Collect_Text ("=""");
 
-                     declare
-                        Value : constant String := Get_Value (Atts, I);
-                     begin
-                        Handler.Collect_Text (Value);
-                     end;
-                     Handler.Collect_Text ("""");
-                  end loop;
-               end if;
-               if Handler.Escape_Unknown_Tags and Is_Unknown then
-                  Handler.Collect_Text ("&gt;");
-               else
-                  Handler.Collect_Text (">");
-               end if;
-            end;
-      end;
+                  declare
+                     Value : constant String := Get_Value (Atts, I);
+                  begin
+                     Handler.Collect_Text (Value);
+                  end;
+                  Handler.Collect_Text ("""");
+               end loop;
+            end if;
+            if Handler.Escape_Unknown_Tags and Is_Unknown then
+               Handler.Collect_Text ("&gt;");
+            else
+               Handler.Collect_Text (">");
+            end if;
+         end;
+      end if;
    end Start_Element;
 
    --  ------------------------------
@@ -599,7 +596,7 @@ package body ASF.Views.Nodes.Reader is
    procedure Processing_Instruction (Handler : in out Xhtml_Reader;
                                      Target  : in Unicode.CES.Byte_Sequence;
                                      Data    : in Unicode.CES.Byte_Sequence) is
-      pragma Unmodified (Handler);
+      pragma Unreferenced (Handler);
    begin
       Log.Error ("Processing instruction: {0}: {1}", Target, Data);
       null;
@@ -621,7 +618,7 @@ package body ASF.Views.Nodes.Reader is
    --  ------------------------------
    overriding
    procedure Start_Cdata (Handler : in out Xhtml_Reader) is
-      pragma Unmodified (Handler);
+      pragma Unreferenced (Handler);
    begin
       Log.Info ("Start CDATA");
    end Start_Cdata;
@@ -631,7 +628,7 @@ package body ASF.Views.Nodes.Reader is
    --  ------------------------------
    overriding
    procedure End_Cdata (Handler : in out Xhtml_Reader) is
-      pragma Unmodified (Handler);
+      pragma Unreferenced (Handler);
    begin
       Log.Info ("End CDATA");
    end End_Cdata;
@@ -658,7 +655,7 @@ package body ASF.Views.Nodes.Reader is
    begin
       if Handler.Text = null then
          Handler.Text := new Text_Tag_Node;
-         Initialize (Handler.Text.all'Access, Null_Unbounded_String,
+         Initialize (Handler.Text.all'Access, null,
                      Handler.Line, Handler.Current.Parent, null);
          Handler.Text.Last := Handler.Text.Content'Access;
       end if;

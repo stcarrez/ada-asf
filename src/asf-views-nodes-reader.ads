@@ -183,9 +183,9 @@ private
 
    --  Find the create function in bound to the name in the given namespace.
    --  Returns null if no such binding exist.
-   function Find (Mapper    : NS_Function_Mapper;
-                  Namespace : String;
-                  Name      : String) return ASF.Factory.Binding;
+   function Find (Mapper    : in NS_Function_Mapper;
+                  Namespace : in String;
+                  Name      : in String) return ASF.Views.Nodes.Binding_Access;
 
    procedure Set_Namespace (Mapper : in out NS_Function_Mapper;
                             Prefix : in String;
@@ -206,7 +206,7 @@ private
    type Text_State is (NO_CONTENT, HAS_CONTENT, PARSE_EXPR);
 
    type Xhtml_Reader is new Sax.Readers.Reader with record
-      Locator : Sax.Locators.Locator;
+      Locator    : Sax.Locators.Locator;
       Root       : Tag_Node_Access;
       Text       : Text_Tag_Node_Access;
       Current    : Element_Context_Access;
@@ -215,7 +215,9 @@ private
       Context    : aliased EL.Contexts.Default.Default_Context;
       Stack      : Element_Context_Array_Access;
       Stack_Pos  : Natural := 0;
-      Line       : Line_Info;
+
+      --  The line and file information.
+      Line                : Line_Info;
 
       State         : Text_State := NO_CONTENT;
       Default_State : Text_State := NO_CONTENT;
@@ -239,7 +241,8 @@ private
       Ignore_White_Spaces : Boolean := True;
 
       --  Whether empty lines should be ignored (when white spaces are kept).
-      Ignore_Empty_Lines : Boolean := True;
+      Ignore_Empty_Lines  : Boolean := True;
+
    end record;
 
 end ASF.Views.Nodes.Reader;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Strings;
 with ASF.Views.Nodes;
 with ASF.Converters;
 with ASF.Validators;
@@ -35,24 +34,6 @@ package ASF.Factory is
 
    use ASF;
 
-   Unknown_Name : exception;
-
-   --  Binding name
-   type Name_Access is new Util.Strings.Name_Access;
-
-   --  ------------------------------
-   --  Binding definition.
-   --  ------------------------------
-   --  The binding links an XHTML entity name to a tag node implementation
-   --  and a component creation handler.  When the XHTML entity is found,
-   --  the associated binding is search and when found the node is created
-   --  by using the <b>Tag</b> create function.
-   type Binding is record
-      Name      : Name_Access;
-      Component : ASF.Views.Nodes.Create_Access;
-      Tag       : ASF.Views.Nodes.Tag_Node_Create_Access;
-   end record;
-
    --  ------------------------------
    --  List of bindings
    --  ------------------------------
@@ -60,22 +41,14 @@ package ASF.Factory is
    --  a library accessible through a XML name-space.  The binding array
    --  must be sorted on the binding name.  The <b>Check</b> procedure will
    --  verify this assumption when the bindings are registered in the factory.
-   type Binding_Array is array (Natural range <>) of Binding;
+   type Binding_Array is array (Natural range <>) of aliased ASF.Views.Nodes.Binding;
    type Binding_Array_Access is access constant Binding_Array;
 
-   type Factory_Bindings is record
-      URI      : Name_Access;
+   type Factory_Bindings is limited record
+      URI      : ASF.Views.Nodes.Name_Access;
       Bindings : Binding_Array_Access;
    end record;
    type Factory_Bindings_Access is access constant Factory_Bindings;
-
-   --  Find the create function associated with the name.
-   --  Returns null if there is no binding associated with the name.
-   function Find (Factory : Factory_Bindings;
-                  Name    : String) return Binding;
-
-   --  Check the definition of the component factory.
-   procedure Check (Factory : in Factory_Bindings);
 
    --  ------------------------------
    --  Component Factory
@@ -90,9 +63,9 @@ package ASF.Factory is
 
    --  Find the create function in bound to the name in the given URI name-space.
    --  Returns null if no such binding exist.
-   function Find (Factory : Component_Factory;
-                  URI     : String;
-                  Name    : String) return Binding;
+   function Find (Factory : in Component_Factory;
+                  URI     : in String;
+                  Name    : in String) return ASF.Views.Nodes.Binding_Access;
 
    --  ------------------------------
    --  Converter Factory
@@ -126,16 +99,28 @@ package ASF.Factory is
 
 private
 
-   use Util.Strings;
    use ASF.Converters;
    use ASF.Validators;
+   use ASF.Views.Nodes;
+
+   --  The tag name defines a URI with the name.
+   type Tag_Name is record
+      URI  : ASF.Views.Nodes.Name_Access;
+      Name : ASF.Views.Nodes.Name_Access;
+   end record;
+
+   --  Compute a hash for the tag name.
+   function Hash (Key : in Tag_Name) return Ada.Containers.Hash_Type;
+
+   --  Returns true if both tag names are identical.
+   function "=" (Left, Right : in Tag_Name) return Boolean;
 
    --  Tag library map indexed on the library namespace.
    package Factory_Maps is new
-     Ada.Containers.Hashed_Maps (Key_Type        => Name_Access,
-                                 Element_Type    => Factory_Bindings_Access,
+     Ada.Containers.Hashed_Maps (Key_Type        => Tag_Name,
+                                 Element_Type    => Binding_Access,
                                  Hash            => Hash,
-                                 Equivalent_Keys => Equivalent_Keys);
+                                 Equivalent_Keys => "=");
 
    --  Converter map indexed on the converter name.
    --  The key is an EL.Objects.Object to minimize the conversions when searching

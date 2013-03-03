@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,10 +45,10 @@ package ASF.Views.Nodes.Jsf is
    type Converter_Tag_Node_Access is access all Converter_Tag_Node'Class;
 
    --  Create the Converter Tag
-   function Create_Converter_Tag_Node (Name       : Unbounded_String;
-                                       Line       : Views.Line_Info;
-                                       Parent     : Views.Nodes.Tag_Node_Access;
-                                       Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+   function Create_Converter_Tag_Node (Binding    : in Binding_Access;
+                                       Line       : in Views.Line_Info;
+                                       Parent     : in Views.Nodes.Tag_Node_Access;
+                                       Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -73,10 +73,10 @@ package ASF.Views.Nodes.Jsf is
    type Validator_Tag_Node_Access is access all Validator_Tag_Node'Class;
 
    --  Create the Validator Tag
-   function Create_Validator_Tag_Node (Name       : Unbounded_String;
-                                       Line       : Views.Line_Info;
-                                       Parent     : Views.Nodes.Tag_Node_Access;
-                                       Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+   function Create_Validator_Tag_Node (Binding    : in Binding_Access;
+                                       Line       : in Views.Line_Info;
+                                       Parent     : in Views.Nodes.Tag_Node_Access;
+                                       Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access;
 
    --  Get the validator instance that corresponds to the validator tag.
@@ -105,10 +105,10 @@ package ASF.Views.Nodes.Jsf is
    type Range_Validator_Tag_Node_Access is access all Range_Validator_Tag_Node'Class;
 
    --  Create the Range_Validator Tag
-   function Create_Range_Validator_Tag_Node (Name       : Unbounded_String;
-                                             Line       : Views.Line_Info;
-                                             Parent     : Views.Nodes.Tag_Node_Access;
-                                             Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+   function Create_Range_Validator_Tag_Node (Binding    : in Binding_Access;
+                                             Line       : in Views.Line_Info;
+                                             Parent     : in Views.Nodes.Tag_Node_Access;
+                                             Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                              return Views.Nodes.Tag_Node_Access;
 
    --  Get the validator instance that corresponds to the range validator.
@@ -133,10 +133,10 @@ package ASF.Views.Nodes.Jsf is
 
    --  Create the Length_Validator Tag.  Verifies that the XML node defines
    --  the <b>minimum</b> or the <b>maximum</b> or both attributes.
-   function Create_Length_Validator_Tag_Node (Name       : Unbounded_String;
-                                              Line       : Views.Line_Info;
-                                              Parent     : Views.Nodes.Tag_Node_Access;
-                                              Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+   function Create_Length_Validator_Tag_Node (Binding    : in Binding_Access;
+                                              Line       : in Views.Line_Info;
+                                              Parent     : in Views.Nodes.Tag_Node_Access;
+                                              Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                               return Views.Nodes.Tag_Node_Access;
 
    --  Get the validator instance that corresponds to the validator tag.
@@ -158,10 +158,10 @@ package ASF.Views.Nodes.Jsf is
    type Attribute_Tag_Node_Access is access all Attribute_Tag_Node'Class;
 
    --  Create the Attribute Tag
-   function Create_Attribute_Tag_Node (Name       : Unbounded_String;
-                                       Line       : Views.Line_Info;
-                                       Parent     : Views.Nodes.Tag_Node_Access;
-                                       Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+   function Create_Attribute_Tag_Node (Binding    : in Binding_Access;
+                                       Line       : in Views.Line_Info;
+                                       Parent     : in Views.Nodes.Tag_Node_Access;
+                                       Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -185,10 +185,10 @@ package ASF.Views.Nodes.Jsf is
    type Facet_Tag_Node_Access is access all Facet_Tag_Node'Class;
 
    --  Create the Facet Tag
-   function Create_Facet_Tag_Node (Name       : Unbounded_String;
-                                   Line       : Views.Line_Info;
-                                   Parent     : Views.Nodes.Tag_Node_Access;
-                                   Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+   function Create_Facet_Tag_Node (Binding    : in Binding_Access;
+                                   Line       : in Views.Line_Info;
+                                   Parent     : in Views.Nodes.Tag_Node_Access;
+                                   Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                    return Views.Nodes.Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -209,10 +209,10 @@ package ASF.Views.Nodes.Jsf is
    type Metadata_Tag_Node_Access is access all Metadata_Tag_Node'Class;
 
    --  Create the Metadata Tag
-   function Create_Metadata_Tag_Node (Name       : Unbounded_String;
-                                      Line       : Views.Line_Info;
-                                      Parent     : Views.Nodes.Tag_Node_Access;
-                                      Attributes : Views.Nodes.Tag_Attribute_Array_Access)
+   function Create_Metadata_Tag_Node (Binding    : in Binding_Access;
+                                      Line       : in Views.Line_Info;
+                                      Parent     : in Views.Nodes.Tag_Node_Access;
+                                      Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                       return Views.Nodes.Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as a metadata information

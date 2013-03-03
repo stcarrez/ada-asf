@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,12 +67,17 @@ package body ASF.Views.Nodes is
    end Error;
 
    --  ------------------------------
-   --  Get the attribute name.
+   --  Compare the attribute name.
    --  ------------------------------
-   function Get_Name (Attribute : Tag_Attribute) return Unbounded_String is
+   function "=" (Left : in Tag_Attribute; Right : in String) return Boolean is
    begin
-      return Attribute.Name;
-   end Get_Name;
+      return Left.Name = Right;
+   end "=";
+
+   function "=" (Left, Right : in Tag_Attribute) return Boolean is
+   begin
+      return Left.Name = Right.Name;
+   end "=";
 
    --  ------------------------------
    --  Get the attribute name.
@@ -89,14 +94,6 @@ package body ASF.Views.Nodes is
    begin
       return Attribute.Binding = null;
    end Is_Static;
-
-   --  ------------------------------
-   --  Get the attribute literal value.
-   --  ------------------------------
-   function Get_Value (Attribute : Tag_Attribute) return Unbounded_String is
-   begin
-      return Attribute.Value;
-   end Get_Value;
 
    --  ------------------------------
    --  Get the attribute value.  If the attribute is an EL expression
@@ -247,14 +244,6 @@ package body ASF.Views.Nodes is
    --  ------------------------------
 
    --  ------------------------------
-   --  Get the node name.
-   --  ------------------------------
-   function Get_Name (Node : Tag_Node) return Unbounded_String is
-   begin
-      return Node.Name;
-   end Get_Name;
-
-   --  ------------------------------
    --  Get the line information where the tag node is defined.
    --  ------------------------------
    function Get_Line_Info (Node : Tag_Node) return Line_Info is
@@ -306,14 +295,18 @@ package body ASF.Views.Nodes is
    --  Initialize the node
    --  ------------------------------
    procedure Initialize (Node       : in Tag_Node_Access;
-                         Name       : in Unbounded_String;
+                         Binding    : in Binding_Access;
                          Line       : in Line_Info;
                          Parent     : in Tag_Node_Access;
                          Attributes : in Tag_Attribute_Array_Access) is
    begin
-      Node.Name := Name;
-      Node.Line := Line;
-      Node.Parent := Parent;
+      if Binding /= null then
+         Node.Factory := Binding.Component;
+      else
+         Node.Factory := null;
+      end if;
+      Node.Line    := Line;
+      Node.Parent  := Parent;
       Node.Attributes := Attributes;
       if Node.Attributes /= null then
          for I in Attributes.all'Range loop
@@ -615,14 +608,14 @@ package body ASF.Views.Nodes is
 
    --  Create a tag node
    --  Create the text Tag
-   function Create_Component_Node (Name       : Unbounded_String;
-                                   Line       : Line_Info;
-                                   Parent     : Tag_Node_Access;
-                                   Attributes : Tag_Attribute_Array_Access)
+   function Create_Component_Node (Binding    : in Binding_Access;
+                                   Line       : in Line_Info;
+                                   Parent     : in Tag_Node_Access;
+                                   Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access is
       Node : constant Tag_Node_Access := new Tag_Node;
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       return Node.all'Access;
    end Create_Component_Node;
 

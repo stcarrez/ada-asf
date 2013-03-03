@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -322,14 +322,14 @@ package body ASF.Components.Base is
    function Get_Attribute (UI      : UIComponent;
                            Context : Faces_Context'Class;
                            Name    : String) return EL.Objects.Object is
+      use type ASF.Views.Nodes.Tag_Attribute;
+
       Attribute : UIAttribute_Access := UI.Attributes;
    begin
       --  Look first in the dynamic attribute list (owned by this UIComponent)
       while Attribute /= null loop
-         declare
-            Attr_Name : constant String := ASF.Views.Nodes.Get_Name (Attribute.Definition.all);
          begin
-            if Attr_Name = Name then
+            if Attribute.Definition.all = Name then
                --  The attribute value can be a constant or an expression.
                if not EL.Objects.Is_Null (Attribute.Value) then
                   return Attribute.Value;
@@ -423,19 +423,16 @@ package body ASF.Components.Base is
    procedure Set_Attribute (UI    : in out UIComponent;
                             Def   : access ASF.Views.Nodes.Tag_Attribute;
                             Value : in EL.Expressions.Expression) is
+      use type ASF.Views.Nodes.Tag_Attribute;
+
       Attribute : UIAttribute_Access := UI.Attributes;
-      Name      : constant String := ASF.Views.Nodes.Get_Name (Def.all);
    begin
       while Attribute /= null loop
-         declare
-            Attr_Name : constant String := ASF.Views.Nodes.Get_Name (Attribute.Definition.all);
-         begin
-            if Attr_Name = Name then
-               Attribute.Expr := Value;
-               Attribute.Value := EL.Objects.Null_Object;
-               return;
-            end if;
-         end;
+         if Def.all = Attribute.Definition.all then --  Attr_Name = Name then
+            Attribute.Expr := Value;
+            Attribute.Value := EL.Objects.Null_Object;
+            return;
+         end if;
          Attribute := Attribute.Next_Attr;
       end loop;
       Attribute := new UIAttribute;
@@ -449,18 +446,15 @@ package body ASF.Components.Base is
    procedure Set_Attribute (UI    : in out UIComponent;
                             Def   : access ASF.Views.Nodes.Tag_Attribute;
                             Value : in EL.Objects.Object) is
+      use type ASF.Views.Nodes.Tag_Attribute;
+
       Attribute : UIAttribute_Access := UI.Attributes;
-      Name      : constant String := ASF.Views.Nodes.Get_Name (Def.all);
    begin
       while Attribute /= null loop
-         declare
-            Attr_Name : constant String := ASF.Views.Nodes.Get_Name (Attribute.Definition.all);
-         begin
-            if Attr_Name = Name then
-               Attribute.Value := Value;
-               return;
-            end if;
-         end;
+         if Def.all = Attribute.Definition.all then
+            Attribute.Value := Value;
+            return;
+         end if;
          Attribute := Attribute.Next_Attr;
       end loop;
       Attribute := new UIAttribute;

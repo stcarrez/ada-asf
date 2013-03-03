@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@
 with Ada.Strings.Unbounded;
 with EL.Expressions;
 with EL.Objects;
+with Util.Strings;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
 with ASF.Contexts.Facelets;
@@ -43,24 +44,22 @@ package ASF.Views.Nodes is
    --  ------------------------------
    --  The attribute has a name and a value.  When the value is not
    --  a literal, an EL expression is created to allow its evaluation.
-   type Tag_Attribute is private;
+   type Tag_Attribute is limited private;
    type Tag_Attribute_Access is access all Tag_Attribute;
 
    type Tag_Attribute_Array is array (Natural range <>) of aliased Tag_Attribute;
 
    type Tag_Attribute_Array_Access is access Tag_Attribute_Array;
 
-   --  Get the attribute name.
-   function Get_Name (Attribute : Tag_Attribute) return Unbounded_String;
+   function "=" (Left : in Tag_Attribute; Right : in String) return Boolean;
+
+   function "=" (Left, Right : in Tag_Attribute) return Boolean;
 
    --  Get the attribute name.
    function Get_Name (Attribute : Tag_Attribute) return String;
 
    --  Returns True if the attribute is static (not an EL expression).
    function Is_Static (Attribute : Tag_Attribute) return Boolean;
-
-   --  Get the attribute literal value.
-   function Get_Value (Attribute : Tag_Attribute) return Unbounded_String;
 
    --  Get the attribute value.  If the attribute is an EL expression
    --  evaluate that expression in the context of the given UI component.
@@ -108,9 +107,6 @@ package ASF.Views.Nodes is
    --  The <b>Tag_Node</b> represents a UI component node in a view.
    type Tag_Node is tagged limited private;
    type Tag_Node_Access is access all Tag_Node'Class;
-
-   --  Get the node name.
-   function Get_Name (Node : Tag_Node) return Unbounded_String;
 
    --  Get the node attribute with the given name.
    --  Returns null if the node does not have such attribute.
@@ -211,22 +207,41 @@ package ASF.Views.Nodes is
    function Element (Position : Cursor) return Tag_Node_Access;
    procedure Next (Position : in out Cursor);
 
+   type Binding;
+   type Binding_Access is access constant Binding;
+
    --  Create function to build a UIComponent
    type Create_Access is access function return ASF.Components.Base.UIComponent_Access;
 
    --  Create function to build a tag node
    type Tag_Node_Create_Access is access
-     function (Name       : Unbounded_String;
-               Line       : Line_Info;
-               Parent     : Tag_Node_Access;
-               Attributes : Tag_Attribute_Array_Access) return Tag_Node_Access;
+     function (Binding    : in Binding_Access;
+               Line       : in Line_Info;
+               Parent     : in Tag_Node_Access;
+               Attributes : in Tag_Attribute_Array_Access) return Tag_Node_Access;
 
    --  Create the When Tag
-   function Create_Component_Node (Name       : Unbounded_String;
-                                   Line       : Line_Info;
-                                   Parent     : Tag_Node_Access;
-                                   Attributes : Tag_Attribute_Array_Access)
+   function Create_Component_Node (Binding    : in Binding_Access;
+                                   Line       : in Line_Info;
+                                   Parent     : in Tag_Node_Access;
+                                   Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;
+
+   --  Binding name
+   type Name_Access is new Util.Strings.Name_Access;
+
+   --  ------------------------------
+   --  Binding definition.
+   --  ------------------------------
+   --  The binding links an XHTML entity name to a tag node implementation
+   --  and a component creation handler.  When the XHTML entity is found,
+   --  the associated binding is searched and when found the node is created
+   --  by using the <b>Tag</b> create function.
+   type Binding is limited record
+      Name      : Name_Access;
+      Component : ASF.Views.Nodes.Create_Access;
+      Tag       : ASF.Views.Nodes.Tag_Node_Create_Access;
+   end record;
 
 private
 
@@ -236,23 +251,20 @@ private
 
    type Tag_Attribute is record
       Tag     : Tag_Node_Access;
+      Binding : EL.Expressions.Expression_Access;
       Name    : Unbounded_String;
       Value   : Unbounded_String;
-      Binding : EL.Expressions.Expression_Access;
    end record;
 
    type Tag_Node is tagged limited record
       --  The parent node.
-      Parent     : Tag_Node_Access;
-
-      --  The tag name.
-      Name       : Unbounded_String;
+      Parent      : Tag_Node_Access;
 
       --  Attributes associated with this node.
-      Attributes : Tag_Attribute_Array_Access;
+      Attributes  : Tag_Attribute_Array_Access;
 
       --  The UIComponent factory that must be used to create the component.
-      Factory    : Create_Access;
+      Factory     : Create_Access;
 
       Next        : Tag_Node_Access;
       First_Child : Tag_Node_Access;
@@ -264,7 +276,7 @@ private
 
    --  Initialize the node
    procedure Initialize (Node       : in Tag_Node_Access;
-                         Name       : in Unbounded_String;
+                         Binding    : in Binding_Access;
                          Line       : in Line_Info;
                          Parent     : in Tag_Node_Access;
                          Attributes : in Tag_Attribute_Array_Access);
@@ -279,9 +291,9 @@ private
    end record;
 
    type Text_Tag_Node is new Tag_Node with record
-      Content : aliased Tag_Content;
       Count   : Natural := 0;
       Last    : Tag_Content_Access := null;
+      Content : aliased Tag_Content;
    end record;
 
 end ASF.Views.Nodes;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-facelets -- Facelets composition nodes
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,8 +29,7 @@
 --    <ui:param name="..." value="..."/>
 --    <ui:composition .../>
 --
-with Ada.Strings.Unbounded;
-with Ada.Strings.Unbounded.Hash;
+with Ada.Strings.Hash;
 with ASF.Factory;
 with Ada.Containers.Indefinite_Hashed_Maps;
 package ASF.Views.Nodes.Facelets is
@@ -46,10 +45,10 @@ package ASF.Views.Nodes.Facelets is
    type Include_Tag_Node_Access is access all Include_Tag_Node'Class;
 
    --  Create the Include Tag
-   function Create_Include_Tag_Node (Name       : Unbounded_String;
-                                     Line       : Line_Info;
-                                     Parent     : Tag_Node_Access;
-                                     Attributes : Tag_Attribute_Array_Access)
+   function Create_Include_Tag_Node (Binding    : in Binding_Access;
+                                     Line       : in Line_Info;
+                                     Parent     : in Tag_Node_Access;
+                                     Attributes : in Tag_Attribute_Array_Access)
                                      return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -68,10 +67,10 @@ package ASF.Views.Nodes.Facelets is
    type Composition_Tag_Node_Access is access all Composition_Tag_Node'Class;
 
    --  Create the Composition Tag
-   function Create_Composition_Tag_Node (Name       : Unbounded_String;
-                                         Line       : Line_Info;
-                                         Parent     : Tag_Node_Access;
-                                         Attributes : Tag_Attribute_Array_Access)
+   function Create_Composition_Tag_Node (Binding    : in Binding_Access;
+                                         Line       : in Line_Info;
+                                         Parent     : in Tag_Node_Access;
+                                         Attributes : in Tag_Attribute_Array_Access)
                                          return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -106,10 +105,10 @@ package ASF.Views.Nodes.Facelets is
    type Debug_Tag_Node_Access is access all Debug_Tag_Node'Class;
 
    --  Create the Debug Tag
-   function Create_Debug_Tag_Node (Name       : Unbounded_String;
-                                   Line       : Line_Info;
-                                   Parent     : Tag_Node_Access;
-                                   Attributes : Tag_Attribute_Array_Access)
+   function Create_Debug_Tag_Node (Binding    : in Binding_Access;
+                                   Line       : in Line_Info;
+                                   Parent     : in Tag_Node_Access;
+                                   Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -128,10 +127,10 @@ package ASF.Views.Nodes.Facelets is
    type Decorate_Tag_Node_Access is access all Decorate_Tag_Node'Class;
 
    --  Create the Decorate Tag
-   function Create_Decorate_Tag_Node (Name       : Unbounded_String;
-                                      Line       : Line_Info;
-                                      Parent     : Tag_Node_Access;
-                                      Attributes : Tag_Attribute_Array_Access)
+   function Create_Decorate_Tag_Node (Binding    : in Binding_Access;
+                                      Line       : in Line_Info;
+                                      Parent     : in Tag_Node_Access;
+                                      Attributes : in Tag_Attribute_Array_Access)
                                       return Tag_Node_Access;
 
    --  ------------------------------
@@ -142,10 +141,10 @@ package ASF.Views.Nodes.Facelets is
    type Define_Tag_Node_Access is access all Define_Tag_Node'Class;
 
    --  Create the Define Tag
-   function Create_Define_Tag_Node (Name       : Unbounded_String;
-                                    Line       : Line_Info;
-                                    Parent     : Tag_Node_Access;
-                                    Attributes : Tag_Attribute_Array_Access)
+   function Create_Define_Tag_Node (Binding    : in Binding_Access;
+                                    Line       : in Line_Info;
+                                    Parent     : in Tag_Node_Access;
+                                    Attributes : in Tag_Attribute_Array_Access)
                                     return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -164,10 +163,10 @@ package ASF.Views.Nodes.Facelets is
    type Insert_Tag_Node_Access is access all Insert_Tag_Node'Class;
 
    --  Create the Insert Tag
-   function Create_Insert_Tag_Node (Name       : Unbounded_String;
-                                    Line       : Line_Info;
-                                    Parent     : Tag_Node_Access;
-                                    Attributes : Tag_Attribute_Array_Access)
+   function Create_Insert_Tag_Node (Binding    : in Binding_Access;
+                                    Line       : in Line_Info;
+                                    Parent     : in Tag_Node_Access;
+                                    Attributes : in Tag_Attribute_Array_Access)
                                     return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -187,10 +186,10 @@ package ASF.Views.Nodes.Facelets is
    type Param_Tag_Node_Access is access all Param_Tag_Node'Class;
 
    --  Create the Param Tag
-   function Create_Param_Tag_Node (Name       : Unbounded_String;
-                                   Line       : Line_Info;
-                                   Parent     : Tag_Node_Access;
-                                   Attributes : Tag_Attribute_Array_Access)
+   function Create_Param_Tag_Node (Binding    : in Binding_Access;
+                                   Line       : in Line_Info;
+                                   Parent     : in Tag_Node_Access;
+                                   Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -209,10 +208,10 @@ package ASF.Views.Nodes.Facelets is
    type Comment_Tag_Node_Access is access all Comment_Tag_Node'Class;
 
    --  Create the Comment Tag
-   function Create_Comment_Tag_Node (Name       : Unbounded_String;
-                                     Line       : Line_Info;
-                                     Parent     : Tag_Node_Access;
-                                     Attributes : Tag_Attribute_Array_Access)
+   function Create_Comment_Tag_Node (Binding    : in Binding_Access;
+                                     Line       : in Line_Info;
+                                     Parent     : in Tag_Node_Access;
+                                     Attributes : in Tag_Attribute_Array_Access)
                                      return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -227,9 +226,9 @@ private
 
    --  Tag library map indexed on the library namespace.
    package Define_Maps is new
-     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => Unbounded_String,
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => String,
                                             Element_Type    => Define_Tag_Node_Access,
-                                            Hash            => Ada.Strings.Unbounded.Hash,
+                                            Hash            => Ada.Strings.Hash,
                                             Equivalent_Keys => "=");
 
    type Include_Tag_Node is new Tag_Node with record

@@ -109,14 +109,14 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Include Tag
    --  ------------------------------
-   function Create_Include_Tag_Node (Name       : Unbounded_String;
-                                     Line       : Line_Info;
-                                     Parent     : Tag_Node_Access;
-                                     Attributes : Tag_Attribute_Array_Access)
+   function Create_Include_Tag_Node (Binding    : in Binding_Access;
+                                     Line       : in Line_Info;
+                                     Parent     : in Tag_Node_Access;
+                                     Attributes : in Tag_Attribute_Array_Access)
                                      return Tag_Node_Access is
       Node : constant Include_Tag_Node_Access := new Include_Tag_Node;
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       Node.Source     := Find_Attribute (Attributes, "src");
       if Node.Source = null then
          Node.Error ("Missing 'src' attribute");
@@ -172,14 +172,14 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Composition Tag
    --  ------------------------------
-   function Create_Composition_Tag_Node (Name       : Unbounded_String;
-                                         Line       : Line_Info;
-                                         Parent     : Tag_Node_Access;
-                                         Attributes : Tag_Attribute_Array_Access)
+   function Create_Composition_Tag_Node (Binding    : in Binding_Access;
+                                         Line       : in Line_Info;
+                                         Parent     : in Tag_Node_Access;
+                                         Attributes : in Tag_Attribute_Array_Access)
                                          return Tag_Node_Access is
       Node : constant Composition_Tag_Node_Access := new Composition_Tag_Node;
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       Node.Template   := Find_Attribute (Attributes, "template");
       return Node.all'Access;
    end Create_Composition_Tag_Node;
@@ -245,7 +245,7 @@ package body ASF.Views.Nodes.Facelets is
       while Child /= null loop
          if Child.all in Define_Tag_Node'Class then
             Define := Define_Tag_Node (Child.all)'Access;
-            Node.Defines.Insert (Define.Define_Name, Define);
+            Node.Defines.Insert (To_String (Define.Define_Name), Define);
          end if;
          Child := Child.Next;
       end loop;
@@ -261,7 +261,7 @@ package body ASF.Views.Nodes.Facelets is
                                  Context : in out Facelet_Context'Class;
                                  Name    : in Unbounded_String;
                                  Found   : out Boolean) is
-      Pos : constant Define_Maps.Cursor := Node.Defines.Find (Name);
+      Pos : constant Define_Maps.Cursor := Node.Defines.Find (To_String (Name));
       Old : Unbounded_String;
    begin
       if not Define_Maps.Has_Element (Pos) then
@@ -287,14 +287,14 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Debug Tag
    --  ------------------------------
-   function Create_Debug_Tag_Node (Name       : Unbounded_String;
-                                   Line       : Line_Info;
-                                   Parent     : Tag_Node_Access;
-                                   Attributes : Tag_Attribute_Array_Access)
+   function Create_Debug_Tag_Node (Binding    : in Binding_Access;
+                                   Line       : in Line_Info;
+                                   Parent     : in Tag_Node_Access;
+                                   Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access is
       Node : constant Debug_Tag_Node_Access := new Debug_Tag_Node;
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       return Node.all'Access;
    end Create_Debug_Tag_Node;
 
@@ -316,14 +316,14 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
 
    --  Create the Decorate Tag
-   function Create_Decorate_Tag_Node (Name       : Unbounded_String;
-                                      Line       : Line_Info;
-                                      Parent     : Tag_Node_Access;
-                                      Attributes : Tag_Attribute_Array_Access)
+   function Create_Decorate_Tag_Node (Binding    : in Binding_Access;
+                                      Line       : in Line_Info;
+                                      Parent     : in Tag_Node_Access;
+                                      Attributes : in Tag_Attribute_Array_Access)
                                       return Tag_Node_Access is
       Node : constant Decorate_Tag_Node_Access := new Decorate_Tag_Node;
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       Node.Template   := Find_Attribute (Attributes, "template");
       if Node.Template = null then
          Node.Error ("Missing attribute 'template' on the decorator");
@@ -334,18 +334,21 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Define Tag
    --  ------------------------------
-   function Create_Define_Tag_Node (Name       : Unbounded_String;
-                                    Line       : Line_Info;
-                                    Parent     : Tag_Node_Access;
-                                    Attributes : Tag_Attribute_Array_Access)
+   function Create_Define_Tag_Node (Binding    : in Binding_Access;
+                                    Line       : in Line_Info;
+                                    Parent     : in Tag_Node_Access;
+                                    Attributes : in Tag_Attribute_Array_Access)
                                     return Tag_Node_Access is
-      Node : constant Define_Tag_Node_Access := new Define_Tag_Node;
+      Node : Define_Tag_Node_Access;
       Attr : constant Tag_Attribute_Access := Find_Attribute (Attributes, "name");
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
       if Attr = null then
+         Node := new Define_Tag_Node; --  (Len => 0);
+         Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
          Node.Error ("Missing attribute 'name' on node");
       else
+         Node := new Define_Tag_Node; --  (Len => Attr.Value_Length);
+         Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
          Node.Define_Name := Attr.Value;
       end if;
       return Node.all'Access;
@@ -367,14 +370,14 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Insert Tag
    --  ------------------------------
-   function Create_Insert_Tag_Node (Name       : Unbounded_String;
-                                    Line       : Line_Info;
-                                    Parent     : Tag_Node_Access;
-                                    Attributes : Tag_Attribute_Array_Access)
+   function Create_Insert_Tag_Node (Binding    : in Binding_Access;
+                                    Line       : in Line_Info;
+                                    Parent     : in Tag_Node_Access;
+                                    Attributes : in Tag_Attribute_Array_Access)
                                     return Tag_Node_Access is
       Node : constant Insert_Tag_Node_Access := new Insert_Tag_Node;
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       Node.Insert_Name := Find_Attribute (Attributes, "name");
       return Node.all'Access;
    end Create_Insert_Tag_Node;
@@ -406,14 +409,14 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Param Tag
    --  ------------------------------
-   function Create_Param_Tag_Node (Name       : Unbounded_String;
-                                   Line       : Line_Info;
-                                   Parent     : Tag_Node_Access;
-                                   Attributes : Tag_Attribute_Array_Access)
+   function Create_Param_Tag_Node (Binding    : in Binding_Access;
+                                   Line       : in Line_Info;
+                                   Parent     : in Tag_Node_Access;
+                                   Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access is
       Node : constant Param_Tag_Node_Access := new Param_Tag_Node;
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       Node.Value      := Find_Attribute (Attributes, "value");
       if Node.Value = null then
          Node.Error ("Missing attribute 'value'");
@@ -451,14 +454,14 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
 
    --  Create the Comment Tag
-   function Create_Comment_Tag_Node (Name       : Unbounded_String;
-                                     Line       : Line_Info;
-                                     Parent     : Tag_Node_Access;
-                                     Attributes : Tag_Attribute_Array_Access)
+   function Create_Comment_Tag_Node (Binding    : in Binding_Access;
+                                     Line       : in Line_Info;
+                                     Parent     : in Tag_Node_Access;
+                                     Attributes : in Tag_Attribute_Array_Access)
                                      return Tag_Node_Access is
       Node : constant Comment_Tag_Node_Access := new Comment_Tag_Node;
    begin
-      Initialize (Node.all'Access, Name, Line, Parent, Attributes);
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       Node.Condition := Find_Attribute (Attributes, "condition");
       return Node.all'Access;
    end Create_Comment_Tag_Node;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-core -- Core nodes
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,10 +53,10 @@ package ASF.Views.Nodes.Core is
    type Set_Tag_Node_Access is access all Set_Tag_Node'Class;
 
    --  Create the Set Tag
-   function Create_Set_Tag_Node (Name       : Unbounded_String;
-                                 Line       : Line_Info;
-                                 Parent     : Tag_Node_Access;
-                                 Attributes : Tag_Attribute_Array_Access)
+   function Create_Set_Tag_Node (Binding    : in Binding_Access;
+                                 Line       : in Line_Info;
+                                 Parent     : in Tag_Node_Access;
+                                 Attributes : in Tag_Attribute_Array_Access)
                                  return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -78,10 +78,10 @@ package ASF.Views.Nodes.Core is
    type If_Tag_Node_Access is access all If_Tag_Node'Class;
 
    --  Create the If Tag
-   function Create_If_Tag_Node (Name       : Unbounded_String;
-                                Line       : Line_Info;
-                                Parent     : Tag_Node_Access;
-                                Attributes : Tag_Attribute_Array_Access)
+   function Create_If_Tag_Node (Binding    : in Binding_Access;
+                                Line       : in Line_Info;
+                                Parent     : in Tag_Node_Access;
+                                Attributes : in Tag_Attribute_Array_Access)
                                 return Tag_Node_Access;
 
    --  Build the component tree from the tag node and attach it as
@@ -117,10 +117,10 @@ package ASF.Views.Nodes.Core is
                                Context : in out Facelet_Context'Class);
 
    --  Create the <c:choose> tag node
-   function Create_Choose_Tag_Node (Name       : Unbounded_String;
-                                    Line       : Line_Info;
-                                    Parent     : Tag_Node_Access;
-                                    Attributes : Tag_Attribute_Array_Access)
+   function Create_Choose_Tag_Node (Binding    : in Binding_Access;
+                                    Line       : in Line_Info;
+                                    Parent     : in Tag_Node_Access;
+                                    Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;
 
    --  ------------------------------
@@ -138,10 +138,10 @@ package ASF.Views.Nodes.Core is
                          Context : Facelet_Context'Class) return Boolean;
 
    --  Create the When Tag
-   function Create_When_Tag_Node (Name       : Unbounded_String;
-                                  Line       : Line_Info;
-                                  Parent     : Tag_Node_Access;
-                                  Attributes : Tag_Attribute_Array_Access)
+   function Create_When_Tag_Node (Binding    : in Binding_Access;
+                                  Line       : in Line_Info;
+                                  Parent     : in Tag_Node_Access;
+                                  Attributes : in Tag_Attribute_Array_Access)
                                  return Tag_Node_Access;
 
    --  ------------------------------
@@ -154,10 +154,10 @@ package ASF.Views.Nodes.Core is
    type Otherwise_Tag_Node_Access is access all Otherwise_Tag_Node'Class;
 
    --  Create the Otherwise Tag
-   function Create_Otherwise_Tag_Node (Name       : Unbounded_String;
-                                       Line       : Line_Info;
-                                       Parent     : Tag_Node_Access;
-                                       Attributes : Tag_Attribute_Array_Access)
+   function Create_Otherwise_Tag_Node (Binding    : in Binding_Access;
+                                       Line       : in Line_Info;
+                                       Parent     : in Tag_Node_Access;
+                                       Attributes : in Tag_Attribute_Array_Access)
                                        return Tag_Node_Access;
 
    --  Java Facelet provides a <c:repeat> tag.  It must not be implemented

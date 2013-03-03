@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-utils -- Various utility operations for ASF
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,8 @@ with Util.Texts.Formats;
 with Util.Beans.Objects;
 
 package ASF.Utils is
+
+   pragma Preelaborate;
 
    --  Add in the <b>names</b> set, the basic text attributes that can be set
    --  on HTML elements (dir, lang, style, title).

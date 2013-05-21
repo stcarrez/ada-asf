@@ -1,4 +1,5 @@
 Version 0.6     -
+  - Add support for Facebook and Google+ login
 
 Version 0.5     - Feb 2013
   - Moved the Security packages in a separate project: Ada Security

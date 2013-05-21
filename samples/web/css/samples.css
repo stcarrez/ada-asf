@@ -36,7 +36,14 @@ a.openid-google em {
 	height: 35px;
 	overflow: hidden;
 }
-
+a.openid-google-plus em {
+  margin-left: 3px;
+  margin-right: 10px;
+  background-position: 0 -312px;
+  height: 33px;
+  width: 37px;
+  border-right: 1px solid #bb3f30;
+}
 div.openid-gravatar {
     float: left;
     padding-right: 2%;

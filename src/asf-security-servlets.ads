@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-openid-servlets - Servlets for OpenID 2.0 Authentication
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ with ASF.Requests;
 with ASF.Responses;
 with ASF.Principals;
 
-with Security.OpenID; use Security;
+with Security.Auth; use Security;
 
 --  The <b>Security.Openid.Servlets</b> package defines two servlets that can be used
 --  to implement an OpenID 2.0 authentication with an OpenID provider such as Google,
@@ -72,13 +72,18 @@ package ASF.Security.Servlets is
    --  ------------------------------
    --  The <b>Openid_Servlet</b> is the OpenID root servlet for OpenID 2.0 authentication.
    --  It is defined to provide a common basis for the authentication and verification servlets.
-   type Openid_Servlet is abstract new ASF.Servlets.Servlet with private;
+   type Openid_Servlet is abstract new ASF.Servlets.Servlet and Auth.Parameters with private;
 
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
    overriding
    procedure Initialize (Server  : in out Openid_Servlet;
                          Context : in ASF.Servlets.Servlet_Registry'Class);
+
+   --  Get a configuration parameter from the servlet context for the security Auth provider.
+   overriding
+   function Get_Parameter (Server : in Openid_Servlet;
+                           Name   : in String) return String;
 
    --  ------------------------------
    --  OpenID Request Servlet
@@ -113,22 +118,21 @@ package ASF.Security.Servlets is
                      Response : in out ASF.Responses.Response'Class);
 
    --  Create a principal object that correspond to the authenticated user identified
-   --  by the <b>Auth</b> information.  The principal will be attached to the session
+   --  by the <b>Credential</b> information.  The principal will be attached to the session
    --  and will be destroyed when the session is closed.
-   procedure Create_Principal (Server : in Verify_Auth_Servlet;
-                               Auth   : in OpenID.Authentication;
-                               Result : out ASF.Principals.Principal_Access);
+   procedure Create_Principal (Server     : in Verify_Auth_Servlet;
+                               Credential : in Auth.Authentication;
+                               Result     : out ASF.Principals.Principal_Access);
 
 private
    function Get_Provider_URL (Server   : in Request_Auth_Servlet;
                               Request  : in ASF.Requests.Request'Class) return String;
 
-   procedure Initialize (Server  : in Openid_Servlet;
-                         Manager : in out OpenID.Manager);
+   procedure Initialize (Server   : in Openid_Servlet;
+                         Provider : in String;
+                         Manager  : in out Auth.Manager);
 
-   type Openid_Servlet is new ASF.Servlets.Servlet with record
-      Manager : OpenID.Manager;
-   end record;
+   type Openid_Servlet is new ASF.Servlets.Servlet and Auth.Parameters with null record;
 
    type Request_Auth_Servlet is new Openid_Servlet with null record;
    type Verify_Auth_Servlet is new Openid_Servlet with null record;

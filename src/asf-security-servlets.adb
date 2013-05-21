@@ -27,7 +27,7 @@ package body ASF.Security.Servlets is
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Security.Servlets");
 
    --  Make a package to store the Association in the session.
-   package Association_Bean is new Util.Beans.Objects.Records (OpenID.Association);
+   package Association_Bean is new Util.Beans.Objects.Records (Auth.Association);
 
    subtype Association_Access is Association_Bean.Element_Type_Access;
 
@@ -41,35 +41,37 @@ package body ASF.Security.Servlets is
       null;
    end Initialize;
 
-   --  Property name that specifies the OpenID callback URL.
-   OPENID_VERIFY_URL      : constant String := "openid.callback_url";
-
-   --  Property name that specifies the realm.
-   OPENID_REALM           : constant String := "openid.realm";
-
    --  Name of the session attribute which holds information about the active authentication.
    OPENID_ASSOC_ATTRIBUTE : constant String := "openid-assoc";
 
-   procedure Initialize (Server  : in Openid_Servlet;
-                         Manager : in out OpenID.Manager) is
-      Ctx          : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
-      Callback_URI : constant String := Ctx.Get_Init_Parameter (OPENID_VERIFY_URL);
-      Realm        : constant String := Ctx.Get_Init_Parameter (OPENID_REALM);
+   procedure Initialize (Server   : in Openid_Servlet;
+                         Provider : in String;
+                         Manager  : in out Auth.Manager) is
    begin
-      Manager.Initialize (Return_To => Callback_URI,
-                          Name      => Realm);
+      Manager.Initialize (Params  => Server,
+                          Name    => Provider);
    end Initialize;
+
+   --  Get a configuration parameter from the servlet context for the security Auth provider.
+   overriding
+   function Get_Parameter (Server : in Openid_Servlet;
+                           Name   : in String) return String is
+      Ctx          : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
+   begin
+      return Ctx.Get_Init_Parameter (Name);
+   end Get_Parameter;
 
    function Get_Provider_URL (Server   : in Request_Auth_Servlet;
                               Request  : in ASF.Requests.Request'Class) return String is
-      Ctx  : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
+      pragma Unreferenced (Server);
+
       URI  : constant String := Request.Get_Path_Info;
    begin
       if URI'Length = 0 then
          return "";
       end if;
       Log.Info ("OpenID authentication with {0}", URI);
-      return Ctx.Get_Init_Parameter ("openid.provider." & URI (URI'First + 1 .. URI'Last));
+      return URI (URI'First + 1 .. URI'Last);
    end Get_Provider_URL;
 
    --  ------------------------------
@@ -83,25 +85,27 @@ package body ASF.Security.Servlets is
                      Request  : in out ASF.Requests.Request'Class;
                      Response : in out ASF.Responses.Response'Class) is
 
-      Provider : constant String := Server.Get_Provider_URL (Request);
+      Ctx      : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
+      Name     : constant String := Server.Get_Provider_URL (Request);
+      URL      : constant String := Ctx.Get_Init_Parameter ("auth.url." & Name);
    begin
-      Log.Info ("Request OpenId authentication to {0}", Provider);
+      Log.Info ("Request OpenId authentication to {0} - {1}", Name, URL);
 
-      if Provider'Length = 0 then
+      if Name'Length = 0 or URL'Length = 0 then
          Response.Set_Status (ASF.Responses.SC_NOT_FOUND);
          return;
       end if;
 
       declare
-         Mgr   : OpenID.Manager;
-         OP    : OpenID.End_Point;
+         Mgr   : Auth.Manager;
+         OP    : Auth.End_Point;
          Bean  : constant Util.Beans.Objects.Object := Association_Bean.Create;
          Assoc : constant Association_Access := Association_Bean.To_Element_Access (Bean);
       begin
-         Server.Initialize (Mgr);
+         Server.Initialize (Name, Mgr);
 
-         --  Yadis discovery (get the XRDS file).
-         Mgr.Discover (Provider, OP);
+         --  Yadis discovery (get the XRDS file).  This step does nothing for OAuth.
+         Mgr.Discover (URL, OP);
 
          --  Associate to the OpenID provider and get an end-point with a key.
          Mgr.Associate (OP, Assoc.all);
@@ -129,9 +133,9 @@ package body ASF.Security.Servlets is
    procedure Do_Get (Server   : in Verify_Auth_Servlet;
                      Request  : in out ASF.Requests.Request'Class;
                      Response : in out ASF.Responses.Response'Class) is
-      use type OpenID.Auth_Result;
+      use type Auth.Auth_Result;
 
-      type Auth_Params is new OpenID.Parameters with null record;
+      type Auth_Params is new Auth.Parameters with null record;
 
       overriding
       function Get_Parameter (Params : in Auth_Params;
@@ -145,13 +149,13 @@ package body ASF.Security.Servlets is
          return Request.Get_Parameter (Name);
       end Get_Parameter;
 
-      Session : ASF.Sessions.Session := Request.Get_Session (Create => False);
-      Bean    : Util.Beans.Objects.Object;
-      Mgr     : OpenID.Manager;
-      Assoc   : Association_Access;
-      Auth    : OpenID.Authentication;
-      Params  : Auth_Params;
-      Ctx     : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
+      Session    : ASF.Sessions.Session := Request.Get_Session (Create => False);
+      Bean       : Util.Beans.Objects.Object;
+      Mgr        : Auth.Manager;
+      Assoc      : Association_Access;
+      Credential : Auth.Authentication;
+      Params     : Auth_Params;
+      Ctx        : constant ASF.Servlets.Servlet_Registry_Access := Server.Get_Servlet_Context;
    begin
       Log.Info ("Verify openid authentication");
 
@@ -172,24 +176,24 @@ package body ASF.Security.Servlets is
       end if;
 
       Assoc := Association_Bean.To_Element_Access (Bean);
-      Server.Initialize (Mgr);
+      Server.Initialize (Auth.Get_Provider (Assoc.all), Mgr);
 
       --  Verify that what we receive through the callback matches the association key.
-      Mgr.Verify (Assoc.all, Params, Auth);
-      if OpenID.Get_Status (Auth) /= OpenID.AUTHENTICATED then
+      Mgr.Verify (Assoc.all, Params, Credential);
+      if Auth.Get_Status (Credential) /= Auth.AUTHENTICATED then
          Log.Info ("Authentication has failed");
          Response.Set_Status (ASF.Responses.SC_FORBIDDEN);
          return;
       end if;
 
-      Log.Info ("Authentication succeeded for {0}", OpenID.Get_Email (Auth));
+      Log.Info ("Authentication succeeded for {0}", Auth.Get_Email (Credential));
 
       --  Get a user principal and set it on the session.
       declare
          User : ASF.Principals.Principal_Access;
          URL  : constant String := Ctx.Get_Init_Parameter ("openid.success_url");
       begin
-         Verify_Auth_Servlet'Class (Server).Create_Principal (Auth, User);
+         Verify_Auth_Servlet'Class (Server).Create_Principal (Credential, User);
          Session.Set_Principal (User);
 
          Log.Info ("Redirect user to success URL: {0}", URL);
@@ -199,15 +203,15 @@ package body ASF.Security.Servlets is
 
    --  ------------------------------
    --  Create a principal object that correspond to the authenticated user identified
-   --  by the <b>Auth</b> information.  The principal will be attached to the session
+   --  by the <b>Credential</b> information.  The principal will be attached to the session
    --  and will be destroyed when the session is closed.
    --  ------------------------------
-   procedure Create_Principal (Server : in Verify_Auth_Servlet;
-                               Auth   : in OpenID.Authentication;
-                               Result : out ASF.Principals.Principal_Access) is
+   procedure Create_Principal (Server     : in Verify_Auth_Servlet;
+                               Credential : in Auth.Authentication;
+                               Result     : out ASF.Principals.Principal_Access) is
       pragma Unreferenced (Server);
 
-      P : constant OpenID.Principal_Access := OpenID.Create_Principal (Auth);
+      P : constant Auth.Principal_Access := Auth.Create_Principal (Credential);
    begin
       Result := P.all'Access;
    end Create_Principal;

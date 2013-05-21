@@ -26,14 +26,14 @@ with ASF.Applications.Messages.Factory;
 
 with GNAT.MD5;
 
-with Security.OpenID;
+with Security.Auth;
 with ASF.Security.Filters;
 
 with Util.Strings.Transforms;
 package body Users is
 
    use Ada.Strings.Unbounded;
-   use Security.OpenID;
+   use Security.Auth;
    use type ASF.Principals.Principal_Access;
    use type ASF.Contexts.Faces.Faces_Context_Access;
 
@@ -61,14 +61,14 @@ package body Users is
       F : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
       S : ASF.Sessions.Session;
       P : ASF.Principals.Principal_Access := null;
-      U : Security.OpenID.Principal_Access := null;
+      U : Security.Auth.Principal_Access := null;
    begin
       if F /= null then
          S := F.Get_Session;
          if S.Is_Valid then
             P := S.Get_Principal;
             if P /= null then
-               U := Security.OpenID.Principal'Class (P.all)'Access;
+               U := Security.Auth.Principal'Class (P.all)'Access;
             end if;
          end if;
       end if;
@@ -131,12 +131,12 @@ package body Users is
       F : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
       S : ASF.Sessions.Session := F.Get_Session;
       P : ASF.Principals.Principal_Access := null;
-      U : Security.OpenID.Principal_Access := null;
+      U : Security.Auth.Principal_Access := null;
    begin
       if S.Is_Valid then
          P := S.Get_Principal;
          if P /= null then
-            U := Security.OpenID.Principal'Class (P.all)'Access;
+            U := Security.Auth.Principal'Class (P.all)'Access;
          end if;
          S.Invalidate;
       end if;

@@ -75,13 +75,21 @@ package body ASF.Servlets.Mappers is
                                    Name    => To_String (N.Servlet_Name));
 
          when CONTEXT_PARAM =>
-            if Util.Beans.Objects.Is_Null (N.Param_Value) then
-               N.Handler.Set_Init_Parameter (Name  => To_String (N.Param_Name),
-                                             Value => "");
-            else
-               N.Handler.Set_Init_Parameter (Name  => To_String (N.Param_Name),
-                                             Value => To_String (N.Param_Value));
-            end if;
+            declare
+               Name : constant String := To_String (N.Param_Name);
+            begin
+               --  If the context parameter already has a value, do not set it again.
+               --  The value comes from an application setting and we want to keep it.
+               if N.Handler.Get_Init_Parameter (Name) = "" then
+                  if Util.Beans.Objects.Is_Null (N.Param_Value) then
+                     N.Handler.Set_Init_Parameter (Name  => Name,
+                                                   Value => "");
+                  else
+                     N.Handler.Set_Init_Parameter (Name  => Name,
+                                                   Value => To_String (N.Param_Value));
+                  end if;
+               end if;
+            end;
 
          when MIME_MAPPING =>
             null;

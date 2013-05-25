@@ -489,6 +489,8 @@ package body ASF.Servlets is
                                  Name    : in String;
                                  Value   : in String) is
    begin
+      Log.Debug ("Set {0}={1}", Name, Value);
+
       Context.Config.Set (Name, Value);
    end Set_Init_Parameter;
 

@@ -75,8 +75,13 @@ package body ASF.Servlets.Mappers is
                                    Name    => To_String (N.Servlet_Name));
 
          when CONTEXT_PARAM =>
-            N.Handler.Set_Init_Parameter (Name  => To_String (N.Param_Name),
-                                          Value => To_String (N.Param_Value));
+            if Util.Beans.Objects.Is_Null (N.Param_Value) then
+               N.Handler.Set_Init_Parameter (Name  => To_String (N.Param_Name),
+                                             Value => "");
+            else
+               N.Handler.Set_Init_Parameter (Name  => To_String (N.Param_Name),
+                                             Value => To_String (N.Param_Value));
+            end if;
 
          when MIME_MAPPING =>
             null;

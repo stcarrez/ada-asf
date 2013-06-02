@@ -29,6 +29,8 @@
 --  is very close to an XML DOM tree.
 package ASF.Views is
 
+   pragma Preelaborate;
+
    --  ------------------------------
    --  Source line information
    --  ------------------------------

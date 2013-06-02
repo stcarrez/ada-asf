@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.files -- Static file servlet
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ with Ada.Streams.Stream_IO;
 with Ada.Directories;
 
 with ASF.Streams;
+with ASF.Applications;
 package body ASF.Servlets.Files is
 
    use Ada.Streams;
@@ -38,7 +39,7 @@ package body ASF.Servlets.Files is
    --  ------------------------------
    procedure Initialize (Server  : in out File_Servlet;
                          Context : in Servlet_Registry'Class) is
-      Dir      : constant String := Context.Get_Init_Parameter ("web.dir");
+      Dir      : constant String := Context.Get_Init_Parameter (ASF.Applications.VIEW_DIR);
       Def_Type : constant String := Context.Get_Init_Parameter ("content-type.default");
    begin
       Server.Dir := new String '(Dir);

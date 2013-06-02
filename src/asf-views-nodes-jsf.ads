@@ -108,7 +108,7 @@ package ASF.Views.Nodes.Jsf is
    function Create_Range_Validator_Tag_Node (Binding    : in Binding_Access;
                                              Line       : in Views.Line_Info;
                                              Parent     : in Views.Nodes.Tag_Node_Access;
-                                             Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
+                                             Attributes : in Nodes.Tag_Attribute_Array_Access)
                                              return Views.Nodes.Tag_Node_Access;
 
    --  Get the validator instance that corresponds to the range validator.
@@ -136,7 +136,7 @@ package ASF.Views.Nodes.Jsf is
    function Create_Length_Validator_Tag_Node (Binding    : in Binding_Access;
                                               Line       : in Views.Line_Info;
                                               Parent     : in Views.Nodes.Tag_Node_Access;
-                                              Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
+                                              Attributes : in Nodes.Tag_Attribute_Array_Access)
                                               return Views.Nodes.Tag_Node_Access;
 
    --  Get the validator instance that corresponds to the validator tag.
@@ -221,6 +221,20 @@ package ASF.Views.Nodes.Jsf is
    procedure Build_Components (Node    : access Metadata_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class);
+
+   --  The elaboration check is disabled on the Create_XXX operation because they
+   --  are referenced by the Components.Core.Factory to define a static UI binding.
+   --  This reference triggers the implicit Elaborate_All for the Nodes.JSF package.
+   --  At the end, we obtain a circular dependency that cannot be resolved.
+   --  It is safe to suppress the elaboration check because these Create_XXX operation
+   --  are not invoked before the application is initialized and a view is rendered.
+   pragma Suppress (Elaboration_Check, On => Create_Attribute_Tag_Node);
+   pragma Suppress (Elaboration_Check, On => Create_Converter_Tag_Node);
+   pragma Suppress (Elaboration_Check, On => Create_Facet_Tag_Node);
+   pragma Suppress (Elaboration_Check, On => Create_Metadata_Tag_Node);
+   pragma Suppress (Elaboration_Check, On => Create_Length_Validator_Tag_Node);
+   pragma Suppress (Elaboration_Check, On => Create_Range_Validator_Tag_Node);
+   pragma Suppress (Elaboration_Check, On => Create_Validator_Tag_Node);
 
 private
 

@@ -226,6 +226,7 @@ package ASF.Views.Nodes is
                                    Parent     : in Tag_Node_Access;
                                    Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;
+   pragma Suppress (Elaboration_Check, On => Create_Component_Node);
 
    --  Binding name
    type Name_Access is new Util.Strings.Name_Access;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +33,6 @@ with Util.Beans.Objects;
 with EL.Expressions;
 with ASF.Contexts.Faces;
 with ASF.Utils;
-limited with ASF.Views.Nodes;
 limited with ASF.Converters;
 limited with ASF.Events.Faces;
 package ASF.Components.Base is

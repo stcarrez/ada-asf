@@ -49,6 +49,8 @@ package body ASF.Components.Html.Factory is
    function Create_SelectOne return UIComponent_Access;
    function Create_SelectOneRadio return UIComponent_Access;
    function Create_SelectBooleanCheckbox return UIComponent_Access;
+   --  Create an UIInput secret component
+   function Create_Input_Secret return ASF.Components.Base.UIComponent_Access;
 
    --  ------------------------------
    --  Create an UIBody component
@@ -137,6 +139,16 @@ package body ASF.Components.Html.Factory is
    begin
       return new ASF.Components.Html.Forms.UIInput;
    end Create_Input_Text;
+
+   --  ------------------------------
+   --  Create an UIInput secret component
+   --  ------------------------------
+   function Create_Input_Secret return ASF.Components.Base.UIComponent_Access is
+      Result : constant Html.Forms.UIInput_Access := new ASF.Components.Html.Forms.UIInput;
+   begin
+      Result.Set_Secret (True);
+      return Result.all'Access;
+   end Create_Input_Secret;
 
    --  ------------------------------
    --  Create an UIInputTextarea component
@@ -247,7 +259,7 @@ package body ASF.Components.Html.Factory is
                Component => Create_Input_Hidden'Access,
                Tag       => Create_Component_Node'Access),
          7 => (Name      => INPUT_SECRET_TAG'Access,
-               Component => ASF.Components.Html.Forms.Create_Input_Secret'Access,
+               Component => Create_Input_Secret'Access,
                Tag       => Create_Component_Node'Access),
          8 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input_Text'Access,

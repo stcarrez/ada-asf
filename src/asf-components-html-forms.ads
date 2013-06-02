@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Components.Base;
 with ASF.Components.Holders;
 with ASF.Components.Html.Text;
 with ASF.Validators;
@@ -71,9 +70,6 @@ package ASF.Components.Html.Forms is
    type UIInput is new Text.UIOutput and Holders.Editable_Value_Holder with private;
    type UIInput_Access is access all UIInput'Class;
 
-   --  Create an UIInput secret component
-   function Create_Input_Secret return ASF.Components.Base.UIComponent_Access;
-
    --  Check if this component has the required attribute set.
    function Is_Required (UI      : in UIInput;
                          Context : in Faces_Context'Class) return Boolean;
@@ -87,6 +83,10 @@ package ASF.Components.Html.Forms is
    --  Otherwise, if we have a Value_Expression evaluate and returns the value.
    overriding
    function Get_Value (UI    : in UIInput) return EL.Objects.Object;
+
+   --  Set the input component as a password field.
+   procedure Set_Secret (UI    : in out UIInput;
+                         Value : in Boolean);
 
    --  Render the input element.
    procedure Render_Input (UI      : in UIInput;

@@ -26,6 +26,7 @@ with ASF.Parts;
 with ASF.Parts.Upload_Method;
 with ASF.Converters;
 with ASF.Requests;
+with ASF.Components.Base;
 with ASF.Components.Utils;
 with ASF.Components.Root;
 with ASF.Events.Faces.Actions;
@@ -71,16 +72,6 @@ package body ASF.Components.Html.Forms is
    end Get_Form;
 
    --  ------------------------------
-   --  Create an UIInput secret component
-   --  ------------------------------
-   function Create_Input_Secret return ASF.Components.Base.UIComponent_Access is
-      Result : constant UIInput_Access := new UIInput;
-   begin
-      Result.Is_Secret := True;
-      return Result.all'Access;
-   end Create_Input_Secret;
-
-   --  ------------------------------
    --  Check if this component has the required attribute set.
    --  ------------------------------
    function Is_Required (UI      : in UIInput;
@@ -108,6 +99,15 @@ package body ASF.Components.Html.Forms is
          return Text.UIOutput (UI).Get_Value;
       end if;
    end Get_Value;
+
+   --  ------------------------------
+   --  Set the input component as a password field.
+   --  ------------------------------
+   procedure Set_Secret (UI    : in out UIInput;
+                         Value : in Boolean) is
+   begin
+      UI.Is_Secret := Value;
+   end Set_Secret;
 
    --  ------------------------------
    --  Render the input element.

@@ -23,9 +23,6 @@ with ASF.Components.Holders;
 with ASF.Components.Core.Views;
 package body ASF.Views.Nodes.Jsf is
 
-   use ASF;
-   use EL.Objects;
-
    --  ------------------------------
    --  Converter Tag
    --  ------------------------------
@@ -170,7 +167,7 @@ package body ASF.Views.Nodes.Jsf is
    function Create_Range_Validator_Tag_Node (Binding    : in Binding_Access;
                                              Line       : in Views.Line_Info;
                                              Parent     : in Views.Nodes.Tag_Node_Access;
-                                             Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
+                                             Attributes : in Nodes.Tag_Attribute_Array_Access)
                                              return Views.Nodes.Tag_Node_Access is
 
       use ASF.Views.Nodes;
@@ -234,7 +231,7 @@ package body ASF.Views.Nodes.Jsf is
    function Create_Length_Validator_Tag_Node (Binding    : in Binding_Access;
                                               Line       : in Views.Line_Info;
                                               Parent     : in Views.Nodes.Tag_Node_Access;
-                                              Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
+                                              Attributes : in Nodes.Tag_Attribute_Array_Access)
                                               return Views.Nodes.Tag_Node_Access is
 
       use ASF.Views.Nodes;

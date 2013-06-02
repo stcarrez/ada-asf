@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications-main-configs -- Configuration support for ASF Applications
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,11 +17,13 @@
 -----------------------------------------------------------------------
 
 with Util.Log.Loggers;
+with EL.Functions.Namespaces;
 
 with ASF.Navigations;
 with ASF.Navigations.Mappers;
 with ASF.Servlets.Mappers;
 with ASF.Beans.Mappers;
+with ASF.Views.Nodes.Core;
 
 package body ASF.Applications.Main.Configs is
 
@@ -86,7 +88,7 @@ package body ASF.Applications.Main.Configs is
       procedure Set_Property_Context (Params : in Util.Properties.Manager'Class);
 
       --  Get the navigation handler for the Navigation_Config instantiation
-      --  GNAT crashes if the call is made in the instantation part.
+      --  GNAT crashes if the call is made in the instantiation part.
       Nav     : constant ASF.Navigations.Navigation_Handler_Access := App.Get_Navigation_Handler;
 
       package Bean_Config is
@@ -102,7 +104,8 @@ package body ASF.Applications.Main.Configs is
       pragma Warnings (Off, Navigation_Config);
       pragma Warnings (Off, Servlet_Config);
 
-      Config : aliased Application_Config;
+      Config    : aliased Application_Config;
+      NS_Mapper : aliased EL.Functions.Namespaces.NS_Function_Mapper;
 
       procedure Set_Property_Context (Params : in Util.Properties.Manager'Class) is
       begin
@@ -114,6 +117,12 @@ package body ASF.Applications.Main.Configs is
       --  to the application configuration properties
       App.Get_Init_Parameters (Set_Property_Context'Access);
       Context.Set_Resolver (Prop_Context'Unchecked_Access);
+
+      --  Setup the function mapper to resolve uses of functions within EL expressions.
+      NS_Mapper.Set_Namespace (Prefix => "fn",
+                               URI    => ASF.Views.Nodes.Core.FN_URI);
+      NS_Mapper.Set_Function_Mapper (App.Functions'Unchecked_Access);
+      Context.Set_Function_Mapper (NS_Mapper'Unchecked_Access);
 
       Reader.Add_Mapping ("faces-config", AMapper'Access);
       Reader.Add_Mapping ("module", AMapper'Access);

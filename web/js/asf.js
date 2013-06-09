@@ -235,6 +235,39 @@ var ASF = {};
     };
 
     /**
+     * Perform an HTTP POST on the given URL.
+     *
+     * @param node the node element that will be updated by default on the AJAX response.
+     * @param url the HTTP URL.
+     * @param params the HTTP POST parameters.
+     */
+    ASF.Post = function(node, url, params) {
+        /* Perform the HTTP POST */
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: params,
+            context: document.body,
+            success: function(data, status, jqXHDR) {
+                var contentType = jqXHDR.getResponseHeader('Content-type');
+                if (contentType == null) {
+                    contentType = "text/html";
+                }
+                if (contentType.match(/^text\/(html|xml)(;.*)?$/i)) {
+                    $(node).html(jqXHDR.responseText);
+
+                } else if (contentType.match(/^application\/json(;.*)?$/i)) {
+                    ASF.Execute(node, data);
+                }
+            },
+            error: function(jqXHDR, status, error) {
+                ASF.AjaxError(jqXHDR, d);
+            }
+        });
+        return false;
+    };
+
+    /**
      * Open a dialog box and fetch the dialog content from the given URI.
      *
      * @param node the current element

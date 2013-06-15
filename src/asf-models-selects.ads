@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-models-selects -- Data model for UISelectOne and UISelectMany
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -104,7 +104,7 @@ package ASF.Models.Selects is
    --  The <b>Select_Item_List</b> type holds a list of <b>Select_Item</b>.
    --  Similar to <b>Select_Item</b>, an application builds the list items and gives it
    --  to the ASF components through an <b>Util.Beans.Objects.Object</b> instance.
-   type Select_Item_List is new Util.Beans.Basic.Readonly_Bean with private;
+   type Select_Item_List is new Util.Beans.Basic.List_Bean with private;
    type Select_Item_List_Access is access all Select_Item_List;
 
    --  Return an Object from the select item list.
@@ -114,6 +114,19 @@ package ASF.Models.Selects is
    --  Return the <b>Select_Item_List</b> instance from a generic bean object.
    --  Returns an empty list if the object does not hold a <b>Select_Item_List</b>.
    function To_Select_Item_List (Object : in Util.Beans.Objects.Object) return Select_Item_List;
+
+   --  Get the number of elements in the list.
+   overriding
+   function Get_Count (From : in Select_Item_List) return Natural;
+
+   --  Set the current row index.  Valid row indexes start at 1.
+   overriding
+   procedure Set_Row_Index (From  : in out Select_Item_List;
+                            Index : in Natural);
+
+   --  Get the element at the current row index.
+   overriding
+   function Get_Row (From  : in Select_Item_List) return Util.Beans.Objects.Object;
 
    --  Get the number of items in the list.
    function Length (List : in Select_Item_List) return Natural;
@@ -158,7 +171,7 @@ private
                                   Element_Type => Select_Item);
 
    type Select_Item_Vector is new Util.Refs.Ref_Entity with record
-      List : Select_Item_Vectors.Vector;
+      List  : Select_Item_Vectors.Vector;
    end record;
    type Select_Item_Vector_Access is access all Select_Item_Vector;
 
@@ -166,8 +179,10 @@ private
       new Util.Refs.References (Element_Type   => Select_Item_Vector,
                                 Element_Access => Select_Item_Vector_Access);
 
-   type Select_Item_List is new Util.Beans.Basic.Readonly_Bean with record
-      List : Select_Item_Vector_Refs.Ref;
+   type Select_Item_List is new Util.Beans.Basic.List_Bean with record
+      List    : Select_Item_Vector_Refs.Ref;
+      Current : aliased Select_Item;
+      Row     : Util.Beans.Objects.Object;
    end record;
 
    --  Get the value identified by the name.

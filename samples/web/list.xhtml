@@ -1,0 +1,44 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:util="http://code.google.com/p/ada-asf/util"
+                xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                template="/WEB-INF/layouts/demo.xhtml">
+    <ui:param name="title" value="#{samplesMsg.demo_list_page_title}" />
+    <ui:param name="tab" value="list"/>
+    <ui:param name="source_file" value="list.xhtml"/>
+    <!-- Main page body -->
+    <ui:define name="demoBody">
+        <div>
+            <h1>#{samplesMsg.demo_list_message}</h1>
+            <p>#{samplesMsg.demo_list_items} <span id='action-message'/> </p>
+            <div id='demo-country-list'>
+                <h:list value="#{countries}" var="country">
+                    <div id="country-#{country.value}" class='ui-list-item demo-country'>
+                        <div class='name'>#{country.name}</div>
+                        <div class='country-code'>#{country.value}</div>
+                    </div>
+                </h:list>
+            </div>
+            <!-- Div that is moved near the active element to display some element actions -->
+            <div id='list-action' class='asf-list-action'>
+                <a href="#" class="demo-add">#{samplesMsg.demo_list_add_label}</a>
+            </div>
+            <util:script>
+                var items = new Array();
+                $('#demo-country-list').list({
+                    actionId: "#list-action",
+                    itemPrefix: 'country-',
+                    selectAction: function(list, node) {
+                        var id = list.getSelectedId(list.activeItem);
+                        if ($(node).hasClass("demo-add")) {
+                            items.push(id);
+                        }
+                        $('#action-message').html("" + items);
+                    }
+                });
+            </util:script>
+        </div>
+    </ui:define>
+</ui:composition>

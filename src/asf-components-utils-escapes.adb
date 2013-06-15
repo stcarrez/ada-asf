@@ -31,8 +31,8 @@ package body ASF.Components.Utils.Escapes is
 
       Result : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      Util.Strings.Transforms.Escape_Javascript (Content => Content,
-                                                 Into    => Result);
+      Util.Strings.Transforms.Escape_Java (Content => Content,
+                                           Into    => Result);
       Writer.Write (Result);
    end Write_Content;
 

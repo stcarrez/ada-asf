@@ -350,3 +350,15 @@ div.forum {
     width: 100%;
     border-bottom: 1px solid #bcd;
 }
+div.demo-country {
+    float: left;
+    width: 99%;
+    padding-left: 1%;
+}
+#list-action {
+    left: -20px;
+}
+div.demo-country div.name, div.demo-country div.country-code {
+    float: left;
+    width: 140px;
+}

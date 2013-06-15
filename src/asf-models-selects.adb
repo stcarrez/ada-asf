@@ -277,6 +277,36 @@ package body ASF.Models.Selects is
    end To_Select_Item_List;
 
    --  ------------------------------
+   --  Get the number of elements in the list.
+   --  ------------------------------
+   overriding
+   function Get_Count (From : in Select_Item_List) return Natural is
+   begin
+      return From.Length;
+   end Get_Count;
+
+   --  ------------------------------
+   --  Set the current row index.  Valid row indexes start at 1.
+   --  ------------------------------
+   overriding
+   procedure Set_Row_Index (From  : in out Select_Item_List;
+                            Index : in Natural) is
+   begin
+      From.Current := From.Get_Select_Item (Index);
+      From.Row     := Util.Beans.Objects.To_Object (From.Current'Unchecked_Access,
+                                                    Util.Beans.Objects.STATIC);
+   end Set_Row_Index;
+
+   --  ------------------------------
+   --  Get the element at the current row index.
+   --  ------------------------------
+   overriding
+   function Get_Row (From  : in Select_Item_List) return Util.Beans.Objects.Object is
+   begin
+      return From.Row;
+   end Get_Row;
+
+   --  ------------------------------
    --  Get the number of items in the list.
    --  ------------------------------
    function Length (List : in Select_Item_List) return Natural is

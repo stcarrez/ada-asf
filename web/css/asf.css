@@ -34,6 +34,10 @@ div.asf-list-action {
 div.asf-active-list div.asf-active div.asf-list-action {
     visibility: visible;
 }
+/* Mouseover effect on the current list item */
+div.ui-list div.asf-active {
+    background-color: #FFC;
+}
 .asf-icon {
     display: block;
     overflow: hidden;

@@ -1,6 +1,6 @@
 /**
  * asf.css - ASF component styles
- * Copyright (C) 2012 Stephane Carrez
+ * Copyright (C) 2012, 2013 Stephane Carrez
  * Licensed under the Apache License, Version 2.0 (the "License");
  */
 
@@ -67,4 +67,10 @@ div.asf-deleting {
 div.asf-message {
     position: absolute;
     z-index: 10;
+    background-color: #FFF;
+}
+div.asf-popup {
+    position: absolute;
+    z-index: 10;
+    background-color: #FFF;
 }

@@ -22,9 +22,9 @@
      */
     $.widget("ui.message", {
         options: {
-            attachment: null
+            attachment: null,
+            css: null
         },
-        editing: false,
 
         _create: function() {
             var self = this;
@@ -39,6 +39,20 @@
                 this.attachment(this.options.attachment);
             }
         },
+
+	    _setOption: function(key, value){
+		    switch (key) {
+			case "css":
+			    this.options.css = value.
+                this.element.addClass("asf-message " + value);
+			    break;
+
+            case "triggerHandler":
+                self.options.triggerHandler = value;
+                break;
+			}
+			$.Widget.prototype._setOption.apply(this, arguments);
+	    },
 
         /**
          * Set the attachment node.
@@ -64,6 +78,17 @@
          */
         click: function(event) {
             this.element.hide('fast');
+        },
+
+        /**
+         * Schedule a close and removal of the message after a delay.
+         */
+        autoClose: function() {
+            var self = this;
+
+            this.element.delay(1000).fadeOut('slow', function() {
+                self.element.remove();
+            });
         }
     });
 

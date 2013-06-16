@@ -45,12 +45,26 @@
                 }
             };
             this.keyPressHandler = function(event) {
-                $('#key').html("Code: " + event.keyCode)
                 if (event.keyCode == 27) {
                     self.close();
                 }
             };
         },
+
+	    _setOption: function(key, value){
+		    var self = this;
+
+		    switch (key) {
+			case "attachment":
+			    self.attachment(value);
+			    break;
+
+            case "triggerHandler":
+                self.options.triggerHandler = value;
+                break;
+			}
+			$.Widget.prototype._setOption.apply(self, arguments);
+	    },
 
         /**
          * Set the attachment node.
@@ -61,8 +75,11 @@
             this.options.attachment = $(node);
 
             if (this.options.attachment) {
-                var offset = $(this.options.attachment).offset();
-                this.element.offset(offset);
+                var props = {},
+                    offset = $(this.options.attachment).offset();
+                props.top = offset.top;
+                props.left = offset.left;
+                $(this.element).css(props);
             }
         },
 

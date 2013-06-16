@@ -373,3 +373,8 @@ div.asf-message {
     border: 1px solid #db6130;
     padding: 5px;
 }
+div.asf-notification {
+    background-color: #B8e980;
+    border: 1px solid #7cb13b;
+    padding: 5px;
+}

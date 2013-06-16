@@ -1,6 +1,6 @@
 /*
  *  asf-list -- List helpers
- *  Copyright (C) 2012 Stephane Carrez
+ *  Copyright (C) 2012, 2013 Stephane Carrez
  *  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,7 +92,15 @@
             /**
              * A function which is called when an element of the list is selected.
              */
-            selectAction: null
+            selectAction: null,
+
+            /**
+             * The optional ID of a DOM element that must be re-parented under the active
+             * element when the mouse is entered in the element.  This DOM element is intended to
+             * contain a set of actions that a user can make on the active element.
+             * The action ID must NOT start with the itemPrefix.
+             */
+            actionId: null
         },
 
         _create: function() {
@@ -105,13 +113,7 @@
             }).bind('blur', function(event) {
                 return self.blur(event);
             });
-            if (this.options.disableMouseover == false) {
-                this.element.bind('mouseover', function(event) {
-                    return self.mouseOver(event);
-                }).bind('mouseout', function(event) {
-                    return self.mouseOut(event);
-                });
-            }
+            this.setMouseOver(!this.options.disableMouseover);
 
             /**
              * Get the action element (a div in most cases) which contains the actions
@@ -121,6 +123,27 @@
             if (this.options.currentItem != null) {
                 this.selectAction($(this.options.currentItem));
             }
+        },
+
+        /**
+         * Enable or disable the mouseover effect on the full list.
+         *
+         * @param status when true, enable the mouseover effect.
+         */
+        setMouseOver: function(status) {
+            var self = this;
+
+            if (status == true) {
+                this.element.bind('mouseover', function(event) {
+                    return self.mouseOver(event);
+                }).bind('mouseout', function(event) {
+                    return self.mouseOut(event);
+                });
+            } else {
+                this.element.unbind('mouseover');
+                this.element.unbind('mouseout');
+            }
+            this.mouseOverEnable = status;
         },
 
         /**
@@ -215,7 +238,8 @@
                     name = name.toUpperCase();
                     if (name == "DIV" || name == "DL") {
                         var id = node.id;
-                        if (id && id.indexOf(this.options.itemPrefix) === 0) {
+                        if (id && id.indexOf(this.options.itemPrefix) === 0
+                            && id != this.options.actionId) {
                             return node;
                         }
                     }
@@ -240,7 +264,8 @@
              */
             var node = this.getTarget(event.target);
             if (node && this.currentNode != node) {
-                /* $("#current").html("Mover " + node.id + " Cnt=" + this.counter);*/
+                /* $("#current").html("Mover " + node.id + " Cnt=" + this.counter
+                + " T=" + event.target.id); */
                 this.setActiveItem(node);
                 if (this.action[0]) {
                     this.action.detach();

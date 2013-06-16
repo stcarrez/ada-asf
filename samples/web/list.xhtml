@@ -24,7 +24,9 @@
             <!-- Div that is moved near the active element to display some element actions -->
             <div id='list-action' class='asf-list-action'>
                 <a href="#" class="demo-add">#{samplesMsg.demo_list_add_label}</a>
+                <a href="#" class="demo-popup">Popup</a>
             </div>
+            <div id='key'></div>
             <util:script>
                 var items = new Array();
                 $('#demo-country-list').list({
@@ -34,6 +36,18 @@
                         var id = list.getSelectedId(list.activeItem);
                         if ($(node).hasClass("demo-add")) {
                             items.push(id);
+                        } else if ($(node).hasClass("demo-popup")) {
+                            ASF.Popup(node, 'popup', '#{contextPath}/popup-form.html?id=' + id,
+                                      { triggerHandler: function triggerHandler(action, node) {
+                                                            if (action == "open") {
+                                                                list.setMouseOver(false);
+                                                            } else {
+                                                                list.setMouseOver(true);
+                                                            }
+                                                        },
+                                        attachment: node
+                                      }
+                            );
                         }
                         $('#action-message').html("" + items);
                     }

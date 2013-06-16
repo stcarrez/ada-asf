@@ -68,6 +68,9 @@ var ASF = {};
         } else if (action.action === "closeDialog") {
             $(id).dialog('close');
 
+        } else if (action.action === "closePopup") {
+            $(id).popup('close');
+
         } else if (action.action === "redirect") {
             document.location = action.url;
 
@@ -116,6 +119,8 @@ var ASF = {};
         if (contentType && contentType.match(/^application\/json(;.*)?$/i)) {
             var data = $.parseJSON(jqXHDR.responseText);
             ASF.Execute(node, data);
+        } else {
+            ASF.Message(node, null, "Operation failed");
         }
     };
 
@@ -261,7 +266,50 @@ var ASF = {};
                 }
             },
             error: function(jqXHDR, status, error) {
-                ASF.AjaxError(jqXHDR, d);
+                ASF.AjaxError(jqXHDR, node);
+            }
+        });
+        return false;
+    };
+
+    /**
+     * Open a popup form attached to the node element and which is filled by
+     * the given URL.
+     *
+     * The popup form is created when the page refered by <tt>url</tt> is fetched.
+     * It can be referenced by the unique id given in <tt>id</tt>.
+     *
+     * @param node the node element where the popup is attached to.
+     * @param id the popup unique id.
+     * @param url the URL to fetch to fill the popup content.
+     * @param params the popup creation parameters.
+     */
+    ASF.Popup = function(node, id, url, params) {
+        jQuery.ajax({
+            type: "GET",
+            url: url,
+            context: document.body,
+            success: function(data, status, jqXHDR) {
+                var contentType = jqXHDR.getResponseHeader('Content-type');
+                if (contentType == null) {
+                    contentType = "text/html";
+                }
+                var div = $('#' + id);
+                if (div.length == 0) {
+                    div = document.createElement("div");
+                    div.id = id;
+                    $(document.body).append($(div));
+                }
+                if (contentType.match(/^text\/(html|xml)(;.*)?$/i)) {
+                    $(div).html(jqXHDR.responseText);
+
+                } else if (contentType.match(/^application\/json(;.*)?$/i)) {
+                    ASF.Execute(div, data);
+                }
+                $(div).popup(params).popup('open');
+            },
+            error: function(jqXHDR, status, error) {
+                ASF.AjaxError(jqXHDR, node);
             }
         });
         return false;

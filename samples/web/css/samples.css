@@ -352,13 +352,24 @@ div.forum {
 }
 div.demo-country {
     float: left;
-    width: 99%;
-    padding-left: 1%;
+    width: 96%;
+    padding-left: 80px;
 }
 #list-action {
     left: -20px;
+    width: 80px;
 }
 div.demo-country div.name, div.demo-country div.country-code {
     float: left;
     width: 140px;
+}
+div.demo-popup {
+    -webkit-border-radius: 6px 6px;
+    border: 1px solid #bcd;
+    background: #fff;
+}
+div.asf-message {
+    background-color: #f7b88d;
+    border: 1px solid #db6130;
+    padding: 5px;
 }

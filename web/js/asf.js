@@ -307,6 +307,7 @@ var ASF = {};
                     ASF.Execute(div, data);
                 }
                 $(div).popup(params).popup('open');
+                $(div).find('form:not(.filter) :input:visible:first').focus();
             },
             error: function(jqXHDR, status, error) {
                 ASF.AjaxError(jqXHDR, node);

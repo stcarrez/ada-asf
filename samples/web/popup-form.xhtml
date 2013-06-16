@@ -1,0 +1,38 @@
+<f:view contentType="text/html; charset=UTF-8"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:util="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html">
+    <f:metadata>
+        <f:viewParam id='id' value='#{message.email}'/>
+    </f:metadata>
+    <div class='demo-popup ui-corner-all'>
+
+    <h:form id='post'>
+        <h:inputHidden id="demo-message-id" value="#{message.email}"/>
+        <h:messages styleClass='error'/>
+        <p>
+            <h:outputFormat value="From '{0}'">
+                <f:param value="#{message.email}"/>
+            </h:outputFormat>
+        </p>
+        <dl class="awa-required#{util:hasMessage('title') ? ' awa-error' : ''}">
+            <dt>
+                <h:message for='title' styleClass='error'/>
+            </dt>
+            <dd>
+                <h:inputText id='title' size='30' required='true' value='#{message.text}'
+                             placeholder='this is your message'/>
+            </dd>
+        </dl>
+
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='send'
+                                 value='#{samplesMsg.demo_send_button}'
+                                 styleClass="ui-button ui-state-default ui-corner-all"
+                                 action="#{message.post}"/>
+            </li>
+        </ul>
+    </h:form>
+    </div>
+</f:view>

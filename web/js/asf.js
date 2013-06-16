@@ -77,6 +77,9 @@ var ASF = {};
         } else if (action.action === "message") {
 	        ASF.Message(node, action.id, action.data);
 
+        } else if (action.action === "notification") {
+	        ASF.Message(node, action.id, action.data, 'asf-notification').message('autoClose');
+
         } else if (action.action === "script") {
             try {
                 eval(action.script);
@@ -415,8 +418,9 @@ var ASF = {};
      * @param node the element giving the location of the message
      * @param id the message id or null
      * @param message the HTML message content
+     * @param css the optional CSS to set on the message content.
      */
-    ASF.Message = function(node, id, message) {
+    ASF.Message = function(node, id, message, css) {
         if (!id) {
             id = "#asf-message";
         }
@@ -425,9 +429,13 @@ var ASF = {};
             div = document.createElement("div");
             div.id = id.substring(1);
             $(document.body).append($(div));
+        } else {
+            $(div).removeClass();
         }
-
-        $(div).html(message).message({}).message("attachment", node);
+        if (css) {
+            $(div).addClass(css);
+        }
+        return $(div).html(message).message({}).message("attachment", node);
     };
 })();
 

@@ -151,7 +151,7 @@
          *
          * @param node the list item to select
          */
-        selectAction: function(node) {
+        selectAction: function(node, event) {
             if (this.currentItem != null) {
                 $(this.currentItem).removeClass(this.options.selectClass);
             }
@@ -383,7 +383,7 @@
                         this.enterCreate(event);
                     }
                 } else {
-                    this.selectAction(node);
+                    this.selectAction(node, event);
                 }
             } else {
                 name = event.target.tagName;

@@ -1,6 +1,6 @@
 Version 0.6     -
   - Add support for Facebook and Google+ login
-  - Javascript support for popup
+  - Javascript support for popup and editable fields
   - Added support to enable/disable mouseover effect in lists
 
 Version 0.5     - Feb 2013

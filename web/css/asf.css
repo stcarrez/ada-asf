@@ -74,3 +74,9 @@ div.asf-popup {
     z-index: 10;
     background-color: #FFF;
 }
+div.asf-popup div.ui-corner-all {
+    float: left;
+    padding: 5px;
+    z-index: 1;
+    border: 1px solid #a6c9e2;
+}

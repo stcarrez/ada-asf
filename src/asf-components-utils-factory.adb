@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Ada.Calendar;
 with ASF.Views.Nodes;
 with ASF.Components.Utils.Files;
 with ASF.Components.Utils.Flush;
@@ -23,7 +23,10 @@ with ASF.Components.Utils.Scripts;
 with ASF.Components.Utils.Escapes;
 with ASF.Components.Utils.Beans;
 with ASF.Components.Html.Messages;
+with Util.Dates.ISO8601;
+with Util.Beans.Objects.Time;
 with Util.Strings.Transforms; use Util.Strings;
+
 package body ASF.Components.Utils.Factory is
 
    use ASF.Components.Base;
@@ -120,6 +123,9 @@ package body ASF.Components.Utils.Factory is
    --  Escape the string using XML escape rules.
    function Escape_Xml (Value : EL.Objects.Object) return EL.Objects.Object;
 
+   --  Translate the value into an ISO8606 date.
+   function To_ISO8601 (Value : in EL.Objects.Object) return EL.Objects.Object;
+
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
    begin
       Mapper.Set_Function (Name      => "escapeJavaScript",
@@ -128,6 +134,9 @@ package body ASF.Components.Utils.Factory is
       Mapper.Set_Function (Name      => "escapeXml",
                            Namespace => URI,
                            Func      => Escape_Xml'Access);
+      Mapper.Set_Function (Name      => "iso8601",
+                           Namespace => URI,
+                           Func      => To_ISO8601'Access);
       Mapper.Set_Function (Name      => "hasMessage",
                            Namespace => URI,
                            Func      => ASF.Components.Html.Messages.Has_Message'Access,
@@ -151,5 +160,15 @@ package body ASF.Components.Utils.Factory is
                              Into    => Result);
       return EL.Objects.To_Object (Result);
    end Escape_Xml;
+
+   --  ------------------------------
+   --  Translate the value into an ISO8606 date.
+   --  ------------------------------
+   function To_ISO8601 (Value : in EL.Objects.Object) return EL.Objects.Object is
+      D : constant Ada.Calendar.Time := Util.Beans.Objects.Time.To_Time (Value);
+      S : constant String := Util.Dates.ISO8601.Image (D);
+   begin
+      return Util.Beans.Objects.To_Object (S);
+   end To_ISO8601;
 
 end ASF.Components.Utils.Factory;

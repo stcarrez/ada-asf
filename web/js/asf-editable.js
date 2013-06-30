@@ -47,6 +47,8 @@
             };
             this.keyPressHandler = function(event) {
                 if (event.keyCode == 27) {
+                    self.cancelEdit();
+                } else if (event.keyCode == 13) {
                     self.finishEdit();
                 }
             };
@@ -72,19 +74,28 @@
          *
          */
         enterEdit: function() {
-            this.element.originalValue = this.element.text();
+            this.originalValue = this.element.text();
             this.element.addClass("asf-editing");
             if (this.inputField == null) {
                 this.createInput();
             }
-            this.inputField.value = this.element.originalValue;
+            this.inputField.value = this.originalValue;
             this.element.empty();
             this.element.append(this.inputField);
+            $(this.inputField).focus();
 
             /**
              * Catch Escape and click outside of field to leave the edit mode.
              */
             $(document).bind('keyup', this.keyPressHandler).bind('click', this.clickHandler);
+        },
+
+        /**
+         * Cancel the edit mode leaving the field unchanged.
+         */
+        cancelEdit: function() {
+            this.inputField.value = this.originalValue;
+            this.finishEdit();
         },
 
         /**

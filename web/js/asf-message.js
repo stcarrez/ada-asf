@@ -43,7 +43,7 @@
 	    _setOption: function(key, value){
 		    switch (key) {
 			case "css":
-			    this.options.css = value.
+			    this.options.css = value;
                 this.element.addClass("asf-message " + value);
 			    break;
 

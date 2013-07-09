@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.server -- ASF Server for AWS
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with AWS.Config;
 private with AWS.Server;
-private with AWS.Config;
 package ASF.Server.Web is
 
    use ASF;
@@ -27,6 +27,10 @@ package ASF.Server.Web is
    --  Start the applications that have been registered.
    overriding
    procedure Start (Server : in out AWS_Container);
+
+   --  Configure the AWS server.
+   procedure Configure (Server : in out AWS_Container;
+                        Process : not null access procedure (Config : in out AWS.Config.Object));
 
 private
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.server -- ASF Server for AWS
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,6 +56,15 @@ package body ASF.Server.Web is
                         Config     => Server.Conf,
                         Callback   => ASF.Server.Web.Server_Callback'Access);
    end Start;
+
+   ----------------------
+   --  Configure the AWS server.
+   ----------------------
+   procedure Configure (Server : in out AWS_Container;
+                        Process : not null access procedure (Config : in out AWS.Config.Object)) is
+   begin
+      Process (Server.Conf);
+   end Configure;
 
    ----------------------
    --  Main server callback

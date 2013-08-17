@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests.mockup -- ASF Requests mockup
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,6 +56,26 @@ package body ASF.Requests.Mockup is
    begin
       return Find (Req.Parameters, Name);
    end Get_Parameter;
+
+   --  ------------------------------
+   --  Iterate over the request parameters and executes the <b>Process</b> procedure.
+   --  ------------------------------
+   procedure Iterate_Parameters (Req     : in Request;
+                                 Process : not null access
+                                   procedure (Name  : in String;
+                                              Value : in String)) is
+
+      procedure Process_Wrapper (Position : in Util.Strings.Maps.Cursor);
+
+      procedure Process_Wrapper (Position : in Util.Strings.Maps.Cursor) is
+      begin
+         Process.all (Name  => Util.Strings.Maps.Key (Position),
+                      Value => Util.Strings.Maps.Element (Position));
+      end Process_Wrapper;
+
+   begin
+      Req.Parameters.Iterate (Process => Process_Wrapper'Access);
+   end Iterate_Parameters;
 
    --  ------------------------------
    --  Set the parameter

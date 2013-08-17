@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests.mockup -- ASF Requests mockup
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,12 @@ package ASF.Requests.Mockup is
    --  or getReader() can interfere with the execution of this method.
    function Get_Parameter (Req  : Request;
                            Name : String) return String;
+
+   --  Iterate over the request parameters and executes the <b>Process</b> procedure.
+   procedure Iterate_Parameters (Req     : in Request;
+                                 Process : not null access
+                                   procedure (Name  : in String;
+                                              Value : in String));
 
    --  Set the parameter
    procedure Set_Parameter (Req   : in out Request;

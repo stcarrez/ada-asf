@@ -16,6 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with AWS.Attachments.Extend;
+with AWS.Containers.Tables;
+with AWS.Parameters;
+
+with Util.Strings;
 
 with ASF.Parts.Web;
 package body ASF.Requests.Web is
@@ -24,6 +28,37 @@ package body ASF.Requests.Web is
    begin
       return AWS.Status.Parameter (R.Data.all, Name);
    end Get_Parameter;
+
+   --  ------------------------------
+   --  Iterate over the request parameters and executes the <b>Process</b> procedure.
+   --  ------------------------------
+   procedure Iterate_Parameters (Req     : in Request;
+                                 Process : not null access
+                                   procedure (Name  : in String;
+                                              Value : in String)) is
+      procedure Process_Wrapper (Name, Value : in String);
+
+      procedure Process_Wrapper (Name, Value : in String) is
+         Last : Natural := Value'First;
+         Pos  : Natural;
+      begin
+         while Last <= Value'Last loop
+            Pos := Util.Strings.Index (Value, ASCII.NUL, Last);
+            if Pos > 0 then
+               Process (Name, Value (Last .. Pos - 1));
+               Last := Pos + 1;
+            else
+               Process (Name, Value (Last .. Value'Last));
+               return;
+            end if;
+         end loop;
+      end Process_Wrapper;
+
+      P : constant AWS.Parameters.List := AWS.Status.Parameters (Req.Data.all);
+   begin
+      AWS.Containers.Tables.Iterate_Names (AWS.Containers.Tables.Table_Type (P),
+                                           "" & ASCII.NUL, Process_Wrapper'Access);
+   end Iterate_Parameters;
 
    --  ------------------------------
    --  Set the AWS data received to initialize the request object.

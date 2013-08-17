@@ -24,6 +24,12 @@ package ASF.Requests.Web is
 
    function Get_Parameter (R : Request; Name : String) return String;
 
+   --  Iterate over the request parameters and executes the <b>Process</b> procedure.
+   procedure Iterate_Parameters (Req     : in Request;
+                                 Process : not null access
+                                   procedure (Name  : in String;
+                                              Value : in String));
+
    --  Set the AWS data received to initialize the request object.
    procedure Set_Request (Req  : in out Request;
                           Data : access AWS.Status.Data);

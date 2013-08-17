@@ -140,6 +140,12 @@ package ASF.Requests is
    function Get_Parameter_Values (Req  : in Request;
                                   Name : in String) return String;
 
+   --  Iterate over the request parameters and executes the <b>Process</b> procedure.
+   procedure Iterate_Parameters (Req     : in Request;
+                                 Process : not null access
+                                   procedure (Name  : in String;
+                                              Value : in String)) is abstract;
+
    --  Returns the name and version of the protocol the request uses in the form
    --  protocol/majorVersion.minorVersion, for example, HTTP/1.1. For HTTP servlets,
    --  the value returned is the same as the value of the CGI variable SERVER_PROTOCOL.

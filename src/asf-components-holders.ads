@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-holders -- Value holder interfaces
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -65,5 +65,26 @@ package ASF.Components.Holders is
    procedure Add_Validator (Holder    : in out Editable_Value_Holder;
                             Validator : in ASF.Validators.Validator_Access;
                             Shared    : in Boolean := False) is abstract;
+
+   --  ------------------------------
+   --  List Holder
+   --  ------------------------------
+   --  The <b>List_Holder</b> is an interface used by the data scroller to get some information
+   --  about how a list is displayed.
+   type List_Holder is limited interface;
+   type List_Holder_Access is access all List_Holder'Class;
+
+   --  Get the number of rows in the list.
+   function Get_Row_Count (List : in List_Holder) return Natural is abstract;
+
+   --  Get the number of rows per page.
+   function Get_Row_Per_Page (List : in List_Holder) return Positive is abstract;
+
+   --  Get the current page.
+   function Get_Current_Page (List : in List_Holder) return Positive is abstract;
+
+   --  Set the current page number.
+   procedure Set_Current_Page (List : in out List_Holder;
+                               Page : in Positive) is abstract;
 
 end ASF.Components.Holders;

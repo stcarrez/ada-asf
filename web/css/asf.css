@@ -45,6 +45,17 @@ div.ui-list div.asf-active {
     height: 24px;
     float: left;
 }
+/* Mouseover effect on block titles.  */
+div.asf-block-title {
+    float: left;
+    width: 100%;
+}
+div.asf-block-title a {
+    visibility: hidden;
+}
+.asf-active-block div.asf-block-title a {
+    visibility: visible;
+}
 
 /**
  * The delete action icon.

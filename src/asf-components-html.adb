@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,10 +46,11 @@ package body ASF.Components.Html is
    --  Render the attributes which are defined on the component and which are
    --  in the list specified by <b>names</b>.
    --  ------------------------------
-   procedure Render_Attributes (UI      : in UIHtmlComponent;
-                                Context : in out Faces_Context'Class;
-                                Names   : in Util.Strings.String_Set.Set;
-                                Writer  : in Response_Writer_Access) is
+   procedure Render_Attributes (UI       : in UIHtmlComponent;
+                                Context  : in out Faces_Context'Class;
+                                Names    : in Util.Strings.String_Set.Set;
+                                Writer   : in Response_Writer_Access;
+                                Write_Id : in Boolean := True) is
 
       pragma Unreferenced (Context);
 
@@ -75,7 +76,7 @@ package body ASF.Components.Html is
       procedure Write_Attributes is new Base.Iterate_Attributes (Process_Attribute);
 
    begin
-      if not UI.Is_Generated_Id then
+      if Write_Id and then not UI.Is_Generated_Id then
          Writer.Write_Attribute ("id", UI.Get_Client_Id);
       end if;
       Write_Attributes (UI);

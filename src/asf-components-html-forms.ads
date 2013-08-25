@@ -89,8 +89,9 @@ package ASF.Components.Html.Forms is
                          Value : in Boolean);
 
    --  Render the input element.
-   procedure Render_Input (UI      : in UIInput;
-                           Context : in out Faces_Context'Class);
+   procedure Render_Input (UI       : in UIInput;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True);
 
    overriding
    procedure Encode_Begin (UI      : in UIInput;
@@ -156,8 +157,9 @@ package ASF.Components.Html.Forms is
 
    --  Render the textarea element.
    overriding
-   procedure Render_Input (UI      : in UIInputTextarea;
-                           Context : in out Faces_Context'Class);
+   procedure Render_Input (UI       : in UIInputTextarea;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True);
 
    --  ------------------------------
    --  Input_Hidden Component
@@ -167,8 +169,9 @@ package ASF.Components.Html.Forms is
 
    --  Render the inputHidden element.
    overriding
-   procedure Render_Input (UI      : in UIInput_Hidden;
-                           Context : in out Faces_Context'Class);
+   procedure Render_Input (UI       : in UIInput_Hidden;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True);
 
    --  ------------------------------
    --  InputFile Component
@@ -178,8 +181,9 @@ package ASF.Components.Html.Forms is
 
    --  Render the input file element.
    overriding
-   procedure Render_Input (UI      : in UIInput_File;
-                           Context : in out Faces_Context'Class);
+   procedure Render_Input (UI       : in UIInput_File;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True);
 
    --  Validate the submitted file.
    --  <ul>

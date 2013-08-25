@@ -1,0 +1,25 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:w="http://code.google.com/p/ada-asf/widget"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <div class="ui-widget ui-widget-header">
+        Compute the volume of a cylinder
+    </div>
+    <h:form id='text-form'>
+        <w:inputText title="Height" id='height' size='10'
+                     value='#{compute.height}'
+                     styleClass="ui-corner-all">
+            <f:converter converterId="float" />
+        </w:inputText>
+        <w:inputText title="Radius" id='radius' size='10'
+                     value='#{compute.radius}'
+                     styleClass="ui-corner-all">
+            <f:converter converterId="float" />
+        </w:inputText>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>

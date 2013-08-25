@@ -24,23 +24,35 @@ package body ASF.Components.Widgets.Factory is
    use ASF.Components.Base;
 
    function Create_Input return UIComponent_Access;
+   function Create_Complete return UIComponent_Access;
 
-   --  -------------------------
    --  ------------------------------
-   --  Create a UIFile component
+   --  Create a UIInput component
    --  ------------------------------
    function Create_Input return UIComponent_Access is
    begin
       return new ASF.Components.Widgets.Inputs.UIInput;
    end Create_Input;
 
+   --  ------------------------------
+   --  Create a UIComplete component
+   --  ------------------------------
+   function Create_Complete return UIComponent_Access is
+   begin
+      return new ASF.Components.Widgets.Inputs.UIComplete;
+   end Create_Complete;
+
    use ASF.Views.Nodes;
 
-   URI            : aliased constant String := "http://code.google.com/p/ada-asf/widget";
-   INPUT_TEXT_TAG : aliased constant String := "inputText";
+   URI              : aliased constant String := "http://code.google.com/p/ada-asf/widget";
+   AUTOCOMPLETE_TAG : aliased constant String := "autocomplete";
+   INPUT_TEXT_TAG   : aliased constant String := "inputText";
 
    Widget_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => INPUT_TEXT_TAG'Access,
+     := (1 => (Name      => AUTOCOMPLETE_TAG'Access,
+               Component => Create_Complete'Access,
+               Tag       => Create_Component_Node'Access),
+         2 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input'Access,
                Tag       => Create_Component_Node'Access)
         );

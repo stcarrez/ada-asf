@@ -121,6 +121,7 @@ div.openid-retry {
 .sample-util #nav #nav-util a,
 .sample-jsf-core #nav #nav-jsf-core a,
 .sample-jsf-html #nav #nav-jsf-html a,
+.sample-widgets #nav #nav-widgets a,
 .sample-ajax #nav #nav-ajax a,
 .sample-upload #nav #nav-upload a,
 .sample-utf8 #nav #nav-utf8 a {
@@ -139,6 +140,7 @@ div.openid-retry {
 .sample-ajax #nav #nav-ajax,
 .sample-jsf-core #nav #nav-jsf-core,
 .sample-jsf-html #nav #nav-jsf-html,
+.sample-widgets #nav #nav-widgets,
 .sample-util #nav #nav-util,
 .sample-upload #nav #nav-upload,
 .sample-utf8 #nav #nav-utf8 {

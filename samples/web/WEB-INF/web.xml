@@ -122,6 +122,14 @@
     </navigation-rule>
 
     <navigation-rule>
+      <from-view-id>/widgets/*</from-view-id>
+      <navigation-case>
+        <from-outcome>compute</from-outcome>
+        <to-view-id>/forms/form-response.xhtml</to-view-id>
+      </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
       <from-view-id>/post.xhtml</from-view-id>
       <navigation-case>
         <from-outcome>posted</from-outcome>

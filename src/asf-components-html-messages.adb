@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.messages -- Faces messages
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -85,16 +85,20 @@ package body ASF.Components.Html.Messages is
 
       case Get_Severity (Message) is
          when FATAL =>
-            UI.Render_Attributes (Context, FATAL_ATTRIBUTE_NAMES, Writer);
+            UI.Render_Attributes (Context, FATAL_ATTRIBUTE_NAMES, Writer,
+                                  Write_Id => Mode /= SPAN_NO_STYLE);
 
          when ERROR =>
-            UI.Render_Attributes (Context, ERROR_ATTRIBUTE_NAMES, Writer);
+            UI.Render_Attributes (Context, ERROR_ATTRIBUTE_NAMES, Writer,
+                                  Write_Id => Mode /= SPAN_NO_STYLE);
 
          when WARN =>
-            UI.Render_Attributes (Context, WARN_ATTRIBUTE_NAMES, Writer);
+            UI.Render_Attributes (Context, WARN_ATTRIBUTE_NAMES, Writer,
+                                  Write_Id => Mode /= SPAN_NO_STYLE);
 
          when INFO | NONE =>
-            UI.Render_Attributes (Context, INFO_ATTRIBUTE_NAMES, Writer);
+            UI.Render_Attributes (Context, INFO_ATTRIBUTE_NAMES, Writer,
+                                  Write_Id => Mode /= SPAN_NO_STYLE);
 
       end case;
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-selects -- ASF HTML UISelectOne and UISelectMany components
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,8 +36,9 @@ package body ASF.Components.Html.Selects is
    --  ------------------------------
    --  Render the checkbox element.
    overriding
-   procedure Render_Input (UI      : in UISelectBoolean;
-                           Context : in out Faces_Context'Class) is
+   procedure Render_Input (UI       : in UISelectBoolean;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True) is
       use ASF.Components.Html.Forms;
 
       Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
@@ -45,7 +46,7 @@ package body ASF.Components.Html.Selects is
    begin
       Writer.Start_Element ("input");
       Writer.Write_Attribute (Name => "type", Value => "checkbox");
-      UI.Render_Attributes (Context, SELECT_ATTRIBUTE_NAMES, Writer);
+      UI.Render_Attributes (Context, SELECT_ATTRIBUTE_NAMES, Writer, Write_Id);
       Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
       if not EL.Objects.Is_Null (Value) and then EL.Objects.To_Boolean (Value) then
          Writer.Write_Attribute (Name => "checked", Value => "true");

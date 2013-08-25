@@ -112,8 +112,9 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    --  Render the input element.
    --  ------------------------------
-   procedure Render_Input (UI      : in UIInput;
-                           Context : in out Faces_Context'Class) is
+   procedure Render_Input (UI       : in UIInput;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True) is
       Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
       Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
    begin
@@ -139,7 +140,7 @@ package body ASF.Components.Html.Forms is
             end if;
          end;
       end if;
-      UI.Render_Attributes (Context, INPUT_ATTRIBUTE_NAMES, Writer);
+      UI.Render_Attributes (Context, INPUT_ATTRIBUTE_NAMES, Writer, Write_Id);
       Writer.End_Element ("input");
    end Render_Input;
 
@@ -331,14 +332,15 @@ package body ASF.Components.Html.Forms is
    --  Render the textarea element.
    --  ------------------------------
    overriding
-   procedure Render_Input (UI      : in UIInputTextarea;
-                           Context : in out Faces_Context'Class) is
+   procedure Render_Input (UI       : in UIInputTextarea;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True) is
       Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
       Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
    begin
       Writer.Start_Element ("textarea");
       Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
-      UI.Render_Attributes (Context, TEXTAREA_ATTRIBUTE_NAMES, Writer);
+      UI.Render_Attributes (Context, TEXTAREA_ATTRIBUTE_NAMES, Writer, Write_Id);
       if not EL.Objects.Is_Null (Value) then
          declare
             Convert : constant access Converters.Converter'Class
@@ -361,8 +363,9 @@ package body ASF.Components.Html.Forms is
    --  ------------------------------
    --  Render the inputHidden element.
    overriding
-   procedure Render_Input (UI      : in UIInput_Hidden;
-                           Context : in out Faces_Context'Class) is
+   procedure Render_Input (UI       : in UIInput_Hidden;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True) is
       Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
       Value  : constant EL.Objects.Object := UIInput'Class (UI).Get_Value;
    begin
@@ -384,7 +387,7 @@ package body ASF.Components.Html.Forms is
             end if;
          end;
       end if;
-      if not UI.Is_Generated_Id then
+      if Write_Id and then not UI.Is_Generated_Id then
          Writer.Write_Attribute ("id", UI.Get_Client_Id);
       end if;
       Writer.End_Element ("input");
@@ -394,12 +397,13 @@ package body ASF.Components.Html.Forms is
    --  Render the input file element.
    --  ------------------------------
    overriding
-   procedure Render_Input (UI      : in UIInput_File;
-                           Context : in out Faces_Context'Class) is
+   procedure Render_Input (UI       : in UIInput_File;
+                           Context  : in out Faces_Context'Class;
+                           Write_Id : in Boolean := True) is
       Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
    begin
       Writer.Start_Element ("input");
-      UI.Render_Attributes (Context, FILE_ATTRIBUTE_NAMES, Writer);
+      UI.Render_Attributes (Context, FILE_ATTRIBUTE_NAMES, Writer, Write_Id);
       Writer.Write_Attribute (Name => "type", Value => "file");
       Writer.Write_Attribute (Name => "name", Value => UI.Get_Client_Id);
       Writer.End_Element ("input");

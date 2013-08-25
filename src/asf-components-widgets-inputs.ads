@@ -16,9 +16,13 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
+with Util.Beans.Basic;
+
 with ASF.Components.Html.Forms;
 with ASF.Contexts.Faces;
 with ASF.Contexts.Writer;
+with ASF.Events.Faces;
 
 package ASF.Components.Widgets.Inputs is
 
@@ -44,6 +48,7 @@ package ASF.Components.Widgets.Inputs is
 
    --  Render the input field title.
    procedure Render_Title (UI      : in UIInput;
+                           Name    : in String;
                            Writer  : in Response_Writer_Access;
                            Context : in out Faces_Context'Class);
 
@@ -57,5 +62,41 @@ package ASF.Components.Widgets.Inputs is
    overriding
    procedure Encode_End (UI      : in UIInput;
                          Context : in out Faces_Context'Class);
+
+   --  ------------------------------
+   --  The auto complete component.
+   --  ------------------------------
+   --
+   type UIComplete is new UIInput with private;
+   type UIComplete_Access is access all UIInput'Class;
+
+   --  Render the end of the input component.  Closes the DL/DD list.
+   overriding
+   procedure Encode_End (UI      : in UIComplete;
+                         Context : in out Faces_Context'Class);
+   overriding
+   procedure Process_Decodes (UI      : in out UIComplete;
+                              Context : in out Faces_Context'Class);
+
+   overriding
+   procedure Process_Updates (UI      : in out UIComplete;
+                              Context : in out Faces_Context'Class);
+
+   --  Broadcast the event to the event listeners installed on this component.
+   --  Listeners are called in the order in which they were added.
+   overriding
+   procedure Broadcast (UI      : in out UIComplete;
+                        Event   : not null access ASF.Events.Faces.Faces_Event'Class;
+                        Context : in out Faces_Context'Class);
+
+   procedure Render_List (UI      : in UIComplete;
+                          Match   : in String;
+                          Context : in out Faces_Context'Class);
+
+private
+
+   type UIComplete is new UIInput with record
+      Match_Value : Util.Beans.Objects.Object;
+   end record;
 
 end ASF.Components.Widgets.Inputs;

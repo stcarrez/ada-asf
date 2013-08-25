@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,10 +32,11 @@ package ASF.Components.Html is
 
    --  Render the attributes which are defined on the component and which are
    --  in the list specified by <b>names</b>.
-   procedure Render_Attributes (UI      : in UIHtmlComponent;
-                                Context : in out Faces_Context'Class;
-                                Names   : in Util.Strings.String_Set.Set;
-                                Writer  : in Response_Writer_Access);
+   procedure Render_Attributes (UI       : in UIHtmlComponent;
+                                Context  : in out Faces_Context'Class;
+                                Names    : in Util.Strings.String_Set.Set;
+                                Writer   : in Response_Writer_Access;
+                                Write_Id : in Boolean := True);
 
 private
 

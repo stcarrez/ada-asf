@@ -1,0 +1,24 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:w="http://code.google.com/p/ada-asf/widget"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <div class="ui-widget ui-widget-header">
+        Select a date
+    </div>
+    <h:form id='text-form'>
+        <w:inputDate title="Message date" id='date' size='20'
+                     value='#{message.text}'
+                     dateFormat="yy-dd-mm"
+                     styleClass="ui-corner-all">
+        </w:inputDate>
+        <w:inputText title="Email" id='email' size='10'
+                     value='#{message.email}'
+                     styleClass="ui-corner-all">
+        </w:inputText>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='run' value='Post' action="#{message.post}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>

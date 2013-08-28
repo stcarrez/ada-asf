@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with Util.Beans.Objects;
-with Util.Beans.Basic;
 
 with ASF.Components.Html.Forms;
 with ASF.Contexts.Faces;
@@ -92,6 +91,18 @@ package ASF.Components.Widgets.Inputs is
    procedure Render_List (UI      : in UIComplete;
                           Match   : in String;
                           Context : in out Faces_Context'Class);
+
+   --  ------------------------------
+   --  The input date component.
+   --  ------------------------------
+   --
+   type UIInputDate is new UIInput with null record;
+   type UIInputDate_Access is access all UIInputDate'Class;
+
+   --  Render the end of the input component.  Closes the DL/DD list.
+   overriding
+   procedure Encode_End (UI      : in UIInputDate;
+                         Context : in out Faces_Context'Class);
 
 private
 

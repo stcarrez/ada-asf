@@ -20,14 +20,13 @@ with Ada.Strings.Unbounded;
 with Ada.Characters.Conversions;
 
 with ASF.Models.Selects;
-with ASF.Components.Base;
 with ASF.Components.Utils;
 with ASF.Components.Html.Messages;
 with ASF.Events.Faces.Actions;
 with ASF.Applications.Messages.Vectors;
 
+with Util.Beans.Basic;
 with Util.Strings.Transforms;
-with Util.Beans.Objects;
 package body ASF.Components.Widgets.Inputs is
 
    --  ------------------------------
@@ -152,6 +151,8 @@ package body ASF.Components.Widgets.Inputs is
                           Context : in out Faces_Context'Class) is
       use type Util.Beans.Basic.List_Bean_Access;
 
+      procedure Render_Item (Label : in String);
+
       List       : constant Util.Beans.Basic.List_Bean_Access
         := ASF.Components.Utils.Get_List_Bean (UI, "autocompleteList", Context);
       Writer     : constant Response_Writer_Access := Context.Get_Response_Writer;
@@ -257,5 +258,38 @@ package body ASF.Components.Widgets.Inputs is
       UI.Render_List (Match, Context);
       Context.Response_Completed;
    end Broadcast;
+
+   --  ------------------------------
+   --  Render the end of the input date component.
+   --  Generate the javascript code to activate the input date selector
+   --  and closes the DL/DD list.
+   --  ------------------------------
+   overriding
+   procedure Encode_End (UI      : in UIInputDate;
+                         Context : in out Faces_Context'Class) is
+      use ASF.Components.Html.Messages;
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+
+      --  Render the input date script and finish the input component.
+      declare
+         Id       : constant String := To_String (UI.Get_Client_Id);
+         Writer   : constant Response_Writer_Access := Context.Get_Response_Writer;
+         Format   : constant String := UI.Get_Attribute ("dateFormat", Context);
+      begin
+         Writer.Queue_Script ("$('#");
+         Writer.Queue_Script (Id);
+         Writer.Queue_Script (" input').datepicker({");
+         if Format'Length > 0 then
+            Writer.Queue_Script ("dateFormat: """);
+            Writer.Queue_Script (Format);
+            Writer.Queue_Script ("""");
+         end if;
+         Writer.Queue_Script ("});");
+         UIInput (UI).Encode_End (Context);
+      end;
+   end Encode_End;
 
 end ASF.Components.Widgets.Inputs;

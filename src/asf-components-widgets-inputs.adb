@@ -153,7 +153,7 @@ package body ASF.Components.Widgets.Inputs is
       use type Util.Beans.Basic.List_Bean_Access;
 
       List       : constant Util.Beans.Basic.List_Bean_Access
-        := ASF.Components.Utils.Get_List_Bean (UI, "autocomplete", Context);
+        := ASF.Components.Utils.Get_List_Bean (UI, "autocompleteList", Context);
       Writer     : constant Response_Writer_Access := Context.Get_Response_Writer;
       Need_Comma : Boolean := False;
       Count      : Natural;
@@ -182,7 +182,7 @@ package body ASF.Components.Widgets.Inputs is
          Count := List.Get_Count;
          if List.all in ASF.Models.Selects.Select_Item_List'Class then
             declare
-               S : access ASF.Models.Selects.Select_Item_List'Class
+               S : constant access ASF.Models.Selects.Select_Item_List'Class
                  := ASF.Models.Selects.Select_Item_List'Class (List.all)'Access;
             begin
                for I in 1 .. Count loop

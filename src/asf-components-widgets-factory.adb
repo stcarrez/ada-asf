@@ -24,6 +24,7 @@ package body ASF.Components.Widgets.Factory is
    use ASF.Components.Base;
 
    function Create_Input return UIComponent_Access;
+   function Create_Input_Date return UIComponent_Access;
    function Create_Complete return UIComponent_Access;
 
    --  ------------------------------
@@ -33,6 +34,14 @@ package body ASF.Components.Widgets.Factory is
    begin
       return new ASF.Components.Widgets.Inputs.UIInput;
    end Create_Input;
+
+   --  ------------------------------
+   --  Create a UIInput component
+   --  ------------------------------
+   function Create_Input_Date return UIComponent_Access is
+   begin
+      return new ASF.Components.Widgets.Inputs.UIInputDate;
+   end Create_Input_Date;
 
    --  ------------------------------
    --  Create a UIComplete component
@@ -46,13 +55,17 @@ package body ASF.Components.Widgets.Factory is
 
    URI              : aliased constant String := "http://code.google.com/p/ada-asf/widget";
    AUTOCOMPLETE_TAG : aliased constant String := "autocomplete";
+   INPUT_DATE_TAG   : aliased constant String := "inputDate";
    INPUT_TEXT_TAG   : aliased constant String := "inputText";
 
    Widget_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => AUTOCOMPLETE_TAG'Access,
                Component => Create_Complete'Access,
                Tag       => Create_Component_Node'Access),
-         2 => (Name      => INPUT_TEXT_TAG'Access,
+         2 => (Name      => INPUT_DATE_TAG'Access,
+               Component => Create_Input_Date'Access,
+               Tag       => Create_Component_Node'Access),
+         3 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input'Access,
                Tag       => Create_Component_Node'Access)
         );

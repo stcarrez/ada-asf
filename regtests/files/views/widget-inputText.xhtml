@@ -1,0 +1,13 @@
+<h:form xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:w="http://code.google.com/p/ada-asf/widget"
+        xmlns:f="http://java.sun.com/jsf/core"
+        id="testInputText" styleClass="test" style="color: red;"
+        value="Testing inputText">
+    <w:inputText
+            title="Country" id='country' size='30'
+            value='testing'
+            styleClass="ui-corner-all">
+        <f:validateLongRange minimum='10' maximum='20'/>
+    </w:inputText>
+    <h:commandButton id='ok' action='#{some_bean.run}' value='Go'/>
+</h:form>

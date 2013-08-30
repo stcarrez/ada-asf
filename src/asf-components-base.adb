@@ -35,10 +35,14 @@ with ASF.Applications.Messages;
 with ASF.Applications.Messages.Factory;
 package body ASF.Components.Base is
 
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Components.Base");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Components.Base");
+
+   --  Get the UIAttribute associated with the given name.
+   --  Returns null if there is no UIAttribute with such name.
+   --  ------------------------------
+   function Get_Attribute (UI   : in UIComponent;
+                           Name : in String) return UIAttribute_Access;
 
    --  ------------------------------
    --  Get the parent component.
@@ -319,23 +323,40 @@ package body ASF.Components.Base is
    end Set_Rendered;
 
 
-   function Get_Attribute (UI      : UIComponent;
-                           Context : Faces_Context'Class;
-                           Name    : String) return EL.Objects.Object is
+   --  ------------------------------
+   --  Get the UIAttribute associated with the given name.
+   --  Returns null if there is no UIAttribute with such name.
+   --  ------------------------------
+   function Get_Attribute (UI   : in UIComponent;
+                           Name : in String) return UIAttribute_Access is
       use type ASF.Views.Nodes.Tag_Attribute;
 
       Attribute : UIAttribute_Access := UI.Attributes;
    begin
       --  Look first in the dynamic attribute list (owned by this UIComponent)
       while Attribute /= null loop
+         if Attribute.Definition.all = Name then
+            return Attribute;
+         end if;
+         Attribute := Attribute.Next_Attr;
+      end loop;
+      return null;
+   end Get_Attribute;
+
+   function Get_Attribute (UI      : UIComponent;
+                           Context : Faces_Context'Class;
+                           Name    : String) return EL.Objects.Object is
+      use type ASF.Views.Nodes.Tag_Attribute;
+
+      Attribute : constant UIAttribute_Access := Get_Attribute (UI, Name);
+   begin
+      if Attribute /= null then
          begin
-            if Attribute.Definition.all = Name then
-               --  The attribute value can be a constant or an expression.
-               if not EL.Objects.Is_Null (Attribute.Value) then
-                  return Attribute.Value;
-               else
-                  return Attribute.Expr.Get_Value (Context.Get_ELContext.all);
-               end if;
+            --  The attribute value can be a constant or an expression.
+            if not EL.Objects.Is_Null (Attribute.Value) then
+               return Attribute.Value;
+            else
+               return Attribute.Expr.Get_Value (Context.Get_ELContext.all);
             end if;
 
          exception
@@ -349,10 +370,8 @@ package body ASF.Components.Base is
                UI.Tag.Error ("Exception raised when evaluating expression: {0}",
                              Attribute.Expr.Get_Expression);
                return EL.Objects.Null_Object;
-
          end;
-         Attribute := Attribute.Next_Attr;
-      end loop;
+      end if;
 
       --  Then, look in the static attributes
       declare
@@ -484,13 +503,39 @@ package body ASF.Components.Base is
    --  ------------------------------
    function Get_Value_Expression (UI   : in UIComponent;
                                   Name : in String) return EL.Expressions.Value_Expression is
-      Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+      Attribute : constant UIAttribute_Access := Get_Attribute (UI, Name);
    begin
-      if Value = null then
-         raise EL.Expressions.Invalid_Expression with "No value expression for: " & Name;
+      if Attribute /= null then
+         begin
+            --  The attribute value can be a constant or an expression.
+            if EL.Objects.Is_Null (Attribute.Value) then
+               return EL.Expressions.Create_Expression (Attribute.Expr);
+            end if;
+
+         exception
+            when EL.Variables.No_Variable =>
+               UI.Tag.Error ("Variable not found in expression: {0}",
+                             Attribute.Expr.Get_Expression);
+
+            when E : others =>
+               Log.Error ("Evaluation error for '" & Attribute.Expr.Get_Expression & "'", E);
+               UI.Tag.Error ("Exception raised when evaluating expression: {0}",
+                             Attribute.Expr.Get_Expression);
+         end;
+      else
+         --  Then, look in the static attributes
+         declare
+            use type ASF.Views.Nodes.Tag_Attribute;
+
+            Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+         begin
+            if Value /= null then
+               return ASF.Views.Nodes.Get_Value_Expression (Value.all);
+            end if;
+         end;
       end if;
 
-      return ASF.Views.Nodes.Get_Value_Expression (Value.all);
+      raise EL.Expressions.Invalid_Expression with "No value expression for: " & Name;
    end Get_Value_Expression;
 
    --  ------------------------------
@@ -499,13 +544,39 @@ package body ASF.Components.Base is
    --  ------------------------------
    function Get_Method_Expression (UI  : in UIComponent;
                                   Name : in String) return EL.Expressions.Method_Expression is
-      Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+      Attribute : constant UIAttribute_Access := Get_Attribute (UI, Name);
    begin
-      if Value = null then
-         raise EL.Expressions.Invalid_Expression with "No method expression for: " & Name;
+      if Attribute /= null then
+         begin
+            --  The attribute value can be a constant or an expression.
+            if EL.Objects.Is_Null (Attribute.Value) then
+               return EL.Expressions.Create_Expression (Attribute.Expr);
+            end if;
+
+         exception
+            when EL.Variables.No_Variable =>
+               UI.Tag.Error ("Variable not found in expression: {0}",
+                             Attribute.Expr.Get_Expression);
+
+            when E : others =>
+               Log.Error ("Evaluation error for '" & Attribute.Expr.Get_Expression & "'", E);
+               UI.Tag.Error ("Exception raised when evaluating expression: {0}",
+                             Attribute.Expr.Get_Expression);
+         end;
+      else
+         --  Then, look in the static attributes
+         declare
+            use type ASF.Views.Nodes.Tag_Attribute;
+
+            Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+         begin
+            if Value /= null then
+               return ASF.Views.Nodes.Get_Method_Expression (Value.all);
+            end if;
+         end;
       end if;
 
-      return ASF.Views.Nodes.Get_Method_Expression (Value.all);
+      raise EL.Expressions.Invalid_Expression with "No method expression for: " & Name;
    end Get_Method_Expression;
 
    --  ------------------------------

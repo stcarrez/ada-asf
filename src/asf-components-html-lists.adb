@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.lists -- List of items
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,14 +70,16 @@ package body ASF.Components.Html.Lists is
          --  Check that we have a List_Bean but do not complain if we have a null value.
          if Kind /= EL.Objects.TYPE_BEAN then
             if Kind /= EL.Objects.TYPE_NULL then
-               Log.Error ("Invalid list bean (found a {0})", EL.Objects.Get_Type_Name (Value));
+               ASF.Components.Base.Log_Error (UI, "Invalid list bean (found a {0})",
+                                              EL.Objects.Get_Type_Name (Value));
             end if;
             return;
          end if;
 
          Bean := EL.Objects.To_Bean (Value);
          if Bean = null or else not (Bean.all in Util.Beans.Basic.List_Bean'Class) then
-            Log.Error ("Invalid list bean: it does not implement 'List_Bean' interface");
+            ASF.Components.Base.Log_Error (UI, "Invalid list bean: "
+                                           & "it does not implement 'List_Bean' interface");
             return;
          end if;
 

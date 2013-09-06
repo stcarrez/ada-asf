@@ -499,6 +499,46 @@ package body ASF.Components.Base is
    end Get_Label;
 
    --  ------------------------------
+   --  Get the expression
+   --  ------------------------------
+   function Get_Expression (UI   : in UIComponent;
+                                  Name : in String) return EL.Expressions.Expression is
+      Attribute : constant UIAttribute_Access := Get_Attribute (UI, Name);
+   begin
+      if Attribute /= null then
+         begin
+            --  The attribute value can be a constant or an expression.
+            if EL.Objects.Is_Null (Attribute.Value) then
+               return Attribute.Expr;
+            end if;
+
+         exception
+            when EL.Variables.No_Variable =>
+               UI.Tag.Error ("Variable not found in expression: {0}",
+                             Attribute.Expr.Get_Expression);
+
+            when E : others =>
+               Log.Error ("Evaluation error for '" & Attribute.Expr.Get_Expression & "'", E);
+               UI.Tag.Error ("Exception raised when evaluating expression: {0}",
+                             Attribute.Expr.Get_Expression);
+         end;
+      else
+         --  Then, look in the static attributes
+         declare
+            use type ASF.Views.Nodes.Tag_Attribute;
+
+            Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
+         begin
+            if Value /= null then
+               return ASF.Views.Nodes.Get_Expression (Value.all);
+            end if;
+         end;
+      end if;
+
+      raise EL.Expressions.Invalid_Expression with "No value expression for: " & Name;
+   end Get_Expression;
+
+   --  ------------------------------
    --  Get the value expression
    --  ------------------------------
    function Get_Value_Expression (UI   : in UIComponent;

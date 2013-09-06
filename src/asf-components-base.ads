@@ -175,6 +175,10 @@ package ASF.Components.Base is
                            Value   : in String;
                            Context : in Faces_Context'Class) return EL.Objects.Object;
 
+   --  Get the expression
+   function Get_Expression (UI   : in UIComponent;
+                            Name : in String) return EL.Expressions.Expression;
+
    --  Get the value expression
    function Get_Value_Expression (UI   : in UIComponent;
                                   Name : in String) return EL.Expressions.Value_Expression;

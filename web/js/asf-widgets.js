@@ -48,7 +48,7 @@
                             }
                         },
                         error: function(jqXHDR, status, error) {
-                            ASF.AjaxError(jqXHDR, inp);
+                            ASF.AjaxError(jqXHDR, status, error, inp);
                         }
                     });
                 });

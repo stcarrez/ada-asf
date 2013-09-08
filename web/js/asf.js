@@ -117,7 +117,7 @@ var ASF = {};
     /**
      * Handle an AJAX operation that failed.
      */
-    ASF.AjaxError = function(jqXHDR, node) {
+    ASF.AjaxError = function(jqXHDR, status, error, node) {
         var contentType = jqXHDR.getResponseHeader('Content-type');
         if (contentType && contentType.match(/^application\/json(;.*)?$/i)) {
             var data = $.parseJSON(jqXHDR.responseText);
@@ -168,7 +168,7 @@ var ASF = {};
                     }
                },
                error: function(jqXHDR, status, error) {
-                   ASF.AjaxError(jqXHDR, d);
+                   ASF.AjaxError(jqXHDR, status, error, d);
                }
             });
         }
@@ -235,7 +235,7 @@ var ASF = {};
                     }
                },
                error: function(jqXHDR, status, error) {
-                   ASF.AjaxError(jqXHDR, d);
+                   ASF.AjaxError(jqXHDR, status, error, d);
                }
             });
         }
@@ -269,7 +269,7 @@ var ASF = {};
                 }
             },
             error: function(jqXHDR, status, error) {
-                ASF.AjaxError(jqXHDR, node);
+                ASF.AjaxError(jqXHDR, status, error, node);
             }
         });
         return false;
@@ -313,7 +313,7 @@ var ASF = {};
                 $(div).find('form:not(.filter) :input:visible:first').focus();
             },
             error: function(jqXHDR, status, error) {
-                ASF.AjaxError(jqXHDR, node);
+                ASF.AjaxError(jqXHDR, status, error, node);
             }
         });
         return false;
@@ -396,7 +396,7 @@ var ASF = {};
                 }
             },
             error: function(jqXHDR, status, error) {
-                ASF.AjaxError(jqXHDR, d);
+                ASF.AjaxError(jqXHDR, status, error, d);
             }
         });
         return false;

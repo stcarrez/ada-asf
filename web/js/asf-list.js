@@ -397,6 +397,7 @@
 
             }
             event.stopPropagation();
+            return false;
         },
         blur: function(event) {
             if (this.currentEdit) {

@@ -140,6 +140,13 @@ package ASF.Components.Base is
                            Context : in Faces_Context'Class;
                            Default : in Boolean := False) return Boolean;
 
+   --  Get the attribute value as an integer.
+   --  If the attribute does not exist, returns the default.
+   function Get_Attribute (UI      : in UIComponent;
+                           Name    : in String;
+                           Context : in Faces_Context'Class;
+                           Default : in Integer := 0) return Integer;
+
    --  Get the attribute value as a string.
    --  If the attribute does not exist, returns the default.
    function Get_Attribute (UI      : in UIComponent;

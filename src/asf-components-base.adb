@@ -416,6 +416,23 @@ package body ASF.Components.Base is
    end Get_Attribute;
 
    --  ------------------------------
+   --  Get the attribute value as a boolean.
+   --  If the attribute does not exist, returns the default.
+   --  ------------------------------
+   function Get_Attribute (UI      : in UIComponent;
+                           Name    : in String;
+                           Context : in Faces_Context'Class;
+                           Default : in Integer := 0) return Integer is
+      Attr : constant Util.Beans.Objects.Object := UI.Get_Attribute (Context, Name);
+   begin
+      if Util.Beans.Objects.Is_Null (Attr) then
+         return Default;
+      else
+         return Util.Beans.Objects.To_Integer (Attr);
+      end if;
+   end Get_Attribute;
+
+   --  ------------------------------
    --  Get the attribute value as a string.
    --  If the attribute does not exist, returns the default.
    --  ------------------------------

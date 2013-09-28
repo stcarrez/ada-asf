@@ -46,24 +46,48 @@
         </ui:decorate>
     </c:when>
 
-    <c:when test="#{param['code'] eq 'file'}">
+    <c:when test="#{param['code'] eq 'gravatar'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
-            <ui:param name="name" value="util:file"/>
+            <ui:param name="name" value="w:gravatar"/>
             <ui:define name="description">
-                This component allows to include an external file in the render response phase.
+                This component renders an image whose link is the gravatar's link of
+                a person's email address.
 
+                See <a href="https://en.gravatar.com/site/implement/images/">gravatar.com</a>.
             </ui:define>
             <ui:define name="attributes">
                 <li class="attr-required">
-                    <b>src</b>
+                    <b>email</b>
                     <i>String</i>
-                    <span>The relative path for the file to be included.</span>
+                    <span>The email address to create the gravatar image link.</span>
                 </li>
                 <li class="attr-optional">
                     <b>rendered</b>
                     <i>Boolean</i>
                     <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
                         or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>secure</b>
+                    <i>Boolean</i>
+                    <span>When True, the secure link to the gravatar image is created (https).  The default creates
+                        an <em>http</em> link only.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>size</b>
+                    <i>Integer</i>
+                    <span>The size of the gravatar image (from 1 to 2048 pixels max).</span>
+                </li>
+                <li class="attr-optional">
+                    <b>default</b>
+                    <i>String</i>
+                    <span>.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>alt</b>
+                    <i>String</i>
+                    <span>The image <em>alt</em> attribute. By default, the email address is used for the
+                        <em>alt</em> attribute.</span>
                 </li>
             </ui:define>
         </ui:decorate>

@@ -188,6 +188,8 @@ ul.buttons, ul.selector {
     padding-top: 10px;
     list-style-type: none;
     height: 35px;
+    display: block;
+    float: left;
 }
 ul.buttons li, ul.selector li {
     float: left;
@@ -379,4 +381,17 @@ div.asf-notification {
     background-color: #B8e980;
     border: 1px solid #7cb13b;
     padding: 5px;
+}
+div.gravatar {
+    display: block;
+    /* padding: 5px;*/
+}
+div.gravatar span {
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+div.gravatar img {
+    margin: auto;
+    display: block;
 }

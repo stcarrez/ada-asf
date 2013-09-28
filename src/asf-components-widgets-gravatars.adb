@@ -55,13 +55,22 @@ package body ASF.Components.Widgets.Gravatars is
          UI.Render_Attributes (Context, IMAGE_ATTRIBUTE_NAMES, Writer);
          declare
             Email   : constant String := UI.Get_Attribute ("email", Context, "");
-            Size    : constant Natural := UI.Get_Attribute ("size", Context, 60);
+            Size    : Natural := UI.Get_Attribute ("size", Context, 80);
             Default : constant String := UI.Get_Attribute ("default", Context, "identicon");
             Secure  : constant Boolean := UI.Get_Attribute ("secure", Context, False);
             D       : constant String := Util.Strings.Image (Size);
+            Alt     : constant String := UI.Get_Attribute ("alt", Context, "");
          begin
+            if Size < 0 or Size > 2048 then
+               Size := 80;
+            end if;
             Writer.Write_Attribute ("width", D);
             Writer.Write_Attribute ("height", D);
+            if Alt'Length > 0 then
+               Writer.Write_Attribute ("alt", Alt);
+            else
+               Writer.Write_Attribute ("alt", Email);
+            end if;
             Writer.Write_Attribute ("src", Get_Link (Email, Secure)
                                     & "?d=" & Default & "&s=" & D);
          end;

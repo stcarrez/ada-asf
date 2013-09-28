@@ -1,19 +1,33 @@
 <div xmlns:f="http://java.sun.com/jsf/core"
      xmlns:w="http://code.google.com/p/ada-asf/widget"
-     xmlns:h="http://java.sun.com/jsf/html">
+     xmlns:h="http://java.sun.com/jsf/html" style='overflow: auto;'>
     <div class="ui-widget ui-widget-header">
-        Compute the volume of a cylinder
+        Display a person's gravatar
     </div>
     <h:form id='text-form'>
-        <w:inputText title="Email" id='email' size='40'
-                     value='#{messages.email}'
+        <w:inputText title="Type the person email address" id='email' size='40'
+                     value='#{message.email}'
                      styleClass="ui-corner-all">
-            <f:converter converterId="float" />
         </w:inputText>
-        <w:gravatar email='#{messages.email}'/>
+        <div class='gravatar grid_6'>
+            <span>default</span>
+            <w:gravatar email='#{message.email}' size='120'/>
+        </div>
+        <div class='gravatar grid_6'>
+            <span>wavatar</span>
+            <w:gravatar email='#{message.email}' default='wavatar' size='120'/>
+        </div>
+        <div class='gravatar grid_6'>
+            <span>retry</span>
+            <w:gravatar email='#{message.email}' default='retro' size='120'/>
+        </div>
+        <div class='gravatar grid_6'>
+            <span>monsterid</span>
+            <w:gravatar email='#{message.email}' default='monsterid' size='120'/>
+        </div>
         <ul class='buttons'>
             <li>
-                <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                <h:commandButton id='run' value='Display gravatar'
                                  styleClass="ui-button ui-state-default ui-corner-all"/>
             </li>
         </ul>

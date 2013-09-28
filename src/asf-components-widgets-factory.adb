@@ -18,6 +18,7 @@
 with ASF.Views.Nodes;
 with ASF.Components.Base;
 with ASF.Components.Widgets.Inputs;
+with ASF.Components.Widgets.Gravatars;
 
 package body ASF.Components.Widgets.Factory is
 
@@ -26,6 +27,7 @@ package body ASF.Components.Widgets.Factory is
    function Create_Input return UIComponent_Access;
    function Create_Input_Date return UIComponent_Access;
    function Create_Complete return UIComponent_Access;
+   function Create_Gravatar return UIComponent_Access;
 
    --  ------------------------------
    --  Create a UIInput component
@@ -51,12 +53,21 @@ package body ASF.Components.Widgets.Factory is
       return new ASF.Components.Widgets.Inputs.UIComplete;
    end Create_Complete;
 
+   --  ------------------------------
+   --  Create a UIGravatar component
+   --  ------------------------------
+   function Create_Gravatar return UIComponent_Access is
+   begin
+      return new ASF.Components.Widgets.Gravatars.UIGravatar;
+   end Create_Gravatar;
+
    use ASF.Views.Nodes;
 
    URI              : aliased constant String := "http://code.google.com/p/ada-asf/widget";
    AUTOCOMPLETE_TAG : aliased constant String := "autocomplete";
    INPUT_DATE_TAG   : aliased constant String := "inputDate";
    INPUT_TEXT_TAG   : aliased constant String := "inputText";
+   GRAVATAR_TAG     : aliased constant String := "gravatar";
 
    Widget_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => AUTOCOMPLETE_TAG'Access,
@@ -67,6 +78,9 @@ package body ASF.Components.Widgets.Factory is
                Tag       => Create_Component_Node'Access),
          3 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input'Access,
+               Tag       => Create_Component_Node'Access),
+         4 => (Name      => GRAVATAR_TAG'Access,
+               Component => Create_Gravatar'Access,
                Tag       => Create_Component_Node'Access)
         );
 

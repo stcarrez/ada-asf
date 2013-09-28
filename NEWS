@@ -4,6 +4,7 @@ Version 0.6     -
   - Added support to enable/disable mouseover effect in lists
   - New EL function util:iso8601
   - New component <w:autocomplete> for input text with autocompletion
+  - New component <w:gravatar> to render a gravatar image
 
 Version 0.5     - Feb 2013
   - Moved the Security packages in a separate project: Ada Security

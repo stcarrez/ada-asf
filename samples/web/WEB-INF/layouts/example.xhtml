@@ -1,5 +1,5 @@
 <!-- Template for the TLD example and documentation
-  -  Copyright (C) 2012 Stephane Carrez
+  -  Copyright (C) 2012, 2013 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,7 +53,20 @@
             $('#result').html('');
             ASF.Update(node, '#{contextPath}/#{basename}/' + name + '.html', '#form-block',
                        function(n, jqXHDR) {
-                          $('#code-html').text(jqXHDR.responseText);
+                          var lines = jqXHDR.responseText.split('\n');
+                          var i, j, txt = '';
+
+                          for (i = 0; i &lt; lines.length; i++) {
+                            if (lines[i].length &lt; 120) {
+                               txt = txt + '\n' + lines[i];
+                            } else {
+                               var l = lines[i].match(/.{1,120}/g);
+                               for (j = 0; j &lt; l.length; j++) {
+                                  txt = txt + '\n' + l[j];
+                               }
+                            }
+                          }
+                          $('#code-html').text(txt);
                        });
             ASF.Update(node, '#{contextPath}/#{basename}/doc.html?code=' + name, '#doc-block');
             ASF.Update(node, '#{contextPath}/#{basename}/code.html?code=' + name, '#form-code',

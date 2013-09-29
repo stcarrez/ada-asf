@@ -30,6 +30,7 @@ with Ada.Strings.Unbounded;
 with Ada.Strings.Wide_Wide_Unbounded;
 with EL.Objects;
 with Util.Beans.Objects;
+with Util.Strings.Builders;
 with ASF.Streams;
 package ASF.Contexts.Writer is
 
@@ -188,6 +189,11 @@ package ASF.Contexts.Writer is
    procedure Queue_Script (Stream : in out Response_Writer;
                            Value  : in Util.Beans.Objects.Object);
 
+   --  Append a <b>script</b> include command to include the Javascript file at the given URL.
+   --  The include scripts are flushed by <b>Flush</b> or <b>Write_Scripts</b>.
+   procedure Queue_Include_Script (Stream : in out Response_Writer;
+                                   URL    : in String);
+
    --  Flush the response.
    --  Before flusing the response, the javascript are also flushed
    --  by calling <b>Write_Scripts</b>.
@@ -215,7 +221,11 @@ private
       Content_Type : Unbounded_String;
 
       --  The javascript that has been queued by <b>Queue_Script</b>.
-      Script_Queue : Unbounded_String;
+      Script_Queue  : Unbounded_String; -- Util.Strings.Builders.Builder (256);
+
+      --  The javascript files that must be included at the end of the file.
+      --  This javascript part is written before the Javascript that was queued.
+      Include_Queue : Util.Strings.Builders.Builder (256);
 
       --  An optional element to write in the stream.
       Optional_Element         : String (1 .. 32);

@@ -72,4 +72,15 @@ package ASF.Components.Widgets.Likes is
                           Href      : in String;
                           Context   : in out ASF.Contexts.Faces.Faces_Context'Class);
 
+   --  ------------------------------
+   --  Google like generator
+   --  ------------------------------
+   type Google_Like_Generator is new Like_Generator with null record;
+
+   overriding
+   procedure Render_Like (Generator : in Google_Like_Generator;
+                          UI        : in UILike'Class;
+                          Href      : in String;
+                          Context   : in out ASF.Contexts.Faces.Faces_Context'Class);
+
 end ASF.Components.Widgets.Likes;

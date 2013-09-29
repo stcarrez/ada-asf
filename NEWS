@@ -5,6 +5,7 @@ Version 0.6     -
   - New EL function util:iso8601
   - New component <w:autocomplete> for input text with autocompletion
   - New component <w:gravatar> to render a gravatar image
+  - New component <w:like> to render a Facebook or Google+ like button
 
 Version 0.5     - Feb 2013
   - Moved the Security packages in a separate project: Ada Security

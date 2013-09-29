@@ -15,6 +15,7 @@
   -  limitations under the License.
   -->
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:w="http://code.google.com/p/ada-asf/widget"
                 xmlns:util="http://code.google.com/p/ada-asf/util">
     <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
         <ul class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
@@ -43,6 +44,10 @@
             <div id='code-html' class="code ui-widget asf-container ui-corner-all">
                 <ui:insert name="html"/>
             </div>
+            <w:like type="facebook" data-width="400" data-show-faces="true" data-send="true"
+                    href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
+            <w:like type='google+' data-size="tall"
+                    href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
         </div>
     </div>
 

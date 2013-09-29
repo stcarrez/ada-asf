@@ -479,7 +479,18 @@ package body ASF.Contexts.Writer is
    --  Write the java scripts that have been queued by <b>Queue_Script</b>
    --  ------------------------------
    procedure Write_Scripts (Stream : in out Response_Writer) is
+      procedure Write (Content : in String);
+
+      procedure Write (Content : in String) is
+      begin
+         Stream.Write (Content);
+      end Write;
+
    begin
+      if Util.Strings.Builders.Length (Stream.Include_Queue) > 0 then
+         Util.Strings.Builders.Iterate (Stream.Include_Queue, Write'Access);
+         Util.Strings.Builders.Clear (Stream.Include_Queue);
+      end if;
       if Length (Stream.Script_Queue) = 0 then
          return;
       end if;
@@ -540,6 +551,19 @@ package body ASF.Contexts.Writer is
 
       end case;
    end Queue_Script;
+
+   --  ------------------------------
+   --  Append a <b>script</b> include command to include the Javascript file at the given URL.
+   --  The include scripts are flushed by <b>Flush</b> or <b>Write_Scripts</b>.
+   --  ------------------------------
+   procedure Queue_Include_Script (Stream : in out Response_Writer;
+                                   URL    : in String) is
+   begin
+      Util.Strings.Builders.Append (Stream.Include_Queue,
+                                    "<script type=""text/javascript"" src=""");
+      Util.Strings.Builders.Append (Stream.Include_Queue, URL);
+      Util.Strings.Builders.Append (Stream.Include_Queue, """></script>");
+   end Queue_Include_Script;
 
    --  ------------------------------
    --  Flush the response.

@@ -17,6 +17,7 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:util="http://code.google.com/p/ada-asf/util"
                 xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
+                xmlns:w="http://code.google.com/p/ada-asf/widget"
                 template="/WEB-INF/layouts/layout.xhtml">
     <ui:param name="title" value="Ada Server Faces Examples" />
     <ui:param name="pageStyle" value="sample-widgets"/>
@@ -49,6 +50,11 @@
                         w:gravatar
                     </a>
                 </li>
+                <li class="ui-state-default ui-corner-top">
+                    <a href="#" onclick="return sample_select(this, 'like');">
+                        w:like
+                    </a>
+                </li>
             </ui:define>
             <ui:define name="doc">
                 <ajax:include src="/widgets/doc.xhtml"/>
@@ -68,4 +74,5 @@
         <script type="text/javascript" src="#{contextPath}/js/samples.js"></script>
         <util:flush/>
     </ui:define>
+
 </ui:composition>

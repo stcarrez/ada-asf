@@ -31,10 +31,14 @@ package body ASF.Components.Widgets.Likes is
    FB_COlORSCHEME_ATTR : aliased constant String := "data-colorscheme";
    FB_REF_ATTR         : aliased constant String := "data-ref";
    FB_KIDS_ATTR        : aliased constant String := "data-kid_directed_site";
+   FB_SEND_ATTR        : aliased constant String := "data-send";
 
    TW_VIA_ATTR         : aliased constant String := "data-via";
    TW_COUNT_ATTR       : aliased constant String := "data-count";
    TW_SIZE_ATTR        : aliased constant String := "data-size";
+
+   G_ANNOTATION_ATTR   : aliased constant String := "data-annotation";
+   G_WIDTH_ATTR        : aliased constant String := "data-width";
 
    FACEBOOK_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
    FACEBOOK_SCRIPT_ATTRIBUTE : constant String := "asf.widgets.facebook.script";
@@ -97,7 +101,6 @@ package body ASF.Components.Widgets.Likes is
       Writer.Start_Element ("div");
       Writer.Write_Attribute ("class", "fb-like");
       Writer.Write_Attribute ("data-href", Href);
-      Writer.Write_Attribute ("data-send", "true");
       UI.Render_Attributes (Context, FACEBOOK_ATTRIBUTE_NAMES, Writer);
       Writer.End_Element ("div");
    end Render_Like;
@@ -124,11 +127,13 @@ package body ASF.Components.Widgets.Likes is
       Writer.Start_Element ("div");
       Writer.Write_Attribute ("class", "g-plusone");
       Writer.Write_Attribute ("data-href", Href);
-      Writer.Write_Attribute ("data-send", "true");
       UI.Render_Attributes (Context, GOOGLE_ATTRIBUTE_NAMES, Writer);
       Writer.End_Element ("div");
    end Render_Like;
 
+   --  ------------------------------
+   --  Tweeter like generator
+   --  ------------------------------
    overriding
    procedure Render_Like (Generator : in Tweeter_Like_Generator;
                           UI        : in UILike'Class;
@@ -241,8 +246,12 @@ begin
    FACEBOOK_ATTRIBUTE_NAMES.Insert (FB_COlORSCHEME_ATTR'Access);
    FACEBOOK_ATTRIBUTE_NAMES.Insert (FB_REF_ATTR'Access);
    FACEBOOK_ATTRIBUTE_NAMES.Insert (FB_KIDS_ATTR'Access);
+   FACEBOOK_ATTRIBUTE_NAMES.Insert (FB_SEND_ATTR'Access);
 
    TWEETER_ATTRIBUTE_NAMES.Insert (TW_SIZE_ATTR'Access);
    TWEETER_ATTRIBUTE_NAMES.Insert (TW_COUNT_ATTR'Access);
    TWEETER_ATTRIBUTE_NAMES.Insert (TW_VIA_ATTR'Access);
+
+   GOOGLE_ATTRIBUTE_NAMES.Insert (G_ANNOTATION_ATTR'Access);
+   GOOGLE_ATTRIBUTE_NAMES.Insert (G_WIDTH_ATTR'Access);
 end ASF.Components.Widgets.Likes;

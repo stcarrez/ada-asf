@@ -84,12 +84,12 @@ package ASF.Components.Widgets.Likes is
                           Context   : in out ASF.Contexts.Faces.Faces_Context'Class);
 
    --  ------------------------------
-   --  Tweeter like generator
+   --  Twitter like generator
    --  ------------------------------
-   type Tweeter_Like_Generator is new Like_Generator with null record;
+   type Twitter_Like_Generator is new Like_Generator with null record;
 
    overriding
-   procedure Render_Like (Generator : in Tweeter_Like_Generator;
+   procedure Render_Like (Generator : in Twitter_Like_Generator;
                           UI        : in UILike'Class;
                           Href      : in String;
                           Context   : in out ASF.Contexts.Faces.Faces_Context'Class);

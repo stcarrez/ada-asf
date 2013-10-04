@@ -32,11 +32,18 @@ package body ASF.Components.Widgets.Likes is
    FB_REF_ATTR         : aliased constant String := "data-ref";
    FB_KIDS_ATTR        : aliased constant String := "data-kid_directed_site";
 
+   TW_VIA_ATTR         : aliased constant String := "data-via";
+   TW_COUNT_ATTR       : aliased constant String := "data-count";
+   TW_SIZE_ATTR        : aliased constant String := "data-size";
+
    FACEBOOK_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
    FACEBOOK_SCRIPT_ATTRIBUTE : constant String := "asf.widgets.facebook.script";
 
    GOOGLE_ATTRIBUTE_NAMES    : Util.Strings.String_Set.Set;
    GOOGLE_SCRIPT_ATTRIBUTE   : constant String := "asf.widgets.google.script";
+
+   TWEETER_ATTRIBUTE_NAMES    : Util.Strings.String_Set.Set;
+   TWEETER_SCRIPT_ATTRIBUTE   : constant String := "asf.widgets.tweeter.script";
 
    type Like_Generator_Binding is record
       Name      : Util.Strings.Name_Access;
@@ -51,8 +58,12 @@ package body ASF.Components.Widgets.Likes is
    G_NAME       : aliased constant String := "google+";
    G_GENERATOR  : aliased Google_Like_Generator;
 
+   TWEETER_NAME       : aliased constant String := "tweeter";
+   TWEETER_GENERATOR  : aliased Tweeter_Like_Generator;
+
    Generators : Like_Generator_Array := (1 => (FB_NAME'Access, FB_GENERATOR'Access),
                                          2 => (G_NAME'Access, G_GENERATOR'Access),
+                                         3 => (TWEETER_NAME'Access, TWEETER_GENERATOR'Access),
                                          others => (null, null));
 
    --  ------------------------------
@@ -116,6 +127,38 @@ package body ASF.Components.Widgets.Likes is
       Writer.Write_Attribute ("data-send", "true");
       UI.Render_Attributes (Context, GOOGLE_ATTRIBUTE_NAMES, Writer);
       Writer.End_Element ("div");
+   end Render_Like;
+
+   overriding
+   procedure Render_Like (Generator : in Tweeter_Like_Generator;
+                          UI        : in UILike'Class;
+                          Href      : in String;
+                          Context   : in out ASF.Contexts.Faces.Faces_Context'Class) is
+      pragma Unreferenced (Generator);
+
+      Writer  : constant Contexts.Writer.Response_Writer_Access := Context.Get_Response_Writer;
+      Request : constant ASF.Requests.Request_Access := Context.Get_Request;
+      Lang    : constant String := Util.Locales.Get_ISO3_Language (Context.Get_Locale);
+   begin
+      if not Context.Is_Ajax_Request and then
+        Util.Beans.Objects.Is_Null (Request.Get_Attribute (TWEETER_SCRIPT_ATTRIBUTE)) then
+
+         Request.Set_Attribute (TWEETER_SCRIPT_ATTRIBUTE, Util.Beans.Objects.To_Object (True));
+         Writer.Queue_Script ("!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],"
+                              & "p=/^http:/.test(d.location)?'http':'https';"
+                              & "if(!d.getElementById(id)){js=d.createElement(s);js.id=id;"
+                              & "js.src=p+'://platform.twitter.com/widgets.js';"
+                              & "fjs.parentNode.insertBefore(js,fjs);}}"
+                              & "(document, 'script', 'twitter-wjs');");
+      end if;
+      Writer.Start_Element ("a");
+      Writer.Write_Attribute ("href", "https://twitter.com/share");
+      Writer.Write_Attribute ("class", "twitter-share-button");
+      Writer.Write_Attribute ("data-url", Href);
+      Writer.Write_Attribute ("data-lang", Lang);
+      UI.Render_Attributes (Context, TWEETER_ATTRIBUTE_NAMES, Writer);
+      Writer.Write_Text ("Tweet");
+      Writer.End_Element ("a");
    end Render_Like;
 
    --  ------------------------------
@@ -198,4 +241,8 @@ begin
    FACEBOOK_ATTRIBUTE_NAMES.Insert (FB_COlORSCHEME_ATTR'Access);
    FACEBOOK_ATTRIBUTE_NAMES.Insert (FB_REF_ATTR'Access);
    FACEBOOK_ATTRIBUTE_NAMES.Insert (FB_KIDS_ATTR'Access);
+
+   TWEETER_ATTRIBUTE_NAMES.Insert (TW_SIZE_ATTR'Access);
+   TWEETER_ATTRIBUTE_NAMES.Insert (TW_COUNT_ATTR'Access);
+   TWEETER_ATTRIBUTE_NAMES.Insert (TW_VIA_ATTR'Access);
 end ASF.Components.Widgets.Likes;

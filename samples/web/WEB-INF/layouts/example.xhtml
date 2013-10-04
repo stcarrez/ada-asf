@@ -44,12 +44,15 @@
             <div id='code-html' class="code ui-widget asf-container ui-corner-all">
                 <ui:insert name="html"/>
             </div>
-            <w:like type="facebook" data-width="400" data-show-faces="true" data-send="true"
-                    href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
-            <w:like type='google+' data-size="tall"
-                    href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
-            <w:like type='tweeter' data-count="none"
-                    href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
+            <div class='likes'>
+                <w:like type="facebook" data-width="400" data-show-faces="true"
+                        data-layout="button_count"
+                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
+                <w:like type='google+' data-size="tall" data-annotation="none"
+                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
+                <w:like type='tweeter' data-count="none"
+                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
+            </div>
         </div>
     </div>
 

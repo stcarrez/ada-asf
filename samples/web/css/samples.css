@@ -395,3 +395,13 @@ div.gravatar img {
     margin: auto;
     display: block;
 }
+div.likes {
+    float: left;
+    width: 100%;
+}
+div.likes div.fb-like {
+    margin-right: 20px;
+}
+div.likes iframe {
+    margin-left: 10px;
+}

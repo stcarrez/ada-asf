@@ -56,4 +56,27 @@
         }
     });
 
+    /**
+     * A collapsible panel using <w:panel>.
+     */
+    $.widget("ui.panel", {
+        options: {
+            delay: "fast"
+        },
+        _create: function() {
+            var self = this;
+
+            this.element.children(".ui-panel-header").find("a").bind('click', function(event) {
+                var t = event.target;
+
+                if ($(t).hasClass("ui-icon-closethick")) {
+                    self.element.slideUp(self.options.delay);
+                } else if ($(t).hasClass("ui-icon-minusthick")) {
+                    self.element.children().not(".ui-panel-header").slideToggle(self.options.delay);
+                }
+                return false;
+            });
+        }
+    });
+
 })( jQuery );

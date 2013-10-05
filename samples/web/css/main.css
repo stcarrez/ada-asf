@@ -130,7 +130,7 @@ div.awa-title div {
   float: right;
   margin-right: 20px;
 }
-div.grid_12 ul.ui-tabs-nav {
+div.grid_12 ul.selector {
     float: left;
     width: 15%;
     height: 100%;
@@ -141,7 +141,7 @@ ul.ui-tabs-nav li a {
     width: 100%;
     display: block;
 }
-ul.ui-tabs-nav li {
+ul.selector li {
     display: block;
     float: left;
     clear: both;

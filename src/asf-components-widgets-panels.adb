@@ -41,6 +41,8 @@ package body ASF.Components.Widgets.Panels is
 
       Header       : Util.Beans.Objects.Object;
       Header_Facet : ASF.Components.Base.UIComponent_Access;
+      Closable     : constant Boolean := UI.Get_Attribute (CLOSABLE_ATTR_NAME, Context);
+      Toggleable   : constant Boolean := UI.Get_Attribute (TOGGLEABLE_ATTR_NAME, Context);
    begin
       Writer.Start_Element ("div");
       Writer.Write_Attribute ("class", "ui-panel-header ui-widget-header");
@@ -57,14 +59,21 @@ package body ASF.Components.Widgets.Panels is
          Header_Facet.Encode_All (Context);
       end if;
 
-      if UI.Get_Attribute (CLOSABLE_ATTR_NAME, Context) then
+      if Closable then
          Render_Action_Icon (Writer, "ui-icon ui-icon-closethick");
       end if;
 
-      if UI.Get_Attribute (TOGGLEABLE_ATTR_NAME, Context) then
+      if Toggleable then
          Render_Action_Icon (Writer, "ui-icon ui-icon-minusthick");
       end if;
       Writer.End_Element ("div");
+
+      --  Write the javascript to support the close and toggle actions.
+      if Closable or Toggleable then
+         Writer.Queue_Script ("$(""#");
+         Writer.Queue_Script (UI.Get_Client_Id);
+         Writer.Queue_Script (""").panel();");
+      end if;
    end Render_Header;
 
    --  ------------------------------

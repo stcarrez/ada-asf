@@ -91,3 +91,11 @@ div.asf-popup div.ui-corner-all {
     z-index: 1;
     border: 1px solid #a6c9e2;
 }
+
+div.ui-panel-header, div.ui-panel-footer, div.ui-panel-content {
+    padding: 5px;
+}
+div.ui-panel-header a.ui-panel-icon {
+    float: right;
+    margin-left: 3px;
+}

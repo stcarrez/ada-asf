@@ -19,6 +19,18 @@ with Util.Beans.Objects;
 with ASF.Components.Base;
 package body ASF.Components.Widgets.Panels is
 
+   procedure Render_Action_Icon (Writer  : in out ASF.Contexts.Writer.Response_Writer'Class;
+                                 Name    : in String) is
+   begin
+      Writer.Start_Element ("a");
+      Writer.Write_Attribute ("href", "#");
+      Writer.Write_Attribute ("class", "ui-panel-icon ui-corner-all ui-state-default");
+      Writer.Start_Element ("span");
+      Writer.Write_Attribute ("class", Name);
+      Writer.End_Element ("span");
+      Writer.End_Element ("a");
+   end Render_Action_Icon;
+
    --  ------------------------------
    --  Render the panel header.
    --  ------------------------------
@@ -37,7 +49,6 @@ package body ASF.Components.Widgets.Panels is
          Writer.Start_Element ("span");
          Writer.Write_Text (Header);
          Writer.End_Element ("span");
-         Writer.End_Element ("div");
       end if;
 
       --  If there is a header facet, render it now.
@@ -45,9 +56,15 @@ package body ASF.Components.Widgets.Panels is
       if Header_Facet /= null then
          Header_Facet.Encode_All (Context);
       end if;
-      Writer.End_Element ("div");
 
-      null;
+      if UI.Get_Attribute (CLOSABLE_ATTR_NAME, Context) then
+         Render_Action_Icon (Writer, "ui-icon ui-icon-closethick");
+      end if;
+
+      if UI.Get_Attribute (TOGGLEABLE_ATTR_NAME, Context) then
+         Render_Action_Icon (Writer, "ui-icon ui-icon-minusthick");
+      end if;
+      Writer.End_Element ("div");
    end Render_Header;
 
    --  ------------------------------
@@ -93,7 +110,23 @@ package body ASF.Components.Widgets.Panels is
    begin
       if UI.Is_Rendered (Context) then
          Writer.Start_Element ("div");
-         Writer.Write_Attribute ("class", "ui-panel ui-widget ui-corner-all");
+         Writer.Write_Attribute ("id", UI.Get_Client_Id);
+         declare
+            use Util.Beans.Objects;
+
+            Style   : constant Object := UI.Get_Attribute (Context, "style");
+            Class   : constant Object := UI.Get_Attribute (Context, "styleClass");
+         begin
+            if not Util.Beans.Objects.Is_Null (Class) then
+               Writer.Write_Attribute ("class", To_String (Class)
+                                       & " ui-panel ui-widget ui-corner-all");
+            else
+               Writer.Write_Attribute ("class", "ui-panel ui-widget ui-corner-all");
+            end if;
+            if not Is_Null (Style) then
+               Writer.Write_Attribute ("style", Style);
+            end if;
+         end;
          UIPanel'Class (UI).Render_Header (Writer.all, Context);
          Writer.Start_Element ("div");
          Writer.Write_Attribute ("class", "ui-panel-content ui-widget-content");

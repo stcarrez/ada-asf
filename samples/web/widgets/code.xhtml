@@ -74,6 +74,15 @@
         </code>
     </c:when>
 
+    <c:when test="#{param['code'] eq 'tabView'}">
+        <util:script>
+            Sample_Highlight('tabView', 'w:tabView');
+            prettyPrint();
+        </util:script>
+        <code class="prettyprint lang-tabView linenums:1"><util:file src="/widgets/tabView.xhtml" escape="true"/>
+        </code>
+    </c:when>
+
     <c:otherwise>
         <p>
             <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">

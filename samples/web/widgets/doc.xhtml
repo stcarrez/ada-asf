@@ -209,6 +209,28 @@
         </ui:decorate>
     </c:when>
 
+    <c:when test="#{param['code'] eq 'tabView'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="w:tabView"/>
+            <ui:define name="description">
+                The <b>w:tabView</b> component defines a tab selection.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>rendered</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
+                        or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+                <li class="attr-required">
+                    <b>collapsible</b>
+                    <i>Boolean</i>
+                    <span>When true, the tabs are collapsible.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
     <c:otherwise>
         <p>
             <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">

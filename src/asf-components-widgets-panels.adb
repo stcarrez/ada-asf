@@ -31,7 +31,7 @@ package body ASF.Components.Widgets.Panels is
       Header_Facet : ASF.Components.Base.UIComponent_Access;
    begin
       Writer.Start_Element ("div");
-      Writer.Write_Attribute ("class", "ui-panel-header");
+      Writer.Write_Attribute ("class", "ui-panel-header ui-widget-header");
       Header := UI.Get_Attribute (Name => HEADER_ATTR_NAME, Context => Context);
       if not Util.Beans.Objects.Is_Empty (Header) then
          Writer.Start_Element ("span");
@@ -68,7 +68,7 @@ package body ASF.Components.Widgets.Panels is
       Has_Footer := Footer_Facet /= null or else not Util.Beans.Objects.Is_Empty (Footer);
       if Has_Footer then
          Writer.Start_Element ("div");
-         Writer.Write_Attribute ("class", "ui-panel-footer");
+         Writer.Write_Attribute ("class", "ui-panel-footer ui-widget-footer");
       end if;
       if not Util.Beans.Objects.Is_Empty (Footer) then
          Writer.Write_Text (Footer);
@@ -93,10 +93,10 @@ package body ASF.Components.Widgets.Panels is
    begin
       if UI.Is_Rendered (Context) then
          Writer.Start_Element ("div");
-         Writer.Write_Attribute ("class", "ui-panel");
+         Writer.Write_Attribute ("class", "ui-panel ui-widget ui-corner-all");
          UIPanel'Class (UI).Render_Header (Writer.all, Context);
          Writer.Start_Element ("div");
-         Writer.Write_Attribute ("class", "ui-panel-content");
+         Writer.Write_Attribute ("class", "ui-panel-content ui-widget-content");
       end if;
    end Encode_Begin;
 

@@ -1,0 +1,33 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:w="http://code.google.com/p/ada-asf/widget"
+        xmlns:f="http://java.sun.com/jsf/core">
+    <w:panel id='panel-1' styleClass='myClass'
+             header="Panel title">
+        The panel content
+    </w:panel>
+    <w:panel id='panel-2' styleClass='myClass'
+             footer="Panel title">
+        <f:facet name="header">
+            <div class='title'>the title</div>
+            <div class='menu'>the menu</div>
+        </f:facet>
+
+        The panel content
+        <w:panel id='panel-nested' header='Nested' footer='End nested'>
+            The nested content
+        </w:panel>
+    </w:panel>
+    <w:panel id='panel-3' styleClass='myClass'
+             footer="Panel title">
+        <f:facet name="footer">
+            <div class='title'>the title</div>
+            <div class='menu'>the menu</div>
+        </f:facet>
+
+        The panel content
+        <w:panel id='panel-nested' header='Nested' footer='End nested'>
+            The nested content
+        </w:panel>
+    </w:panel>
+
+</div>

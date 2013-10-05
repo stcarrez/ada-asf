@@ -21,6 +21,7 @@ with ASF.Components.Widgets.Inputs;
 with ASF.Components.Widgets.Gravatars;
 with ASF.Components.Widgets.Likes;
 with ASF.Components.Widgets.Panels;
+with ASF.Components.Widgets.Tabs;
 
 package body ASF.Components.Widgets.Factory is
 
@@ -32,6 +33,8 @@ package body ASF.Components.Widgets.Factory is
    function Create_Gravatar return UIComponent_Access;
    function Create_Like return UIComponent_Access;
    function Create_Panel return UIComponent_Access;
+   function Create_TabView return UIComponent_Access;
+   function Create_Tab return UIComponent_Access;
 
    --  ------------------------------
    --  Create a UIInput component
@@ -81,6 +84,22 @@ package body ASF.Components.Widgets.Factory is
       return new ASF.Components.Widgets.Panels.UIPanel;
    end Create_Panel;
 
+   --  ------------------------------
+   --  Create a UITab component
+   --  ------------------------------
+   function Create_Tab return UIComponent_Access is
+   begin
+      return new ASF.Components.Widgets.Tabs.UITab;
+   end Create_Tab;
+
+   --  ------------------------------
+   --  Create a UITabView component
+   --  ------------------------------
+   function Create_TabView return UIComponent_Access is
+   begin
+      return new ASF.Components.Widgets.Tabs.UITabView;
+   end Create_TabView;
+
    use ASF.Views.Nodes;
 
    URI              : aliased constant String := "http://code.google.com/p/ada-asf/widget";
@@ -90,6 +109,8 @@ package body ASF.Components.Widgets.Factory is
    GRAVATAR_TAG     : aliased constant String := "gravatar";
    LIKE_TAG         : aliased constant String := "like";
    PANEL_TAG        : aliased constant String := "panel";
+   TAB_TAG          : aliased constant String := "tab";
+   TAB_VIEW_TAG     : aliased constant String := "tabView";
 
    Widget_Bindings : aliased constant ASF.Factory.Binding_Array
      := (1 => (Name      => AUTOCOMPLETE_TAG'Access,
@@ -109,6 +130,12 @@ package body ASF.Components.Widgets.Factory is
                Tag       => Create_Component_Node'Access),
          6 => (Name      => PANEL_TAG'Access,
                Component => Create_Panel'Access,
+               Tag       => Create_Component_Node'Access),
+         7 => (Name      => TAB_TAG'Access,
+               Component => Create_Tab'Access,
+               Tag       => Create_Component_Node'Access),
+         8 => (Name      => TAB_VIEW_TAG'Access,
+               Component => Create_TabView'Access,
                Tag       => Create_Component_Node'Access)
         );
 

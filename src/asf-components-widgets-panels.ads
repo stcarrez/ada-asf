@@ -21,10 +21,13 @@ with ASF.Contexts.Faces;
 with ASF.Contexts.Writer;
 package ASF.Components.Widgets.Panels is
 
-   HEADER_FACET_NAME : constant String := "header";
-   FOOTER_FACET_NAME : constant String := "footer";
-   HEADER_ATTR_NAME  : constant String := "header";
-   FOOTER_ATTR_NAME  : constant String := "footer";
+   HEADER_FACET_NAME    : constant String := "header";
+   FOOTER_FACET_NAME    : constant String := "footer";
+
+   HEADER_ATTR_NAME     : constant String := "header";
+   FOOTER_ATTR_NAME     : constant String := "footer";
+   TOGGLEABLE_ATTR_NAME : constant String := "toggleable";
+   CLOSABLE_ATTR_NAME   : constant String := "closable";
 
    --  ------------------------------
    --  UIPanel

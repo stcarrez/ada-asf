@@ -25,43 +25,43 @@
             Sample_Highlight('autocomplete', 'w:autocomplete');
             prettyPrint();
         </util:script>
-        <code class="prettyprint lang-escape linenums:1"><util:file src="/widgets/autocomplete.xhtml" escape="true"/>
+        <code class="prettyprint lang-autocomplete linenums:1"><util:file src="/widgets/autocomplete.xhtml" escape="true"/>
         </code>
     </c:when>
 
-    <c:when test="#{empty param['code'] or param['code'] eq 'inputText'}">
+    <c:when test="#{param['code'] eq 'inputText'}">
         <util:script>
             Sample_Highlight('inputText', 'w:inputText');
             prettyPrint();
         </util:script>
-        <code class="prettyprint lang-escape linenums:1"><util:file src="/widgets/inputText.xhtml" escape="true"/>
+        <code class="prettyprint lang-inputText linenums:1"><util:file src="/widgets/inputText.xhtml" escape="true"/>
         </code>
     </c:when>
 
-    <c:when test="#{empty param['code'] or param['code'] eq 'inputDate'}">
+    <c:when test="#{param['code'] eq 'inputDate'}">
         <util:script>
             Sample_Highlight('inputDate', 'w:inputDate');
             prettyPrint();
         </util:script>
-        <code class="prettyprint lang-escape linenums:1"><util:file src="/widgets/inputDate.xhtml" escape="true"/>
+        <code class="prettyprint lang-inputDate linenums:1"><util:file src="/widgets/inputDate.xhtml" escape="true"/>
         </code>
     </c:when>
 
-    <c:when test="#{empty param['code'] or param['code'] eq 'gravatar'}">
+    <c:when test="#{param['code'] eq 'gravatar'}">
         <util:script>
             Sample_Highlight('gravatar', 'w:gravatar');
             prettyPrint();
         </util:script>
-        <code class="prettyprint lang-escape linenums:1"><util:file src="/widgets/gravatar.xhtml" escape="true"/>
+        <code class="prettyprint lang-gravatar linenums:1"><util:file src="/widgets/gravatar.xhtml" escape="true"/>
         </code>
     </c:when>
 
-    <c:when test="#{empty param['code'] or param['code'] eq 'like'}">
+    <c:when test="#{param['code'] eq 'like'}">
         <util:script>
             Sample_Highlight('like', 'w:like');
             prettyPrint();
         </util:script>
-        <code class="prettyprint lang-escape linenums:1"><util:file src="/widgets/like.xhtml" escape="true"/>
+        <code class="prettyprint lang-like linenums:1"><util:file src="/widgets/like.xhtml" escape="true"/>
         </code>
     </c:when>
 

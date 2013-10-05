@@ -6,6 +6,8 @@ Version 0.6     -
   - New component <w:autocomplete> for input text with autocompletion
   - New component <w:gravatar> to render a gravatar image
   - New component <w:like> to render a Facebook, Twitter or Google+ like button
+  - New component <w:panel> to provide collapsible div panels
+  - Add support for JSF <f:facet>
 
 Version 0.5     - Feb 2013
   - Moved the Security packages in a separate project: Ada Security

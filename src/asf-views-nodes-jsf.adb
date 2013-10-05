@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
 with ASF.Converters;
 with ASF.Validators.Texts;
 with ASF.Validators.Numbers;
@@ -381,8 +382,11 @@ package body ASF.Views.Nodes.Jsf is
    procedure Build_Components (Node    : access Facet_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class) is
+      Facet : constant UIComponent_Access := new UIComponent;
+      Name  : constant Util.Beans.Objects.Object := Get_Value (Node.Facet_Name.all, Context);
    begin
-      null;
+      Node.Build_Children (Facet, Context);
+      Parent.Add_Facet (Util.Beans.Objects.To_String (Name), Facet.all'Access, Node);
    end Build_Components;
 
    --  ------------------------------

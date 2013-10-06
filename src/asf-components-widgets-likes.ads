@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Util.Strings;
 
+with ASF.Applications;
 with ASF.Components.Html;
 with ASF.Contexts.Faces;
 package ASF.Components.Widgets.Likes is
@@ -69,6 +70,10 @@ package ASF.Components.Widgets.Likes is
                           UI        : in UILike'Class;
                           Href      : in String;
                           Context   : in out ASF.Contexts.Faces.Faces_Context'Class);
+
+   --  The application configuration parameter that defines which Facebook client ID must be used.
+   package P_Facebook_App_Id is
+     new ASF.Applications.Parameter ("facebook.client_id", "");
 
    --  ------------------------------
    --  Google like generator

@@ -209,11 +209,11 @@
         </ui:decorate>
     </c:when>
 
-    <c:when test="#{param['code'] eq 'tabView'}">
+    <c:when test="#{param['code'] eq 'tab'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
-            <ui:param name="name" value="w:tabView"/>
+            <ui:param name="name" value="w:tab"/>
             <ui:define name="description">
-                The <b>w:tabView</b> component defines a tab selection.
+                The <b>w:tab</b> component defines a tab content to be displayed within a tab selection.
             </ui:define>
             <ui:define name="attributes">
                 <li class="attr-optional">
@@ -223,9 +223,44 @@
                         or processed on any subsequent form submit. The default value for this property is true.</span>
                 </li>
                 <li class="attr-required">
+                    <b>title</b>
+                    <i>String</i>
+                    <span>The tab title.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'tabView'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="w:tabView"/>
+            <ui:define name="description">
+                The <b>w:tabView</b> component defines a tab selection.
+                It uses the <a href="http://api.jqueryui.com/tabs/">jQuery UI tabs</a>.
+                Each tab must be represented by a <b>w:tab</b> component which indicates the tab
+                title and content.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>rendered</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
+                        or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+                <li class="attr-optional">
                     <b>collapsible</b>
                     <i>Boolean</i>
                     <span>When true, the tabs are collapsible.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>effect</b>
+                    <i>String</i>
+                    <span>The effect to use when switching tabs.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>duration</b>
+                    <i>Integer</i>
+                    <span>The effect duration.</span>
                 </li>
             </ui:define>
         </ui:decorate>

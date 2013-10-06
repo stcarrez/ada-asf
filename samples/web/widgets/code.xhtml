@@ -74,6 +74,15 @@
         </code>
     </c:when>
 
+    <c:when test="#{param['code'] eq 'tab'}">
+        <util:script>
+            Sample_Highlight('tab', 'w:tab');
+            prettyPrint();
+        </util:script>
+        <code class="prettyprint lang-tab linenums:1"><util:file src="/widgets/tab.xhtml" escape="true"/>
+        </code>
+    </c:when>
+
     <c:when test="#{param['code'] eq 'tabView'}">
         <util:script>
             Sample_Highlight('tabView', 'w:tabView');

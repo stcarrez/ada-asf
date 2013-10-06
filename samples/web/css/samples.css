@@ -398,10 +398,18 @@ div.gravatar img {
 div.likes {
     float: left;
     width: 100%;
+    height: 30px;
+}
+div.likes div {
+    width: 77px;
+    float: left;
 }
 div.likes div.fb-like {
     margin-right: 20px;
+    float: left;
+    width: 77px;
 }
 div.likes iframe {
     margin-left: 10px;
+    width: 130px;
 }

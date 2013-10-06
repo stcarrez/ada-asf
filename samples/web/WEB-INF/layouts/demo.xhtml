@@ -2,6 +2,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:w="http://code.google.com/p/ada-asf/widget"
                 xmlns:ajax="http://code.google.com/p/ada-asf/ajax"
                 template="/WEB-INF/layouts/layout.xhtml">
     <ui:param name="title" value="#{samplesMsg.sample_ajax_page_title}" />
@@ -12,6 +13,15 @@
             <ui:include src="demo-tabs.xhtml"/>
             <div class='ui-widget ui-tabs-panel'>
                 <ui:insert name="demoBody"/>
+            </div>
+            <div class='likes'>
+                <w:like type="facebook" data-width="400" data-show-faces="true"
+                        data-layout="button_count"
+                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
+                <w:like type='google+' data-size="tall" data-annotation="none"
+                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
+                <w:like type='twitter' data-count="none"
+                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
             </div>
         </div>
     </ui:define>

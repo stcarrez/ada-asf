@@ -62,9 +62,7 @@ package ASF.Components.Widgets.Likes is
    --  ------------------------------
    --  Facebook like generator
    --  ------------------------------
-   type Facebook_Like_Generator is new Like_Generator with record
-      App_Id : Ada.Strings.Unbounded.Unbounded_String;
-   end record;
+   type Facebook_Like_Generator is new Like_Generator with null record;
 
    overriding
    procedure Render_Like (Generator : in Facebook_Like_Generator;

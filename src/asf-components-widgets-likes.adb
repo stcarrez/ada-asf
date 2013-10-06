@@ -19,6 +19,11 @@ with Util.Locales;
 with Util.Beans.Objects;
 with Util.Strings.Tokenizers;
 
+--  GNAT bug, the with clause is necessary to call Get_Global on the application.
+pragma Warnings (Off, "*is not referenced");
+with ASF.Applications.Main;
+pragma Warnings (On, "*is not referenced");
+
 with ASF.Requests;
 with ASF.Contexts.Writer;
 package body ASF.Components.Widgets.Likes is
@@ -42,6 +47,8 @@ package body ASF.Components.Widgets.Likes is
 
    FACEBOOK_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
    FACEBOOK_SCRIPT_ATTRIBUTE : constant String := "asf.widgets.facebook.script";
+   FACEBOOK_ATTR_NAME        : constant Unbounded_String
+     := To_Unbounded_String ("facebook.client_id");
 
    GOOGLE_ATTRIBUTE_NAMES    : Util.Strings.String_Set.Set;
    GOOGLE_SCRIPT_ATTRIBUTE   : constant String := "asf.widgets.google.script";
@@ -78,6 +85,8 @@ package body ASF.Components.Widgets.Likes is
                           UI        : in UILike'Class;
                           Href      : in String;
                           Context   : in out ASF.Contexts.Faces.Faces_Context'Class) is
+      pragma Unreferenced (Generator);
+
       Writer  : constant Contexts.Writer.Response_Writer_Access := Context.Get_Response_Writer;
       Request : constant ASF.Requests.Request_Access := Context.Get_Request;
    begin
@@ -91,7 +100,13 @@ package body ASF.Components.Widgets.Likes is
                               & "js.src = ""//connect.facebook.net/");
          Writer.Queue_Script (Util.Locales.To_String (Context.Get_Locale));
          Writer.Queue_Script ("/all.js#xfbml=1&;appId=116337738505130");
-         Writer.Queue_Script (Generator.App_Id);
+         declare
+            App_Id : constant Util.Beans.Objects.Object
+              := Context.Get_Application.Get_Global (FACEBOOK_ATTR_NAME,
+                                                     Context.Get_ELContext.all);
+         begin
+            Writer.Queue_Script (App_Id);
+         end;
          Writer.Queue_Script (""";fjs.parentNode.insertBefore(js, fjs);"
                               & "}(document, 'script', 'facebook-jssdk'));");
          Writer.Start_Element ("div");
@@ -189,7 +204,8 @@ package body ASF.Components.Widgets.Likes is
    begin
       if UI.Is_Rendered (Context) then
          declare
-            Writer : constant Contexts.Writer.Response_Writer_Access := Context.Get_Response_Writer;
+            Writer : constant Contexts.Writer.Response_Writer_Access
+              := Context.Get_Response_Writer;
             Kind   : constant String := UI.Get_Attribute ("type", Context, "");
             Href   : constant String := UILike'Class (UI).Get_Link (Context);
             Style  : constant String := UI.Get_Attribute ("style", Context, "");

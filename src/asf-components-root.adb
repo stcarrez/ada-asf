@@ -76,9 +76,6 @@ package body ASF.Components.Root is
                end loop;
             end;
          end if;
-         if UI.Root.Meta /= null then
-            Node.Log_Error ("Found metadata");
-         end if;
       end if;
    end Set_Meta;
 

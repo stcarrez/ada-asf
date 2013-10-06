@@ -341,6 +341,9 @@ div.forum {
     padding-left: 2%;
     padding-right: 2%;
 }
+#forum-posts {
+    width: 100%;
+}
 .friend {
     float: left;
     width: 49%;

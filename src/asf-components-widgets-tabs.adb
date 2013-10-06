@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Beans.Objects;
 with ASF.Components.Base;
 with ASF.Contexts.Writer;
 package body ASF.Components.Widgets.Tabs is
@@ -77,7 +78,11 @@ package body ASF.Components.Widgets.Tabs is
    begin
       if UI.Is_Rendered (Context) then
          declare
-            Id : constant Unbounded_String := UI.Get_Client_Id;
+            use Util.Beans.Objects;
+
+            Id       : constant Unbounded_String := UI.Get_Client_Id;
+            Effect   : constant Object := UI.Get_Attribute (Context, Name => EFFECT_ATTR_NAME);
+            Collapse : constant Boolean := UI.Get_Attribute (COLLAPSIBLE_ATTR_NAME, Context);
          begin
             Writer.Start_Element ("div");
             Writer.Write_Attribute ("id", Id);
@@ -87,6 +92,19 @@ package body ASF.Components.Widgets.Tabs is
             Writer.Queue_Script ("$(""#");
             Writer.Queue_Script (Id);
             Writer.Queue_Script (""").tabs({");
+            if Collapse then
+               Writer.Queue_Script ("collapsible: true");
+            end if;
+            if not Is_Empty (Effect) then
+               if Collapse then
+                  Writer.Queue_Script (",");
+               end if;
+               Writer.Queue_Script ("show:{effect:""");
+               Writer.Queue_Script (Effect);
+               Writer.Queue_Script (""",duration:");
+               Writer.Queue_Script (UI.Get_Attribute (DURATION_ATTR_NAME, Context, "500"));
+               Writer.Queue_Script ("}");
+            end if;
             Writer.Queue_Script ("});");
          end;
       end if;

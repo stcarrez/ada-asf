@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -83,6 +83,23 @@ package ASF.Applications is
    --  Get the configuration parameter;
    function Get (Self  : Config;
                  Param : Config_Param) return Boolean;
+
+   --  Create the configuration parameter definition instance.
+   generic
+      --  The parameter name.
+      Name    : in String;
+
+      --  The default value.
+      Default : in String;
+   package Parameter is
+
+      --  Returns the configuration parameter.
+      function P return Config_Param;
+      pragma Inline_Always (P);
+
+      PARAM_NAME  : aliased constant String := Name;
+      PARAM_VALUE : aliased constant String := Default;
+   end Parameter;
 
 private
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,5 +36,22 @@ package body ASF.Applications is
    begin
       return Get (Self, Param.Name.all, Boolean'Value (Param.Default.all));
    end Get;
+
+   --  ------------------------------
+   --  Create the configuration parameter definition instance.
+   --  ------------------------------
+   package body Parameter is
+      Param       : constant Config_Param := ASF.Applications.P '(Name => PARAM_NAME'Access,
+                                                                  Default => PARAM_VALUE'Access);
+
+      --  ------------------------------
+      --  Returns the configuration parameter.
+      --  ------------------------------
+      function P return Config_Param is
+      begin
+         return Param;
+      end P;
+
+   end Parameter;
 
 end ASF.Applications;

@@ -146,6 +146,14 @@
     </navigation-rule>
 
     <navigation-rule>
+      <from-view-id>/jsf/html/*</from-view-id>
+      <navigation-case>
+        <from-outcome>posted</from-outcome>
+        <to-view-id>/post-response.xhtml</to-view-id>
+      </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
       <from-view-id>/auth/login.xhtml</from-view-id>
       <navigation-case>
         <from-outcome>logout_success</from-outcome>

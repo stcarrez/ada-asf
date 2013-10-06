@@ -99,13 +99,19 @@ package body ASF.Components.Widgets.Likes is
                               & "js = d.createElement(s); js.id = id;js.async=true;"
                               & "js.src = ""//connect.facebook.net/");
          Writer.Queue_Script (Util.Locales.To_String (Context.Get_Locale));
-         Writer.Queue_Script ("/all.js#xfbml=1&;appId=116337738505130");
+         Writer.Queue_Script ("/all.js#xfbml=1&;appId=");
          declare
             App_Id : constant Util.Beans.Objects.Object
               := Context.Get_Application.Get_Global (FACEBOOK_ATTR_NAME,
                                                      Context.Get_ELContext.all);
          begin
-            Writer.Queue_Script (App_Id);
+            if Util.Beans.Objects.Is_Empty (App_Id) then
+               UI.Log_Error ("The facebook client application id is empty");
+               UI.Log_Error ("Please, configure the {0} property in the application",
+                             To_String (FACEBOOK_ATTR_NAME));
+            else
+               Writer.Queue_Script (App_Id);
+            end if;
          end;
          Writer.Queue_Script (""";fjs.parentNode.insertBefore(js, fjs);"
                               & "}(document, 'script', 'facebook-jssdk'));");

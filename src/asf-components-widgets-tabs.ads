@@ -21,6 +21,8 @@ with ASF.Contexts.Faces;
 package ASF.Components.Widgets.Tabs is
 
    COLLAPSIBLE_ATTR_NAME   : constant String := "collapsible";
+   EFFECT_ATTR_NAME        : constant String := "effect";
+   DURATION_ATTR_NAME      : constant String := "duration";
 
    --  ------------------------------
    --  UITab

@@ -1,5 +1,5 @@
 <!-- JSF Core tag library documentation
-  -  Copyright (C) 2012 Stephane Carrez
+  -  Copyright (C) 2012, 2013 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,6 +92,31 @@
                     <b>binding</b>
                     <i>ValueExpression</i>
                     <span>A <tt>ValueExpression</tt> that evaluates to a Converter.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'facet'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:facet"/>
+            <ui:define name="description">
+                This tag allows to register the named facet to the closest parent UIComponent.
+
+                <br></br>
+                Facets are used by some components to render and control specific parts of the component:
+                for example a table header or footer, the column header, the widget panel titles.
+                Example of components that use facets: <b>h:dataTable</b>, <b>h:panelGrid</b>, <b>w:panel</b>.
+
+                <br></br>
+                Warning: if a facet is used within a component that does not recognize the name,
+                the facet content will be ignored.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>name</b>
+                    <i>String</i>
+                    <span>The facet name.</span>
                 </li>
             </ui:define>
         </ui:decorate>

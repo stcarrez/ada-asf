@@ -1,5 +1,5 @@
 <!-- JSF Core tag library documentation
-  -  Copyright (C) 2012 Stephane Carrez
+  -  Copyright (C) 2012, 2013 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +32,13 @@
             Sample_Highlight('converter','f:converter');
         </util:script>
         <code class="prettyprint lang-converter linenums:1"><util:file src="/jsf/core/converter.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'facet'}">
+        <util:script>
+            Sample_Highlight('facet','f:facet');
+        </util:script>
+        <code class="prettyprint lang-facet linenums:1"><util:file src="/jsf/core/facet.xhtml" escape="true"/>
         </code>
     </c:when>
     <c:when test="#{param['code'] eq 'metadata'}">

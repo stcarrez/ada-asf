@@ -1042,7 +1042,7 @@ package body ASF.Components.Base is
                         Arg2    : in String := "";
                         Arg3    : in String := "") is
    begin
-      Log.Info (Utils.Get_Line_Info (UI) & ": " & Message, Arg1, Arg2, Arg3);
+      Log.Error (Utils.Get_Line_Info (UI) & ": " & Message, Arg1, Arg2, Arg3);
    end Log_Error;
 
    --  ------------------------------

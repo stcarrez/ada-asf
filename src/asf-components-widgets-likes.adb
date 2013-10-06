@@ -87,7 +87,7 @@ package body ASF.Components.Widgets.Likes is
          Request.Set_Attribute (FACEBOOK_SCRIPT_ATTRIBUTE, Util.Beans.Objects.To_Object (True));
          Writer.Queue_Script ("(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0];"
                               & "if (d.getElementById(id)) return;"
-                              & "js = d.createElement(s); js.id = id;"
+                              & "js = d.createElement(s); js.id = id;js.async=true;"
                               & "js.src = ""//connect.facebook.net/");
          Writer.Queue_Script (Util.Locales.To_String (Context.Get_Locale));
          Writer.Queue_Script ("/all.js#xfbml=1&;appId=116337738505130");
@@ -186,12 +186,14 @@ package body ASF.Components.Widgets.Likes is
    overriding
    procedure Encode_Begin (UI      : in UILike;
                            Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
-
    begin
       if UI.Is_Rendered (Context) then
          declare
-            Kind : constant String := UI.Get_Attribute ("type", Context, "");
-            Href : constant String := UILike'Class (UI).Get_Link (Context);
+            Writer : constant Contexts.Writer.Response_Writer_Access := Context.Get_Response_Writer;
+            Kind   : constant String := UI.Get_Attribute ("type", Context, "");
+            Href   : constant String := UILike'Class (UI).Get_Link (Context);
+            Style  : constant String := UI.Get_Attribute ("style", Context, "");
+            Class  : constant String := UI.Get_Attribute ("styleClass", Context, "");
 
             procedure Render (Name : in String; Done : out Boolean);
 
@@ -203,7 +205,15 @@ package body ASF.Components.Widgets.Likes is
                for I in Generators'Range loop
                   exit when Generators (I).Name = null;
                   if Generators (I).Name.all = Name then
+                     Writer.Start_Element ("div");
+                     if Style'Length > 0 then
+                        Writer.Write_Attribute ("style", Style);
+                     end if;
+                     if Class'Length > 0 then
+                        Writer.Write_Attribute ("class", Class);
+                     end if;
                      Generators (I).Generator.Render_Like (UI, Href, Context);
+                     Writer.End_Element ("div");
                      return;
                   end if;
                end loop;

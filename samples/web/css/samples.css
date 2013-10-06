@@ -397,19 +397,21 @@ div.gravatar img {
 }
 div.likes {
     float: left;
-    width: 100%;
+    padding-top: 5px;
+    padding-left: 10%;
+    width: 90%;
     height: 30px;
 }
-div.likes div {
-    width: 77px;
+div.likes div.like-facebook, div.likes div.like-google, div.likes div.like-twitter {
+    width: 100px;
     float: left;
+    height: 30px;
+    overflow: hidden;
 }
-div.likes div.fb-like {
-    margin-right: 20px;
-    float: left;
-    width: 77px;
+div.likes div.like-google {
+    width: 70px;
 }
-div.likes iframe {
-    margin-left: 10px;
-    width: 130px;
+.sample-demos div.likes {
+    padding-left: 20%;
+    width: 80%;
 }

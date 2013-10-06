@@ -47,8 +47,6 @@ package body ASF.Components.Widgets.Likes is
 
    FACEBOOK_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
    FACEBOOK_SCRIPT_ATTRIBUTE : constant String := "asf.widgets.facebook.script";
-   FACEBOOK_ATTR_NAME        : constant Unbounded_String
-     := To_Unbounded_String ("facebook.client_id");
 
    GOOGLE_ATTRIBUTE_NAMES    : Util.Strings.String_Set.Set;
    GOOGLE_SCRIPT_ATTRIBUTE   : constant String := "asf.widgets.google.script";
@@ -101,14 +99,13 @@ package body ASF.Components.Widgets.Likes is
          Writer.Queue_Script (Util.Locales.To_String (Context.Get_Locale));
          Writer.Queue_Script ("/all.js#xfbml=1&;appId=");
          declare
-            App_Id : constant Util.Beans.Objects.Object
-              := Context.Get_Application.Get_Global (FACEBOOK_ATTR_NAME,
-                                                     Context.Get_ELContext.all);
+            App_Id : constant String
+              := Context.Get_Application.Get_Config (P_Facebook_App_Id.P);
          begin
-            if Util.Beans.Objects.Is_Empty (App_Id) then
+            if App_Id'Length = 0 then
                UI.Log_Error ("The facebook client application id is empty");
-               UI.Log_Error ("Please, configure the {0} property in the application",
-                             To_String (FACEBOOK_ATTR_NAME));
+               UI.Log_Error ("Please, configure the '{0}' property "
+                             & "in the application", P_Facebook_App_Id.PARAM_NAME);
             else
                Writer.Queue_Script (App_Id);
             end if;

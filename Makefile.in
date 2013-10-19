@@ -13,6 +13,10 @@ INSTALL=@INSTALL@
 
 GPRPATH=asf.gpr
 
+BUILDS_SHARED=@BUILDS_SHARED@
+
+version=@ASF_VERSION@
+
 distdir=ada-asf-@ASF_VERSION@
 
 DIST_FILE=ada-asf-@ASF_VERSION@.tar.gz
@@ -46,7 +50,8 @@ bindir=${prefix}/bin
 libdir=${prefix}/lib
 alidir=${libdir}/ada/adalib/
 
-MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=4
+CPUS := $(shell getconf _NPROCESSORS_ONLN)
+MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
 
 ifeq (${BUILDS_SHARED},yes)
 all:     static shared
@@ -148,33 +153,33 @@ install_shared:
 	$(MAKE) LIBRARY_TYPE=relocatable install_lib
 
 install_lib:
-	-rm -rf ${includedir}/asf ${includedir}/asfunit
-	-rm -rf ${alidir}/asf/$(LIBRARY_TYPE) ${alidir}/asfunit/$(LIBRARY_TYPE)
-	$(MKDIR) -p ${includedir}/asf
-	$(MKDIR) -p ${includedir}/asfunit
+	-rm -rf ${includedir}/ada-asf ${includedir}/ada-asfunit
+	-rm -rf ${alidir}/ada-asf ${alidir}/ada-asfunit
+	$(MKDIR) -p ${includedir}/ada-asf
+	$(MKDIR) -p ${includedir}/ada-asfunit
 	$(MKDIR) -p ${projectdir}/
-	${MKDIR} -p ${alidir}/asf/$(LIBRARY_TYPE)
-	${MKDIR} -p ${alidir}/asfunit/$(LIBRARY_TYPE)
+	${MKDIR} -p ${alidir}/ada-asf
+	${MKDIR} -p ${alidir}/ada-asfunit
 	${MKDIR} -p ${dynamodir}/asf/bundles
 	${MKDIR} -p ${dynamodir}/asf/web/js
 	${MKDIR} -p ${dynamodir}/asf/web/js/jquery-ui
-	${CP} -p asfunit/*.ad[bs] ${includedir}/asfunit
-	${CP} -p src/*.ad[bs] ${includedir}/asf
-	${CP} -p src/aws/*.ad[bs] ${includedir}/asf
+	${CP} -p asfunit/*.ad[bs] ${includedir}/ada-asfunit
+	${CP} -p src/*.ad[bs] ${includedir}/ada-asf
+	${CP} -p src/aws/*.ad[bs] ${includedir}/ada-asf
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/asf.gpr > ${projectdir}/asf.gpr
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/asfunit.gpr > ${projectdir}/asfunit.gpr
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/*.ali ${alidir}/asf/$(LIBRARY_TYPE)
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/*.ali ${alidir}/asfunit/$(LIBRARY_TYPE)
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asf
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asfunit
 ifeq ($(LIBRARY_TYPE),static)
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/libasf.a ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libasfunit.a ${libdir}/
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/libada-asf.a ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asfunit.a ${libdir}/
 else
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/libasf.$(LIBEXT) ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libasfunit.$(LIBEXT) ${libdir}/
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/libada-asf.$(LIBEXT) ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asfunit.$(LIBEXT) ${libdir}/
 	cd ${libdir} && \
-	rm -f libasf.$(LIBEXT) libasfunit.$(LIBEXT) && \
-	${LN} libasf.$(LIBVER) libasf.$(LIBEXT) && \
-	${LN} libasfunit.$(LIBVER) libasfunit.$(LIBEXT)
+	rm -f libada-asf.$(LIBEXT) libada-asfunit.$(LIBEXT) && \
+	${LN} libada-asf.$(LIBVER) libada-asf.$(LIBEXT) && \
+	${LN} libada-asfunit.$(LIBVER) libada-asfunit.$(LIBEXT)
 endif
 	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd ${dynamodir}/asf/web && tar xf -)
 	${CP} bundles/*.properties ${dynamodir}/asf/bundles/
@@ -183,13 +188,13 @@ endif
 	${CP} LICENSE.txt ${dynamodir}/asf/
 
 uninstall:
-	rm -rf ${includedir}/asf
-	rm -rf ${includedir}/asfunit
-	rm -rf ${alidir}/asf ${alidir}/asfunit
-	rm -f ${libdir}/libasf.a
-	rm -f ${libdir}/libasfunit.a
-	rm -f ${libdir}/libasf.$(LIBEXT)
-	rm -f ${libdir}/libasfunit.$(LIBEXT)
+	rm -rf ${includedir}/ada-asf
+	rm -rf ${includedir}/ada-asfunit
+	rm -rf ${alidir}/ada-asf ${alidir}/ada-asfunit
+	rm -f ${libdir}/libada-asf.a
+	rm -f ${libdir}/libada-asfunit.a
+	rm -f ${libdir}/libada-asf.$(LIBEXT)
+	rm -f ${libdir}/libada-asfunit.$(LIBEXT)
 	rm -f ${projectdir}/asf.gpr
 	rm -f ${projectdir}/asfunit.gpr
 	rm -rf ${awadir}/web

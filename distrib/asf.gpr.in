@@ -7,11 +7,11 @@ with "security";
 project Asf is
    Version := "@ASF_VERSION@";
 
-   for Library_Name use "asf";
+   for Library_Name use "ada-asf";
    for Library_Dir use "INSTALL/lib";
    for Library_Kind use "LIBRARY_TYPE";
 
-   for Source_Dirs use ("INSTALL/share/ada/adainclude/asf");
-   for Library_ALI_Dir use "INSTALL/lib/ada/adalib/asf/" & Project'Library_Kind;
+   for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-asf");
+   for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-asf/";
    for Externally_Built use "true";
 end Asf;

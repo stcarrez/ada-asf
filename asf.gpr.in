@@ -22,7 +22,7 @@ project Asf is
       when others =>
 
    end case;
-   for Library_Name use "asf";
+   for Library_Name use "ada-asf";
    for Library_Kind use Library_Type;
 
    for Library_Dir use Library_Dir & "/asf/" & Project'Library_Kind;

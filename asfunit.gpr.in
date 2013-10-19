@@ -12,7 +12,7 @@ project AsfUnit is
 
    for Source_Dirs use ("asfunit");
 
-   for Library_Name use "asfunit";
+   for Library_Name use "ada-asfunit";
    for Library_Kind use Library_Type;
 
    for Library_Dir use Library_Dir & "/asfunit/" & Project'Library_Kind;

@@ -115,7 +115,7 @@ DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure conf
 configure.in Makefile.in install-sh distrib test.properties ChangeLog \
 asf.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src asfunit samples regtests web bundles samples.properties dynamo.xml \
-bin obj lib
+bin obj lib debian
 
 dist:
 	-rm -rf $(distdir)

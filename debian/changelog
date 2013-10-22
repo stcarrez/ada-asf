@@ -1,4 +1,4 @@
-libada-asf (1.0-1) unstable; urgency=low
+libada-asf (1.0.0) unstable; urgency=low
 
   * Initial release to setup a debian library and development package
 

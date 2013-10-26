@@ -1,0 +1,37 @@
+with "config";
+with "asf_core";
+@WITH_SERVER@
+
+project Asf_Aws is
+
+   Version := "@ASF_VERSION@";
+   Library_Dir := "@ASF_LIBDIR@";
+   Library_Type : Config.Library_Type_Type := external ("LIBRARY_TYPE", "static");
+
+   Has_Aws     : Config.Yes_No := "@ASF_HAVE_AWS@";
+
+   type Server_Type is ("none", "aws");
+   Server : Server_Type := external ("SERVER", "@ASF_SERVER@");
+
+   for Source_Dirs use ();
+   case Server is
+      when "aws" =>
+          for Source_Dirs use project'Source_Dirs & ("src/aws");
+
+      when others =>
+
+   end case;
+
+   for Library_Name use "ada-asf-aws";
+   for Library_Kind use Library_Type;
+
+   for Library_Dir use Library_Dir & "/asf-aws/" & Project'Library_Kind;
+   for Object_Dir use "./" & Config'Object_Dir & "/obj/asf-aws/" & Project'Library_Kind;
+   for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
+
+   package Binder renames Config.Binder;
+   package Builder renames Config.Builder;
+   package Compiler renames Config.Compiler;
+   package Ide      renames Config.Ide;
+
+end Asf_Aws;

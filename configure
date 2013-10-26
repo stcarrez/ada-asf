@@ -565,6 +565,7 @@ ac_unique_file="src/asf.ads"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 WITH_SERVER
+ASF_HAVE_AWS
 ASF_SERVER
 AWS_DIR
 SECURITY_DIR
@@ -647,6 +648,7 @@ enable_shared
 with_ada_util
 with_ada_el
 with_ada_security
+enable_aws
 with_aws
 '
       ac_precious_vars='build_alias
@@ -1272,6 +1274,7 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-shared         Enable the shared libraries (disabled)
+  --enable-aws      Enable the AWS server support in Ada Server Faces (enabled)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1906,8 +1909,8 @@ test -n "$target_alias" &&
 
 
 # Current release settings
-ASF_MAJOR_VERSION=0
-ASF_MINOR_VERSION=6
+ASF_MAJOR_VERSION=1
+ASF_MINOR_VERSION=0
 ASF_MICRO_VERSION=0
 ASF_VERSION=$ASF_MAJOR_VERSION.$ASF_MINOR_VERSION.$ASF_MICRO_VERSION
 
@@ -3024,9 +3027,25 @@ $as_echo "ok ${SECURITY_DIR}" >&6; }
 # Ada Web Server
 ##########################################
 
-ASF_SERVER=aws
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking AWS Server support" >&5
+$as_echo_n "checking AWS Server support... " >&6; }
+ac_enable_aws=yes
+# Check whether --enable-aws was given.
+if test "${enable_aws+set}" = set; then :
+  enableval=$enable_aws; case "${enableval}" in
+  no|none)  ac_enable_aws=no ;;
+  *)        ac_enable_aws=yes ;;
+esac
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${ac_enable_aws}" >&5
+$as_echo "${ac_enable_aws}" >&6; }
+
+ASF_HAVE_AWS=no
+ASF_SERVER=none
 WITH_SERVER=
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Ada Web Server library (http://libre.adacore.com/libre/tools/aws/)" >&5
+if test T$ac_enable_aws = Tyes; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking Ada Web Server library (http://libre.adacore.com/libre/tools/aws/)" >&5
 $as_echo_n "checking Ada Web Server library (http://libre.adacore.com/libre/tools/aws/)... " >&6; }
 
 # Check whether --with-aws was given.
@@ -3041,9 +3060,11 @@ else
   gnatmake -p -Pt >/dev/null 2>/dev/null
   if test $? -eq 0; then
     AWS_DIR=
+    ASF_HAVE_AWS=no
     WITH_SERVER="";
   else
     AWS_DIR=../aws/
+    ASF_HAVE_AWS=yes
     WITH_SERVER="with \"aws\";";
   fi;
   rm -f t.gpr
@@ -3057,20 +3078,27 @@ if test $? -ne 0 ; then
    # AC_MSG_ERROR([Ada Web Server not found in ${AWS_DIR}])
    AWS_DIR=
    WITH_SERVER="";
+   ASF_HAVE_AWS=no
    ASF_SERVER=none
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: Not found" >&5
 $as_echo "Not found" >&6; }
 else
+   ASF_SERVER=aws
+   ASF_HAVE_AWS=yes
    WITH_SERVER="with \"${AWS_DIR}aws\";";
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok ${AWS_DIR}" >&5
 $as_echo "ok ${AWS_DIR}" >&6; }
 fi
 rm -f t.gpr
 
+fi
 
 
 
-ac_config_files="$ac_config_files Makefile asf.gpr tests.gpr samples.gpr asfunit.gpr distrib/asf.gpr distrib/asfunit.gpr"
+
+
+
+ac_config_files="$ac_config_files Makefile asf.gpr asf_core.gpr asf_aws.gpr tests.gpr samples.gpr asfunit.gpr distrib/asf.gpr distrib/asfunit.gpr distrib/asf_core.gpr distrib/asf_aws.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -3792,11 +3820,15 @@ do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "asf.gpr") CONFIG_FILES="$CONFIG_FILES asf.gpr" ;;
+    "asf_core.gpr") CONFIG_FILES="$CONFIG_FILES asf_core.gpr" ;;
+    "asf_aws.gpr") CONFIG_FILES="$CONFIG_FILES asf_aws.gpr" ;;
     "tests.gpr") CONFIG_FILES="$CONFIG_FILES tests.gpr" ;;
     "samples.gpr") CONFIG_FILES="$CONFIG_FILES samples.gpr" ;;
     "asfunit.gpr") CONFIG_FILES="$CONFIG_FILES asfunit.gpr" ;;
     "distrib/asf.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asf.gpr" ;;
     "distrib/asfunit.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asfunit.gpr" ;;
+    "distrib/asf_core.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asf_core.gpr" ;;
+    "distrib/asf_aws.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asf_aws.gpr" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
@@ -4250,4 +4282,5 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
+
 

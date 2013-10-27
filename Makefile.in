@@ -82,7 +82,7 @@ shared:
 check test:	build
 	$(GNATMAKE) -p -Ptests
 	DIR=`pwd`; \
-	export LD_LIBRARY_PATH=$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$LD_LIBRARY_PATH; \
+	export LD_LIBRARY_PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$LD_LIBRARY_PATH"; \
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
 
 regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile

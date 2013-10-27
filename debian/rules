@@ -40,6 +40,7 @@ binary-arch: build-arch libada-asf$(aliversion)-dev libada-asf$(soversion)
 	dh_makeshlibs -a
 	dh_installdeb -a
 	dh_shlibdeps -a -Llibada-asf$(soversion) -ldebian/libada-asf$(soversion)/usr/lib
+	dh_shlibdeps -a -Llibada-asf-aws$(soversion) -ldebian/libada-asf-aws$(soversion)/usr/lib
 	dh_gencontrol -a
 	dh_md5sums -a
 	dh_builddeb -a
@@ -60,7 +61,6 @@ WEB_DIRS := samples/web samples/web/WEB-INF samples/web/WEB-INF/layouts \
     samples/web/js/google-code-prettify samples/web/auth samples/web/forms \
     samples/web/widgets samples/web/util samples/web/jstl samples/web/jsf \
     samples/web/jsf/core samples/web/jsf/html
-WEB_SAMPLES := $(foreach d,$(WEB_DIRS),$(wildcard $(d)/*.xhtml))
 
 libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 	: # The development package
@@ -69,20 +69,21 @@ libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH) \
 		usr/share/ada/adainclude/ada-asf \
-		usr/lib/ada/adalib/ada-asf
+		usr/lib/ada/adalib/ada-asf \
+		usr/share/dynamo/asf
 	dh_install -p$@ usr/lib/libada-asf.a /usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/ada/adalib/ada-asf/*.ali /usr/lib/ada/adalib/ada-asf
 	dh_install -p$@ usr/share/ada/adainclude/asf.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/ada-asf/*.ad[bs] /usr/share/ada/adainclude/ada-asf
-	dh_install -p$@ bundles/*.properties usr/share/doc/$@/bundles
-	dh_install -p$@ samples/*.ad[sb] usr/share/doc/$@/samples
-	dh_install -p$@ samples/beans/*.ad[sb] usr/share/doc/$@/samples/beans
-	for i in $(WEB_DIRS); do \
-		dh_install -p$@ $$i/*.xhtml usr/share/doc/$@/samples/web ; \
-    done
-	dh_install -p$@ samples.gpr usr/share/doc/$@/
-	dh_install -p$@ config.gpr usr/share/doc/$@/
-	dh_install -p$@ samples.properties usr/share/doc/$@/
+	dirs=`cd $(CURDIR)/debian/tmp/usr/share/dynamo && find asf -type d`; \
+	for i in $$dirs; do \
+		dh_installdirs -p$@ usr/share/doc/dynamo/$$i ; \
+	done
+	files=`cd $(CURDIR)/debian/tmp/usr/share/dynamo && find asf -type f`; \
+	for i in $$files; do \
+		dir=`dirname $$i`; \
+		dh_install -p$@ usr/share/dynamo/$$i usr/share/dynamo/$$dir ; \
+	done
 	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so.$(soversion) \
 	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so
 	dh_strip -p$@ -X.a
@@ -99,6 +100,12 @@ libada-asf-aws$(aliversion)-dev:
 	dh_install -p$@ usr/lib/ada/adalib/ada-asf-aws/*.ali /usr/lib/ada/adalib/ada-asf-aws
 	dh_install -p$@ usr/share/ada/adainclude/asf_aws.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/ada-asf-aws/*.ad[bs] /usr/share/ada/adainclude/ada-asf-aws
+	dh_install -p$@ bundles/*.properties usr/share/doc/$@/bundles
+	dh_install -p$@ samples/*.ad[sb] usr/share/doc/$@/samples
+	dh_install -p$@ samples/beans/*.ad[sb] usr/share/doc/$@/samples/beans
+	dh_install -p$@ samples.gpr usr/share/doc/$@/
+	dh_install -p$@ config.gpr usr/share/doc/$@/
+	dh_install -p$@ samples.properties usr/share/doc/$@/
 	for i in $(WEB_DIRS); do \
 		dh_installdirs -p$@ usr/share/doc/$@/$$i ; \
 		for j in $$i/*.xhtml; do \
@@ -116,6 +123,7 @@ libada-asf-aws$(aliversion)-dev:
 		for j in $$i/*.png; do \
 			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
 		done; \
+		echo "Done for $$i"; \
     done
 	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf-aws.so.$(soversion) \
 	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf-aws.so
@@ -157,7 +165,4 @@ override_dh_strip:
 	dh_strip --dbg-package=libada-asf$(aliversion)-dbg
 
 override_dh_auto_clean:
-	echo "so=$(soversion)"
-	rm -f $(CURDIR)/debian/libada-util*.postinst
-	rm -f $(CURDIR)/debian/libada-util*.postrm
 	dh_auto_clean

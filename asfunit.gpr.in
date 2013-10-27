@@ -14,6 +14,7 @@ project AsfUnit is
 
    for Library_Name use "ada-asfunit";
    for Library_Kind use Library_Type;
+   for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
 
    for Library_Dir use Library_Dir & "/asfunit/" & Project'Library_Kind;
    for Object_Dir use "./" & Config'Object_Dir & "/obj/asfunit/" & Project'Library_Kind;

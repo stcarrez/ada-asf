@@ -12,23 +12,26 @@
 # gnatmake can do parallel builds; we don't want make to interfere.
 .NOTPARALLEL:
 
-aliversion := $(shell sed -n -r 's/^Package: libada-asf([^-]*)-dev$$/\1/p' debian/control)
-soversion := $(shell sed -n -r 's/^Package: libada-asf([^-]+)$$/\1/p' debian/control).0
+aliversion := $(shell sed -n -r 's/^Package: libada-asf([0-9\.]*)-dev$$/\1/p' debian/control)
+soversion := $(shell sed -n -r 's/^Package: libada-asf([0-9\.]+)$$/\1/p' debian/control).0
 
 CPUS := $(shell getconf _NPROCESSORS_ONLN)
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 # Force static for now, see configure note below
 LIBRARY_TYPE=static
+package=libada-asf-dev
 
 %:
 	dh $@ 
 
 .PHONY: binary-arch build-arch
 .PHONY: libada-asf$(aliversion)-dev libada-asf$(soversion) libada-asfunit$(aliversion)-dev
+.PHONY: libada-asf-aws$(aliversion)-dev libada-asf-aws$(soversion) 
 
 binary-arch: build-arch libada-asf$(aliversion)-dev libada-asf$(soversion)
 	: # Common to all architecture-dependent packages
+	echo "ALI V=$(aliversion)"
 	dh_installchangelogs -a
 	dh_installdocs -a
 	dh_lintian -a
@@ -45,7 +48,12 @@ libada-asf$(aliversion):
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
-	#dh_install -p$@ usr/lib/libada-asf.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/libada-asf.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
+
+libada-asf-aws$(aliversion):
+	dh_installdirs -p$@ \
+		usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/libada-asf-aws.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
 WEB_DIRS := samples/web samples/web/WEB-INF samples/web/WEB-INF/layouts \
     samples/web/css samples/web/images samples/web/facelet samples/web/js \
@@ -79,8 +87,23 @@ libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 #	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so
 	dh_strip -p$@ -X.a
 
-libada-asfunit$(aliversion)-dev:
+libada-asf-aws$(aliversion)-dev:
 	: # The development package
+	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+		< $(CURDIR)/distrib/asf_aws.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf_aws.gpr
+	dh_installdirs -p$@ \
+		usr/lib/$(DEB_HOST_MULTIARCH) \
+		usr/share/ada/adainclude/ada-asf-aws \
+		usr/lib/ada/adalib/ada-asf-aws
+	dh_install -p$@ usr/lib/libada-asf-aws.a /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/ada/adalib/ada-asf-aws/*.ali /usr/lib/ada/adalib/ada-asf-aws
+	dh_install -p$@ usr/share/ada/adainclude/asf_aws.gpr /usr/share/ada/adainclude
+	dh_install -p$@ usr/share/ada/adainclude/ada-asf-aws/*.ad[bs] /usr/share/ada/adainclude/ada-asf-aws
+#	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so.$(soversion) \
+#	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so
+	dh_strip -p$@ -X.a
+
+libada-asfunit$(aliversion)-dev:
 	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/asfunit.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asfunit.gpr
 	dh_installdirs -p$@ \
@@ -98,13 +121,16 @@ libada-asfunit$(aliversion)-dev:
 # --trace-symbol=inflate shows that the symbol is found in libz.so and
 # required by libaws.so but the undefine remains.  Disable the shared lib for now.
 override_dh_auto_configure:
-	dh_auto_configure -- --disable-shared
+	dh_auto_configure -- --enable-shared
+#disable-shared
 
 override_dh_auto_build:
 	dh_auto_build
 
 override_dh_auto_install: libada-asf$(aliversion) \
+						  libada-asf-aws$(aliversion) \
 						  libada-asf$(aliversion)-dev \
+						  libada-asf-aws$(aliversion)-dev \
 						  libada-asfunit$(aliversion)-dev
 
 override_dh_compress:
@@ -113,3 +139,8 @@ override_dh_compress:
 override_dh_strip:
 	dh_strip --dbg-package=libada-asf$(aliversion)-dbg
 
+override_dh_auto_clean:
+	echo "so=$(soversion)"
+	rm -f $(CURDIR)/debian/libada-util*.postinst
+	rm -f $(CURDIR)/debian/libada-util*.postrm
+	dh_auto_clean

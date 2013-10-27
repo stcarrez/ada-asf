@@ -20,7 +20,27 @@ Description: Ada Server Faces for web applications
  authentication.  The library also provides a security framework to
  protect resources in the application.
 
+Package: libada-asf1.0-aws
+Section: libs
+Architecture: any
+Pre-Depends: multiarch-support
+Depends: ${shlibs:Depends}, libada-asf1.0, libada-util1.7, libada-el1.5, libada-security1.1, ${misc:Depends}
+Description: Ada Server Faces for web applications
+ The library provides some security framework needed by some applications.
+ It includes the OpenID client authentication and the OAuth 2.0 client
+ authentication.  The library also provides a security framework to
+ protect resources in the application.
+
 Package: libada-asf1.0-dev
+Section: libdevel
+Architecture: any
+Depends: libada-asf1.0 (= ${binary:Version}), libada-util1.7-dev, libada-el1.5-dev,
+ libada-security1.1-dev, ${misc:Depends}
+Description: Ada Server Faces for web applications (Development files)
+ The package contains the Ada development files to develop application
+ using the libada-security library.
+
+Package: libada-asf1.0-aws-dev
 Section: libdevel
 Architecture: any
 Depends: libada-asf1.0 (= ${binary:Version}), libada-util1.7-dev, libada-el1.5-dev,

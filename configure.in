@@ -170,6 +170,7 @@ AC_MSG_RESULT(${ac_enable_aws})
 ASF_HAVE_AWS=no
 ASF_SERVER=none
 WITH_SERVER=
+WITH_ASF_AWS=
 if test T$ac_enable_aws = Tyes; then
   AC_MSG_CHECKING([Ada Web Server library (http://libre.adacore.com/libre/tools/aws/)])
   AC_ARG_WITH(aws,
@@ -206,6 +207,7 @@ else
    ASF_SERVER=aws
    ASF_HAVE_AWS=yes
    WITH_SERVER="with \"${AWS_DIR}aws\";";
+   WITH_ASF_AWS="with \"asf_aws\";";
    AC_MSG_RESULT(ok ${AWS_DIR})
 fi
 rm -f t.gpr
@@ -216,6 +218,7 @@ AC_SUBST(AWS_DIR)
 AC_SUBST(ASF_SERVER)
 AC_SUBST(ASF_HAVE_AWS)
 AC_SUBST(WITH_SERVER)
+AC_SUBST(WITH_ASF_AWS)
 
 AC_OUTPUT(
 Makefile asf.gpr asf_core.gpr asf_aws.gpr tests.gpr samples.gpr asfunit.gpr distrib/asf.gpr distrib/asfunit.gpr distrib/asf_core.gpr distrib/asf_aws.gpr

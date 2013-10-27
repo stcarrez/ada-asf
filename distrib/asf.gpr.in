@@ -4,6 +4,7 @@ with "el";
 with "security";
 with "asf_core";
 @WITH_SERVER@
+@WITH_ASF_AWS@
 
 abstract project Asf is
    Version := Asf_Core.Version;

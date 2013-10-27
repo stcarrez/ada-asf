@@ -81,6 +81,8 @@ shared:
 # Build and run the unit tests
 check test:	build
 	$(GNATMAKE) -p -Ptests
+	DIR=`pwd`; \
+	export LD_LIBRARY_PATH=$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$LD_LIBRARY_PATH; \
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
 
 regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile
@@ -195,10 +197,10 @@ ifeq ($(LIBRARY_TYPE),static)
 else
 	test T${HAVE_AWS} = Tno || \
 	   ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/libada-asf-aws.$(LIBVER) ${libdir}/
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/libada-asf.$(LIBEXT) ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asfunit.$(LIBEXT) ${libdir}/
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/libada-asf.$(LIBVER) ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asfunit.$(LIBVER) ${libdir}/
 	cd ${libdir} && \
-	rm -f libada-asf.$(LIBEXT) ibada-asf-aws.$(LIBEXT) libada-asfunit.$(LIBEXT) && \
+	rm -f libada-asf.$(LIBEXT) libada-asf-aws.$(LIBEXT) libada-asfunit.$(LIBEXT) && \
 	${LN} libada-asf.$(LIBVER) libada-asf.$(LIBEXT) && \
 	${LN} libada-asfunit.$(LIBVER) libada-asfunit.$(LIBEXT) && \
 	(test T${HAVE_AWS} = Tno || \

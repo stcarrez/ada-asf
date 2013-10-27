@@ -83,8 +83,8 @@ libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 	dh_install -p$@ samples.gpr usr/share/doc/$@/
 	dh_install -p$@ config.gpr usr/share/doc/$@/
 	dh_install -p$@ samples.properties usr/share/doc/$@/
-#	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so.$(soversion) \
-#	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so
+	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so.$(soversion) \
+	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so
 	dh_strip -p$@ -X.a
 
 libada-asf-aws$(aliversion)-dev:
@@ -99,8 +99,26 @@ libada-asf-aws$(aliversion)-dev:
 	dh_install -p$@ usr/lib/ada/adalib/ada-asf-aws/*.ali /usr/lib/ada/adalib/ada-asf-aws
 	dh_install -p$@ usr/share/ada/adainclude/asf_aws.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/ada-asf-aws/*.ad[bs] /usr/share/ada/adainclude/ada-asf-aws
-#	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so.$(soversion) \
-#	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so
+	for i in $(WEB_DIRS); do \
+		dh_installdirs -p$@ usr/share/doc/$@/$$i ; \
+		for j in $$i/*.xhtml; do \
+			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
+		done; \
+		for j in $$i/*.css; do \
+			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
+		done; \
+		for j in $$i/*.js; do \
+			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
+		done; \
+		for j in $$i/*.xml; do \
+			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
+		done; \
+		for j in $$i/*.png; do \
+			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
+		done; \
+    done
+	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf-aws.so.$(soversion) \
+	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf-aws.so
 	dh_strip -p$@ -X.a
 
 libada-asfunit$(aliversion)-dev:
@@ -122,7 +140,6 @@ libada-asfunit$(aliversion)-dev:
 # required by libaws.so but the undefine remains.  Disable the shared lib for now.
 override_dh_auto_configure:
 	dh_auto_configure -- --enable-shared
-#disable-shared
 
 override_dh_auto_build:
 	dh_auto_build

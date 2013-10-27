@@ -162,7 +162,7 @@ override_dh_auto_install: libada-asf$(aliversion) \
 						  libada-asfunit$(aliversion)-dev
 
 override_dh_compress:
-	dh_compress -X.ads -X.adb -XMakefile
+	dh_compress -X.ads -X.adb -X.xhtml -X.xml -XMakefile
 
 override_dh_strip:
 	dh_strip --dbg-package=libada-asf$(aliversion)-dbg

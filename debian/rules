@@ -66,6 +66,8 @@ libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 	: # The development package
 	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/asf.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf.gpr
+	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+		< $(CURDIR)/distrib/asf_core.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf_core.gpr
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH) \
 		usr/share/ada/adainclude/ada-asf \
@@ -74,6 +76,7 @@ libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 	dh_install -p$@ usr/lib/libada-asf.a /usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/ada/adalib/ada-asf/*.ali /usr/lib/ada/adalib/ada-asf
 	dh_install -p$@ usr/share/ada/adainclude/asf.gpr /usr/share/ada/adainclude
+	dh_install -p$@ usr/share/ada/adainclude/asf_core.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/ada-asf/*.ad[bs] /usr/share/ada/adainclude/ada-asf
 	dirs=`cd $(CURDIR)/debian/tmp/usr/share/dynamo && find asf -type d`; \
 	for i in $$dirs; do \

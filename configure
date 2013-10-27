@@ -564,6 +564,7 @@ PACKAGE_URL=
 ac_unique_file="src/asf.ads"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+WITH_ASF_AWS
 WITH_SERVER
 ASF_HAVE_AWS
 ASF_SERVER
@@ -3044,6 +3045,7 @@ $as_echo "${ac_enable_aws}" >&6; }
 ASF_HAVE_AWS=no
 ASF_SERVER=none
 WITH_SERVER=
+WITH_ASF_AWS=
 if test T$ac_enable_aws = Tyes; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking Ada Web Server library (http://libre.adacore.com/libre/tools/aws/)" >&5
 $as_echo_n "checking Ada Web Server library (http://libre.adacore.com/libre/tools/aws/)... " >&6; }
@@ -3086,12 +3088,14 @@ else
    ASF_SERVER=aws
    ASF_HAVE_AWS=yes
    WITH_SERVER="with \"${AWS_DIR}aws\";";
+   WITH_ASF_AWS="with \"asf_aws\";";
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok ${AWS_DIR}" >&5
 $as_echo "ok ${AWS_DIR}" >&6; }
 fi
 rm -f t.gpr
 
 fi
+
 
 
 

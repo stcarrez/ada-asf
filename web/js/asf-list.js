@@ -382,9 +382,12 @@
                         $(node).addClass("asf-editing");
                         this.enterCreate(event);
                     }
-                } else {
+                } else if (this.options.selectAction != null) {
                     this.selectAction(node, event);
+                } else {
+                    return true;
                 }
+                return false;
             } else {
                 name = event.target.tagName;
                 node = event.target;
@@ -397,7 +400,6 @@
 
             }
             event.stopPropagation();
-            return false;
         },
         blur: function(event) {
             if (this.currentEdit) {

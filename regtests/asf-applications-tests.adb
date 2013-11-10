@@ -288,7 +288,7 @@ package body ASF.Applications.Tests is
 
       --  We must get at least one measure value (assuming the Test_Get_File test
       --  was executed).
-      Assert_Matches (T, "<time count=""\d+"" time=""\d+.\d+[um]s"" title="".*""/>",
+      Assert_Matches (T, "<time count=""\d+"" time=""\d+.\d+ [um]s"" title="".*""/>",
                       Reply, "Wrong content");
    end Test_Get_Measures;
 

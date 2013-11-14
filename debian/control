@@ -21,7 +21,7 @@ Description: Ada Server Faces for web applications
  .
  This package contains the runtime libraries.
 
-Package: libada-asf-aws1.0
+Package: libada-asf1.0-aws
 Section: libs
 Architecture: any
 Pre-Depends: multiarch-support
@@ -41,7 +41,7 @@ Description: Ada Server Faces for web applications (Development files)
  The package contains the Ada development files to develop web applications
  using the Ada Server Faces component driven framework.
 
-Package: libada-asf-aws1.0-dev
+Package: libada-asf1.0-aws-dev
 Section: libdevel
 Architecture: any
 Depends: libada-asf1.0 (= ${binary:Version}), libada-asf1.0-dev, libaws2.10.2-dev, libada-util1.7-dev, libada-el1.5-dev,
@@ -50,7 +50,7 @@ Description: Ada Server Faces for web applications (Ada Web Server support devel
  The package contains the Ada development files to develop application
  using the libada-security library.
 
-Package: libada-asfunit1.0-dev
+Package: libada-asf1.0-unit-dev
 Section: libdevel
 Architecture: any
 Depends: libada-asf1.0 (= ${binary:Version}), libada-asf1.0-dev, libada-util1.7-dev, libada-el1.5-dev,

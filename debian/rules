@@ -26,8 +26,8 @@ package=libada-asf-dev
 	dh $@ 
 
 .PHONY: binary-arch build-arch
-.PHONY: libada-asf$(aliversion)-dev libada-asf$(soversion) libada-asfunit$(aliversion)-dev
-.PHONY: libada-asf-aws$(aliversion)-dev libada-asf-aws$(soversion) 
+.PHONY: libada-asf$(aliversion)-dev libada-asf$(soversion) libada-asf$(aliversion)-unit-dev
+.PHONY: libada-asf$(aliversion)-aws-dev libada-asf$(soversion)-aws
 
 binary-arch: build-arch libada-asf$(aliversion)-dev libada-asf$(soversion)
 	: # Common to all architecture-dependent packages
@@ -40,18 +40,18 @@ binary-arch: build-arch libada-asf$(aliversion)-dev libada-asf$(soversion)
 	dh_makeshlibs -a
 	dh_installdeb -a
 	dh_shlibdeps -a -Llibada-asf$(soversion) -ldebian/libada-asf$(soversion)/usr/lib
-	dh_shlibdeps -a -Llibada-asf-aws$(soversion) -ldebian/libada-asf-aws$(soversion)/usr/lib
+	dh_shlibdeps -a -Llibada-asf$(soversion)-aws -ldebian/libada-asf-aws$(soversion)/usr/lib
 	dh_gencontrol -a
 	dh_md5sums -a
 	dh_builddeb -a
 
-libada-asf$(aliversion):
+libada$(aliversion)-asf:
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/libada-asf.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
-libada-asf-aws$(aliversion):
+libada-asf$(aliversion)-aws:
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/libada-asf-aws.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
@@ -91,7 +91,7 @@ libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so
 	dh_strip -p$@ -X.a
 
-libada-asf-aws$(aliversion)-dev:
+libada-asf$(aliversion)-aws-dev:
 	: # The development package
 	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/asf_aws.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf_aws.gpr
@@ -132,7 +132,7 @@ libada-asf-aws$(aliversion)-dev:
 	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf-aws.so
 	dh_strip -p$@ -X.a
 
-libada-asfunit$(aliversion)-dev:
+libada-asf$(aliversion)-unit-dev:
 	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/asfunit.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asfunit.gpr
 	dh_installdirs -p$@ \
@@ -156,10 +156,10 @@ override_dh_auto_build:
 	dh_auto_build
 
 override_dh_auto_install: libada-asf$(aliversion) \
-						  libada-asf-aws$(aliversion) \
+						  libada-asf$(aliversion)-aws \
 						  libada-asf$(aliversion)-dev \
-						  libada-asf-aws$(aliversion)-dev \
-						  libada-asfunit$(aliversion)-dev
+						  libada-asf$(aliversion)-aws-dev \
+						  libada-asf$(aliversion)-unit-dev
 
 override_dh_compress:
 	dh_compress -X.ads -X.adb -X.xhtml -X.xml -XMakefile

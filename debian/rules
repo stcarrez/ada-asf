@@ -40,12 +40,12 @@ binary-arch: build-arch libada-asf$(aliversion)-dev libada-asf$(soversion)
 	dh_makeshlibs -a
 	dh_installdeb -a
 	dh_shlibdeps -a -Llibada-asf$(soversion) -ldebian/libada-asf$(soversion)/usr/lib
-	dh_shlibdeps -a -Llibada-asf$(soversion)-aws -ldebian/libada-asf-aws$(soversion)/usr/lib
+	dh_shlibdeps -a -Llibada-asf$(soversion)-aws -ldebian/libada-asf$(soversion)-aws/usr/lib
 	dh_gencontrol -a
 	dh_md5sums -a
 	dh_builddeb -a
 
-libada$(aliversion)-asf:
+libada-asf$(aliversion):
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)

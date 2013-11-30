@@ -46,7 +46,7 @@ Section: libdevel
 Architecture: any
 Depends: libada-asf1.0 (= ${binary:Version}), libada-asf1.0-dev, libaws2.10.2-dev, libada-util1.7-dev, libada-el1.5-dev,
  libada-security1.1-dev, ${misc:Depends}
-Description: Ada Server Faces for web applications (Ada Web Server support development files)
+Description: Ada Server Faces for web applications (Ada Web Server development files)
  The package contains the Ada development files to develop application
  using the libada-security library.
 

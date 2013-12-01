@@ -573,6 +573,7 @@ SECURITY_DIR
 EL_DIR
 UTIL_DIR
 BUILDS_SHARED
+NR_CPUS
 ASF_LIBDIR
 EXEC_PREFIX
 ASF_MICRO_VERSION
@@ -2896,6 +2897,13 @@ EXEC_PREFIX="$prefix"
 
 
 ASF_LIBDIR="lib"
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking number of processors" >&5
+$as_echo_n "checking number of processors... " >&6; }
+NR_CPUS=`getconf _NPROCESSORS_CONF 2>/dev/null || getconf NPROCESSORS_CONF 2>/dev/null || echo 1`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $NR_CPUS" >&5
+$as_echo "$NR_CPUS" >&6; }
 
 
 ##########################################

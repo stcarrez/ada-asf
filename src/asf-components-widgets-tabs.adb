@@ -123,4 +123,62 @@ package body ASF.Components.Widgets.Tabs is
       end if;
    end Encode_End;
 
+   --  ------------------------------
+   --  Render the accordion list and prepare to render the tab contents.
+   --  ------------------------------
+   overriding
+   procedure Encode_Children (UI      : in UIAccordion;
+                              Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
+
+      procedure Render_Tab (T : in Components.Base.UIComponent_Access);
+
+      Writer  : constant Contexts.Writer.Response_Writer_Access := Context.Get_Response_Writer;
+
+      procedure Render_Tab (T : in Components.Base.UIComponent_Access) is
+      begin
+         if T.all in UITab'Class then
+            Writer.Start_Element ("h3");
+            Writer.Write_Text (T.Get_Attribute ("title", Context));
+            Writer.End_Element ("h3");
+
+            T.Encode_All (Context);
+         end if;
+      end Render_Tab;
+
+      procedure Render_Tabs is
+        new ASF.Components.Base.Iterate (Process => Render_Tab);
+   begin
+      if UI.Is_Rendered (Context) then
+         declare
+            use Util.Beans.Objects;
+
+            Id       : constant Unbounded_String := UI.Get_Client_Id;
+            Effect   : constant Object := UI.Get_Attribute (Context, Name => EFFECT_ATTR_NAME);
+            Collapse : constant Boolean := UI.Get_Attribute (COLLAPSIBLE_ATTR_NAME, Context);
+         begin
+            Writer.Start_Element ("div");
+            Writer.Write_Attribute ("id", Id);
+            Render_Tabs (UI);
+            Writer.End_Element ("div");
+            Writer.Queue_Script ("$(""#");
+            Writer.Queue_Script (Id);
+            Writer.Queue_Script (""").accordion({");
+            if Collapse then
+               Writer.Queue_Script ("collapsible: true");
+            end if;
+            if not Is_Empty (Effect) then
+               if Collapse then
+                  Writer.Queue_Script (",");
+               end if;
+               Writer.Queue_Script ("show:{effect:""");
+               Writer.Queue_Script (Effect);
+               Writer.Queue_Script (""",duration:");
+               Writer.Queue_Script (UI.Get_Attribute (DURATION_ATTR_NAME, Context, "500"));
+               Writer.Queue_Script ("}");
+            end if;
+            Writer.Queue_Script ("});");
+         end;
+      end if;
+   end Encode_Children;
+
 end ASF.Components.Widgets.Tabs;

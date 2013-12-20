@@ -27,6 +27,7 @@ package body ASF.Components.Widgets.Factory is
 
    use ASF.Components.Base;
 
+   function Create_Accordion return UIComponent_Access;
    function Create_Input return UIComponent_Access;
    function Create_Input_Date return UIComponent_Access;
    function Create_Complete return UIComponent_Access;
@@ -35,6 +36,14 @@ package body ASF.Components.Widgets.Factory is
    function Create_Panel return UIComponent_Access;
    function Create_TabView return UIComponent_Access;
    function Create_Tab return UIComponent_Access;
+
+   --  ------------------------------
+   --  Create a UIAccordion component
+   --  ------------------------------
+   function Create_Accordion return UIComponent_Access is
+   begin
+      return new ASF.Components.Widgets.Tabs.UIAccordion;
+   end Create_Accordion;
 
    --  ------------------------------
    --  Create a UIInput component
@@ -103,6 +112,7 @@ package body ASF.Components.Widgets.Factory is
    use ASF.Views.Nodes;
 
    URI              : aliased constant String := "http://code.google.com/p/ada-asf/widget";
+   ACCORDION_TAG    : aliased constant String := "accordion";
    AUTOCOMPLETE_TAG : aliased constant String := "autocomplete";
    INPUT_DATE_TAG   : aliased constant String := "inputDate";
    INPUT_TEXT_TAG   : aliased constant String := "inputText";
@@ -113,28 +123,31 @@ package body ASF.Components.Widgets.Factory is
    TAB_VIEW_TAG     : aliased constant String := "tabView";
 
    Widget_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => AUTOCOMPLETE_TAG'Access,
+     := (1 => (Name      => ACCORDION_TAG'Access,
+               Component => Create_Accordion'Access,
+               Tag       => Create_Component_Node'Access),
+         2 => (Name      => AUTOCOMPLETE_TAG'Access,
                Component => Create_Complete'Access,
                Tag       => Create_Component_Node'Access),
-         2 => (Name      => INPUT_DATE_TAG'Access,
+         3 => (Name      => INPUT_DATE_TAG'Access,
                Component => Create_Input_Date'Access,
                Tag       => Create_Component_Node'Access),
-         3 => (Name      => INPUT_TEXT_TAG'Access,
+         4 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input'Access,
                Tag       => Create_Component_Node'Access),
-         4 => (Name      => GRAVATAR_TAG'Access,
+         5 => (Name      => GRAVATAR_TAG'Access,
                Component => Create_Gravatar'Access,
                Tag       => Create_Component_Node'Access),
-         5 => (Name      => LIKE_TAG'Access,
+         6 => (Name      => LIKE_TAG'Access,
                Component => Create_Like'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => PANEL_TAG'Access,
+         7 => (Name      => PANEL_TAG'Access,
                Component => Create_Panel'Access,
                Tag       => Create_Component_Node'Access),
-         7 => (Name      => TAB_TAG'Access,
+         8 => (Name      => TAB_TAG'Access,
                Component => Create_Tab'Access,
                Tag       => Create_Component_Node'Access),
-         8 => (Name      => TAB_VIEW_TAG'Access,
+         9 => (Name      => TAB_VIEW_TAG'Access,
                Component => Create_TabView'Access,
                Tag       => Create_Component_Node'Access)
         );

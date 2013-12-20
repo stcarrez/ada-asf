@@ -8,6 +8,7 @@ Version 1.0     -
   - New component <w:like> to render a Facebook, Twitter or Google+ like button
   - New component <w:panel> to provide collapsible div panels
   - New components <w:tabView> and <w:tab> for tabs display
+  - New component <w:accordion> to display accordion tabs
   - Add support for JSF <f:facet>
   - Support for the creation of Debian packages
 

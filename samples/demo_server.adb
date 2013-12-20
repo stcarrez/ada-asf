@@ -75,7 +75,6 @@ begin
       Log.Error ("SSL is not supported by AWS.");
       Log.Error ("SSL is required for the OpenID connector to connect to OpenID providers.");
       Log.Error ("Please, rebuild AWS with SSL support.");
-      return;
    end if;
    C.Set (ASF.Applications.VIEW_EXT, ".html");
    C.Set (ASF.Applications.VIEW_DIR, "samples/web");

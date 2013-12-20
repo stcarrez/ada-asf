@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  components-widgets-tabs -- Tab views and tabs
+--  components-widgets-tabs -- Tab views, tabs and accordion
 --  Copyright (C) 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -55,5 +55,16 @@ package ASF.Components.Widgets.Tabs is
    overriding
    procedure Encode_End (UI      : in UITabView;
                          Context : in out ASF.Contexts.Faces.Faces_Context'Class);
+
+   --  ------------------------------
+   --  UIAccordion
+   --  ------------------------------
+   --  The <b>UIAccordion</b> component displays a tab selection panel.
+   type UIAccordion is new ASF.Components.Html.UIHtmlComponent with null record;
+
+   --  Render the accordion list and prepare to render the tab contents.
+   overriding
+   procedure Encode_Children (UI      : in UIAccordion;
+                              Context : in out ASF.Contexts.Faces.Faces_Context'Class);
 
 end ASF.Components.Widgets.Tabs;

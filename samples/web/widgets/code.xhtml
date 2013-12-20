@@ -20,7 +20,16 @@
           xmlns:util="http://code.google.com/p/ada-asf/util">
     <!-- For security reasons, check that the code parameter matches what is allowed  -->
 
-    <c:when test="#{empty param['code'] or param['code'] eq 'autocomplete'}">
+    <c:when test="#{empty param['code'] or param['code'] eq 'accordion'}">
+        <util:script>
+            Sample_Highlight('accordion', 'w:accordion');
+            prettyPrint();
+        </util:script>
+        <code class="prettyprint lang-accordion linenums:1"><util:file src="/widgets/accordion.xhtml" escape="true"/>
+        </code>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'autocomplete'}">
         <util:script>
             Sample_Highlight('autocomplete', 'w:autocomplete');
             prettyPrint();

@@ -21,7 +21,29 @@
           xmlns:util="http://code.google.com/p/ada-asf/util">
     <!-- For security reasons, check that the code parameter matches what is allowed  -->
 
-    <c:when test="#{empty param['code'] or param['code'] eq 'autocomplete'}">
+    <c:when test="#{empty param['code'] or param['code'] eq 'accordion'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="w:accordion"/>
+            <ui:define name="description">
+                The <b>w:accordion</b> component provides a vertical tab component.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>rendered</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
+                        or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>collapsible</b>
+                    <i>Boolean</i>
+                    <span>This flag indicates whether the accordion must close all the sections at once.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'autocomplete'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="w:autocomplete"/>
             <ui:define name="description">

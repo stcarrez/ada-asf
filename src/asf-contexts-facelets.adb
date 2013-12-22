@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  contexts-facelets -- Contexts for facelets
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -101,7 +101,7 @@ package body ASF.Contexts.Facelets is
    procedure Set_Variable (Context : in out Facelet_Context;
                            Name    : in String;
                            Value   : in EL.Expressions.Expression) is
-      N : Unbounded_String := To_Unbounded_String (Name);
+      N : constant Unbounded_String := To_Unbounded_String (Name);
    begin
       Set_Variable (Context, N, Value);
    end Set_Variable;

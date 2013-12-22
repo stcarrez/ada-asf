@@ -187,7 +187,11 @@ package body ASF.Components.Widgets.Inputs is
                  := ASF.Models.Selects.Select_Item_List'Class (List.all)'Access;
             begin
                for I in 1 .. Count loop
-                  Render_Item (Ada.Characters.Conversions.To_String (S.Get_Select_Item (I).Get_Label));
+                  declare
+                     Value : constant ASF.Models.Selects.Select_Item := S.Get_Select_Item (I);
+                  begin
+                     Render_Item (Ada.Characters.Conversions.To_String (Value.Get_Label));
+                  end;
                end loop;
             end;
          else

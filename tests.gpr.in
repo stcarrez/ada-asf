@@ -3,7 +3,7 @@ with "@UTIL_DIR@util";
 with "@UTIL_DIR@util_unit";
 with "@EL_DIR@el";
 with "asf";
-with "asfunit";
+with "asf_unit";
 
 project Tests is
 

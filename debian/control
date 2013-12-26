@@ -2,7 +2,7 @@ Source: libada-asf
 Priority: extra
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, gnat, gnat-4.6,
- libada-util1.7-dev, libada-util1.7-test, libada-el1.5-dev, libada-security1.1-dev
+ libada-util1.7-dev, libada-util1.7-unit-dev, libada-el1.5-dev, libada-security1.1-dev
 Standards-Version: 3.9.2
 Section: libs
 Homepage: http://code.google.com/p/ada-asf/
@@ -54,7 +54,7 @@ Package: libada-asf1.0-unit-dev
 Section: libdevel
 Architecture: any
 Depends: libada-asf1.0 (= ${binary:Version}), libada-asf1.0-dev, libada-util1.7-dev, libada-el1.5-dev,
- libada-security1.1-dev, libada-util1.7-unit, ${misc:Depends}
+ libada-security1.1-dev, libada-util1.7-unit-dev, ${misc:Depends}
 Description: Ada Server Faces unit test framework (Development files)
  The package provides an Ada unit test framework to help in testing
  an Ada web application.

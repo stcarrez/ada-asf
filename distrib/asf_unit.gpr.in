@@ -1,0 +1,17 @@
+with "util";
+with "el";
+with "asf_core";
+with "util_unit";
+
+project Asf_Unit is
+   Version := "@ASF_VERSION@";
+
+   for Library_Name use "ada_asf_unit";
+   for Library_Dir use "INSTALL/lib";
+   for Library_Kind use "LIBRARY_TYPE";
+
+   for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-asf-unit");
+   for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-asf-unit/";
+   for Externally_Built use "true";
+end Asf_Unit;
+

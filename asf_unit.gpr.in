@@ -1,19 +1,17 @@
 with "config";
 with "@UTIL_DIR@util";
-with "@UTIL_DIR@testutil";
+with "@UTIL_DIR@util_unit";
 with "@EL_DIR@el";
-@WITH_SERVER@
 with "asf_core";
-with "asf";
 
-project AsfUnit is
+project Asf_Unit is
 
    Library_Dir := "lib";
    Library_Type : Config.Library_Type_Type := external ("LIBRARY_TYPE", "static");
 
    for Source_Dirs use ("asfunit");
 
-   for Library_Name use "ada-asfunit";
+   for Library_Name use "ada_asfunit";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Asf_Core.Version;
 
@@ -26,4 +24,4 @@ project AsfUnit is
    package Compiler renames Config.Compiler;
    package Ide      renames Config.Ide;
 
-end AsfUnit;
+end Asf_Unit;

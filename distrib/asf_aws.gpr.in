@@ -8,7 +8,7 @@ with "asf_core";
 project Asf_Aws is
    Version := Asf_Core.Version;
 
-   for Library_Name use "ada-asf-aws";
+   for Library_Name use "ada_asf_aws";
    for Library_Dir use "INSTALL/lib";
    for Library_Kind use "LIBRARY_TYPE";
 

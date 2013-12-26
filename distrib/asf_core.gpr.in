@@ -6,7 +6,7 @@ with "security";
 project Asf_Core is
    Version := "@ASF_VERSION@";
 
-   for Library_Name use "ada-asf";
+   for Library_Name use "ada_asf";
    for Library_Dir use "INSTALL/lib";
    for Library_Kind use "LIBRARY_TYPE";
 

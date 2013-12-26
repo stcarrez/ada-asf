@@ -3110,7 +3110,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile asf.gpr asf_core.gpr asf_aws.gpr tests.gpr samples.gpr asfunit.gpr distrib/asf.gpr distrib/asfunit.gpr distrib/asf_core.gpr distrib/asf_aws.gpr"
+ac_config_files="$ac_config_files Makefile asf.gpr asf_core.gpr asf_aws.gpr tests.gpr samples.gpr asf_unit.gpr distrib/asf.gpr distrib/asf_unit.gpr distrib/asf_core.gpr distrib/asf_aws.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -3836,9 +3836,9 @@ do
     "asf_aws.gpr") CONFIG_FILES="$CONFIG_FILES asf_aws.gpr" ;;
     "tests.gpr") CONFIG_FILES="$CONFIG_FILES tests.gpr" ;;
     "samples.gpr") CONFIG_FILES="$CONFIG_FILES samples.gpr" ;;
-    "asfunit.gpr") CONFIG_FILES="$CONFIG_FILES asfunit.gpr" ;;
+    "asf_unit.gpr") CONFIG_FILES="$CONFIG_FILES asf_unit.gpr" ;;
     "distrib/asf.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asf.gpr" ;;
-    "distrib/asfunit.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asfunit.gpr" ;;
+    "distrib/asf_unit.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asf_unit.gpr" ;;
     "distrib/asf_core.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asf_core.gpr" ;;
     "distrib/asf_aws.gpr") CONFIG_FILES="$CONFIG_FILES distrib/asf_aws.gpr" ;;
 

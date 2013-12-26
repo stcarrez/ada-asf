@@ -54,6 +54,9 @@ bindir=${prefix}/bin
 libdir=${prefix}/lib
 alidir=${libdir}/ada/adalib/
 
+libname=libada_asf
+libprefix=$(libname)_
+
 CPUS := @NR_CPUS@
 MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
 
@@ -190,21 +193,21 @@ install_lib:
 	test T${HAVE_AWS} = Tno || \
 		 ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asf-aws
 ifeq ($(LIBRARY_TYPE),static)
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/libada-asf.a ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asf-unit.a ${libdir}/
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/$(libname).a ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/$(libprefix)unit.a ${libdir}/
 	test T${HAVE_AWS} = Tno || \
-		 ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/libada-asf-aws.a ${libdir}/
+		 ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/$(libprefix)aws.a ${libdir}/
 else
 	test T${HAVE_AWS} = Tno || \
-	   ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/libada-asf-aws.$(LIBVER) ${libdir}/
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/libada-asf.$(LIBVER) ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asf-unit.$(LIBVER) ${libdir}/
+	   ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/$(libprefix)aws.$(LIBVER) ${libdir}/
+	${CP} -p lib/asf/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/$(libprefix)unit.$(LIBVER) ${libdir}/
 	cd ${libdir} && \
-	rm -f libada-asf.$(LIBEXT) libada-asf-aws.$(LIBEXT) libada-asf-unit.$(LIBEXT) && \
-	${LN} libada-asf.$(LIBVER) libada-asf.$(LIBEXT) && \
-	${LN} libada-asf-unit.$(LIBVER) libada-asf-unit.$(LIBEXT) && \
+	rm -f $(libname).$(LIBEXT) $(libprefix)aws.$(LIBEXT) $(libprefix)unit.$(LIBEXT) && \
+	${LN} $(libname).$(LIBVER) $(libname).$(LIBEXT) && \
+	${LN} $(libprefix)unit.$(LIBVER) $(libprefix)unit.$(LIBEXT) && \
 	(test T${HAVE_AWS} = Tno || \
-	   ${LN} libada-asf-aws.$(LIBVER) libada-asf-aws.$(LIBEXT))
+	   ${LN} $(libprefix)aws.$(LIBVER) $(libprefix)aws.$(LIBEXT))
 endif
 	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd ${dynamodir}/asf/web && tar xf -)
 	${CP} bundles/*.properties ${dynamodir}/asf/bundles/
@@ -217,11 +220,11 @@ uninstall:
 	rm -rf ${includedir}/ada-asf-aws
 	rm -rf ${includedir}/ada-asf-unit
 	rm -rf ${alidir}/ada-asf ${alidir}/ada-asf-aws ${alidir}/ada-asf-unit
-	rm -f ${libdir}/libada-asf.a
-	rm -f ${libdir}/libada-asf-aws.a
-	rm -f ${libdir}/libada-asf-unit.a
-	rm -f ${libdir}/libada-asf.$(LIBEXT)
-	rm -f ${libdir}/libada-asf-unit.$(LIBEXT)
+	rm -f ${libdir}/$(libname).a
+	rm -f ${libdir}/$(libprefix)aws.a
+	rm -f ${libdir}/$(libprefix)unit.a
+	rm -f ${libdir}/$(libname).$(LIBEXT)
+	rm -f ${libdir}/$(libprefix)unit.$(LIBEXT)
 	rm -f ${projectdir}/asf.gpr
 	rm -f ${projectdir}/asf_unit.gpr
 	rm -f ${projectdir}/asf_core.gpr

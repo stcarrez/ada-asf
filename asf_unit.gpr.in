@@ -11,7 +11,7 @@ project Asf_Unit is
 
    for Source_Dirs use ("asfunit");
 
-   for Library_Name use "ada_asfunit";
+   for Library_Name use "ada_asf_unit";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Asf_Core.Version;
 

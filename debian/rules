@@ -21,15 +21,18 @@ DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 # Force static for now, see configure note below
 LIBRARY_TYPE=dynamic
 package=libada-asf-dev
+pkgname=libada-asf
+libname=libada_asf
+libprefix=$(libname)_
 
 %:
 	dh $@ 
 
 .PHONY: binary-arch build-arch
-.PHONY: libada-asf$(aliversion)-dev libada-asf$(soversion) libada-asf$(aliversion)-unit-dev
-.PHONY: libada-asf$(aliversion)-aws-dev libada-asf$(soversion)-aws
+.PHONY: $(pkgname)$(aliversion)-dev $(pkgname)$(soversion) $(pkgname)$(aliversion)-unit-dev
+.PHONY: $(pkgname)$(aliversion)-aws-dev $(pkgname)$(soversion)-aws
 
-binary-arch: build-arch libada-asf$(aliversion)-dev libada-asf$(soversion)
+binary-arch: build-arch $(pkgname)$(aliversion)-dev $(pkgname)$(soversion)
 	: # Common to all architecture-dependent packages
 	echo "ALI V=$(aliversion)"
 	dh_installchangelogs -a
@@ -39,22 +42,22 @@ binary-arch: build-arch libada-asf$(aliversion)-dev libada-asf$(soversion)
 	dh_fixperms -a
 	dh_makeshlibs -a
 	dh_installdeb -a
-	dh_shlibdeps -a -Llibada-asf$(soversion) -ldebian/libada-asf$(soversion)/usr/lib
-	dh_shlibdeps -a -Llibada-asf$(soversion)-aws -ldebian/libada-asf$(soversion)-aws/usr/lib
+	dh_shlibdeps -a -L$(libname)$(soversion) -ldebian/$(libname)$(soversion)/usr/lib
+	dh_shlibdeps -a -L$(libname)$(soversion)-aws -ldebian/$(libname)$(soversion)-aws/usr/lib
 	dh_gencontrol -a
 	dh_md5sums -a
 	dh_builddeb -a
 
-libada-asf$(aliversion):
+$(pkgname)$(aliversion):
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/libada-asf.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/$(libname).so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
-libada-asf$(aliversion)-aws:
+$(pkgname)$(aliversion)-aws:
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/libada-asf-aws.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/$(libprefix)aws.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
 WEB_DIRS := samples/web samples/web/WEB-INF samples/web/WEB-INF/layouts \
     samples/web/css samples/web/images samples/web/facelet samples/web/js \
@@ -62,7 +65,7 @@ WEB_DIRS := samples/web samples/web/WEB-INF samples/web/WEB-INF/layouts \
     samples/web/widgets samples/web/util samples/web/jstl samples/web/jsf \
     samples/web/jsf/core samples/web/jsf/html
 
-libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
+$(pkgname)$(aliversion)-dev:	$(pkgname)$(aliversion)
 	: # The development package
 	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/asf.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf.gpr
@@ -73,7 +76,7 @@ libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 		usr/share/ada/adainclude/ada-asf \
 		usr/lib/ada/adalib/ada-asf \
 		usr/share/dynamo/asf
-	dh_install -p$@ usr/lib/libada-asf.a /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/$(libname).a /usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/ada/adalib/ada-asf/*.ali /usr/lib/ada/adalib/ada-asf
 	dh_install -p$@ usr/share/ada/adainclude/asf.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/asf_core.gpr /usr/share/ada/adainclude
@@ -87,11 +90,11 @@ libada-asf$(aliversion)-dev:	libada-asf$(aliversion)
 		dir=`dirname $$i`; \
 		dh_install -p$@ usr/share/dynamo/$$i usr/share/dynamo/$$dir ; \
 	done
-	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so.$(soversion) \
-	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf.so
+	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/$(libname).so.$(soversion) \
+	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libname).so
 	dh_strip -p$@ -X.a
 
-libada-asf$(aliversion)-aws-dev:
+$(pkgname)$(aliversion)-aws-dev:
 	: # The development package
 	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/asf_aws.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf_aws.gpr
@@ -99,7 +102,7 @@ libada-asf$(aliversion)-aws-dev:
 		usr/lib/$(DEB_HOST_MULTIARCH) \
 		usr/share/ada/adainclude/ada-asf-aws \
 		usr/lib/ada/adalib/ada-asf-aws
-	dh_install -p$@ usr/lib/libada-asf-aws.a /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/$(libprefix)aws.a /usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/ada/adalib/ada-asf-aws/*.ali /usr/lib/ada/adalib/ada-asf-aws
 	dh_install -p$@ usr/share/ada/adainclude/asf_aws.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/ada-asf-aws/*.ad[bs] /usr/share/ada/adainclude/ada-asf-aws
@@ -128,21 +131,24 @@ libada-asf$(aliversion)-aws-dev:
 		done; \
 		echo "Done for $$i"; \
     done
-	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf-aws.so.$(soversion) \
-	             usr/lib/$(DEB_HOST_MULTIARCH)/libada-asf-aws.so
+	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)aws.so.$(soversion) \
+	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)aws.so
 	dh_strip -p$@ -X.a
 
-libada-asf$(aliversion)-unit-dev:
+$(pkgname)$(aliversion)-unit-dev:
 	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
-		< $(CURDIR)/distrib/asfunit.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asfunit.gpr
+		< $(CURDIR)/distrib/asf_unit.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf_unit.gpr
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH) \
-		usr/share/ada/adainclude/ada-asfunit \
-		usr/lib/ada/adalib/ada-asfunit
-	dh_install -p$@ usr/lib/libada-asfunit.a /usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/ada/adalib/ada-asfunit/*.ali /usr/lib/ada/adalib/ada-asfunit
-	dh_install -p$@ usr/share/ada/adainclude/ada-asfunit/*.ad[bs] /usr/share/ada/adainclude/ada-asfunit
-	dh_install -p$@ usr/share/ada/adainclude/asfunit.gpr /usr/share/ada/adainclude
+		usr/share/ada/adainclude/ada-asf-unit \
+		usr/lib/ada/adalib/ada-asf-unit
+	dh_install -p$@ usr/lib/$(libprefix)unit.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)unit.so.$(soversion) \
+	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)unit.so
+	dh_install -p$@ usr/lib/$(libprefix)unit.a /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/ada/adalib/ada-asf-unit/*.ali /usr/lib/ada/adalib/ada-asf-unit
+	dh_install -p$@ usr/share/ada/adainclude/ada-asf-unit/*.ad[bs] /usr/share/ada/adainclude/ada-asf-unit
+	dh_install -p$@ usr/share/ada/adainclude/asf_unit.gpr /usr/share/ada/adainclude
 
 # SCz 2013-10-19: the compilation of shared library fails when linking
 # the asf_harness unit test with libaws.so. Some 'inflate' and 'crc32' symbols
@@ -155,17 +161,17 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	dh_auto_build
 
-override_dh_auto_install: libada-asf$(aliversion) \
-						  libada-asf$(aliversion)-aws \
-						  libada-asf$(aliversion)-dev \
-						  libada-asf$(aliversion)-aws-dev \
-						  libada-asf$(aliversion)-unit-dev
+override_dh_auto_install: $(pkgname)$(aliversion) \
+						  $(pkgname)$(aliversion)-aws \
+						  $(pkgname)$(aliversion)-dev \
+						  $(pkgname)$(aliversion)-aws-dev \
+						  $(pkgname)$(aliversion)-unit-dev
 
 override_dh_compress:
 	dh_compress -X.ads -X.adb -X.xhtml -X.xml -XMakefile
 
 override_dh_strip:
-	dh_strip --dbg-package=libada-asf$(aliversion)-dbg
+	dh_strip --dbg-package=$(pkgname)$(aliversion)-dbg
 
 override_dh_auto_clean:
 	dh_auto_clean

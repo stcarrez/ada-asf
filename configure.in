@@ -226,6 +226,6 @@ AC_SUBST(WITH_SERVER)
 AC_SUBST(WITH_ASF_AWS)
 
 AC_OUTPUT(
-Makefile asf.gpr asf_core.gpr asf_aws.gpr tests.gpr samples.gpr asfunit.gpr distrib/asf.gpr distrib/asfunit.gpr distrib/asf_core.gpr distrib/asf_aws.gpr
+Makefile asf.gpr asf_core.gpr asf_aws.gpr tests.gpr samples.gpr asf_unit.gpr distrib/asf.gpr distrib/asf_unit.gpr distrib/asf_core.gpr distrib/asf_aws.gpr
 )
 

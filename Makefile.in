@@ -121,7 +121,7 @@ rebuild: clean build
 # Files to package in source distribution
 DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
 configure.in Makefile.in install-sh distrib test.properties ChangeLog \
-asf.gpr.in asf_core.gpr.in asf_aws.gpr.in asfunit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
+asf.gpr.in asf_core.gpr.in asf_aws.gpr.in asf_unit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src asfunit samples regtests web bundles samples.properties dynamo.xml \
 bin obj lib debian
 
@@ -161,20 +161,20 @@ install_shared:
 	$(MAKE) LIBRARY_TYPE=relocatable install_lib
 
 install_lib:
-	-rm -rf ${includedir}/ada-asf ${includedir}/ada-asf-aws ${includedir}/ada-asfunit
-	-rm -rf ${alidir}/ada-asf ${alidir}/ada-asf-aws ${alidir}/ada-asfunit
+	-rm -rf ${includedir}/ada-asf ${includedir}/ada-asf-aws ${includedir}/ada-asf-unit
+	-rm -rf ${alidir}/ada-asf ${alidir}/ada-asf-aws ${alidir}/ada-asf-unit
 	$(MKDIR) -p ${includedir}/ada-asf
 	$(MKDIR) -p ${includedir}/ada-asf-aws
-	$(MKDIR) -p ${includedir}/ada-asfunit
+	$(MKDIR) -p ${includedir}/ada-asf-unit
 	$(MKDIR) -p ${projectdir}/
 	${MKDIR} -p ${alidir}/ada-asf
 	test T${HAVE_AWS} = Tno || \
 		 ${MKDIR} -p ${alidir}/ada-asf-aws
-	${MKDIR} -p ${alidir}/ada-asfunit
+	${MKDIR} -p ${alidir}/ada-asf-unit
 	${MKDIR} -p ${dynamodir}/asf/bundles
 	${MKDIR} -p ${dynamodir}/asf/web/js
 	${MKDIR} -p ${dynamodir}/asf/web/js/jquery-ui
-	${CP} -p asfunit/*.ad[bs] ${includedir}/ada-asfunit
+	${CP} -p asfunit/*.ad[bs] ${includedir}/ada-asf-unit
 	${CP} -p src/*.ad[bs] ${includedir}/ada-asf
 	test T${HAVE_AWS} = Tno || \
 		 ${CP} -p src/aws/*.ad[bs] ${includedir}/ada-asf-aws
@@ -184,25 +184,25 @@ install_lib:
 		 sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 			 < distrib/asf_aws.gpr > ${projectdir}/asf_aws.gpr
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
-		< distrib/asfunit.gpr > ${projectdir}/asfunit.gpr
+		< distrib/asf_unit.gpr > ${projectdir}/asf_unit.gpr
 	${CP} -p lib/asf/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asf
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asfunit
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asf-unit
 	test T${HAVE_AWS} = Tno || \
 		 ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asf-aws
 ifeq ($(LIBRARY_TYPE),static)
 	${CP} -p lib/asf/$(LIBRARY_TYPE)/libada-asf.a ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asfunit.a ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asf-unit.a ${libdir}/
 	test T${HAVE_AWS} = Tno || \
 		 ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/libada-asf-aws.a ${libdir}/
 else
 	test T${HAVE_AWS} = Tno || \
 	   ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/libada-asf-aws.$(LIBVER) ${libdir}/
 	${CP} -p lib/asf/$(LIBRARY_TYPE)/libada-asf.$(LIBVER) ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asfunit.$(LIBVER) ${libdir}/
+	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/libada-asf-unit.$(LIBVER) ${libdir}/
 	cd ${libdir} && \
-	rm -f libada-asf.$(LIBEXT) libada-asf-aws.$(LIBEXT) libada-asfunit.$(LIBEXT) && \
+	rm -f libada-asf.$(LIBEXT) libada-asf-aws.$(LIBEXT) libada-asf-unit.$(LIBEXT) && \
 	${LN} libada-asf.$(LIBVER) libada-asf.$(LIBEXT) && \
-	${LN} libada-asfunit.$(LIBVER) libada-asfunit.$(LIBEXT) && \
+	${LN} libada-asf-unit.$(LIBVER) libada-asf-unit.$(LIBEXT) && \
 	(test T${HAVE_AWS} = Tno || \
 	   ${LN} libada-asf-aws.$(LIBVER) libada-asf-aws.$(LIBEXT))
 endif
@@ -215,15 +215,15 @@ endif
 uninstall:
 	rm -rf ${includedir}/ada-asf
 	rm -rf ${includedir}/ada-asf-aws
-	rm -rf ${includedir}/ada-asfunit
-	rm -rf ${alidir}/ada-asf ${alidir}/ada-asf-aws ${alidir}/ada-asfunit
+	rm -rf ${includedir}/ada-asf-unit
+	rm -rf ${alidir}/ada-asf ${alidir}/ada-asf-aws ${alidir}/ada-asf-unit
 	rm -f ${libdir}/libada-asf.a
 	rm -f ${libdir}/libada-asf-aws.a
-	rm -f ${libdir}/libada-asfunit.a
+	rm -f ${libdir}/libada-asf-unit.a
 	rm -f ${libdir}/libada-asf.$(LIBEXT)
-	rm -f ${libdir}/libada-asfunit.$(LIBEXT)
+	rm -f ${libdir}/libada-asf-unit.$(LIBEXT)
 	rm -f ${projectdir}/asf.gpr
-	rm -f ${projectdir}/asfunit.gpr
+	rm -f ${projectdir}/asf_unit.gpr
 	rm -f ${projectdir}/asf_core.gpr
 	rm -f ${projectdir}/asf_aws.gpr
 	rm -rf ${awadir}/web

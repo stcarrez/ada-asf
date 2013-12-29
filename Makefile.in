@@ -86,6 +86,7 @@ check test:	build
 	$(GNATMAKE) -p -Ptests
 	DIR=`pwd`; \
 	export LD_LIBRARY_PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$LD_LIBRARY_PATH"; \
+	export PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$PATH"; \
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
 
 regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile
@@ -202,12 +203,14 @@ else
 	   ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/$(libprefix)aws.$(LIBVER) ${libdir}/
 	${CP} -p lib/asf/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
 	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/$(libprefix)unit.$(LIBVER) ${libdir}/
+ifneq (${OS},Windows_NT)
 	cd ${libdir} && \
 	rm -f $(libname).$(LIBEXT) $(libprefix)aws.$(LIBEXT) $(libprefix)unit.$(LIBEXT) && \
 	${LN} $(libname).$(LIBVER) $(libname).$(LIBEXT) && \
 	${LN} $(libprefix)unit.$(LIBVER) $(libprefix)unit.$(LIBEXT) && \
 	(test T${HAVE_AWS} = Tno || \
 	   ${LN} $(libprefix)aws.$(LIBVER) $(libprefix)aws.$(LIBEXT))
+endif
 endif
 	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd ${dynamodir}/asf/web && tar xf -)
 	${CP} bundles/*.properties ${dynamodir}/asf/bundles/

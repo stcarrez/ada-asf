@@ -1,5 +1,5 @@
 with "util";
-with "util_aws";
+with "util_http_aws";
 with "el";
 with "security";
 with "asf_core";

@@ -1,7 +1,6 @@
 with "config";
 with "asf_core";
 with "@UTIL_DIR@util";
-with "@UTIL_DIR@util_http";
 with "@EL_DIR@el";
 with "@SECURITY_DIR@security";
 @WITH_ASF_AWS@
@@ -15,4 +14,5 @@ abstract project Asf is
    type Server_Type is ("none", "aws");
    Server : Server_Type := external ("SERVER", "@ASF_SERVER@");
 
+   for Source_Files use ();
 end Asf;

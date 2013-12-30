@@ -53,7 +53,8 @@ Description: Ada Server Faces for web applications (Ada Web Server development f
 Package: libada-asf1.0-unit-dev
 Section: libdevel
 Architecture: any
-Depends: libada-asf1.0 (= ${binary:Version}), libada-asf1.0-dev, libada-util1.7-dev, libada-el1.5-dev,
+Pre-Depends: multiarch-support
+Depends: ${shlibs:Depends}, libada-asf1.0 (= ${binary:Version}), libada-asf1.0-dev, libada-util1.7-dev, libada-el1.5-dev,
  libada-security1.1-dev, libada-util1.7-unit-dev, ${misc:Depends}
 Description: Ada Server Faces unit test framework (Development files)
  The package provides an Ada unit test framework to help in testing

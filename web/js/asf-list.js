@@ -1,6 +1,6 @@
 /*
  *  asf-list -- List helpers
- *  Copyright (C) 2012, 2013 Stephane Carrez
+ *  Copyright (C) 2012, 2013, 2014 Stephane Carrez
  *  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -158,7 +158,7 @@
             this.currentItem = node;
             $(this.currentItem).addClass(this.options.selectClass);
             if (this.options.selectAction != null) {
-                this.options.selectAction(this, node);
+                return this.options.selectAction(this, node, event);
             }
             return false;
         },
@@ -383,7 +383,7 @@
                         this.enterCreate(event);
                     }
                 } else if (this.options.selectAction != null) {
-                    this.selectAction(node, event);
+                    return this.selectAction(node, event);
                 } else {
                     return true;
                 }
@@ -399,7 +399,8 @@
                 }
 
             }
-            event.stopPropagation();
+            // event.stopPropagation();
+            return false;
         },
         blur: function(event) {
             if (this.currentEdit) {

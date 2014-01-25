@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-selects -- ASF HTML UISelectOne and UISelectMany components
---  Copyright (C) 2011, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,13 @@ package ASF.Components.Html.Selects is
    procedure Render_Input (UI       : in UISelectBoolean;
                            Context  : in out Faces_Context'Class;
                            Write_Id : in Boolean := True);
+
+   --  Convert the string into a value.  If a converter is specified on the component,
+   --  use it to convert the value.  Make sure the result is a boolean.
+   overriding
+   function Convert_Value (UI      : in UISelectBoolean;
+                           Value   : in String;
+                           Context : in Faces_Context'Class) return EL.Objects.Object;
 
    --  ------------------------------
    --  UISelectItem Component

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-selects -- ASF HTML UISelectOne and UISelectMany components
---  Copyright (C) 2011, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,6 +53,35 @@ package body ASF.Components.Html.Selects is
       end if;
       Writer.End_Element ("input");
    end Render_Input;
+
+   --  ------------------------------
+   --  Convert the string into a value.  If a converter is specified on the component,
+   --  use it to convert the value.  Make sure the result is a boolean.
+   --  ------------------------------
+   overriding
+   function Convert_Value (UI      : in UISelectBoolean;
+                           Value   : in String;
+                           Context : in Faces_Context'Class) return EL.Objects.Object is
+      use type EL.Objects.Data_Type;
+
+      Result : constant EL.Objects.Object := Forms.UIInput (UI).Convert_Value (Value, Context);
+   begin
+      case EL.Objects.Get_Type (Result) is
+         when EL.Objects.TYPE_BOOLEAN =>
+            return Result;
+
+         when EL.Objects.TYPE_INTEGER =>
+            return EL.Objects.To_Object (EL.Objects.To_Boolean (Result));
+
+         when others =>
+            if Value = "on" then
+               return EL.Objects.To_Object (True);
+            else
+               return EL.Objects.To_Object (False);
+            end if;
+
+      end case;
+   end Convert_Value;
 
    --  ------------------------------
    --  Iterator over the Select_Item elements

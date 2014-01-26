@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.sessions.factory -- ASF Sessions factory
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,13 +80,15 @@ package body ASF.Sessions.Factory is
                              Result  : out Session) is
 
       Sess    : Session;
-      Impl    : constant Session_Record_Access := new Session_Record;
+      Impl    : constant Session_Record_Access
+        := new Session_Record '(Ada.Finalization.Limited_Controlled with
+                                Ref_Counter  => Util.Concurrent.Counters.ONE,
+                                Create_Time  => Ada.Calendar.Clock,
+                                Max_Inactive => Factory.Max_Inactive,
+                                others       => <>);
    begin
-      Impl.Ref_Counter  := Util.Concurrent.Counters.ONE;
-      Impl.Create_Time  := Ada.Calendar.Clock;
-      Impl.Access_Time  := Impl.Create_Time;
-      Impl.Max_Inactive := Factory.Max_Inactive;
-      Sess.Impl         := Impl;
+      Impl.Access_Time := Impl.Create_Time;
+      Sess.Impl        := Impl;
 
       Session_Factory'Class (Factory).Allocate_Session_Id (Impl.Id);
 

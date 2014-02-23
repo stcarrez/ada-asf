@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  facebook - Use Facebook Graph API
---  Copyright (C) 2012, 2013 Stephane Carrez
+--  Copyright (C) 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Log.Loggers;
-with Util.Http.Rest;
+with Util.Http.Rest.Rest_Get_Vector;
 with Util.Serialize.Mappers.Record_Mapper;
 with Util.Serialize.Mappers.Vector_Mapper;
 

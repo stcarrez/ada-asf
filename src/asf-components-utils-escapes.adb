@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-utils-escape -- Escape generated content produced by component children
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,9 +30,15 @@ package body ASF.Components.Utils.Escapes is
       pragma Unreferenced (UI, Context);
 
       Result : Ada.Strings.Unbounded.Unbounded_String;
+      Mode   : constant String := UI.Get_Attribute (ESCAPE_MODE_NAME, Context);
    begin
-      Util.Strings.Transforms.Escape_Java (Content => Content,
-                                           Into    => Result);
+      if Mode = "xml" then
+         Util.Strings.Transforms.Escape_Xml (Content => Content,
+                                             Into    => Result);
+      else
+         Util.Strings.Transforms.Escape_Java (Content => Content,
+                                              Into    => Result);
+      end if;
       Writer.Write (Result);
    end Write_Content;
 

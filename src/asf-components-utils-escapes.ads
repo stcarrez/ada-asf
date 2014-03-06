@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-utils-escape -- Escape generated content produced by component children
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,11 @@ with ASF.Contexts.Faces;
 with ASF.Contexts.Writer;
 
 package ASF.Components.Utils.Escapes is
+
+   --  Name of the attribute that control the escape mode.
+   --  When the attribute is set to 'xml', the content is escaped using XML
+   --  escape rules.  Otherwise, the content is escaped using Javascript rules.
+   ESCAPE_MODE_NAME : constant String := "mode";
 
    --  ------------------------------
    --  UIEscape
@@ -45,3 +50,4 @@ private
    type UIEscape is new ASF.Components.Core.UIComponentBase with null record;
 
 end ASF.Components.Utils.Escapes;
+

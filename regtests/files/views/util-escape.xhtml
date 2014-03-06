@@ -1,0 +1,21 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <h1>Javascript</h1>
+    <util:escape>
+		<h:panelGroup layout="div" styleClass="code">
+			  <util:file src="/views/set.xhtml" escape="true"/>
+  	    </h:panelGroup>
+    </util:escape>
+    <h1>XML</h1>
+    <util:escape mode='xml'>
+		<h:panelGroup layout="div" styleClass="code">
+			  <util:file src="/views/set.xhtml" escape="true"/>
+  	    </h:panelGroup>
+        <div class='include'>
+          <util:file src="/views/set.xhtml" escape="false"/>
+        </div>
+    </util:escape>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  messages - A simple memory-based forum
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Ada.Calendar;
+with Util.Beans.Objects.Time;
 with ASF.Events.Faces.Actions;
 package body Messages is
 
@@ -111,6 +112,8 @@ package body Messages is
    begin
       if Name = "count" then
          return Util.Beans.Objects.To_Object (Integer (From.Get_Count));
+      elsif Name = "today" then
+         return Util.Beans.Objects.Time.To_Object (Ada.Calendar.Clock);
       else
          return Util.Beans.Objects.Null_Object;
       end if;

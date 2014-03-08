@@ -1,5 +1,5 @@
 <!-- Util tag library documentation
-  -  Copyright (C) 2012 Stephane Carrez
+  -  Copyright (C) 2012, 2014 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +26,8 @@
             <ui:param name="name" value="util:escape"/>
             <ui:define name="description">
                 Render the inner component children and escape the resulting HTML text using
-                Javascript escape rules.  Using the <b>util:escape</b> component is useful
-                when rendering a Javascript extract or a Json response.
+                Javascript or XML escape rules.  Using the <b>util:escape</b> component is useful
+                when rendering a Javascript extract, a Json response or some XML content.
             </ui:define>
             <ui:define name="attributes">
                 <li class="attr-optional">
@@ -35,6 +35,12 @@
                     <i>Boolean</i>
                     <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
                         or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>mode</b>
+                    <i>String</i>
+                    <span>When set to <b>xml</b>, use the XML escape rules to escape the content.
+                          Otherwise, use Javascript escape rules.</span>
                 </li>
             </ui:define>
         </ui:decorate>

@@ -1,0 +1,18 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core">
+    <h:outputText id='short' value="#{date}">
+        <f:convertDateTime dateStyle="short"/>
+    </h:outputText>
+    <h:outputText id='medium' value="#{date}">
+        <f:convertDateTime dateStyle="medium"/>
+    </h:outputText>
+    <h:outputText id='long' value="#{date}">
+        <f:convertDateTime dateStyle="long"/>
+    </h:outputText>
+    <h:outputText id='short_time' value="#{date}">
+        <f:convertDateTime timeStyle="short"/>
+    </h:outputText>
+    <h:outputText id='long_time' value="#{date}">
+        <f:convertDateTime timeStyle="long"/>
+    </h:outputText>
+</p>

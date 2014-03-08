@@ -1,5 +1,5 @@
 <!-- JSF Core tag library documentation
-  -  Copyright (C) 2012, 2013 Stephane Carrez
+  -  Copyright (C) 2012, 2013, 2014 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,6 +60,65 @@
                     <b>value</b>
                     <i>String</i>
                     <span>The attribute's value.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'convertDateTime'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:convertDateTime"/>
+            <ui:define name="description">
+                This tag registers an instance of a Date_Time_Converter, and associates it
+                with the nearest parent UIComponent.
+
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>dateStyle</b>
+                    <i>String</i>
+                    <span>Predefined formatting style which determines how the date component
+                        of a date string is to be formatted and parsed. Applied only if type is
+                        "date" or "both". Valid values are "default", "short", "medium", "long",
+                        and "full". Default value is "default".</span>
+                </li>
+                <li class="attr-optional">
+                    <b>locale</b>
+                    <i>String</i>
+                    <span>Locale whose predefined styles for dates and times are used during formatting or parsing.
+                        If not specified, the Locale returned by FacesContext.getViewRoot().getLocale() will be used.
+                        Value must be either a VB expression that evaluates to a valid String locale.
+                        </span>
+                </li>
+                <li class="attr-optional">
+                    <b>pattern</b>
+                    <i>String</i>
+                    <span>Custom formatting pattern which determines how the date/time string should be formatted and parsed.
+                        </span>
+                </li>
+                <li class="attr-optional">
+                    <b>timeStyle</b>
+                    <i>String</i>
+                    <span>Predefined formatting style which determines how the time component of a date
+                        string is to be formatted and parsed. Applied only if type is "time" or "both".
+                        Valid values are "default", "short", "medium", "long", and "full".
+                        Default value is "default".
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>timeZone</b>
+                    <i>String</i>
+                    <span>Time zone in which to interpret any time information in the date String.
+                        Value must be either a VB expression that evaluates to a valid string
+                        that is a timezone ID.
+                     </span>
+                </li>
+                <li class="attr-optional">
+                    <b>type</b>
+                    <i>String</i>
+                    <span>Specifies what contents the string value will be formatted to include, or parsed expecting.
+                        Valid values are "date", "time", and "both". Default value is "date".
+                    </span>
                 </li>
             </ui:define>
         </ui:decorate>

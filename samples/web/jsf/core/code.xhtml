@@ -1,5 +1,5 @@
 <!-- JSF Core tag library documentation
-  -  Copyright (C) 2012, 2013 Stephane Carrez
+  -  Copyright (C) 2012, 2013, 2014 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,13 @@
             prettyPrint();
         </util:script>
         <code class="prettyprint lang-attribute linenums:1"><util:file src="/jsf/core/attribute.xhtml" escape="true"/>
+        </code>
+    </c:when>
+    <c:when test="#{param['code'] eq 'convertDateTime'}">
+        <util:script>
+            Sample_Highlight('convertDateTime','f:convertDateTime');
+        </util:script>
+        <code class="prettyprint lang-convertDateTime linenums:1"><util:file src="/jsf/core/convertDateTime.xhtml" escape="true"/>
         </code>
     </c:when>
     <c:when test="#{param['code'] eq 'converter'}">

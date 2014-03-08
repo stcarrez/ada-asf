@@ -1,0 +1,59 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <dl>
+        <dt>No converter</dt>
+        <dd>
+            <!-- pi is a float, use a default converter -->
+            #{messages.today}
+        </dd>
+        <dt>With converter</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <!-- use the 'float' converter defined by the application  -->
+                <f:convertDateTime dateStyle="short"/>
+            </h:outputText>
+        </dd>
+    </dl>
+    <h4>dateStyle</h4>
+    <dl class='list'>
+        <dt>short</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime dateStyle="short"/>
+            </h:outputText>
+        </dd>
+        <dt>medium</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime dateStyle="medium"/>
+            </h:outputText>
+        </dd>
+        <dt>long</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime dateStyle="long"/>
+            </h:outputText>
+        </dd>
+        <dt>full</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime dateStyle="full"/>
+            </h:outputText>
+        </dd>
+    </dl>
+    <h4>timeStyle</h4>
+    <dl class='list'>
+        <dt>short</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime timeStyle="short"/>
+            </h:outputText>
+        </dd>
+        <dt>medium</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime timeStyle="long"/>
+            </h:outputText>
+        </dd>
+    </dl>
+</div>

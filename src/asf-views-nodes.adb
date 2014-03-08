@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -168,6 +168,29 @@ package body ASF.Views.Nodes is
          end;
       else
          return EL.Objects.To_Object (Attribute.Value);
+      end if;
+   end Get_Value;
+
+   --  ------------------------------
+   --  Get the value from the attribute.  If the attribute is null or evaluates to
+   --  a NULL object, returns the default value.  Convert the value into a string.
+   --  ------------------------------
+   function Get_Value (Attribute : in Tag_Attribute_Access;
+                       Context   : in Facelet_Context'Class;
+                       Default   : in String) return String is
+   begin
+      if Attribute = null then
+         return Default;
+      else
+         declare
+            Value : constant EL.Objects.Object := Get_Value (Attribute.all, Context);
+         begin
+            if EL.Objects.Is_Null (Value) then
+               return Default;
+            else
+               return EL.Objects.To_String (Value);
+            end if;
+         end;
       end if;
    end Get_Value;
 

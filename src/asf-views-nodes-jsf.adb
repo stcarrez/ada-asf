@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,24 @@
 
 with Util.Beans.Objects;
 with ASF.Converters;
+with ASF.Converters.Dates;
 with ASF.Validators.Texts;
 with ASF.Validators.Numbers;
 with ASF.Components.Holders;
 with ASF.Components.Core.Views;
 package body ASF.Views.Nodes.Jsf is
+
+   --  Get the date conversion global format.
+   function Get_Format (Node    : in Convert_Date_Time_Tag_Node;
+                        Context : in Contexts.Facelets.Facelet_Context'Class)
+                        return ASF.Converters.Dates.Format_Type;
+
+   --  Get a dateStyle or a timeStyle attribute value.
+   function Get_Date_Style (Node    : in Convert_Date_Time_Tag_Node;
+                            Name    : in String;
+                            Attr    : in Tag_Attribute_Access;
+                            Context : in Contexts.Facelets.Facelet_Context'Class)
+                            return ASF.Converters.Dates.Style_Type;
 
    --  ------------------------------
    --  Converter Tag
@@ -82,6 +95,141 @@ package body ASF.Views.Nodes.Jsf is
          VH : constant access Value_Holder'Class := Value_Holder'Class (Parent.all)'Access;
       begin
          VH.Set_Converter (Converter => Cvt);
+      end;
+   end Build_Components;
+
+   --  ------------------------------
+   --  Convert Date Time Tag
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the Converter Tag
+   --  ------------------------------
+   function Create_Convert_Date_Time_Tag_Node (Binding    : in Binding_Access;
+                                               Line       : in Views.Line_Info;
+                                               Parent     : in Views.Nodes.Tag_Node_Access;
+                                               Attributes : in Nodes.Tag_Attribute_Array_Access)
+                                               return Views.Nodes.Tag_Node_Access is
+      use ASF.Views.Nodes;
+
+      Node : constant Convert_Date_Time_Tag_Node_Access := new Convert_Date_Time_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
+      Node.Date_Style := Find_Attribute (Attributes, "dateStyle");
+      Node.Time_Style := Find_Attribute (Attributes, "timeStyle");
+      Node.Locale     := Find_Attribute (Attributes, "locale");
+      Node.Pattern    := Find_Attribute (Attributes, "pattern");
+      Node.Format     := Find_Attribute (Attributes, "type");
+      return Node.all'Access;
+   end Create_Convert_Date_Time_Tag_Node;
+
+   --  Get a dateStyle or a timeStyle attribute value.
+   function Get_Date_Style (Node    : in Convert_Date_Time_Tag_Node;
+                            Name    : in String;
+                            Attr    : in Tag_Attribute_Access;
+                            Context : in Contexts.Facelets.Facelet_Context'Class)
+                            return ASF.Converters.Dates.Style_Type is
+      Style : constant String := Get_Value (Attr, Context, "");
+   begin
+      if Style = "default" or Style = "" then
+         return ASF.Converters.Dates.DEFAULT;
+      elsif Style = "short" then
+         return ASF.Converters.Dates.SHORT;
+      elsif Style = "medium" then
+         return ASF.Converters.Dates.MEDIUM;
+      elsif Style = "long" then
+         return ASF.Converters.Dates.LONG;
+      elsif Style = "full" then
+         return ASF.Converters.Dates.FULL;
+      else
+         Node.Error ("Invalid attribute {0}: {1}", Name, Style);
+         return ASF.Converters.Dates.DEFAULT;
+      end if;
+   end Get_Date_Style;
+
+   --  Get the date conversion global format.
+   function Get_Format (Node    : in Convert_Date_Time_Tag_Node;
+                        Context : in Contexts.Facelets.Facelet_Context'Class)
+                        return ASF.Converters.Dates.Format_Type is
+      Format : constant String := Get_Value (Node.Format, Context, "");
+   begin
+      if Format = "both" then
+         return ASF.Converters.Dates.BOTH;
+      elsif Format = "time" then
+         return ASF.Converters.Dates.TIME;
+      elsif Format = "date" then
+         return ASF.Converters.Dates.DATE;
+      else
+         Node.Error ("Invalid attribute type: {0}", Format);
+         return ASF.Converters.Dates.BOTH;
+      end if;
+   end Get_Format;
+
+   --  ------------------------------
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.  Get the specified converter and
+   --  add it to the parent component.  This operation does not create any
+   --  new UIComponent.
+   --  ------------------------------
+   overriding
+   procedure Build_Components (Node    : access Convert_Date_Time_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class) is
+      use ASF.Components.Holders;
+      use ASF.Converters;
+
+      C      : ASF.Converters.Dates.Date_Converter_Access;
+      Locale : constant String := Get_Value (Node.Locale, Context, "");
+   begin
+      if not (Parent.all in Value_Holder'Class) then
+         Node.Error ("Parent component is not an instance of Value_Holder");
+         return;
+      end if;
+
+      if Node.Pattern /= null then
+         C := Dates.Create_Date_Converter (Date    => Converters.Dates.DEFAULT,
+                                           Time    => Converters.Dates.DEFAULT,
+                                           Format  => Converters.Dates.CONVERTER_PATTERN,
+                                           Locale  => Locale,
+                                           Pattern => Get_Value (Node.Pattern, Context, ""));
+
+      elsif Node.Format /= null then
+         C := Dates.Create_Date_Converter (Date    => Get_Date_Style (Node.all, "dateStyle",
+                                                                      Node.Date_Style, Context),
+                                           Time    => Get_Date_Style (Node.all, "timeStyle",
+                                                                      Node.Time_Style, Context),
+                                           Format  => Get_Format (Node.all, Context),
+                                           Locale  => Locale,
+                                           Pattern => "");
+
+      elsif Node.Date_Style /= null then
+         C := Dates.Create_Date_Converter (Date    => Get_Date_Style (Node.all, "dateStyle",
+                                                                      Node.Date_Style, Context),
+                                           Time    => Converters.Dates.DEFAULT,
+                                           Format  => Converters.Dates.DATE,
+                                           Locale  => Locale,
+                                           Pattern => "");
+
+      elsif Node.Time_Style /= null then
+         C := Dates.Create_Date_Converter (Date    => Converters.Dates.DEFAULT,
+                                           Time    => Get_Date_Style (Node.all, "timeStyle",
+                                                                      Node.Time_Style, Context),
+                                           Format  => ASF.Converters.Dates.TIME,
+                                           Locale  => Locale,
+                                           Pattern => "");
+      else
+         C := Dates.Create_Date_Converter (Date    => Converters.Dates.DEFAULT,
+                                           Time    => Converters.Dates.DEFAULT,
+                                           Format  => ASF.Converters.Dates.BOTH,
+                                           Locale  => Locale,
+                                           Pattern => "");
+      end if;
+      declare
+         VH : constant access Value_Holder'Class
+           := Value_Holder'Class (Parent.all)'Access;
+      begin
+         VH.Set_Converter (Converter => C.all'Access);
       end;
    end Build_Components;
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -91,6 +91,7 @@ package body ASF.Components.Core.Factory is
 
    URI                     : aliased constant String := "http://java.sun.com/jsf/core";
    ATTRIBUTE_TAG           : aliased constant String := "attribute";
+   CONVERT_DATE_TIME_TAG   : aliased constant String := "convertDateTime";
    CONVERTER_TAG           : aliased constant String := "converter";
    FACET_TAG               : aliased constant String := "facet";
    METADATA_TAG            : aliased constant String := "metadata";
@@ -109,51 +110,55 @@ package body ASF.Components.Core.Factory is
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Attribute_Tag_Node'Access),
 
-         2 => (Name      => CONVERTER_TAG'Access,
+         2 => (Name      => CONVERT_DATE_TIME_TAG'Access,
+               Component => null,
+               Tag       => ASF.Views.Nodes.Jsf.Create_Convert_Date_Time_Tag_Node'Access),
+
+         3 => (Name      => CONVERTER_TAG'Access,
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Converter_Tag_Node'Access),
 
-         3 => (Name      => FACET_TAG'Access,
+         4 => (Name      => FACET_TAG'Access,
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Facet_Tag_Node'Access),
 
-         4 => (Name      => METADATA_TAG'Access,
+         5 => (Name      => METADATA_TAG'Access,
                Component => Create_ViewMetaData'Access,
                Tag       => ASF.Views.Nodes.Jsf.Create_Metadata_Tag_Node'Access),
 
-         5 => (Name      => PARAM_TAG'Access,
+         6 => (Name      => PARAM_TAG'Access,
                Component => Create_Parameter'Access,
                Tag       => Create_Component_Node'Access),
 
-         6 => (Name      => SELECT_ITEM_TAG'Access,
+         7 => (Name      => SELECT_ITEM_TAG'Access,
                Component => Create_SelectItem'Access,
                Tag       => Create_Component_Node'Access),
 
-         7 => (Name      => SELECT_ITEMS_TAG'Access,
+         8 => (Name      => SELECT_ITEMS_TAG'Access,
                Component => Create_SelectItems'Access,
                Tag       => Create_Component_Node'Access),
 
-         8 => (Name      => VALIDATE_LENGTH_TAG'Access,
+         9 => (Name      => VALIDATE_LENGTH_TAG'Access,
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Length_Validator_Tag_Node'Access),
 
-         9 => (Name      => VALIDATE_LONG_RANGE_TAG'Access,
+        10 => (Name      => VALIDATE_LONG_RANGE_TAG'Access,
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Range_Validator_Tag_Node'Access),
 
-        10 => (Name      => VALIDATOR_TAG'Access,
+        11 => (Name      => VALIDATOR_TAG'Access,
                Component => null,
                Tag       => ASF.Views.Nodes.Jsf.Create_Validator_Tag_Node'Access),
 
-        11 => (Name      => VIEW_TAG'Access,
+        12 => (Name      => VIEW_TAG'Access,
                Component => Create_View'Access,
                Tag       => Create_Component_Node'Access),
 
-        12 => (Name      => VIEW_ACTION_TAG'Access,
+        13 => (Name      => VIEW_ACTION_TAG'Access,
                 Component => Create_ViewAction'Access,
                 Tag       => Create_Component_Node'Access),
 
-        13 => (Name      => VIEW_PARAM_TAG'Access,
+        14 => (Name      => VIEW_PARAM_TAG'Access,
                Component => Create_ViewParameter'Access,
                Tag       => Create_Component_Node'Access)
         );

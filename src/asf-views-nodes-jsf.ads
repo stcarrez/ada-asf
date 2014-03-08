@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,6 +58,34 @@ package ASF.Views.Nodes.Jsf is
    --  new UIComponent.
    overriding
    procedure Build_Components (Node    : access Converter_Tag_Node;
+                               Parent  : in UIComponent_Access;
+                               Context : in out Contexts.Facelets.Facelet_Context'Class);
+
+   --  ------------------------------
+   --  Convert Date Time Tag
+   --  ------------------------------
+   --  The <b>Convert_Date_Time_Tag_Node</b> is created in the facelet tree when
+   --  the <f:converterDateTime> element is found.  When building the component tree,
+   --  we have to find the <b>Converter</b> object and attach it to the
+   --  parent component.  The parent component must implement the <b>Value_Holder</b>
+   --  interface.
+   type Convert_Date_Time_Tag_Node is new Views.Nodes.Tag_Node with private;
+   type Convert_Date_Time_Tag_Node_Access is access all Convert_Date_Time_Tag_Node'Class;
+
+   --  Create the Converter Tag
+   function Create_Convert_Date_Time_Tag_Node (Binding    : in Binding_Access;
+                                               Line       : in Views.Line_Info;
+                                               Parent     : in Views.Nodes.Tag_Node_Access;
+                                               Attributes : in Nodes.Tag_Attribute_Array_Access)
+                                               return Views.Nodes.Tag_Node_Access;
+
+   --  Build the component tree from the tag node and attach it as
+   --  the last child of the given parent.  Calls recursively the
+   --  method to create children.  Get the specified converter and
+   --  add it to the parent component.  This operation does not create any
+   --  new UIComponent.
+   overriding
+   procedure Build_Components (Node    : access Convert_Date_Time_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class);
 
@@ -230,6 +258,7 @@ package ASF.Views.Nodes.Jsf is
    --  are not invoked before the application is initialized and a view is rendered.
    pragma Suppress (Elaboration_Check, On => Create_Attribute_Tag_Node);
    pragma Suppress (Elaboration_Check, On => Create_Converter_Tag_Node);
+   pragma Suppress (Elaboration_Check, On => Create_Convert_Date_Time_Tag_Node);
    pragma Suppress (Elaboration_Check, On => Create_Facet_Tag_Node);
    pragma Suppress (Elaboration_Check, On => Create_Metadata_Tag_Node);
    pragma Suppress (Elaboration_Check, On => Create_Length_Validator_Tag_Node);
@@ -240,6 +269,14 @@ private
 
    type Converter_Tag_Node is new Views.Nodes.Tag_Node with record
       Converter : EL.Objects.Object;
+   end record;
+
+   type Convert_Date_Time_Tag_Node is new Views.Nodes.Tag_Node with record
+      Date_Style : Tag_Attribute_Access;
+      Time_Style : Tag_Attribute_Access;
+      Locale     : Tag_Attribute_Access;
+      Pattern    : Tag_Attribute_Access;
+      Format     : Tag_Attribute_Access;
    end record;
 
    type Validator_Tag_Node is new Views.Nodes.Tag_Node with record

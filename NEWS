@@ -9,7 +9,7 @@ Version 1.0     -
   - New component <w:panel> to provide collapsible div panels
   - New components <w:tabView> and <w:tab> for tabs display
   - New component <w:accordion> to display accordion tabs
-  - Add support for JSF <f:facet>
+  - Add support for JSF <f:facet>, <f:convertDateTime>
   - Support for the creation of Debian packages
 
 Version 0.5     - Feb 2013

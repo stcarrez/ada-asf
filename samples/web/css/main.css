@@ -136,6 +136,7 @@ div.grid_12 ul.selector {
     height: 100%;
     overflow: hidden;
     padding: .2em;
+/*    width: 100%; */
 }
 ul.ui-tabs-nav li a {
     width: 100%;
@@ -150,4 +151,72 @@ ul.selector li {
 .container_12 .grid_12 div.ui-tabs-panel {
     float: right;
     width: 80%;
+}
+@media screen and (max-width: 400px) {
+    /* @-ms-viewport { width: 320px; } */
+    #awa-top-nav li a {
+        font-size: 100%;
+        padding: 0px;
+    }
+    #awa-footer, body {
+        background-image: none;
+        font-size: 100%;
+    }
+    #awa-copyright {
+        margin: 0;
+    }
+    #demo-tabs {
+        width: 100%;
+    }
+    .tagedit-list li.tagedit-listelement {
+        float: right;
+    }
+    h3 {
+        overflow: hidden;
+        width: 100%;
+    }
+}
+@media screen and (min-width: 960px) {
+    body{
+        font-size:80%;
+    }
+    #awa-top-nav li {
+        width: 15%;
+    }
+}
+@media screen and (max-width: 600px) {
+    body{
+        font-size:100%;
+    }
+    .container_12 div.sample {
+        width: 98%;
+        padding-left: 1%;
+        padding-right: 0;
+    }
+    .container_12 .grid_4,
+    .container_12 .grid_8,
+    .container_12 .ui-tabs-panel div.grid_8,
+    .container_12 .grid_12,
+    div.grid_12 ul.selector, .container_12 .grid_12 div.ui-tabs-panel {
+        width: 97%;
+        padding: 0;
+    }
+    div.grid_12 ul.selector {
+        width: 100%;
+    }
+    .container_12 .ui-tabs-panel div.grid_8 {
+        float: left;
+    }
+    #doc-block ul.tag-doc b, #doc-block ul.tag-doc i {
+        width: 49%;
+    }
+    #doc-block ul.tag-doc span {
+        clear: both;
+        padding-left: 5%;
+        width: 94%;
+    }
+    #awa-page .ui-tabs .ui-tabs-nav li a {
+        padding: 2px;
+        font-weight: normal;
+    }
 }

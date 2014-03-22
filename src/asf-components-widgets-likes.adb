@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-widgets-likes -- Social Likes Components
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,6 +41,11 @@ package body ASF.Components.Widgets.Likes is
    TW_VIA_ATTR         : aliased constant String := "data-via";
    TW_COUNT_ATTR       : aliased constant String := "data-count";
    TW_SIZE_ATTR        : aliased constant String := "data-size";
+   TW_COUNTURL_ATTR    : aliased constant String := "data-counturl";
+   TW_TEXT_ATTR        : aliased constant String := "data-text";
+   TW_RELATED_ATTR     : aliased constant String := "data-related";
+   TW_LANG_ATTR        : aliased constant String := "data-lang";
+   TW_HASHTAGS_ATTR    : aliased constant String := "data-hashtags";
 
    G_ANNOTATION_ATTR   : aliased constant String := "data-annotation";
    G_WIDTH_ATTR        : aliased constant String := "data-width";
@@ -280,6 +285,11 @@ begin
    TWITTER_ATTRIBUTE_NAMES.Insert (TW_SIZE_ATTR'Access);
    TWITTER_ATTRIBUTE_NAMES.Insert (TW_COUNT_ATTR'Access);
    TWITTER_ATTRIBUTE_NAMES.Insert (TW_VIA_ATTR'Access);
+   TWITTER_ATTRIBUTE_NAMES.Insert (TW_COUNTURL_ATTR'Access);
+   TWITTER_ATTRIBUTE_NAMES.Insert (TW_TEXT_ATTR'Access);
+   TWITTER_ATTRIBUTE_NAMES.Insert (TW_RELATED_ATTR'Access);
+   TWITTER_ATTRIBUTE_NAMES.Insert (TW_LANG_ATTR'Access);
+   TWITTER_ATTRIBUTE_NAMES.Insert (TW_HASHTAGS_ATTR'Access);
 
    GOOGLE_ATTRIBUTE_NAMES.Insert (G_ANNOTATION_ATTR'Access);
    GOOGLE_ATTRIBUTE_NAMES.Insert (G_WIDTH_ATTR'Access);

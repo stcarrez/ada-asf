@@ -175,6 +175,7 @@ package body ASF.Applications.Main.Tests is
       Context.Set_ELContext (Ctx'Unchecked_Access);
       ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
 
+      T.App.Set_Context (Context'Unchecked_Access);
       T.App.Create (Name    => Ada.Strings.Unbounded.To_Unbounded_String ("samplesMsg"),
                     Context => Ctx,
                     Result  => Result,

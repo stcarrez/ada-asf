@@ -27,8 +27,6 @@ package body ASF.Components.Utils.Escapes is
                             Writer  : in out Contexts.Writer.Response_Writer'Class;
                             Content : in String;
                             Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
-      pragma Unreferenced (UI, Context);
-
       Result : Ada.Strings.Unbounded.Unbounded_String;
       Mode   : constant String := UI.Get_Attribute (ESCAPE_MODE_NAME, Context);
    begin

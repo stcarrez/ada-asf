@@ -1,5 +1,5 @@
 <!-- JSF Core tag library documentation
-  -  Copyright (C) 2012 Stephane Carrez
+  -  Copyright (C) 2012, 2014 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -392,6 +392,11 @@
             <ui:param name="name" value="h:list"/>
             <ui:define name="description">
                 Renders a list of items.
+                <p>
+                    When the list layout is <b>orderedList</b> an ol/li list is generated,
+                    when the layout is <b>unorderedList</b> an ul/li list is generated.
+                    The default (<b>simple</b>) renders the list as is.
+                </p>
             </ui:define>
             <ui:define name="attributes">
                 <li class="attr-required">
@@ -406,6 +411,16 @@
                 </li>
                 <ui:include src="doc-common.xhtml"/>
                 <ui:include src="doc-style.xhtml"/>
+                <li class="attr-optional">
+                    <b>layout</b>
+                    <i>String</i>
+                    <span>The layout of the list: simple, unorderedList, orderedList.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>itemStyleClass</b>
+                    <i>String</i>
+                    <span>The CSS class attribute to apply to the li or div items.</span>
+                </li>
             </ui:define>
         </ui:decorate>
     </c:when>

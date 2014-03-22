@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,7 @@ with ASF.Contexts.Writer.String;
 with ASF.Components.Utils;
 with ASF.Components.Core;
 with ASF.Components.Core.Views;
+with ASF.Events.Faces;
 
 with EL.Variables;
 with EL.Contexts.Default;

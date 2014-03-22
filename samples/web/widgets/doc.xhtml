@@ -1,5 +1,5 @@
 <!-- ASF Widget tag library documentation
-  -  Copyright (C) 2013 Stephane Carrez
+  -  Copyright (C) 2013, 2014 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,12 @@
                 and the input form field.  The error message associated
                 with the input field is rendered if there is one.  The title, input field and message
                 are combined within an HTML <b>dl</b>, <b>dt</b> and <b>dd</b> elements.
+                <p>
+                    When the user enters some text, the form is submitted for autocompletion.
+                    The <b>w:autocomplete</b> component handles the form submission and uses the
+                    <b>autocompleteList</b> attribute to find out possible completions.  It then returns
+                    that list that is then displayed by the client.
+                </p>
             </ui:define>
             <ui:define name="attributes">
                 <li class="attr-optional">
@@ -150,16 +156,49 @@
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="w:like"/>
             <ui:define name="description">
-                This component renders an image whose link is the gravatar's link of
-                a person's email address.
+                This component renders a like button for Facebook, Twitter or Google+ (more like implementations
+                can be added programatically in Ada).  The like button code is rendered within a <b>div</b> element
+                whose style and class can be customized.
 
-                See <a href="https://en.gravatar.com/site/implement/images/">gravatar.com</a>.
+                <p>
+                    The <b>kind</b> attribute defines what like button must be generated.
+                </p>
+                <h3>Facebook</h3>
+                <p>
+                    The <a href="https://developers.facebook.com/docs/plugins/like-button/" rel="nofollow">
+                    Facebook like button</a> is generated with the <b>facebook</b> kind attribute value.
+                </p>
+                <p>
+                    When using the Facebook button, the component will pass several attributes to the Facebook
+                    button: data-layout, data-show-faces, data-width, data-action, data-font,
+                    data-colorscheme, data-ref, data-kid_directed_site, data-send.
+                </p>
+                <p>
+                    The Facebook like button requires that you register your application and get a facebook client ID.
+                    The like component will use the configuration property <b>facebook.client_id</b> to retrieve
+                    this client ID.
+                </p>
+                <h3>Google+</h3>
+                <p>
+                    The Google <a href="https://developers.google.com/+/web/+1button/" rel="nofollow">+1 Button</a>
+                    is generated with the <b>google+</b> kind attribute value.  You may pass several attributes
+                    managed by the button such as data-annotation, data-width.
+                </p>
+                <h3>Twitter</h3>
+                <p>
+                    The <a href="https://dev.twitter.com/docs/tweet-button" rel="nofollow">Tweet Button</a> is
+                    generated with the <b>twitter</b> kind attribute value.  The following attributes are
+                    passed to the Tweet button: data-via, data-count, data-size.
+                </p>
+                <p>
+                    <b>Note:</b> the live demonstation is not fonctional because the page
+                </p>
             </ui:define>
             <ui:define name="attributes">
                 <li class="attr-required">
-                    <b>email</b>
+                    <b>kind</b>
                     <i>String</i>
-                    <span>The email address to create the gravatar image link.</span>
+                    <span>The type of like button to generate: "facebook", "google+", "twitter".</span>
                 </li>
                 <li class="attr-optional">
                     <b>rendered</b>
@@ -168,26 +207,19 @@
                         or processed on any subsequent form submit. The default value for this property is true.</span>
                 </li>
                 <li class="attr-optional">
-                    <b>secure</b>
-                    <i>Boolean</i>
-                    <span>When True, the secure link to the gravatar image is created (https).  The default creates
-                        an <em>http</em> link only.</span>
-                </li>
-                <li class="attr-optional">
-                    <b>size</b>
-                    <i>Integer</i>
-                    <span>The size of the gravatar image (from 1 to 2048 pixels max).</span>
-                </li>
-                <li class="attr-optional">
-                    <b>default</b>
+                    <b>href</b>
                     <i>String</i>
-                    <span>.</span>
+                    <span>The optional URL to pass to the like button.  The default is to use the current page URL.</span>
                 </li>
                 <li class="attr-optional">
-                    <b>alt</b>
+                    <b>styleClass</b>
                     <i>String</i>
-                    <span>The image <em>alt</em> attribute. By default, the email address is used for the
-                        <em>alt</em> attribute.</span>
+                    <span>The CSS class to be applied in the div element that contains the like button.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>style</b>
+                    <i>String</i>
+                    <span>The CSS style to be applied in the div element that contains the like button.</span>
                 </li>
             </ui:define>
         </ui:decorate>

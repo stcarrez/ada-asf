@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-main-tests - Unit tests for Applications
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -166,11 +166,13 @@ package body ASF.Applications.Main.Tests is
    procedure Test_Bundle_Configuration (T : in out Test) is
       use type Util.Beans.Basic.Readonly_Bean_Access;
 
-      Path   : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-bundle.xml");
-      Result : Util.Beans.Basic.Readonly_Bean_Access;
-      Ctx    : EL.Contexts.Default.Default_Context;
-      Scope  : Scope_Type;
+      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-bundle.xml");
+      Result  : Util.Beans.Basic.Readonly_Bean_Access;
+      Context : aliased ASF.Contexts.Faces.Faces_Context;
+      Ctx     : aliased EL.Contexts.Default.Default_Context;
+      Scope   : Scope_Type;
    begin
+      Context.Set_ELContext (Ctx'Unchecked_Access);
       ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
 
       T.App.Create (Name    => Ada.Strings.Unbounded.To_Unbounded_String ("samplesMsg"),

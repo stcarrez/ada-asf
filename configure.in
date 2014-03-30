@@ -100,6 +100,40 @@ AC_MSG_RESULT(ok ${UTIL_DIR})
 AC_SUBST(UTIL_DIR)
 
 ##########################################
+# Check for Util.Serialize.Mappers.Vector_Mappers support
+##########################################
+
+ac_enable_vector_mappers=yes
+AC_MSG_CHECKING([for gcc bug compiling Util.Serialize.Mappers.Vector_Mappers (Bug 53737)])
+version=`$GNATMAKE --version | grep GNATMAKE | sed -e 's,GNATMAKE ,,'`
+case "$version" in
+   4.7.0*|4.7.1*|4.7.2*|4.7.3*)
+      AC_MSG_RESULT(yes)
+      AC_MSG_WARN(Your compiler is known to fail when compiling a generic package.)
+      AC_MSG_WARN(See Bug 53737: Assert_Failure on a generic package with a package as parameter)
+      AC_MSG_WARN(The Util.Serialize.Mappers.Vector_Mappers and Util.Http.Rest packages are excluded.)
+      ac_enable_vector_mappers=no
+      ;;
+
+   *)
+      AC_MSG_RESULT(no)
+      ac_enable_vector_mappers=yes
+      ;;
+esac
+
+AC_MSG_CHECKING([whether the Util.Serialize.Mappers.Vector_Mappers package must be compiled])
+AC_ARG_ENABLE(vector-mappers,
+[  --enable-vector-mappers Enable the Util.Serialize.Mappers.Vector_Mappers package (enabled)],
+[case "${enableval}" in
+  no|none)  ac_enable_vector_mappers=no ;;
+  *)        ac_enable_vector_mappers=yes ;;
+esac])dnl
+
+AC_MSG_RESULT(${ac_enable_vector_mappers})
+UTIL_HAVE_VECTOR_MAPPERS=$ac_enable_vector_mappers
+AC_SUBST(UTIL_HAVE_VECTOR_MAPPERS)
+
+##########################################
 # Ada Expression Language library
 ##########################################
 AC_MSG_CHECKING([Ada Expression Language library (code.google.com/p/ada-el)])

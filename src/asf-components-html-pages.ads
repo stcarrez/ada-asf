@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-pages -- HTML Page Components
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,16 @@ package ASF.Components.Html.Pages is
    procedure Encode_End (UI      : in UIBody;
                          Context : in out Contexts.Faces.Faces_Context'Class);
 
+   --  ------------------------------
+   --  Doctype Component
+   --  ------------------------------
+   type UIDoctype is new UIHtmlComponent with private;
+
+   --  Encode the DOCTYPE element.
+   overriding
+   procedure Encode_Begin (UI      : in UIDoctype;
+                           Context : in out Contexts.Faces.Faces_Context'Class);
+
 private
 
    type UIHead is new UIHtmlComponent with null record;
@@ -59,5 +69,7 @@ private
    type UIBody is new UIHtmlComponent with record
       Value     : EL.Objects.Object;
    end record;
+
+   type UIDoctype is new UIHtmlComponent with null record;
 
 end ASF.Components.Html.Pages;

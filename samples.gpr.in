@@ -6,10 +6,24 @@ with "asf";
 
 project Samples is
 
+   --  Enable the compilation of Util.Serialize.Mappers.Vector_Mappers.
+   Has_Vector_Mappers : Config.Yes_No := "@UTIL_HAVE_VECTOR_MAPPERS@";
+
    Mains := ("render.adb", "volume_server.adb", "demo_server.adb",
    "asf_volume_server.adb", "openid.adb", "upload_server.adb");
 
    for Main use Mains;
+
+   package Naming is
+      case Has_Vector_Mappers is
+           when "yes" =>
+                for Implementation ("Facebook") use "facebook-with_feeds.adb";
+
+           when "no" =>
+                for Implementation ("Facebook") use "facebook-no_feeds.adb";
+
+      end case;
+   end Naming;
 
    for Source_Dirs use ("samples", "samples/beans");
 

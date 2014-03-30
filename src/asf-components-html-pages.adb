@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-pages -- HTML Page Components
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 
 with Util.Strings;
+with Util.Beans.Objects;
+
 with ASF.Utils;
 
 --  The <b>Pages</b> package implements various components used when building an HTML page.
@@ -84,6 +86,36 @@ package body ASF.Components.Html.Pages is
       Writer.Write_Scripts;
       Writer.End_Element ("body");
    end Encode_End;
+
+   --  ------------------------------
+   --  Encode the DOCTYPE element.
+   --  ------------------------------
+   overriding
+   procedure Encode_Begin (UI      : in UIDoctype;
+                           Context : in out Contexts.Faces.Faces_Context'Class) is
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
+   begin
+      if UI.Is_Rendered (Context) then
+         Writer.Write ("<!DOCTYPE ");
+         Writer.Write (UI.Get_Attribute ("rootElement", Context, ""));
+         declare
+            Public : constant Util.Beans.Objects.Object := UI.Get_Attribute (Context, "public");
+            System : constant Util.Beans.Objects.Object := UI.Get_Attribute (Context, "system");
+         begin
+            if not Util.Beans.Objects.Is_Null (Public) then
+               Writer.Write (" PUBLIC """);
+               Writer.Write (Public);
+               Writer.Write ('"');
+            end if;
+            if not Util.Beans.Objects.Is_Null (System) then
+               Writer.Write (" """);
+               Writer.Write (System);
+               Writer.Write ('"');
+            end if;
+         end;
+         Writer.Write ('>');
+      end if;
+   end Encode_Begin;
 
 begin
    Utils.Set_Head_Attributes (HEAD_ATTRIBUTE_NAMES);

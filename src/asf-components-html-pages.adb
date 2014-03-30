@@ -114,6 +114,7 @@ package body ASF.Components.Html.Pages is
             end if;
          end;
          Writer.Write ('>');
+         Writer.Write (ASCII.LF);
       end if;
    end Encode_Begin;
 

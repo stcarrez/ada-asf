@@ -1,3 +1,7 @@
+Version 1.0.1   -
+
+  - Fix minor configuration issue with GNAT 2014
+
 Version 1.0     - Apr 2014
   - Add support for Facebook and Google+ login
   - Javascript support for popup and editable fields

@@ -1,7 +1,7 @@
 ## The type of library we want to build. Possible values:
 ##   relocatable
 ##   static
-LIBRARY_TYPE=static
+ASF_LIBRARY_TYPE=static
 
 # You may edit this makefile as long as you keep these original 
 # target names defined.
@@ -58,7 +58,7 @@ libname=libada_asf
 libprefix=$(libname)_
 
 CPUS := @NR_CPUS@
-MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
+MAKE_ARGS=-XMODE=${MODE} -XASF_LIBRARY_TYPE=${ASF_LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
 
 ifeq (${BUILDS_SHARED},yes)
 all:     static shared
@@ -76,10 +76,10 @@ build: regtests/asf-testsuite.adb
 	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS)
 
 static:
-	$(MAKE) LIBRARY_TYPE=static build
+	$(MAKE) ASF_LIBRARY_TYPE=static build
 
 shared:
-	$(MAKE) LIBRARY_TYPE=relocatable build
+	$(MAKE) ASF_LIBRARY_TYPE=relocatable build
 
 # Build and run the unit tests
 check test:	build
@@ -159,10 +159,10 @@ dist:
 	    -cvzf $(DIST_FILE) $(distdir)
 
 install_static:
-	$(MAKE) LIBRARY_TYPE=static install_lib
+	$(MAKE) ASF_LIBRARY_TYPE=static install_lib
 
 install_shared:
-	$(MAKE) LIBRARY_TYPE=relocatable install_lib
+	$(MAKE) ASF_LIBRARY_TYPE=relocatable install_lib
 
 install_lib:
 	-rm -rf ${includedir}/ada-asf ${includedir}/ada-asf-aws ${includedir}/ada-asf-unit
@@ -182,27 +182,27 @@ install_lib:
 	${CP} -p src/*.ad[bs] ${includedir}/ada-asf
 	test T${HAVE_AWS} = Tno || \
 		 ${CP} -p src/aws/*.ad[bs] ${includedir}/ada-asf-aws
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/asf.gpr > ${projectdir}/asf.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/asf_core.gpr > ${projectdir}/asf_core.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" < distrib/asf.gpr > ${projectdir}/asf.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" < distrib/asf_core.gpr > ${projectdir}/asf_core.gpr
 	test T${HAVE_AWS} = Tno || \
-		 sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+		 sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" \
 			 < distrib/asf_aws.gpr > ${projectdir}/asf_aws.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" \
 		< distrib/asf_unit.gpr > ${projectdir}/asf_unit.gpr
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asf
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asf-unit
+	${CP} -p lib/asf/$(ASF_LIBRARY_TYPE)/*.ali ${alidir}/ada-asf
+	${CP} -p lib/asfunit/$(ASF_LIBRARY_TYPE)/*.ali ${alidir}/ada-asf-unit
 	test T${HAVE_AWS} = Tno || \
-		 ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-asf-aws
-ifeq ($(LIBRARY_TYPE),static)
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/$(libname).a ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/$(libprefix)unit.a ${libdir}/
+		 ${CP} -p lib/asf-aws/$(ASF_LIBRARY_TYPE)/*.ali ${alidir}/ada-asf-aws
+ifeq ($(ASF_LIBRARY_TYPE),static)
+	${CP} -p lib/asf/$(ASF_LIBRARY_TYPE)/$(libname).a ${libdir}/
+	${CP} -p lib/asfunit/$(ASF_LIBRARY_TYPE)/$(libprefix)unit.a ${libdir}/
 	test T${HAVE_AWS} = Tno || \
-		 ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/$(libprefix)aws.a ${libdir}/
+		 ${CP} -p lib/asf-aws/$(ASF_LIBRARY_TYPE)/$(libprefix)aws.a ${libdir}/
 else
 	test T${HAVE_AWS} = Tno || \
-	   ${CP} -p lib/asf-aws/$(LIBRARY_TYPE)/$(libprefix)aws.$(LIBVER) ${libdir}/
-	${CP} -p lib/asf/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
-	${CP} -p lib/asfunit/$(LIBRARY_TYPE)/$(libprefix)unit.$(LIBVER) ${libdir}/
+	   ${CP} -p lib/asf-aws/$(ASF_LIBRARY_TYPE)/$(libprefix)aws.$(LIBVER) ${libdir}/
+	${CP} -p lib/asf/$(ASF_LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
+	${CP} -p lib/asfunit/$(ASF_LIBRARY_TYPE)/$(libprefix)unit.$(LIBVER) ${libdir}/
 ifneq (${OS},Windows_NT)
 	cd ${libdir} && \
 	rm -f $(libname).$(LIBEXT) $(libprefix)aws.$(LIBEXT) $(libprefix)unit.$(LIBEXT) && \

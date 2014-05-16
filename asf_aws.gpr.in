@@ -1,4 +1,4 @@
-with "config";
+with "@UTIL_DIR@config";
 with "asf_core";
 with "@UTIL_DIR@util_http_aws";
 @WITH_SERVER@
@@ -7,7 +7,7 @@ project Asf_Aws is
 
    Version := "@ASF_VERSION@";
    Library_Dir := "@ASF_LIBDIR@";
-   Library_Type : Config.Library_Type_Type := external ("LIBRARY_TYPE", "static");
+   Library_Type : Config.Library_Type_Type := external ("ASF_LIBRARY_TYPE", "static");
 
    Has_Aws     : Config.Yes_No := "@ASF_HAVE_AWS@";
 

@@ -1,4 +1,4 @@
-with "config";
+with "@UTIL_DIR@config";
 with "@UTIL_DIR@util";
 with "@UTIL_DIR@util_unit";
 with "@EL_DIR@el";
@@ -7,7 +7,7 @@ with "asf_core";
 project Asf_Unit is
 
    Library_Dir := "lib";
-   Library_Type : Config.Library_Type_Type := external ("LIBRARY_TYPE", "static");
+   Library_Type : Config.Library_Type_Type := external ("ASF_LIBRARY_TYPE", "static");
 
    for Source_Dirs use ("asfunit");
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 with Ada.Strings.Fixed;
 with Ada.Exceptions;
 with Ada.Directories;
-with Ada.IO_Exceptions;
 with Ada.Unchecked_Deallocation;
 with ASF.Views.Nodes.Reader;
 with Input_Sources.File;
@@ -87,7 +86,7 @@ package body ASF.Views.Facelets is
          Update (Factory, Fname, Res);
       end if;
       Result.Root := Res.Root;
-      Result.Path := Res.Path;
+--        Result.Path := Res.Path;
       Result.File := Res.File;
    end Find_Facelet;
 
@@ -203,60 +202,54 @@ package body ASF.Views.Facelets is
                    Name    : in String;
                    Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
                    Result  : out Facelet) is
-      use ASF.Views.Nodes.Reader;
-      use Input_Sources.File;
-      use Sax.Readers;
-      use Ada.Exceptions;
-      use Ada.Directories;
-
-      Reader : Xhtml_Reader;
-      Read   : File_Input;
       Path   : constant String := Find_Facelet_Path (Factory, Name);
-      RPos   : constant Natural := Path'Length - Name'Length + 1;
-      Ctx    : aliased EL.Contexts.Default.Default_Context;
-      File   : File_Info_Access := Create_File_Info (Path, RPos);
-      Mtime  : Ada.Calendar.Time;
    begin
-      Log.Info ("Loading facelet: '{0}' - {1} - {2}", Path, Name,
-               Natural'Image (File.Relative_Pos));
-
-      Ctx.Set_Function_Mapper (Context.Get_Function_Mapper);
-      Mtime  := Modification_Time (Path);
-      Open (Path, Read);
-
-      --  If True, xmlns:* attributes will be reported in Start_Element
-      Set_Feature (Reader, Namespace_Prefixes_Feature, False);
-      Set_Feature (Reader, Validation_Feature, False);
-
-      Set_Ignore_White_Spaces (Reader, Factory.Ignore_White_Spaces);
-      Set_Escape_Unknown_Tags (Reader, Factory.Escape_Unknown_Tags);
-      Set_Ignore_Empty_Lines (Reader, Factory.Ignore_Empty_Lines);
-      Parse (Reader, File,
-             Read, Factory.Factory, Ctx'Unchecked_Access);
-      Close (Read);
-
-      Result := Facelet '(Root => Get_Root (Reader),
-                          File => File,
-                          Modify_Time => Mtime,
-                          Path => To_Unbounded_String (Containing_Directory (Path) & '/'));
-   exception
-      when Ada.IO_Exceptions.Name_Error =>
-         Close (Read);
-         Result.Root := Get_Root (Reader);
-         if Result.Root /= null then
-            Result.Root.Delete;
-         end if;
-         Free (File);
+      if not Ada.Directories.Exists (Path) then
+         Log.Warn ("Cannot read '{0}': file does not exist", Path);
          Result.Root := null;
-         Log.Error ("Cannot read '{0}': file does not exist", Path);
+         return;
+      end if;
 
-      when E : others =>
-         Close (Read);
-         Get_Root (Reader).Delete;
-         Free (File);
-         Result.Root := null;
-         Log.Error ("Error while reading: '{0}': {1}: {2}", Path,
-                   Exception_Name (E), Exception_Message (E));
+      declare
+         RPos   : constant Natural := Path'Length - Name'Length + 1;
+         File   : File_Info_Access := Create_File_Info (Path, RPos);
+         Reader : ASF.Views.Nodes.Reader.Xhtml_Reader;
+         Read   : Input_Sources.File.File_Input;
+         Mtime  : Ada.Calendar.Time;
+         Ctx    : aliased EL.Contexts.Default.Default_Context;
+      begin
+         Log.Info ("Loading facelet: '{0}' - {1} - {2}", Path, Name,
+                   Natural'Image (File.Relative_Pos));
+
+         Ctx.Set_Function_Mapper (Context.Get_Function_Mapper);
+         Mtime  := Ada.Directories.Modification_Time (Path);
+         Input_Sources.File.Open (Path, Read);
+
+         --  If True, xmlns:* attributes will be reported in Start_Element
+         Reader.Set_Feature (Sax.Readers.Namespace_Prefixes_Feature, False);
+         Reader.Set_Feature (Sax.Readers.Validation_Feature, False);
+
+         Reader.Set_Ignore_White_Spaces (Factory.Ignore_White_Spaces);
+         Reader.Set_Escape_Unknown_Tags (Factory.Escape_Unknown_Tags);
+         Reader.Set_Ignore_Empty_Lines (Factory.Ignore_Empty_Lines);
+         Reader.Parse (File, Read, Factory.Factory, Ctx'Unchecked_Access);
+         Input_Sources.File.Close (Read);
+
+         Result := Facelet '(Root => Reader.Get_Root,
+                             File => File,
+                             Modify_Time => Mtime);
+      exception
+         when E : others =>
+            Input_Sources.File.Close (Read);
+            Result.Root := Reader.Get_Root;
+            if Result.Root /= null then
+               Result.Root.Delete;
+            end if;
+            Free (File);
+            Result.Root := null;
+            Log.Error ("Error while reading: '{0}': {1}: {2}", Path,
+                       Ada.Exceptions.Exception_Name (E), Ada.Exceptions.Exception_Message (E));
+      end;
    end Load;
 
    --  ------------------------------

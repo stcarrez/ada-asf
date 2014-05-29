@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -93,7 +93,6 @@ private
 
    type Facelet is record
       Root        : ASF.Views.Nodes.Tag_Node_Access;
-      Path        : Unbounded_String;
       File        : ASF.Views.File_Info_Access;
       Modify_Time : Ada.Calendar.Time;
    end record;

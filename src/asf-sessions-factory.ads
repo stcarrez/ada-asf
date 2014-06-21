@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.sessions.factory -- ASF Sessions factory
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 with Ada.Finalization;
 with Util.Strings;
 with Ada.Strings.Unbounded;
-with Util.Concurrent.Locks;
 with Ada.Containers.Hashed_Maps;
 with Ada.Numerics.Discrete_Random;
 with Interfaces;
@@ -78,17 +77,33 @@ private
 
    package Id_Random is new Ada.Numerics.Discrete_Random (Interfaces.Unsigned_32);
 
-   type Session_Factory is new Ada.Finalization.Limited_Controlled with record
-      Lock         : Util.Concurrent.Locks.RW_Lock;
+   protected type Session_Cache is
 
+      --  Find the session in the session cache.
+      function Find (Id : in String) return Session;
+
+      --  Insert the session in the session cache.
+      procedure Insert (Sess : in Session);
+
+      --  Generate a random bitstream.
+      procedure Generate_Id (Rand : out Ada.Streams.Stream_Element_Array);
+
+      --  Initialize the random generator.
+      procedure Initialize;
+   private
       --  Id to session map.
       Sessions     : Session_Maps.Map;
 
-      --  Max inactive time in seconds.
-      Max_Inactive : Duration := DEFAULT_INACTIVE_TIMEOUT;
-
       --  Random number generator used for ID generation.
       Random       : Id_Random.Generator;
+   end Session_Cache;
+
+   type Session_Factory is new Ada.Finalization.Limited_Controlled with record
+      --  The session cache.
+      Sessions     : Session_Cache;
+
+      --  Max inactive time in seconds.
+      Max_Inactive : Duration := DEFAULT_INACTIVE_TIMEOUT;
 
       --  Number of 32-bit random numbers used for the ID generation.
       Id_Size      : Ada.Streams.Stream_Element_Offset := 8;

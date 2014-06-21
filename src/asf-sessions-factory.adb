@@ -38,7 +38,6 @@ package body ASF.Sessions.Factory is
    procedure Allocate_Session_Id (Factory : in out Session_Factory;
                                   Id      : out Ada.Strings.Unbounded.String_Access) is
       use Ada.Streams;
-      use Interfaces;
 
       Rand    : Stream_Element_Array (0 .. 4 * Factory.Id_Size - 1);
       Buffer  : Stream_Element_Array (0 .. 4 * 3 * Factory.Id_Size);
@@ -46,20 +45,7 @@ package body ASF.Sessions.Factory is
       Last    : Stream_Element_Offset;
       Encoded : Stream_Element_Offset;
    begin
-      Factory.Lock.Write;
-
-      --  Generate the random sequence.
-      for I in 0 .. Factory.Id_Size - 1 loop
-         declare
-            Value : constant Unsigned_32 := Id_Random.Random (Factory.Random);
-         begin
-            Rand (4 * I)     := Stream_Element (Value and 16#0FF#);
-            Rand (4 * I + 1) := Stream_Element (Shift_Right (Value, 8) and 16#0FF#);
-            Rand (4 * I + 2) := Stream_Element (Shift_Right (Value, 16) and 16#0FF#);
-            Rand (4 * I + 3) := Stream_Element (Shift_Right (Value, 24) and 16#0FF#);
-         end;
-      end loop;
-      Factory.Lock.Release_Write;
+      Factory.Sessions.Generate_Id (Rand);
 
       --  Encode the random stream in base64 and save it into the Id string.
       Encoder.Transform (Data => Rand, Into => Buffer,
@@ -92,9 +78,7 @@ package body ASF.Sessions.Factory is
 
       Session_Factory'Class (Factory).Allocate_Session_Id (Impl.Id);
 
-      Factory.Lock.Write;
-      Factory.Sessions.Insert (Impl.Id.all'Access, Sess);
-      Factory.Lock.Release_Write;
+      Factory.Sessions.Insert (Sess);
 
       Result := Sess;
    end Create_Session;
@@ -117,16 +101,7 @@ package body ASF.Sessions.Factory is
                            Id      : in String;
                            Result  : out Session) is
    begin
-      Result := Null_Session;
-      Factory.Lock.Read;
-      declare
-         Pos : constant Session_Maps.Cursor := Factory.Sessions.Find (Id'Unrestricted_Access);
-      begin
-         if Session_Maps.Has_Element (Pos) then
-            Result := Session_Maps.Element (Pos);
-         end if;
-      end;
-      Factory.Lock.Release_Read;
+      Result := Factory.Sessions.Find (Id);
 
       if Result.Is_Valid then
          Result.Impl.Access_Time := Ada.Calendar.Clock;
@@ -165,7 +140,62 @@ package body ASF.Sessions.Factory is
    overriding
    procedure Initialize (Factory : in out Session_Factory) is
    begin
-      Id_Random.Reset (Factory.Random);
+      Factory.Sessions.Initialize;
    end Initialize;
+
+   protected body Session_Cache is
+
+      --  ------------------------------
+      --  Find the session in the session cache.
+      --  ------------------------------
+      function Find (Id : in String) return Session is
+         Pos : constant Session_Maps.Cursor := Sessions.Find (Id'Unrestricted_Access);
+      begin
+         if Session_Maps.Has_Element (Pos) then
+            return Session_Maps.Element (Pos);
+         else
+            return Null_Session;
+         end if;
+      end Find;
+
+      --  ------------------------------
+      --  Insert the session in the session cache.
+      --  ------------------------------
+      procedure Insert (Sess : in Session) is
+      begin
+         Sessions.Insert (Sess.Impl.Id.all'Access, Sess);
+      end Insert;
+
+      --  ------------------------------
+      --  Generate a random bitstream.
+      --  ------------------------------
+      procedure Generate_Id (Rand : out Ada.Streams.Stream_Element_Array) is
+         use Ada.Streams;
+         use Interfaces;
+
+         Size : Stream_Element_Offset := Rand'Length / 4;
+      begin
+         --  Generate the random sequence.
+         for I in 0 .. Size - 1 loop
+            declare
+               Value : constant Unsigned_32 := Id_Random.Random (Random);
+            begin
+               Rand (4 * I)     := Stream_Element (Value and 16#0FF#);
+               Rand (4 * I + 1) := Stream_Element (Shift_Right (Value, 8) and 16#0FF#);
+               Rand (4 * I + 2) := Stream_Element (Shift_Right (Value, 16) and 16#0FF#);
+               Rand (4 * I + 3) := Stream_Element (Shift_Right (Value, 24) and 16#0FF#);
+            end;
+         end loop;
+      end Generate_Id;
+
+      --  ------------------------------
+      --  Initialize the random generator.
+      --  ------------------------------
+      procedure Initialize is
+      begin
+         Id_Random.Reset (Random);
+      end Initialize;
+
+   end Session_Cache;
 
 end ASF.Sessions.Factory;

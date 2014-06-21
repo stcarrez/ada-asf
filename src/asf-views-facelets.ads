@@ -76,13 +76,8 @@ package ASF.Views.Facelets is
 
    --  Find the facelet file in one of the facelet directories.
    --  Returns the path to be used for reading the facelet file.
-   function Find_Facelet_Path (Factory : Facelet_Factory;
-                               Name    : String) return String;
-
-   --  Register a module and directory where the module files are stored.
-   procedure Register_Module (Factory : in out Facelet_Factory;
-                              Name    : in String;
-                              Paths   : in String);
+   function Find_Facelet_Path (Factory : in Facelet_Factory;
+                               Name    : in String) return String;
 
    --  Clear the facelet cache
    procedure Clear_Cache (Factory : in out Facelet_Factory);
@@ -106,26 +101,25 @@ private
 
    use Facelet_Maps;
 
-   --  Lock for accessing the shared cache
-   protected type RW_Lock is
-      entry Read;
+   protected type Facelet_Cache is
+      --  Find the facelet entry associated with the given name.
+      function Find (Name : in Unbounded_String) return Facelet;
 
-      procedure Release_Read;
+      --  Insert or replace the facelet entry associated with the given name.
+      procedure Insert (Name : in Unbounded_String;
+                        Item : in Facelet);
 
-      entry Write;
-
-      procedure Release_Write;
+      --  Clear the cache.
+      procedure Clear;
    private
-      Readable     : Boolean := True;
-      Reader_Count : Natural := 0;
-   end RW_Lock;
+      Map     : Facelet_Maps.Map;
+   end Facelet_Cache;
 
    type Facelet_Factory is new Ada.Finalization.Limited_Controlled with record
-      Paths   : Unbounded_String := To_Unbounded_String ("");
-      Lock    : RW_Lock;
-      Map     : Facelet_Maps.Map;
+      Paths    : Unbounded_String := To_Unbounded_String ("");
 
-      Path_Map : Util.Strings.Maps.Map;
+      --  The facelet cache.
+      Map      : Facelet_Cache;
 
       --  The component factory
       Factory  : access ASF.Factory.Component_Factory;

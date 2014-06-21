@@ -86,7 +86,6 @@ package body ASF.Views.Facelets is
          Update (Factory, Fname, Res);
       end if;
       Result.Root := Res.Root;
---        Result.Path := Res.Path;
       Result.File := Res.File;
    end Find_Facelet;
 
@@ -135,39 +134,9 @@ package body ASF.Views.Facelets is
    --  ------------------------------
    function Find_Facelet_Path (Factory : Facelet_Factory;
                                Name    : String) return String is
-      use Util.Strings;
-
-      Pos : constant Natural := Ada.Strings.Fixed.Index (Name, "/", Name'First + 1);
    begin
-      if Pos > 0 then
-         --  Get the module
-         declare
-            Module   : constant String := Name (Name'First + 1 .. Pos - 1);
-            Path_Pos : constant Maps.Cursor
-              := Factory.Path_Map.Find (Module);
-         begin
-            if Maps.Has_Element (Path_Pos) then
-               Log.Info ("Looking module {0} in {1}", Module,
-                         Maps.Element (Path_Pos));
-               return Util.Files.Find_File_Path (Name (Pos + 1 .. Name'Last),
-                                                 Maps.Element (Path_Pos));
-            end if;
-         end;
-      end if;
       return Util.Files.Find_File_Path (Name, To_String (Factory.Paths));
    end Find_Facelet_Path;
-
-   --  ------------------------------
-   --  Register a module and directory where the module files are stored.
-   --  ------------------------------
-   procedure Register_Module (Factory : in out Facelet_Factory;
-                              Name    : in String;
-                              Paths   : in String) is
-   begin
-      Log.Info ("Search path for '{0}' is '{1}'", Name, Paths);
-
-      Factory.Path_Map.Include (Name, Paths);
-   end Register_Module;
 
    --  ------------------------------
    --  Find in the factory for the facelet with the given name.
@@ -179,20 +148,13 @@ package body ASF.Views.Facelets is
       use Ada.Calendar;
    begin
       Result.Root := null;
-      Factory.Lock.Read;
-      declare
-         Pos : constant Facelet_Maps.Cursor := Factory.Map.Find (Name);
-      begin
-         if Facelet_Maps.Has_Element (Pos) then
-            Result := Element (Pos);
-            if Modification_Time (Result.File.Path) > Result.Modify_Time then
-               Result.Root := null;
-               Log.Info ("Ignoring cache because file '{0}' was modified",
-                         Result.File.Path);
-            end if;
-         end if;
-      end;
-      Factory.Lock.Release_Read;
+      Result := Factory.Map.Find (Name);
+      if Result.Root /= null and then
+         Modification_Time (Result.File.Path) > Result.Modify_Time then
+            Result.Root := null;
+            Log.Info ("Ignoring cache because file '{0}' was modified",
+                      Result.File.Path);
+      end if;
    end Find;
 
    --  ------------------------------
@@ -259,9 +221,7 @@ package body ASF.Views.Facelets is
                      Name    : in Unbounded_String;
                      Item    : in Facelet) is
    begin
-      Factory.Lock.Write;
-      Factory.Map.Include (Name, Item);
-      Factory.Lock.Release_Write;
+      Factory.Map.Insert (Name, Item);
    end Update;
 
    --  ------------------------------
@@ -271,43 +231,53 @@ package body ASF.Views.Facelets is
    begin
       Log.Info ("Clearing facelet cache");
 
-      Factory.Lock.Write;
-      loop
-         declare
-            Pos  : Facelet_Maps.Cursor := Factory.Map.First;
-            Node : Facelet;
-         begin
-            exit when not Has_Element (Pos);
-            Node := Element (Pos);
-            Factory.Map.Delete (Pos);
-            Free (Node.File);
-            ASF.Views.Nodes.Destroy (Node.Root);
-         end;
-      end loop;
-      Factory.Lock.Release_Write;
+      Factory.Map.Clear;
    end Clear_Cache;
 
-   protected body RW_Lock is
-      entry Write when Reader_Count = 0 and Readable is
-      begin
-         Readable := False;
-      end Write;
+   protected body Facelet_Cache is
 
-      procedure Release_Write is
+      --  ------------------------------
+      --  Find the facelet entry associated with the given name.
+      --  ------------------------------
+      function Find (Name : in Unbounded_String) return Facelet is
+         Pos    : constant Facelet_Maps.Cursor := Map.Find (Name);
       begin
-         Readable := True;
-      end Release_Write;
+         if Facelet_Maps.Has_Element (Pos) then
+            return Element (Pos);
+         else
+            return Result : Facelet;
+         end if;
+      end Find;
 
-      entry Read when Readable is
+      --  ------------------------------
+      --  Insert or replace the facelet entry associated with the given name.
+      --  ------------------------------
+      procedure Insert (Name : in Unbounded_String;
+                        Item : in Facelet) is
       begin
-         Reader_Count := Reader_Count + 1;
-      end Read;
+         Map.Include (Name, Item);
+      end Insert;
 
-      procedure Release_Read is
+      --  ------------------------------
+      --  Clear the cache.
+      --  ------------------------------
+      procedure Clear is
       begin
-         Reader_Count := Reader_Count - 1;
-      end Release_Read;
-   end RW_Lock;
+         loop
+            declare
+               Pos  : Facelet_Maps.Cursor := Map.First;
+               Node : Facelet;
+            begin
+               exit when not Has_Element (Pos);
+               Node := Element (Pos);
+               Map.Delete (Pos);
+               Free (Node.File);
+               ASF.Views.Nodes.Destroy (Node.Root);
+            end;
+         end loop;
+      end Clear;
+
+   end Facelet_Cache;
 
    --  ------------------------------
    --  Free the storage held by the factory cache.

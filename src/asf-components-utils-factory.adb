@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Calendar;
+with Ada.Strings.Maps;
 with ASF.Views.Nodes;
 with ASF.Components.Utils.Files;
 with ASF.Components.Utils.Flush;
@@ -126,6 +127,9 @@ package body ASF.Components.Utils.Factory is
    --  Translate the value into an ISO8606 date.
    function To_ISO8601 (Value : in EL.Objects.Object) return EL.Objects.Object;
 
+   --  Encode the string for URL.
+   function Url_Encode (Value : in EL.Objects.Object) return EL.Objects.Object;
+
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
    begin
       Mapper.Set_Function (Name      => "escapeJavaScript",
@@ -141,6 +145,9 @@ package body ASF.Components.Utils.Factory is
                            Namespace => URI,
                            Func      => ASF.Components.Html.Messages.Has_Message'Access,
                            Optimize  => False);
+      Mapper.Set_Function (Name      => "urlEncode",
+                           Namespace => URI,
+                           Func      => Url_Encode'Access);
    end Set_Functions;
 
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object is
@@ -170,5 +177,41 @@ package body ASF.Components.Utils.Factory is
    begin
       return Util.Beans.Objects.To_Object (S);
    end To_ISO8601;
+
+   use Ada.Strings.Maps;
+
+   Conversion     : constant String (1 .. 16) := "0123456789ABCDEF";
+   Url_Encode_Set : constant Ada.Strings.Maps.Character_Set
+     := Ada.Strings.Maps.To_Set (Span => (Low  => Character'Val (0),
+                                          High => ' '))
+     or
+       Ada.Strings.Maps.To_Set (Span => (Low => Character'Val (128),
+                                         High => Character'Val (255)))
+     or
+       Ada.Strings.Maps.To_Set (":/?#[]@!$&'""()*+,;=");
+
+   --  ------------------------------
+   --  Encode the string for URL.
+   --  ------------------------------
+   function Url_Encode (Value : in EL.Objects.Object) return EL.Objects.Object is
+      S   : constant String := Util.Beans.Objects.To_String (Value);
+      T   : String (1 .. S'Length * 3);
+      Pos : Positive := 1;
+      C   : Character;
+   begin
+      for I in S'Range loop
+         C := S (I);
+         if Ada.Strings.Maps.Is_In (C, Url_Encode_Set) then
+            T (Pos) := '%';
+            T (Pos + 1) := Conversion (1 + Character'Pos (C) / 16);
+            T (Pos + 2) := Conversion (1 + Character'Pos (C) mod 16);
+            Pos := Pos + 3;
+         else
+            T (Pos) := C;
+            Pos := Pos + 1;
+         end if;
+      end loop;
+      return Util.Beans.Objects.To_Object (T (1 .. Pos - 1));
+   end Url_Encode;
 
 end ASF.Components.Utils.Factory;

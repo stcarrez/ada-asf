@@ -1,0 +1,11 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util"
+      xmlns:ajax="http://code.google.com/p/ada-asf/ajax">
+  <body>
+    <h:panelGroup>
+      <ajax:include id='test' styleClass='asf-container' src='/views/form.xhtml' async='true'/>
+    </h:panelGroup>
+    <util:flush/>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-utils-scripts -- Javascript queue
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,6 +36,12 @@ package ASF.Components.Utils.Scripts is
                             Writer  : in out Contexts.Writer.Response_Writer'Class;
                             Content : in String;
                             Context : in out ASF.Contexts.Faces.Faces_Context'Class);
+
+   --  If the component provides a src attribute, render the <script src='xxx'></script>
+   --  tag with an optional async attribute.
+   overriding
+   procedure Encode_Begin (UI      : in UIScript;
+                           Context : in out ASF.Contexts.Faces.Faces_Context'Class);
 
 private
 

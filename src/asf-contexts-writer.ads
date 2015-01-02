@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -192,7 +192,8 @@ package ASF.Contexts.Writer is
    --  Append a <b>script</b> include command to include the Javascript file at the given URL.
    --  The include scripts are flushed by <b>Flush</b> or <b>Write_Scripts</b>.
    procedure Queue_Include_Script (Stream : in out Response_Writer;
-                                   URL    : in String);
+                                   URL    : in String;
+                                   Async  : in Boolean := False);
 
    --  Flush the response.
    --  Before flusing the response, the javascript are also flushed

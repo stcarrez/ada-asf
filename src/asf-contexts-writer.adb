@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -558,12 +558,17 @@ package body ASF.Contexts.Writer is
    --  The include scripts are flushed by <b>Flush</b> or <b>Write_Scripts</b>.
    --  ------------------------------
    procedure Queue_Include_Script (Stream : in out Response_Writer;
-                                   URL    : in String) is
+                                   URL    : in String;
+                                   Async  : in Boolean := False) is
    begin
       Util.Strings.Builders.Append (Stream.Include_Queue,
                                     "<script type=""text/javascript"" src=""");
       Util.Strings.Builders.Append (Stream.Include_Queue, URL);
-      Util.Strings.Builders.Append (Stream.Include_Queue, """></script>");
+      if Async then
+         Util.Strings.Builders.Append (Stream.Include_Queue, """ async></script>");
+      else
+         Util.Strings.Builders.Append (Stream.Include_Queue, """></script>");
+      end if;
    end Queue_Include_Script;
 
    --  ------------------------------

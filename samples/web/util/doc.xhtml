@@ -1,5 +1,5 @@
 <!-- Util tag library documentation
-  -  Copyright (C) 2012, 2014 Stephane Carrez
+  -  Copyright (C) 2012, 2014, 2015 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -114,8 +114,9 @@
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="util:script"/>
             <ui:define name="description">
-                In the render response phase, queue some javascript code in the response stream.
-                The javascript code is automatically flushed before sending the response stream.
+                In the render response phase, queue some Javascript code in the response stream
+                or queue a Javascript file inclusion.
+                The Javascript code is automatically flushed before sending the response stream.
                 It can be flushed explicitly by using the <b>util:flush</b> component.
             </ui:define>
             <ui:define name="attributes">
@@ -124,6 +125,19 @@
                     <i>Boolean</i>
                     <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
                         or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>src</b>
+                    <i>String</i>
+                    <span>When not empty, render the inclusion of an external Javascript file.
+                    The Javascript file location is defined by the src attribute.  The Javascript file
+                        inclusions are rendered before all javascript code by the <em>util:flush</em> component.
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>async</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating whether the external Javascript file is loaded asynchronously.</span>
                 </li>
             </ui:define>
         </ui:decorate>

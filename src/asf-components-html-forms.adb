@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -153,6 +153,17 @@ package body ASF.Components.Html.Forms is
       end if;
    end Encode_Begin;
 
+   --  ------------------------------
+   --  Get the input parameter from the submitted context.  This operation is called by
+   --  <tt>Process_Decodes</tt> to retrieve the request parameter associated with the component.
+   --  ------------------------------
+   function Get_Parameter (UI      : in UIInput;
+                           Context : in Faces_Context'Class) return String is
+      Id  : constant Unbounded_String := UI.Get_Client_Id;
+   begin
+      return Context.Get_Parameter (To_String (Id));
+   end Get_Parameter;
+
    overriding
    procedure Process_Decodes (UI      : in out UIInput;
                               Context : in out Faces_Context'Class) is
@@ -162,7 +173,7 @@ package body ASF.Components.Html.Forms is
       end if;
       declare
          Id  : constant Unbounded_String := UI.Get_Client_Id;
-         Val : constant String := Context.Get_Parameter (To_String (Id));
+         Val : constant String := UIInput'Class (UI).Get_Parameter (Context);
       begin
          if not UI.Is_Secret then
             Log.Debug ("Set input parameter {0} -> {1}", Id, Val);

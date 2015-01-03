@@ -142,6 +142,12 @@ package ASF.Components.Core.Views is
    type UIViewParameter is new Html.Forms.UIInput with private;
    type UIViewParameter_Access is access all UIViewParameter'Class;
 
+   --  Get the input parameter from the submitted context.  This operation is called by
+   --  <tt>Process_Decodes</tt> to retrieve the request parameter associated with the component.
+   overriding
+   function Get_Parameter (UI      : in UIViewParameter;
+                           Context : in Faces_Context'Class) return String;
+
    --  ------------------------------
    --  View Action Component
    --  ------------------------------

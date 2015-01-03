@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -83,6 +83,11 @@ package ASF.Components.Html.Forms is
    --  Otherwise, if we have a Value_Expression evaluate and returns the value.
    overriding
    function Get_Value (UI    : in UIInput) return EL.Objects.Object;
+
+   --  Get the input parameter from the submitted context.  This operation is called by
+   --  <tt>Process_Decodes</tt> to retrieve the request parameter associated with the component.
+   function Get_Parameter (UI      : in UIInput;
+                           Context : in Faces_Context'Class) return String;
 
    --  Set the input component as a password field.
    procedure Set_Secret (UI    : in out UIInput;

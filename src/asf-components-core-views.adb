@@ -348,6 +348,22 @@ package body ASF.Components.Core.Views is
    end Set_Metadata;
 
    --  ------------------------------
+   --  Get the input parameter from the submitted context.  This operation is called by
+   --  <tt>Process_Decodes</tt> to retrieve the request parameter associated with the component.
+   --  ------------------------------
+   overriding
+   function Get_Parameter (UI      : in UIViewParameter;
+                           Context : in Faces_Context'Class) return String is
+      Name : constant String := UI.Get_Attribute ("name", Context);
+   begin
+      if Name'Length > 0 then
+         return Context.Get_Parameter (Name);
+      else
+         return Html.Forms.UIInput (UI).Get_Parameter (Context);
+      end if;
+   end Get_Parameter;
+
+   --  ------------------------------
    --  Decode the request and prepare for the execution for the view action.
    --  ------------------------------
    overriding

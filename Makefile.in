@@ -83,8 +83,8 @@ endif
 # Build executables for all mains defined by the project.
 build: regtests/asf-testsuite.adb
 	$(GNATMAKE) -m -p -P "$(ASF_GPRPATH)" $(MAKE_ARGS)
-	$(GNATMAKE) -m -p -P "$(AWS_GPRPATH)" $(MAKE_ARGS)
-	#$(GNATMAKE) -m -p -P "$(GPRPATH)" $(MAKE_ARGS)
+	test T${HAVE_AWS} = Tno || \
+		$(GNATMAKE) -m -p -P "$(AWS_GPRPATH)" $(MAKE_ARGS)
 	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS)
 
 static:

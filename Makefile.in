@@ -47,12 +47,24 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 top_builddir = .
 
-dynamodir=${prefix}/share/dynamo
-includedir=${prefix}/share/ada/adainclude
-projectdir=${prefix}/share/ada/adainclude
+# share/ada/adainclude
+infix_inc=@ADA_INC_BASE@
+
+# share/ada/adainclude
+infix_prj=@ADA_PRJ_BASE@
+
+# lib
+infix_lib=@ADA_LIB_BASE@
+
+# lib/ada/adalib
+infix_ali=@ADA_ALI_BASE@
+
+includedir=${prefix}/${infix_inc}
+projectdir=${prefix}/${infix_prj}
 bindir=${prefix}/bin
-libdir=${prefix}/lib
-alidir=${libdir}/ada/adalib/
+libdir=${prefix}/${infix_lib}
+alidir=${prefix}/${infix_ali}
+dynamodir=${prefix}/share/dynamo
 
 libname=libada_asf
 libprefix=$(libname)_
@@ -182,12 +194,12 @@ install_lib:
 	${CP} -p src/*.ad[bs] ${includedir}/ada-asf
 	test T${HAVE_AWS} = Tno || \
 		 ${CP} -p src/aws/*.ad[bs] ${includedir}/ada-asf-aws
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" < distrib/asf.gpr > ${projectdir}/asf.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" < distrib/asf_core.gpr > ${projectdir}/asf_core.gpr
+	sed -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" < distrib/asf.gpr > ${projectdir}/asf.gpr
+	sed -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" < distrib/asf_core.gpr > ${projectdir}/asf_core.gpr
 	test T${HAVE_AWS} = Tno || \
-		 sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" \
+		 sed -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" \
 			 < distrib/asf_aws.gpr > ${projectdir}/asf_aws.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" \
+	sed -e "s,LIBRARY_TYPE,$(ASF_LIBRARY_TYPE),g" \
 		< distrib/asf_unit.gpr > ${projectdir}/asf_unit.gpr
 	${CP} -p lib/asf/$(ASF_LIBRARY_TYPE)/*.ali ${alidir}/ada-asf
 	${CP} -p lib/asfunit/$(ASF_LIBRARY_TYPE)/*.ali ${alidir}/ada-asf-unit

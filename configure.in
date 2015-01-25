@@ -71,7 +71,8 @@ AC_SUBST(UTIL_DIR)
 ##########################################
 # Ada Expression Language library
 ##########################################
-AM_GNAT_FIND_PROJECT([ada-el],[Ada Expression Language Library],[el],[git@github.com:stcarrez/ada-el.git],
+AM_GNAT_FIND_PROJECT([ada-el],[Ada Expression Language Library],[el],
+  [git@github.com:stcarrez/ada-el.git],
   [Building Ada Server Faces requires the Ada EL Library.],
   [
     EL_DIR=${gnat_project_dir_el}
@@ -81,7 +82,8 @@ AC_SUBST(EL_DIR)
 ##########################################
 # Ada Security library
 ##########################################
-AM_GNAT_FIND_PROJECT([ada-security],[Ada Security Library],[security],[git@github.com:stcarrez/ada-security.git],
+AM_GNAT_FIND_PROJECT([ada-security],[Ada Security Library],[security],
+  [git@github.com:stcarrez/ada-security.git],
   [Building Ada Server Faces requires the Ada Security Library.],
   [
     SECURITY_DIR=${gnat_project_dir_security}

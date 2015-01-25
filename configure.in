@@ -101,7 +101,7 @@ AM_GNAT_CHECK_AWS(
   ], [
     ASF_SERVER=aws
     ASF_HAVE_AWS=yes
-    WITH_SERVER="with \"${gnat_project_aws}\";";
+    WITH_SERVER="with \"${gnat_project_name}\";";
     WITH_ASF_AWS="with \"asf_aws\";";
   ])
 AC_SUBST(ASF_SERVER)

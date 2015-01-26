@@ -85,7 +85,7 @@ build: regtests/asf-testsuite.adb
 	$(GNATMAKE) -m -p -P "$(ASF_GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_AWS} = Tno || \
 		$(GNATMAKE) -m -p -P "$(AWS_GPRPATH)" $(MAKE_ARGS)
-	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS)
+	$(GNATMAKE) -m -p -Pasf_tests $(MAKE_ARGS)
 
 static:
 	$(MAKE) ASF_LIBRARY_TYPE=static build
@@ -95,7 +95,7 @@ shared:
 
 # Build and run the unit tests
 check test:	build
-	$(GNATMAKE) -p -Ptests
+	$(GNATMAKE) -p -Pasf_tests
 	DIR=`pwd`; \
 	export LD_LIBRARY_PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$LD_LIBRARY_PATH"; \
 	export PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$PATH"; \
@@ -137,7 +137,7 @@ rebuild: clean build
 # Files to package in source distribution
 DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
 configure.in Makefile.in install-sh distrib test.properties ChangeLog \
-asf.gpr.in asf_core.gpr.in asf_aws.gpr.in asf_unit.gpr.in tests.gpr.in samples.gpr.in config.gpr \
+asf.gpr.in asf_core.gpr.in asf_aws.gpr.in asf_unit.gpr.in asf_tests.gpr.in samples.gpr.in config.gpr \
 src asfunit samples regtests web bundles samples.properties dynamo.xml \
 bin obj lib debian
 

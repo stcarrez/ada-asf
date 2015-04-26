@@ -136,7 +136,7 @@ rebuild: clean build
 
 # Files to package in source distribution
 DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
-configure.in Makefile.in install-sh distrib test.properties ChangeLog \
+configure.in Makefile.in install-sh distrib test.properties ChangeLog aclocal.m4 \
 asf.gpr.in asf_core.gpr.in asf_aws.gpr.in asf_unit.gpr.in asf_tests.gpr.in samples.gpr.in config.gpr \
 src asfunit samples regtests web bundles samples.properties dynamo.xml \
 bin obj lib debian

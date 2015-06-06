@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,21 +16,33 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Calendar;
+with Ada.Exceptions;
 with Ada.Strings.Maps;
 with ASF.Views.Nodes;
+with ASF.Locales;
 with ASF.Components.Utils.Files;
 with ASF.Components.Utils.Flush;
 with ASF.Components.Utils.Scripts;
 with ASF.Components.Utils.Escapes;
 with ASF.Components.Utils.Beans;
 with ASF.Components.Html.Messages;
+with ASF.Applications.Main;
+
+with Util.Log.Loggers;
+with Util.Properties.Bundles;
+with Util.Dates.Formats;
 with Util.Dates.ISO8601;
 with Util.Beans.Objects.Time;
+with Util.Locales;
 with Util.Strings.Transforms; use Util.Strings;
 
 package body ASF.Components.Utils.Factory is
 
    use ASF.Components.Base;
+
+   --  The logger
+   Log : constant Util.Log.Loggers.Logger
+     := Util.Log.Loggers.Create ("ASF.Components.Utils.Factory");
 
    function Create_File return UIComponent_Access;
    function Create_Flush return UIComponent_Access;
@@ -130,6 +142,10 @@ package body ASF.Components.Utils.Factory is
    --  Encode the string for URL.
    function Url_Encode (Value : in EL.Objects.Object) return EL.Objects.Object;
 
+   --  Format a date using the given date pattern.
+   function Format_Date (Date   : in EL.Objects.Object;
+                         Format : in EL.Objects.Object) return EL.Objects.Object;
+
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
    begin
       Mapper.Set_Function (Name      => "escapeJavaScript",
@@ -138,6 +154,9 @@ package body ASF.Components.Utils.Factory is
       Mapper.Set_Function (Name      => "escapeXml",
                            Namespace => URI,
                            Func      => Escape_Xml'Access);
+      Mapper.Set_Function (Name      => "formatDate",
+                           Namespace => URI,
+                           Func      => Format_Date'Access);
       Mapper.Set_Function (Name      => "iso8601",
                            Namespace => URI,
                            Func      => To_ISO8601'Access);
@@ -177,6 +196,34 @@ package body ASF.Components.Utils.Factory is
    begin
       return Util.Beans.Objects.To_Object (S);
    end To_ISO8601;
+
+   --  ------------------------------
+   --  Format a date using the given date pattern.
+   --  ------------------------------
+   function Format_Date (Date   : in EL.Objects.Object;
+                         Format : in EL.Objects.Object) return EL.Objects.Object is
+      Context : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
+      Locale  : constant Util.Locales.Locale := Context.Get_Locale;
+      Bundle  : ASF.Locales.Bundle;
+   begin
+      begin
+         ASF.Applications.Main.Load_Bundle (Context.Get_Application.all,
+                                            Name   => "asf",
+                                            Locale => Util.Locales.To_String (Locale),
+                                            Bundle => Bundle);
+
+      exception
+         when E : Util.Properties.Bundles.NO_BUNDLE =>
+            Log.Error ("Cannot localize dates: {0}", Ada.Exceptions.Exception_Message (E));
+      end;
+      declare
+         Time    : constant Ada.Calendar.Time := Util.Beans.Objects.Time.To_Time (Date);
+         Pattern : constant String := Util.Beans.Objects.To_String (Format);
+         Result  : constant String := Util.Dates.Formats.Format (Pattern, Time, Bundle);
+      begin
+         return EL.Objects.To_Object (Result);
+      end;
+   end Format_Date;
 
    use Ada.Strings.Maps;
 

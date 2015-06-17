@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -569,7 +569,7 @@ package body ASF.Servlets is
    --  ------------------------------
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Name     : in String;
-                         Filter   : access ASF.Filters.Filter'Class) is
+                         Filter   : in ASF.Filters.Filter_Access) is
    begin
       Log.Info ("Add servlet filter '{0}'", Name);
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -364,7 +364,7 @@ package ASF.Servlets is
    --  Registers the given filter instance with this Servlet context.
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Name     : in String;
-                         Filter   : access ASF.Filters.Filter'Class);
+                         Filter   : in ASF.Filters.Filter_Access);
 
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Target   : in String;

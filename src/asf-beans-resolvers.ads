@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-beans-resolvers -- Resolver to create and give access to managed beans
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,7 +60,7 @@ package ASF.Beans.Resolvers is
 
 private
 
-   type ELResolver is new Ada.Finalization.Limited_Controlled
+   type ELResolver is limited new Ada.Finalization.Limited_Controlled
      and EL.Contexts.ELResolver with record
       --  The current request.
       Request           : ASF.Requests.Request_Access;

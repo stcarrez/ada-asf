@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -130,7 +130,7 @@ package body ASF.Requests.Web is
                                 procedure (Name  : in String;
                                            Value : in String)) is
    begin
-      Req.Headers.Iterate_Names (Coupler => ", ",
+      Req.Headers.Iterate_Names (", ",
                                  Process => Process);
    end Iterate_Headers;
 

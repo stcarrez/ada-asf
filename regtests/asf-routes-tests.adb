@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Measures;
 with Util.Log.Loggers;
 with Util.Test_Caller;
 
@@ -272,6 +273,34 @@ package body ASF.Routes.Tests is
          Add_Route (T, Router, Path_Array (I).all, I, Bean);
       end loop;
       Router.Iterate (Process'Access);
+
+      declare
+         R  : Route_Context_Type;
+         St : Util.Measures.Stamp;
+      begin
+         for I in 1 .. 1000 loop
+            declare
+               R : Route_Context_Type;
+            begin
+               Router.Find_Route ("/admin/1/2/3/4/5/list.html", R);
+            end;
+         end loop;
+         Util.Measures.Report (St, "Find 1000 routes (fixed path)");
+      end;
+
+      declare
+         R  : Route_Context_Type;
+         St : Util.Measures.Stamp;
+      begin
+         for I in 1 .. 1000 loop
+            declare
+               R : Route_Context_Type;
+            begin
+               Router.Find_Route ("/admin/1/2/3/4/5/list.jsf", R);
+            end;
+         end loop;
+         Util.Measures.Report (St, "Find 1000 routes (extension)");
+      end;
    end Test_Iterate;
 
 end ASF.Routes.Tests;

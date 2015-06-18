@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF testsuite - Ada Server Faces Test suite
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,7 @@ with ASF.Lifecycles.Tests;
 with ASF.Navigations.Tests;
 with ASF.Models.Selects.Tests;
 with ASF.Converters.Tests;
+with ASF.Routes.Tests;
 
 package body ASF.Testsuite is
 
@@ -37,6 +38,7 @@ package body ASF.Testsuite is
    function Suite return Util.Tests.Access_Test_Suite is
       Ret : constant Util.Tests.Access_Test_Suite := Tests'Access;
    begin
+      ASF.Routes.Tests.Add_Tests (Ret);
       ASF.Requests.Tests.Add_Tests (Ret);
       ASF.Contexts.Writer.Tests.Add_Tests (Ret);
       ASF.Contexts.Faces.Tests.Add_Tests (Ret);

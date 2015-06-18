@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF tests - ASF Tests Framework
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,9 @@ with ASF.Responses.Mockup;
 with ASF.Server;
 with ASF.Applications.Main;
 with Util.Tests;
+
+with EL.Contexts.Default;
+with EL.Variables;
 
 with GNAT.Source_Info;
 
@@ -83,5 +86,24 @@ package ASF.Tests is
                               Message : in String := "Test failed";
                               Source  : String := GNAT.Source_Info.File;
                               Line    : Natural := GNAT.Source_Info.Line);
+
+   type EL_Test is new Util.Tests.Test with record
+      --  The ELContext, Variables, Resolver, Form area controlled object.
+      --  Due to AUnit implementation, we cannot store a controlled object in the Test object.
+      --  This is due to the 'for Obj'Address use Ret;' clause used by AUnit to allocate
+      --  a test object.
+      --  The application object is allocated dyanmically by Set_Up.
+      ELContext      : EL.Contexts.Default.Default_Context_Access;
+      Variables      : EL.Variables.Variable_Mapper_Access;
+      Root_Resolver  : EL.Contexts.Default.Default_ELResolver_Access;
+   end record;
+
+   --  Cleanup the test instance.
+   overriding
+   procedure Tear_Down (T : in out EL_Test);
+
+   --  Setup the test instance.
+   overriding
+   procedure Set_Up (T : in out EL_Test);
 
 end ASF.Tests;

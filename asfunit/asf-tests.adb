@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF tests - ASF Tests Framework
---  Copyright (C) 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 with GNAT.Regpat;
 
 with Ada.Strings.Unbounded;
+with Ada.Unchecked_Deallocation;
 
 with Util.Files;
 
@@ -31,6 +32,8 @@ with ASF.Responses;
 with ASF.Responses.Tools;
 
 with ASF.Filters.Dump;
+with ASF.Contexts.Faces;
+with EL.Variables.Default;
 
 package body ASF.Tests is
 
@@ -82,7 +85,7 @@ package body ASF.Tests is
       App.Add_Servlet (Name => "ajax", Server => Ajax'Access);
       App.Add_Servlet (Name => "measures", Server => Measures'Access);
       App.Add_Filter (Name => "dump", Filter => Dump'Access);
-      App.Add_Filter (Name => "measures", Filter => Measures'Access);
+      App.Add_Filter (Name => "measures", Filter => ASF.Filters.Filter'Class (Measures)'Access);
 
       --  Define servlet mappings
       App.Add_Mapping (Name => "faces", Pattern => "*.html");
@@ -258,5 +261,39 @@ package body ASF.Tests is
                                 Message & ": missing Location",
                                 Source, Line);
    end Assert_Redirect;
+
+   --  ------------------------------
+   --  Cleanup the test instance.
+   --  ------------------------------
+   overriding
+   procedure Tear_Down (T : in out EL_Test) is
+      procedure Free is
+        new Ada.Unchecked_Deallocation (EL.Contexts.Default.Default_Context'Class,
+                                        EL.Contexts.Default.Default_Context_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (EL.Variables.Variable_Mapper'Class,
+                                        EL.Variables.Variable_Mapper_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (EL.Contexts.Default.Default_ELResolver'Class,
+                                        EL.Contexts.Default.Default_ELResolver_Access);
+   begin
+      ASF.Contexts.Faces.Restore (null);
+      Free (T.ELContext);
+      Free (T.Variables);
+      Free (T.Root_Resolver);
+   end Tear_Down;
+
+   --  ------------------------------
+   --  Setup the test instance.
+   --  ------------------------------
+   overriding
+   procedure Set_Up (T : in out EL_Test) is
+   begin
+      T.ELContext     := new EL.Contexts.Default.Default_Context;
+      T.Root_Resolver := new EL.Contexts.Default.Default_ELResolver;
+      T.Variables     := new EL.Variables.Default.Default_Variable_Mapper;
+      T.ELContext.Set_Resolver (T.Root_Resolver.all'Access);
+      T.ELContext.Set_Variable_Mapper (T.Variables.all'Access);
+   end Set_Up;
 
 end ASF.Tests;

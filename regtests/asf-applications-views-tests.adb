@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Render Tests - Unit tests for ASF.Applications.Views
---  Copyright (C) 2009, 2010, 2011, 2012, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Requests.Tools;
 with ASF.Servlets.Faces;
+with ASF.Converters.Dates;
 with Ada.Directories;
 
 with Util.Files;
@@ -40,7 +41,9 @@ package body ASF.Applications.Views.Tests is
    end Set_Up;
    --  Set up performed before each test case
 
+   --  ------------------------------
    --  Test loading of facelet file
+   --  ------------------------------
    procedure Test_Load_Facelet (T : in out Test) is
 
       use ASF;
@@ -58,15 +61,27 @@ package body ASF.Applications.Views.Tests is
       Faces       : aliased ASF.Servlets.Faces.Faces_Servlet;
       List        : Util.Beans.Basic.Readonly_Bean_Access;
       List_Bean   : Util.Beans.Objects.Object;
+      Form        : Util.Beans.Basic.Readonly_Bean_Access;
+      Form_Bean   : Util.Beans.Objects.Object;
+      C           : ASF.Converters.Dates.Date_Converter_Access;
    begin
       List := Applications.Tests.Create_Form_List;
       List_Bean := Util.Beans.Objects.To_Object (List);
+
+      Form := Applications.Tests.Create_Form_Bean;
+      Form_Bean := Util.Beans.Objects.To_Object (Form);
 
       Conf.Load_Properties ("regtests/view.properties");
       Conf.Set ("view.dir", Path);
       App.Initialize (Conf, App_Factory);
       App.Register_Application ("/");
       App.Add_Servlet ("faces", Faces'Unchecked_Access);
+      C := ASF.Converters.Dates.Create_Date_Converter (Date    => ASF.Converters.Dates.DEFAULT,
+                                                       Time    => ASF.Converters.Dates.DEFAULT,
+                                                       Format  => ASF.Converters.Dates.TIME,
+                                                       Locale  => "en",
+                                                       Pattern => "");
+      App.Add_Converter ("date-default-converter", C.all'Access);
 
       App.Set_Global ("function", "Test_Load_Facelet");
       App.Set_Global ("date", "2011-12-03 03:04:05.23");
@@ -85,6 +100,7 @@ package body ASF.Applications.Views.Tests is
             Req.Set_Parameter ("file-name", To_String (T.Name));
             Req.Set_Header ("file", To_String (T.Name));
             Req.Set_Attribute ("list", List_Bean);
+            Req.Set_Attribute ("form", Form_Bean);
             App.Dispatch (Page     => View_Name,
                           Request  => Req,
                           Response => Rep);
@@ -101,15 +117,18 @@ package body ASF.Applications.Views.Tests is
       end loop;
    end Test_Load_Facelet;
 
-
+   --  ------------------------------
    --  Test case name
+   --  ------------------------------
    overriding
    function Name (T : Test) return Util.Tests.Message_String is
    begin
       return Util.Tests.Format ("Test " & To_String (T.Name));
    end Name;
 
+   --  ------------------------------
    --  Perform the test.
+   --  ------------------------------
    overriding
    procedure Run_Test (T : in out Test) is
    begin
@@ -141,7 +160,8 @@ package body ASF.Applications.Views.Tests is
             Tst      : Test_Case_Access;
          begin
             if Simple /= "." and then Simple /= ".."
-              and then Simple /= ".svn" then
+              and then Simple /= ".svn"
+            then
                Tst := new Test;
                Tst.Name := To_Unbounded_String (Dir & "/" & Simple);
                Tst.File := To_Unbounded_String ("views/" & Simple);

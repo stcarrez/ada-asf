@@ -150,6 +150,15 @@ package body ASF.Applications.Tests is
    end Get_Method_Bindings;
 
    --  ------------------------------
+   --  Create a form bean.
+   --  ------------------------------
+   function Create_Form_Bean return Util.Beans.Basic.Readonly_Bean_Access is
+      Result : constant Form_Bean_Access := new Form_Bean;
+   begin
+      return Result.all'Access;
+   end Create_Form_Bean;
+
+   --  ------------------------------
    --  Create a list of forms.
    --  ------------------------------
    function Create_Form_List return Util.Beans.Basic.Readonly_Bean_Access is

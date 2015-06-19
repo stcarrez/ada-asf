@@ -64,6 +64,9 @@ package ASF.Contexts.Faces.Tests is
    procedure Test_Max_Severity (T : in out Test);
    procedure Test_Get_Messages (T : in out Test);
 
+   --  Test the application message factory for the creation of localized messages.
+   procedure Test_Add_Localized_Message (T : in out Test);
+
    --  Test adding some exception in the faces context.
    procedure Test_Queue_Exception (T : in out Test);
 

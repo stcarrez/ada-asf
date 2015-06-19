@@ -20,7 +20,6 @@ with Ada.IO_Exceptions;
 with Ada.Unchecked_Deallocation;
 
 with Util.Test_Caller;
-with EL.Variables.Default;
 
 with ASF.Applications.Messages.Factory;
 with ASF.Contexts.Flash;

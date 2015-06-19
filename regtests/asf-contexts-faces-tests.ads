@@ -18,9 +18,6 @@
 
 with Util.Tests;
 
-with EL.Contexts.Default;
-with EL.Variables;
-
 with ASF.Tests;
 with ASF.Applications.Tests;
 with ASF.Helpers.Beans;

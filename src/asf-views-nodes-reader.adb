@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -174,8 +174,10 @@ package body ASF.Views.Nodes.Reader is
    procedure Fatal_Error (Handler : in out Xhtml_Reader;
                           Except  : in Sax.Exceptions.Sax_Parse_Exception'Class) is
       pragma Unreferenced (Handler);
+      Message : constant String := Get_Message (Except);
    begin
-      Log.Error ("{0}: {1}", Util.Serialize.IO.XML.Get_Location (Except), Get_Message (Except));
+      Log.Error ("{0}: {1}", Util.Serialize.IO.XML.Get_Location (Except), Message);
+      raise Parsing_Error with Message;
    end Fatal_Error;
 
    --  ------------------------------
@@ -342,7 +344,8 @@ package body ASF.Views.Nodes.Reader is
                   --  Check for the EL start #{ or ${
                   if (C = '#' or C = '$')
                     and then Pos + 1 <= Value'Last
-                    and then Value (Pos + 1) = '{' then
+                    and then Value (Pos + 1) = '{'
+                  then
                      Handler.State := PARSE_EXPR;
                      Append (Handler.Expr_Buffer, C);
                      Append (Handler.Expr_Buffer, '{');
@@ -353,7 +356,8 @@ package body ASF.Views.Nodes.Reader is
                      --  Handle \#{ and \${ as escape sequence
                   elsif C = '\' and then Pos + 2 <= Value'Last
                     and then Value (Pos + 2) = '{'
-                    and then (Value (Pos + 1) = '#' or Value (Pos + 1) = '$') then
+                    and then (Value (Pos + 1) = '#' or Value (Pos + 1) = '$')
+                  then
                      --  Since we have to strip the '\', flush the spaces and append the text
                      --  but ignore the '\'.
                      Append (Content.Text, Handler.Spaces);

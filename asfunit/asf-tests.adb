@@ -245,6 +245,25 @@ package body ASF.Tests is
    end Assert_Matches;
 
    --  ------------------------------
+   --  Check that the response contains the given header.
+   --  ------------------------------
+   procedure Assert_Header (T       : in Util.Tests.Test'Class;
+                            Header  : in String;
+                            Value   : in String;
+                            Reply   : in out ASF.Responses.Mockup.Response;
+                            Message : in String := "Test failed";
+                            Status  : in Natural := ASF.Responses.SC_OK;
+                            Source  : String := GNAT.Source_Info.File;
+                            Line    : Natural := GNAT.Source_Info.Line) is
+   begin
+      T.Assert (Condition => Reply.Contains_Header (Header),
+                Message   => Message & ": missing header '" & Header & "'",
+                Source    => Source,
+                Line      => Line);
+      Assert_Equals (T, Value, Reply.Get_Header (Header), Message, Source, Line);
+   end Assert_Header;
+
+   --  ------------------------------
    --  Check that the response body is a redirect to the given URI.
    --  ------------------------------
    procedure Assert_Redirect (T       : in Util.Tests.Test'Class;

@@ -1,0 +1,29 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <h1>Bloc 1</h1>
+    <util:script src="/js/some-script-not-loaded.js">
+      var invalid = 0;
+    </util:script>
+    <h1>Bloc 2</h1>
+    <util:script src="/js/script-loaded.js" rendered="true">
+      var a = 1;
+    </util:script>
+    <h1>Bloc 3</h1>
+    <util:script src="/js/script-loaded.js" async="true" rendered="true" response="true">
+      var b = 1;
+    </util:script>
+    <h1>Bloc 4</h1>
+    <util:flush response="true"/>
+
+    <div id='container'>
+      <util:script>
+      var i = 1;
+      var j = 2;
+      </util:script>
+    </div>
+
+    <util:flush/>
+  </body>
+</html>

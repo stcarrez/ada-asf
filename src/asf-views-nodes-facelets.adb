@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-facelets -- Facelets composition nodes
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -137,20 +137,24 @@ package body ASF.Views.Nodes.Facelets is
       use EL.Variables;
 
       Ctx    : constant EL.Contexts.ELContext_Access := Context.Get_ELContext;
-      Source : constant String := To_String (Get_Value (Node.Source.all, Context));
       Old    : constant access Variable_Mapper'Class := Ctx.Get_Variable_Mapper;
-      Mapper : aliased Default.Default_Variable_Mapper;
    begin
-      --  Chain the variable mapper with the previous one.
-      if Old /= null then
-         Mapper.Set_Next_Variable_Mapper (Old.all'Unchecked_Access);
+      if Node.Source = null then
+         return;
       end if;
-
-      --  Set a variable mapper for the include context.
-      --  The <ui:param> variables will be declared in that mapper.
-      Ctx.all.Set_Variable_Mapper (Mapper'Unchecked_Access);
-
+      declare
+         Source : constant String := To_String (Get_Value (Node.Source.all, Context));
+         Mapper : aliased Default.Default_Variable_Mapper;
       begin
+         --  Chain the variable mapper with the previous one.
+         if Old /= null then
+            Mapper.Set_Next_Variable_Mapper (Old.all'Unchecked_Access);
+         end if;
+
+         --  Set a variable mapper for the include context.
+         --  The <ui:param> variables will be declared in that mapper.
+         Ctx.all.Set_Variable_Mapper (Mapper'Unchecked_Access);
+
          --  Build the children to take into account the <ui:param> nodes.
          Node.Build_Children (Parent, Context);
          Context.Include_Facelet (Source => Source, Parent => Parent);
@@ -391,10 +395,15 @@ package body ASF.Views.Nodes.Facelets is
    procedure Build_Components (Node    : access Insert_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
-      Name : constant EL.Objects.Object := Get_Value (Node.Insert_Name.all, Context);
+      Name  : EL.Objects.Object;
       Found : Boolean;
    begin
-      Context.Include_Definition (EL.Objects.To_Unbounded_String (Name), Parent, Found);
+      if Node.Insert_Name = null then
+         Found := False;
+      else
+         Name := Get_Value (Node.Insert_Name.all, Context);
+         Context.Include_Definition (EL.Objects.To_Unbounded_String (Name), Parent, Found);
+      end if;
 
       --  If the definition was not found, insert the content of the <ui:insert> node.
       if not Found then

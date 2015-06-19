@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.files -- Static file servlet
---  Copyright (C) 2010, 2011, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -100,6 +100,7 @@ package body ASF.Servlets.Files is
          Response.Set_Content_Type ("image/jpg");
          return;
       end if;
+      Response.Set_Content_Type (Server.Default_Content_Type.all);
    end Set_Content_Type;
 
    --  ------------------------------
@@ -150,7 +151,8 @@ package body ASF.Servlets.Files is
       Path : constant String := Find_File_Path (Name => URI, Paths => Server.Dir.all);
    begin
       if not Ada.Directories.Exists (Path)
-        or else Ada.Directories.Kind (Path) /= Ada.Directories.Ordinary_File then
+        or else Ada.Directories.Kind (Path) /= Ada.Directories.Ordinary_File
+      then
          Response.Send_Error (Responses.SC_NOT_FOUND);
          return;
       end if;

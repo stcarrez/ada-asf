@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Strings.Fixed;
 with Ada.Exceptions;
 with Ada.Directories;
 with Ada.Unchecked_Deallocation;
@@ -150,7 +149,8 @@ package body ASF.Views.Facelets is
       Result.Root := null;
       Result := Factory.Map.Find (Name);
       if Result.Root /= null and then
-         Modification_Time (Result.File.Path) > Result.Modify_Time then
+        Modification_Time (Result.File.Path) > Result.Modify_Time
+      then
             Result.Root := null;
             Log.Info ("Ignoring cache because file '{0}' was modified",
                       Result.File.Path);
@@ -194,23 +194,29 @@ package body ASF.Views.Facelets is
          Reader.Set_Ignore_White_Spaces (Factory.Ignore_White_Spaces);
          Reader.Set_Escape_Unknown_Tags (Factory.Escape_Unknown_Tags);
          Reader.Set_Ignore_Empty_Lines (Factory.Ignore_Empty_Lines);
-         Reader.Parse (File, Read, Factory.Factory, Ctx'Unchecked_Access);
-         Input_Sources.File.Close (Read);
+         begin
+            Reader.Parse (File, Read, Factory.Factory, Ctx'Unchecked_Access);
 
-         Result := Facelet '(Root => Reader.Get_Root,
-                             File => File,
-                             Modify_Time => Mtime);
-      exception
-         when E : others =>
-            Input_Sources.File.Close (Read);
-            Result.Root := Reader.Get_Root;
+         exception
+            when ASF.Views.Nodes.Reader.Parsing_Error =>
+               Free (File);
+
+            when E : others =>
+               Free (File);
+               Log.Error ("Unexpected exception while reading: '{0}': {1}: {2}", Path,
+                          Ada.Exceptions.Exception_Name (E), Ada.Exceptions.Exception_Message (E));
+         end;
+         Result.Root := Reader.Get_Root;
+         Result.File := File;
+         if File = null then
             if Result.Root /= null then
                Result.Root.Delete;
             end if;
-            Free (File);
             Result.Root := null;
-            Log.Error ("Error while reading: '{0}': {1}: {2}", Path,
-                       Ada.Exceptions.Exception_Name (E), Ada.Exceptions.Exception_Message (E));
+         else
+            Result.Modify_Time := Mtime;
+         end if;
+         Input_Sources.File.Close (Read);
       end;
    end Load;
 

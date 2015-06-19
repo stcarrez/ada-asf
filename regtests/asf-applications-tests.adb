@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-tests -  ASF Application tests using ASFUnit
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -270,6 +270,11 @@ package body ASF.Applications.Tests is
       Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid response");
       Assert_Matches (T, ".*This is a 404 error page.*", Reply, "Invalid 404 page returned",
                       Status => ASF.Responses.SC_NOT_FOUND);
+
+      Do_Get (Request, Reply, "/file-does-not-exist.js", "test-404.html");
+      Assert_Equals (T, ASF.Responses.SC_NOT_FOUND, Reply.Get_Status, "Invalid response");
+      Assert_Matches (T, ".*This is a 404 error page.*", Reply, "Invalid 404 page returned",
+                      Status => ASF.Responses.SC_NOT_FOUND);
    end Test_Get_404;
 
    --  ------------------------------
@@ -281,9 +286,20 @@ package body ASF.Applications.Tests is
    begin
       Do_Get (Request, Reply, "/views/set.xhtml", "get-file-set.txt");
       Assert_Contains (T, "<c:set var=""user"" value=""John Smith""/>", Reply, "Wrong content");
+      Assert_Header (T, "Content-Type", "text/plain", Reply, "Content-Type");
 
       Do_Get (Request, Reply, "/views/set.html", "get-file-set.html");
       Assert_Matches (T, "^\s*John Smith\s?$", Reply, "Wrong content");
+      Assert_Header (T, "Content-Type", "text/html", Reply, "Content-Type");
+
+      Do_Get (Request, Reply, "/js/asf.js", "get-file-asf.js");
+      Assert_Matches (T, "^\s*var ASF = {};\s?$", Reply, "Wrong content");
+      Assert_Header (T, "Content-Type", "text/javascript", Reply, "Content-Type");
+
+      Do_Get (Request, Reply, "/css/asf.css", "get-file-asf.css");
+      Assert_Matches (T, "^.*asf.css.*$", Reply, "Wrong content");
+      Assert_Header (T, "Content-Type", "text/css", Reply, "Content-Type");
+
    end Test_Get_File;
 
    --  ------------------------------

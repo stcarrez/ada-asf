@@ -1,0 +1,12 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <util:set var="year" value="#{util:formatDate(date,'%Y')}" />
+    <util:set var="month" value="#{util:formatDate(date,'%m')}" />
+    <util:set var="day" value="#{util:formatDate(date,'%d')}" />
+    Year:  #{year}
+    Month: #{month}
+    Day:   #{day}
+  </body>
+</html>

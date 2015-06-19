@@ -4,6 +4,11 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
     version="1.2">
 
+  <context-param>
+    <param-name>content-type.default</param-name>
+    <param-value>text/plain</param-value>
+  </context-param>
+
   <navigation-rule>
     <from-view-id>/tests/form-text-redirect.xhtml</from-view-id>
     <navigation-case>

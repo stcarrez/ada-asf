@@ -1,0 +1,31 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testOutput" styleClass="test" style="color: red;">
+  <c:if>
+    This message must NOT be present
+  </c:if>
+  <c:if var="my_var" test="#{true}">
+    <i>var=#{my_var}</i>
+    <c:if test="#{false}">
+       <b class='bold'>Some italic NOT present</b>
+    </c:if>
+    <b class='bold' id='bold'>Some bold</b>
+  </c:if>
+  <c:set/>
+  <c:choose>
+    <c:if test="#{true}">
+	  Inner text is Ok
+	</c:if>
+  </c:choose>
+  Text between
+  <c:if test="#{false}">
+    Inner text is Ok
+  </c:if>
+  <c:choose>
+     <c:when>bad-when</c:when>
+  </c:choose>
+  <h:outputText id='default' value="#{date}">
+     <f:converter/>
+  </h:outputText>
+</p>

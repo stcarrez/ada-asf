@@ -1,0 +1,19 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testOutput" styleClass="test" style="color: red;">
+  <h:form>
+    <f:attribute name="id"/>
+    <f:attribute value="value"/>
+    <h:inputText id='count' value='testing'>
+	   <f:validateLongRange/>
+	   <f:validateLongRange minimum='1' maximum='20'/>
+	</h:inputText>    
+
+    <h:inputText id='count' value='testing'>
+	   <f:validateLength/>
+	   <f:attribute/>
+	</h:inputText>
+    <f:facet>toto</f:facet>
+  </h:form>
+</p>

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.responses -- ASF Requests
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,7 +73,7 @@ package body ASF.Responses.Mockup is
    begin
       if Resp.Headers.Contains (Name) then
          Resp.Headers.Include (Name, Resp.Headers.Element (Name) & ASCII.LF
-                               & Name & ": " & Value);
+                               & Value);
       else
          Resp.Headers.Insert (Name, Value);
       end if;
@@ -103,6 +103,7 @@ package body ASF.Responses.Mockup is
    procedure Read_Content (Resp : in out Response;
                            Into : out Ada.Strings.Unbounded.Unbounded_String) is
    begin
+      Resp.Headers.Include ("Content-Type", Resp.Get_Content_Type);
       Resp.Content.Read (Into => Into);
    end Read_Content;
 

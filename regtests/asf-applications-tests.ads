@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-tests -  ASF Application tests using ASFUnit
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -108,6 +108,9 @@ package ASF.Applications.Tests is
    --  Action to save the form
    procedure Save (Data    : in out Form_Bean;
                    Outcome : in out Unbounded_String);
+
+   --  Create a form bean.
+   function Create_Form_Bean return Util.Beans.Basic.Readonly_Bean_Access;
 
    --  Create a list of forms.
    package Form_Lists is

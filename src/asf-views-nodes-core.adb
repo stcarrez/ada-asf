@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-core -- Core nodes
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,10 +59,14 @@ package body ASF.Views.Nodes.Core is
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
       pragma Unreferenced (Parent);
-
-      Value  : constant EL.Expressions.Expression := Get_Expression (Node.Value.all);
    begin
-      Context.Set_Variable (Node.Var.Value, Value);
+      if Node.Value /= null then
+         declare
+            Value  : constant EL.Expressions.Expression := Get_Expression (Node.Value.all);
+         begin
+            Context.Set_Variable (Node.Var.Value, Value);
+         end;
+      end if;
    end Build_Components;
 
    --  ------------------------------
@@ -97,13 +101,18 @@ package body ASF.Views.Nodes.Core is
    procedure Build_Components (Node    : access If_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Facelet_Context'Class) is
-      Value : constant EL.Objects.Object := Get_Value (Node.Condition.all, Context);
    begin
-      if Node.Var /= null then
-         Context.Set_Attribute (Node.Var.Value, Value);
-      end if;
-      if EL.Objects.To_Boolean (Value) then
-         Tag_Node (Node.all).Build_Children (Parent, Context);
+      if Node.Condition /= null then
+         declare
+            Value : constant EL.Objects.Object := Get_Value (Node.Condition.all, Context);
+         begin
+            if Node.Var /= null then
+               Context.Set_Attribute (Node.Var.Value, Value);
+            end if;
+            if EL.Objects.To_Boolean (Value) then
+               Tag_Node (Node.all).Build_Children (Parent, Context);
+            end if;
+         end;
       end if;
    end Build_Components;
 
@@ -208,7 +217,11 @@ package body ASF.Views.Nodes.Core is
    function Is_Selected (Node    : When_Tag_Node;
                          Context : Facelet_Context'Class) return Boolean is
    begin
-      return EL.Objects.To_Boolean (Get_Value (Node.Condition.all, Context));
+      if Node.Condition = null then
+         return False;
+      else
+         return EL.Objects.To_Boolean (Get_Value (Node.Condition.all, Context));
+      end if;
 
    exception
       when E : others =>

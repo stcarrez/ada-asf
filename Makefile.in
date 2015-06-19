@@ -94,12 +94,16 @@ shared:
 	$(MAKE) ASF_LIBRARY_TYPE=relocatable build
 
 # Build and run the unit tests
-check test:	build
-	$(GNATMAKE) -p -Pasf_tests
+check test:	build-tests runtest
+
+runtest:
 	DIR=`pwd`; \
 	export LD_LIBRARY_PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$LD_LIBRARY_PATH"; \
 	export PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$PATH"; \
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
+
+build-tests:	build
+	$(GNATMAKE) -p -Pasf_tests
 
 regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile
 	gnatprep -DASF_SERVER=$(ASF_SERVER) regtests/asf-testsuite.gpb $@
@@ -116,6 +120,8 @@ clean:	clean_test
 	-rm -f lib/asf/*.a lib/asf/*.$(DLLEXT)
 	-rm -f lib/asfunit/*.a lib/asfunit/*.$(DLLEXT)
 	-rm -rf obj/* lib/*
+	-rm -rf cov
+	-rm asf-coverage.info asf-coverage-body.info
 
 # Clean the files produced by the unit tests
 clean_test:
@@ -133,6 +139,26 @@ analyze:
 # Clean, then build executables for all mains defined by the project.
 rebuild: clean build
 
+# Build the coverage data and make a report using lcov and genhtml
+coverage:  coverage-init runtest coverage-capture coverage-report
+
+COVERAGE_OPTIONS= \
+		 --directory src --directory asfunit --directory regtests \
+		 --directory obj --directory obj/asf/static --directory obj/asfunit/static
+
+coverage-init:
+	lcov --no-external --initial --capture $(COVERAGE_OPTIONS) \
+		 --output-file asf-coverage.info
+
+coverage-capture:
+	lcov --no-external --capture $(COVERAGE_OPTIONS) \
+		 --output-file asf-coverage.info
+	lcov --remove asf-coverage.info '*.ads' -o asf-coverage-body.info
+
+coverage-report:
+	mkdir -p cov
+	genhtml --ignore-errors source asf-coverage-body.info --legend --title "Ada Server Faces" \
+			--output-directory cov
 
 # Files to package in source distribution
 DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \

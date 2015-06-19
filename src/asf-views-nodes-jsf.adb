@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -123,7 +123,9 @@ package body ASF.Views.Nodes.Jsf is
       return Node.all'Access;
    end Create_Convert_Date_Time_Tag_Node;
 
+   --  ------------------------------
    --  Get a dateStyle or a timeStyle attribute value.
+   --  ------------------------------
    function Get_Date_Style (Node    : in Convert_Date_Time_Tag_Node;
                             Name    : in String;
                             Attr    : in Tag_Attribute_Access;
@@ -147,7 +149,9 @@ package body ASF.Views.Nodes.Jsf is
       end if;
    end Get_Date_Style;
 
+   --  ------------------------------
    --  Get the date conversion global format.
+   --  ------------------------------
    function Get_Format (Node    : in Convert_Date_Time_Tag_Node;
                         Context : in Contexts.Facelets.Facelet_Context'Class)
                         return ASF.Converters.Dates.Format_Type is
@@ -530,11 +534,16 @@ package body ASF.Views.Nodes.Jsf is
    procedure Build_Components (Node    : access Facet_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class) is
-      Facet : constant UIComponent_Access := new UIComponent;
-      Name  : constant Util.Beans.Objects.Object := Get_Value (Node.Facet_Name.all, Context);
    begin
-      Node.Build_Children (Facet, Context);
-      Parent.Add_Facet (Util.Beans.Objects.To_String (Name), Facet.all'Access, Node);
+      if Node.Facet_Name /= null then
+         declare
+            Facet : constant UIComponent_Access := new UIComponent;
+            Name  : constant Util.Beans.Objects.Object := Get_Value (Node.Facet_Name.all, Context);
+         begin
+            Node.Build_Children (Facet, Context);
+            Parent.Add_Facet (Util.Beans.Objects.To_String (Name), Facet.all'Access, Node);
+         end;
+      end if;
    end Build_Components;
 
    --  ------------------------------

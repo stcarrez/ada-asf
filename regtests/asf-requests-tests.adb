@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-requests-tests - Unit tests for requests
---  Copyright (C) 2012, 2013 Stephane Carrez
+--  Copyright (C) 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,8 @@ package body ASF.Requests.Tests is
                        Test_Split_Header'Access);
       Caller.Add_Test (Suite, "Test ASF.Requests.Accept_Locales",
                        Test_Accept_Locales'Access);
+      Caller.Add_Test (Suite, "Test ASF.Requests.Set_Attribute",
+                       Test_Set_Attribute'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -98,10 +100,35 @@ package body ASF.Requests.Tests is
       end Process_Locale;
 
    begin
+      Req.Accept_Locales (Process_Locale'Access);
+      Util.Tests.Assert_Equals (T, 1, Count, "Invalid number of calls");
+
+      Count := 0;
       Req.Set_Header ("Accept-Language", "da, en-gb;q=0.8, en;q=0.7");
       Req.Accept_Locales (Process_Locale'Access);
 
       Util.Tests.Assert_Equals (T, 3, Count, "Invalid number of calls");
    end Test_Accept_Locales;
+
+   --  ------------------------------
+   --  Test the Set_Attribute procedure.
+   --  ------------------------------
+   procedure Test_Set_Attribute (T : in out Test) is
+      use Util.Beans.Objects;
+      Req : ASF.Requests.Mockup.Request;
+   begin
+      Req.Set_Attribute ("page", Util.Beans.Objects.To_Object (Integer (1)));
+      Util.Tests.Assert_Equals (T, 1, Util.Beans.Objects.To_Integer (Req.Get_Attribute ("page")),
+                                "Invalid page attribute");
+
+      Req.Remove_Attribute ("page");
+      T.Assert (Util.Beans.Objects.Is_Null (Req.Get_Attribute ("page")),
+                "Attribute page is not null");
+
+      Req.Set_Attribute ("page", Util.Beans.Objects.To_Object (Integer (1)));
+      Req.Set_Attribute ("page", Util.Beans.Objects.Null_Object);
+      T.Assert (Util.Beans.Objects.Is_Null (Req.Get_Attribute ("page")),
+                "Attribute page is not null");
+   end Test_Set_Attribute;
 
 end ASF.Requests.Tests;

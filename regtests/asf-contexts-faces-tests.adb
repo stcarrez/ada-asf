@@ -22,6 +22,7 @@ with Ada.Unchecked_Deallocation;
 with Util.Test_Caller;
 with EL.Variables.Default;
 
+with ASF.Applications.Messages.Factory;
 with ASF.Contexts.Flash;
 with ASF.Contexts.Faces.Mockup;
 package body ASF.Contexts.Faces.Tests is
@@ -53,6 +54,8 @@ package body ASF.Contexts.Faces.Tests is
                        Test_Get_Bean_Helper'Access);
       Caller.Add_Test (Suite, "Test ASF.Contexts.Faces.Mockup",
                        Test_Mockup_Faces_Context'Access);
+      Caller.Add_Test (Suite, "Test ASF.Applications.Messages.Factory.Add_Message",
+                       Test_Add_Localized_Message'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -167,6 +170,25 @@ package body ASF.Contexts.Faces.Tests is
       Ctx.Add_Message (Client_Id => "fatal", Message => "msg3", Severity => FATAL);
       T.Assert (Ctx.Get_Maximum_Severity = FATAL, "Add message failed");
    end Test_Add_Message;
+
+   --  ------------------------------
+   --  Test the application message factory for the creation of localized messages.
+   --  ------------------------------
+   procedure Test_Add_Localized_Message (T : in out Test) is
+      App         : aliased Applications.Main.Application;
+      App_Factory : Applications.Main.Application_Factory;
+      Ctx         : aliased Faces_Context;
+      Conf        : Applications.Config;
+   begin
+      Conf.Load_Properties ("regtests/view.properties");
+      App.Initialize (Conf, App_Factory);
+      Set_Current (Ctx'Unchecked_Access, App'Unchecked_Access);
+      ASF.Applications.Messages.Factory.Add_Message (Ctx, "asf.validators.length.maximum",
+                                                     "23");
+      --  ASF.Applications.Messages.Factory.Add_Message (Ctx, "asf.exceptions.unexpected.extended",
+      --                                               "Fake-exception", "Fake-message");
+      T.Assert (Ctx.Get_Maximum_Severity = ERROR, "Add message failed");
+   end Test_Add_Localized_Message;
 
    procedure Test_Max_Severity (T : in out Test) is
       Ctx : Faces_Context;

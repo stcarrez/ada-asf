@@ -87,6 +87,16 @@ package ASF.Tests is
                               Source  : String := GNAT.Source_Info.File;
                               Line    : Natural := GNAT.Source_Info.Line);
 
+   --  Check that the response contains the given header.
+   procedure Assert_Header (T       : in Util.Tests.Test'Class;
+                            Header  : in String;
+                            Value   : in String;
+                            Reply   : in out ASF.Responses.Mockup.Response;
+                            Message : in String := "Test failed";
+                            Status  : in Natural := ASF.Responses.SC_OK;
+                            Source  : String := GNAT.Source_Info.File;
+                            Line    : Natural := GNAT.Source_Info.Line);
+
    type EL_Test is new Util.Tests.Test with record
       --  The ELContext, Variables, Resolver, Form area controlled object.
       --  Due to AUnit implementation, we cannot store a controlled object in the Test object.

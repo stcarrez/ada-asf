@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-requests-tests - Unit tests for requests
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,5 +29,8 @@ package ASF.Requests.Tests is
 
    --  Test the Accept_Locales procedure.
    procedure Test_Accept_Locales (T : in out Test);
+
+   --  Test the Set_Attribute procedure.
+   procedure Test_Set_Attribute (T : in out Test);
 
 end ASF.Requests.Tests;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.measures -- Dump performance measurements
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ package ASF.Servlets.Measures is
 
    --  The <b>Measure_Servlet</b> reports the measures collected by the
    --  application with the <b>Util.Measures</b> library.
-   type Measure_Servlet is new Servlet and ASF.Filters.Filter with private;
+   type Measure_Servlet is limited new Servlet and ASF.Filters.Filter with private;
 
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
@@ -109,7 +109,7 @@ package ASF.Servlets.Measures is
 
 private
 
-   type Measure_Servlet is new Servlet and ASF.Filters.Filter with record
+   type Measure_Servlet is limited new Servlet and ASF.Filters.Filter with record
       Measures  : aliased Util.Measures.Measure_Set;
       Current   : Util.Measures.Measure_Set_Access;
    end record;

@@ -7,8 +7,6 @@ with "asf_unit";
 
 project Asf_Tests is
 
-   for Languages use ("Ada", "Project file");
-
    Mains := ("asf_harness.adb");
 
    for Source_Dirs use ("regtests");

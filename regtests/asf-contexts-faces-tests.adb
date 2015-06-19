@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,11 +62,6 @@ package body ASF.Contexts.Faces.Tests is
                     Context : in out Faces_Context) is
    begin
       T.Form          := new ASF.Applications.Tests.Form_Bean;
-      T.ELContext     := new EL.Contexts.Default.Default_Context;
-      T.Root_Resolver := new EL.Contexts.Default.Default_ELResolver;
-      T.Variables     := new EL.Variables.Default.Default_Variable_Mapper;
-      T.ELContext.Set_Resolver (T.Root_Resolver.all'Access);
-      T.ELContext.Set_Variable_Mapper (T.Variables.all'Access);
       Context.Set_ELContext (T.ELContext.all'Access);
 
       T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("dumbledore"),
@@ -85,23 +80,10 @@ package body ASF.Contexts.Faces.Tests is
    overriding
    procedure Tear_Down (T : in out Test) is
       procedure Free is
-        new Ada.Unchecked_Deallocation (EL.Contexts.Default.Default_Context'Class,
-                                        EL.Contexts.Default.Default_Context_Access);
-      procedure Free is
-        new Ada.Unchecked_Deallocation (EL.Variables.Variable_Mapper'Class,
-                                        EL.Variables.Variable_Mapper_Access);
-      procedure Free is
-        new Ada.Unchecked_Deallocation (EL.Contexts.Default.Default_ELResolver'Class,
-                                        EL.Contexts.Default.Default_ELResolver_Access);
-      procedure Free is
         new Ada.Unchecked_Deallocation (ASF.Applications.Tests.Form_Bean'Class,
                                         ASF.Applications.Tests.Form_Bean_Access);
-
    begin
-      ASF.Contexts.Faces.Restore (null);
-      Free (T.ELContext);
-      Free (T.Variables);
-      Free (T.Root_Resolver);
+      ASF.Tests.EL_Test (T).Tear_Down;
       Free (T.Form);
    end Tear_Down;
 

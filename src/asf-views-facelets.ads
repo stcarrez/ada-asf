@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,6 @@ with ASF.Views.Nodes;
 with ASF.Contexts.Facelets;
 with ASF.Factory;
 with ASF.Components.Base;
-with Util.Strings.Maps;
 with Ada.Finalization;
 
 --  The <b>ASF.Views.Facelets</b> package contains the facelet factory

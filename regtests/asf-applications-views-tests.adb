@@ -24,7 +24,10 @@ with ASF.Responses.Mockup;
 with ASF.Requests.Tools;
 with ASF.Servlets.Faces;
 with ASF.Converters.Dates;
+with ASF.Routes.Servlets;
+with ASF.Server;
 with Ada.Directories;
+with Ada.Unchecked_Deallocation;
 
 with Util.Files;
 with Util.Beans.Basic;
@@ -45,13 +48,13 @@ package body ASF.Applications.Views.Tests is
    --  Test loading of facelet file
    --  ------------------------------
    procedure Test_Load_Facelet (T : in out Test) is
-
-      use ASF;
       use ASF.Contexts.Faces;
 
-      App      : Applications.Main.Application;
---        H        : Applications.Views.View_Handler;
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => ASF.Converters.Dates.Date_Converter'Class,
+                                        Name   => ASF.Converters.Dates.Date_Converter_Access);
 
+      App         : aliased Applications.Main.Application;
       View_Name   : constant String := To_String (T.File);
       Result_File : constant String := To_String (T.Result);
       Conf        : Applications.Config;
@@ -64,6 +67,7 @@ package body ASF.Applications.Views.Tests is
       Form        : Util.Beans.Basic.Readonly_Bean_Access;
       Form_Bean   : Util.Beans.Objects.Object;
       C           : ASF.Converters.Dates.Date_Converter_Access;
+      Container   : ASF.Server.Container;
    begin
       List := Applications.Tests.Create_Form_List;
       List_Bean := Util.Beans.Objects.To_Object (List);
@@ -76,6 +80,7 @@ package body ASF.Applications.Views.Tests is
       App.Initialize (Conf, App_Factory);
       App.Register_Application ("/");
       App.Add_Servlet ("faces", Faces'Unchecked_Access);
+      App.Add_Mapping ("*.xhtml", "faces");
       C := ASF.Converters.Dates.Create_Date_Converter (Date    => ASF.Converters.Dates.DEFAULT,
                                                        Time    => ASF.Converters.Dates.DEFAULT,
                                                        Format  => ASF.Converters.Dates.TIME,
@@ -85,29 +90,26 @@ package body ASF.Applications.Views.Tests is
 
       App.Set_Global ("function", "Test_Load_Facelet");
       App.Set_Global ("date", "2011-12-03 03:04:05.23");
+      Container.Register_Application ("/asfunit", App'Unchecked_Access);
       for I in 1 .. 2 loop
          declare
             S : Util.Measures.Stamp;
             Req       : ASF.Requests.Mockup.Request;
-            Rep       : aliased ASF.Responses.Mockup.Response;
+            Reply     : aliased ASF.Responses.Mockup.Response;
             Content   : Unbounded_String;
+            Route     : aliased ASF.Routes.Servlets.Servlet_Route_Type;
          begin
-            ASF.Requests.Tools.Set_Context (Req      => Req,
-                                            Servlet  => Faces'Unchecked_Access,
-                                            Response => Rep'Unchecked_Access);
             Req.Set_Method ("GET");
-            Req.Set_Path_Info (View_Name);
+            Req.Set_Request_URI ("/asfunit/" & View_Name);
             Req.Set_Parameter ("file-name", To_String (T.Name));
             Req.Set_Header ("file", To_String (T.Name));
             Req.Set_Attribute ("list", List_Bean);
             Req.Set_Attribute ("form", Form_Bean);
-            App.Dispatch (Page     => View_Name,
-                          Request  => Req,
-                          Response => Rep);
+            Container.Service (Req, Reply);
             Util.Measures.Report (S, "Pass" & Integer'Image (I) & ": Render view "
                                   & View_Name);
 
-            Rep.Read_Content (Content);
+            Reply.Read_Content (Content);
             Util.Files.Write_File (Result_File, Content);
             Util.Tests.Assert_Equal_Files (T       => T,
                                            Expect  => To_String (T.Expect),
@@ -115,6 +117,7 @@ package body ASF.Applications.Views.Tests is
                                            Message => "Restore and render view");
          end;
       end loop;
+      Free (C);
    end Test_Load_Facelet;
 
    --  ------------------------------

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.server -- ASF Server
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 
 with Util.Strings;
 
+with Ada.Unchecked_Deallocation;
 with Ada.Task_Attributes;
 package body ASF.Server is
 
@@ -25,6 +26,10 @@ package body ASF.Server is
 
    package Task_Context is new Ada.Task_Attributes
      (Request_Context, Null_Context);
+
+   procedure Free is
+     new Ada.Unchecked_Deallocation (Object => Binding_Array,
+                                     Name   => Binding_Array_Access);
 
    --  ------------------------------
    --  Get the current registry associated with the current request being processed
@@ -67,10 +72,11 @@ package body ASF.Server is
    begin
       if Server.Applications /= null then
          Apps (1 .. Count) := Server.Applications (1 .. Count);
+         Free (Server.Applications);
       end if;
       Server.Nb_Bindings := Count + 1;
       Apps (Apps'Last).Context  := Context;
-      Apps (Apps'Last).Base_URI := new String '(URI);
+      Apps (Apps'Last).Base_URI := Ada.Strings.Unbounded.To_Unbounded_String (URI);
       Server.Applications := Apps;
 
       --  Inform the servlet registry about the base URI.
@@ -101,6 +107,7 @@ package body ASF.Server is
 
       use Servlets;
       use Util.Strings;
+      use type Ada.Strings.Unbounded.Unbounded_String;
 
       URI        : constant String := Request.Get_Request_URI;
       Slash_Pos  : constant Natural := Index (URI, '/', URI'First + 1);
@@ -122,7 +129,7 @@ package body ASF.Server is
       end if;
 
       for I in Apps.all'Range loop
-         if Apps (I).Base_URI.all = URI (URI'First .. Prefix_End) then
+         if Apps (I).Base_URI = URI (URI'First .. Prefix_End) then
             declare
                Req        : Request_Context;
                Context    : constant Servlet_Registry_Access := Apps (I).Context;
@@ -161,5 +168,14 @@ package body ASF.Server is
       when E : others =>
          Server.Default.Error (Request, Response, E);
    end Service;
+
+   --  ------------------------------
+   --  Release the storage.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Server : in out Container) is
+   begin
+      Free (Server.Applications);
+   end Finalize;
 
 end ASF.Server;

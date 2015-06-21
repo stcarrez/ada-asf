@@ -19,6 +19,7 @@ with ASF.Requests;
 with ASF.Responses;
 with ASF.Sessions;
 with ASF.Sessions.Factory;
+with ASF.Routes;
 limited with ASF.Filters;
 
 with Ada.Finalization;
@@ -28,6 +29,7 @@ with Ada.Calendar;
 with Ada.Exceptions;
 
 with Util.Properties;
+with Util.Strings.Vectors;
 
 private with Ada.Containers.Indefinite_Hashed_Maps;
 
@@ -48,6 +50,9 @@ package ASF.Servlets is
 
    --  Filter chain as defined by JSR 315 6. Filtering
    type Filter_Chain is limited private;
+
+   type Filter_Access is access all ASF.Filters.Filter'Class;
+   type Filter_List_Access is access all ASF.Filters.Filter_List;
 
    --  Causes the next filter in the chain to be invoked, or if the calling
    --  filter is the last filter in the chain, causes the resource at the end
@@ -364,7 +369,7 @@ package ASF.Servlets is
    --  Registers the given filter instance with this Servlet context.
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Name     : in String;
-                         Filter   : in ASF.Filters.Filter_Access);
+                         Filter   : in Filter_Access);
 
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Target   : in String;
@@ -415,7 +420,7 @@ package ASF.Servlets is
                                    URI      : in String);
 
    --  Start the application.
-   procedure Start (Registry : in out Servlet_Registry) is null;
+   procedure Start (Registry : in out Servlet_Registry);
 
    --  Finalize the servlet registry releasing the internal mappings.
    overriding
@@ -425,62 +430,14 @@ private
 
    use Ada.Strings.Unbounded;
 
-   type Filter_Access is access all ASF.Filters.Filter'Class;
-   type Filter_List is array (Natural range <>) of Filter_Access;
-   type Filter_List_Access is access all Filter_List;
-
-   type Mapping_Type is (MAP_URI_NODE, MAP_URI, MAP_WILDCARD, MAP_EXTENSION, MAP_PATH_EXTENSION);
-
-   type Mapping_Node;
-   type Mapping_Access is access all Mapping_Node;
-
-   type Mapping_Node (Len : Natural) is new Ada.Finalization.Limited_Controlled with record
-      --  The next mapping node to check if the current node does not match.
-      Next_Map         : Mapping_Access;
-
-      --  The first child mapping to check if the current node matches.
-      --  (used only for MAP_URI_NODE)
-      Child_Map        : Mapping_Access;
-
-      --  The next mapping for the servlet
-      Next_Servlet_Map : Mapping_Access;
-
-      --  The mapping type
-      Map_Type  : Mapping_Type;
-
-      --  The servlet to invoke if there is a match
-      Servlet   : Servlet_Access;
-
-      --  The list of filters to invoke before the servlet
-      Filters   : Filter_List_Access;
-
-      --  The position of the first character to build the path info part of the request.
-      Path_Pos  : Natural := 0;
-
-      --  The URI string component to check (or the extension part)
-      URI       : String (1 .. Len);
-   end record;
-
-   overriding
-   procedure Finalize (Map : in out Mapping_Node);
-
-   procedure Traverse (Map : in out Mapping_Node);
-
-   procedure Dump_Map (Map : in Mapping_Node;
-                       Indent : in String := "");
-
-   --  Append the filter to the filter list defined by the mapping node.
-   procedure Append_Filter (Mapping : in out Mapping_Node;
-                            Filter  : in Filter_Access);
-
    --  Find the servlet and filter mapping that must be used for the given URI.
    --  Search the mapping according to Ch 12/SRV 11. Mapping Requests to Servlets:
    --  o look for an exact match,
    --  o look for the longest match,
    --  o look for an extension
    --  o use the default servlet mapping
-   function Find_Mapping (Registry : in Servlet_Registry;
-                          URI      : in String) return Mapping_Access;
+--     function Find_Mapping (Registry : in Servlet_Registry;
+--                            URI      : in String) return Mapping_Access;
 
    type Filter_Chain is limited record
       Filter_Pos : Natural;
@@ -489,14 +446,12 @@ private
    end record;
 
    type Request_Dispatcher is limited record
-      Mapping : Mapping_Access := null;
+      Context : aliased ASF.Routes.Route_Context_Type;
       Servlet : Servlet_Access := null;
-      Path    : Unbounded_String;
       Pos     : Natural := 0;
    end record;
 
    type Servlet is new Ada.Finalization.Limited_Controlled with record
-      Mappings  : Mapping_Access := null;
       Name      : Unbounded_String;
       Context   : Servlet_Registry_Access := null;
    end record;
@@ -525,10 +480,14 @@ private
       Config            : Util.Properties.Manager;
       Servlets          : Servlet_Maps.Map;
       Filters           : Filter_Maps.Map;
-      Mappings          : Mapping_Access := null;
-      Extension_Mapping : Mapping_Access := null;
+      Filter_Rules      : Filter_Maps.Map;
+      Filter_Patterns   : Util.Strings.Vectors.Vector;
       Error_Pages       : Error_Maps.Map;
       Context_Path      : Unbounded_String;
+      Routes            : ASF.Routes.Router_Type;
    end record;
+
+   --  Install the servlet filters after all the mappings have been registered.
+   procedure Install_Filters (Registry : in out Servlet_Registry);
 
 end ASF.Servlets;

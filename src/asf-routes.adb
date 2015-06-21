@@ -180,14 +180,41 @@ package body ASF.Routes is
                end if;
             end;
 
-         elsif Pattern (First) = '*' and Pos = Pattern'Last then
-            if First + 1 >= Pattern'Last or else Pattern (First + 1) /= '.' then
-               return;
+         elsif Pattern (First) = '*' and First = Pattern'Last then
+            Prev := null;
+            Found := False;
+
+            --  Find the Wildcard_Node.
+            while Node /= null loop
+               Found := Node.all in Wildcard_Node_Type'Class;
+               exit when Found;
+               Prev := Node;
+               Node := Node.Next_Route;
+            end loop;
+
+            if not Found then
+               declare
+                  Wildcard  : Wildcard_Node_Access;
+               begin
+                  Wildcard := new Wildcard_Node_Type;
+                  Node := Wildcard.all'Access;
+                  if Prev /= null then
+                     Prev.Next_Route := Node;
+                  else
+                     Parent.Children := Node;
+                  end if;
+               end;
             end if;
+            Parent := Node;
+
+         elsif Pattern (First) = '*' and Pos = Pattern'Last then
+--              if First + 1 >= Pattern'Last or else Pattern (First + 1) /= '.' then
+--                 return;
+--              end if;
             declare
                Ext      : Extension_Node_Access;
             begin
-               First := First + 2;
+               First := First + 1;
                Prev := null;
                Found := False;
 
@@ -333,10 +360,16 @@ package body ASF.Routes is
             end;
          elsif Match = WILDCARD_MATCH then
             declare
-               Ext : constant Natural := Util.Strings.Rindex (Path, '/');
+               Ext   : constant Natural := Util.Strings.Rindex (Path, '/');
+               Count : Natural;
             begin
                Match := N.Matches (Path (Ext + 1 .. Path'Last), True);
-               if Match = YES_MATCH then
+               if Match = YES_MATCH or Match = WILDCARD_MATCH then
+                  Count := Context.Count + 1;
+                  Context.Count := Count;
+                  Context.Params (Count).Route := N;
+                  Context.Params (Count).First := Pos;
+                  Context.Params (Count).Last := Path'Last;
                   Context.Route := N.Route;
                   return;
                end if;
@@ -479,7 +512,7 @@ package body ASF.Routes is
          Pos := Util.Strings.Index (Name, '.');
          if Pos = 0 then
             return NO_MATCH;
-         elsif Name (Pos + 1 .. Name'Last) = Node.Ext then
+         elsif Name (Pos .. Name'Last) = Node.Ext then
             return YES_MATCH;
          else
             return NO_MATCH;
@@ -493,7 +526,28 @@ package body ASF.Routes is
    overriding
    function Get_Pattern (Node : in Extension_Node_Type) return String is
    begin
-      return "*." & Node.Ext;
+      return "*" & Node.Ext;
+   end Get_Pattern;
+
+   --  ------------------------------
+   --  Check if the route node accepts the given extension.
+   --  Returns WILDCARD_MATCH.
+   --  ------------------------------
+   overriding
+   function Matches (Node    : in Wildcard_Node_Type;
+                     Name    : in String;
+                     Is_Last : in Boolean) return Route_Match_Type is
+   begin
+      return WILDCARD_MATCH;
+   end Matches;
+
+   --  ------------------------------
+   --  Return the component path pattern that this route node represents (ie, *).
+   --  ------------------------------
+   overriding
+   function Get_Pattern (Node : in Wildcard_Node_Type) return String is
+   begin
+      return "*";
    end Get_Pattern;
 
    --  ------------------------------

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-security-tests - Unit tests for ASF.Security
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,6 +50,7 @@ package body ASF.Security.Tests is
       Sec.Read_Policy (Util.Tests.Get_Path ("regtests/files/permissions/simple-policy.xml"));
       Ctx.Add_Mapping (Pattern => "*.jsf", Name => "Faces");
       Ctx.Add_Filter_Mapping (Pattern => "*.jsf", Name => "Security");
+      Ctx.Start;
 
       declare
          Dispatcher : constant ASF.Servlets.Request_Dispatcher

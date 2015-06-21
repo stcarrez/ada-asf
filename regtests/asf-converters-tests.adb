@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
+with Ada.Unchecked_Deallocation;
 with Util.Beans.Objects.Time;
 with Util.Test_Caller;
 with ASF.Tests;
@@ -63,6 +64,10 @@ package body ASF.Converters.Tests is
                                    Date_Style : in Dates.Style_Type;
                                    Time_Style : in Dates.Style_Type;
                                    Expect     : in String) is
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => ASF.Converters.Dates.Date_Converter'Class,
+                                        Name   => ASF.Converters.Dates.Date_Converter_Access);
+
       Ctx   : aliased ASF.Contexts.Faces.Faces_Context;
       UI    : ASF.Components.Html.Text.UIOutput;
       C     : ASF.Converters.Dates.Date_Converter_Access;
@@ -97,6 +102,7 @@ package body ASF.Converters.Tests is
       begin
          Util.Tests.Assert_Equals (T, Expect, R, "Invalid date conversion");
       end;
+      Free (C);
    end Test_Date_Conversion;
 
    --  ------------------------------

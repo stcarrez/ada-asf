@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Sessions Tests - Unit tests for ASF.Sessions
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ with Util.Measures;
 
 with ASF.Applications;
 with ASF.Streams;
+with ASF.Routes.Servlets;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 package body ASF.Servlets.Tests is
@@ -57,13 +58,15 @@ package body ASF.Servlets.Tests is
                             URI          : in String;
                             Servlet_Path : in String;
                             Path_Info    : in String) is
+      use type ASF.Routes.Route_Type_Access;
+
       Dispatcher : constant Request_Dispatcher
         := Ctx.Get_Request_Dispatcher (Path => URI);
       Req        : ASF.Requests.Mockup.Request;
       Resp       : ASF.Responses.Mockup.Response;
       Result     : Unbounded_String;
    begin
-      T.Assert (Dispatcher.Mapping /= null, "No mapping found");
+      T.Assert (Dispatcher.Context.Get_Route /= null, "No mapping found for " & URI);
 
       Req.Set_Request_URI ("test1");
       Req.Set_Method ("GET");
@@ -99,7 +102,7 @@ package body ASF.Servlets.Tests is
 
       Ctx.Add_Mapping (Pattern => "/p1/p2/p3/*", Name => "Faces");
 
-      Check_Request (T, Ctx, "/home/test.jsf", "", "/home/test.jsf");
+      Check_Request (T, Ctx, "/home/test.jsf", "/home/test.jsf", "");
    end Test_Request_Dispatcher;
 
    --  ------------------------------
@@ -180,13 +183,19 @@ package body ASF.Servlets.Tests is
                             Ctx    : in Servlet_Registry;
                             URI    : in String;
                             Server : in Servlet_Access) is
-      Map : constant Mapping_Access := Ctx.Find_Mapping (URI);
+      use type ASF.Routes.Route_Type_Access;
+
+      Disp  : constant Request_Dispatcher := Ctx.Get_Request_Dispatcher (URI);
+      Route : constant ASF.Routes.Route_Type_Access := Disp.Context.Get_Route;
    begin
-      if Map = null then
-         T.Assert (Server = null, "No mapping returned for URI: " & URI);
+      if Server = null then
+         T.Assert (Route = null, "No mapping returned for URI: " & URI);
       else
-         T.Assert (Server /= null, "A mapping is returned for URI: " & URI);
-         T.Assert (Map.Servlet = Server, "Invalid mapping returned for URI: " & URI);
+         T.Assert (Route /= null, "A mapping is returned for URI: " & URI);
+         T.Assert (Route.all in ASF.Routes.Servlets.Servlet_Route_Type'Class,
+                   "The route is not a Servlet route");
+         T.Assert (ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet = Server,
+                   "Invalid mapping returned for URI: " & URI);
       end if;
    end Check_Mapping;
 
@@ -195,8 +204,6 @@ package body ASF.Servlets.Tests is
    --  ------------------------------
    procedure Test_Create_Servlet (T : in out Test) is
       Ctx : Servlet_Registry;
-
-      Map : Mapping_Access;
    begin
       Ctx.Add_Servlet (Name => "Faces", Server => S1'Access);
       Ctx.Add_Servlet (Name => "Text", Server => S2'Access);
@@ -213,7 +220,7 @@ package body ASF.Servlets.Tests is
       Ctx.Add_Mapping (Pattern => "/1/2/3/4/5/6/7/8/9/server/list2", Server => S2'Access);
       Ctx.Add_Mapping (Pattern => "/1/2/3/4/5/6/7/8/A/server/list2", Server => S1'Access);
 
-      Ctx.Mappings.Dump_Map (" ");
+      --  Ctx.Mappings.Dump_Map (" ");
 
       T.Check_Mapping (Ctx, "/joe/black/joe.jsf", S1'Access);
       T.Check_Mapping (Ctx, "/joe/black/joe.txt", S2'Access);
@@ -222,32 +229,32 @@ package body ASF.Servlets.Tests is
       T.Check_Mapping (Ctx, "/1/2/3/4/5/6/7/8/9/server/list2", S2'Access);
       T.Check_Mapping (Ctx, "/1/2/3/4/5/6/7/8/A/server/list2", S1'Access);
 
-      declare
-         St : Util.Measures.Stamp;
-      begin
-         for I in 1 .. 1000 loop
-            Map := Ctx.Find_Mapping (URI => "/joe/black/joe.jsf");
-         end loop;
-         Util.Measures.Report (St, "Find 1000 mapping (extension)");
-      end;
+--        declare
+--           St : Util.Measures.Stamp;
+--        begin
+--           for I in 1 .. 1000 loop
+--              Map := Ctx.Find_Mapping (URI => "/joe/black/joe.jsf");
+--           end loop;
+--           Util.Measures.Report (St, "Find 1000 mapping (extension)");
+--        end;
 
-      T.Assert (Map /= null, "No mapping for 'joe.jsf'");
-      T.Assert (Map.Servlet /= null, "No servlet for mapping for 'joe.jsf'");
-      T.Assert (Map.Servlet = S1'Access, "Invalid servlet");
+--        T.Assert (Map /= null, "No mapping for 'joe.jsf'");
+--        T.Assert (Map.Servlet /= null, "No servlet for mapping for 'joe.jsf'");
+--        T.Assert (Map.Servlet = S1'Access, "Invalid servlet");
       --        Util.Measures.Report (St, "10 Session create");
 
-      declare
-         St : Util.Measures.Stamp;
-      begin
-         for I in 1 .. 1000 loop
-            Map := Ctx.Find_Mapping (URI => "/1/2/3/4/5/6/7/8/9/server/list2");
-         end loop;
-         Util.Measures.Report (St, "Find 1000 mapping (path)");
-      end;
-
-      T.Assert (Map /= null, "No mapping for '/server/john/joe.jsf'");
-      T.Assert (Map.Servlet /= null, "No servlet for mapping for 'joe.jsf'");
-      T.Assert (Map.Servlet = S2'Access, "Invalid servlet");
+--        declare
+--           St : Util.Measures.Stamp;
+--        begin
+--           for I in 1 .. 1000 loop
+--              Map := Ctx.Find_Mapping (URI => "/1/2/3/4/5/6/7/8/9/server/list2");
+--           end loop;
+--           Util.Measures.Report (St, "Find 1000 mapping (path)");
+--        end;
+--
+--        T.Assert (Map /= null, "No mapping for '/server/john/joe.jsf'");
+--        T.Assert (Map.Servlet /= null, "No servlet for mapping for 'joe.jsf'");
+--        T.Assert (Map.Servlet = S2'Access, "Invalid servlet");
       --        Util.Measures.Report (St, "10 Session create");
 
    end Test_Create_Servlet;

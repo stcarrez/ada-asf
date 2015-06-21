@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.server -- ASF Server
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Finalization;
+with Ada.Strings.Unbounded;
 
 with ASF.Requests;
 with ASF.Responses;
@@ -56,7 +57,7 @@ private
    --  It is expected that the number of ASF applications is small (1-10 per server).
    type Binding is record
       Context  : ASF.Servlets.Servlet_Registry_Access;
-      Base_URI : access String;
+      Base_URI : Ada.Strings.Unbounded.Unbounded_String;
    end record;
 
    type Binding_Array is array (Natural range <>) of Binding;
@@ -77,5 +78,9 @@ private
    --  Set the current registry.  This is called by <b>Service</b> once the
    --  registry is identified from the URI.
    procedure Set_Context (Context : in Request_Context);
+
+   --  Release the storage.
+   overriding
+   procedure Finalize (Server : in out Container);
 
 end ASF.Server;

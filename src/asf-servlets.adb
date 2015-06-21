@@ -16,14 +16,14 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Strings.Fixed;
-with Ada.Unchecked_Deallocation;
-
 with ASF.Filters;
 with ASF.Streams;
 with ASF.Requests.Tools;
+with ASF.Routes.Servlets;
 
 with EL.Objects;
+with EL.Contexts.Default;
+
 with GNAT.Traceback.Symbolic;
 
 with Util.Strings;
@@ -44,15 +44,12 @@ with Util.Log.Loggers;
 --
 package body ASF.Servlets is
 
-   use Ada.Strings.Fixed;
    use Ada.Finalization;
 
-   use Util.Log;
+   use type ASF.Routes.Route_Type_Access;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Servlets");
-
-   procedure Free_List (Map : in out Mapping_Access);
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Servlets");
 
    No_Time : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (Year => 1901,
                                                                  Month => 1,
@@ -357,37 +354,40 @@ package body ASF.Servlets is
    procedure Forward (Dispatcher : in Request_Dispatcher;
                       Request    : in out Requests.Request'Class;
                       Response   : in out Responses.Response'Class) is
+      use type ASF.Filters.Filter_List_Access;
+
+      Route : constant ASF.Routes.Route_Type_Access := ASF.Routes.Get_Route (Dispatcher.Context);
    begin
-      Request.Set_Path_Info (To_String (Dispatcher.Path), Dispatcher.Pos);
-
-      if Dispatcher.Servlet /= null then
-         ASF.Requests.Tools.Set_Context (Request, Dispatcher.Servlet.all'Access,
-                                         Response'Unchecked_Access);
-         Dispatcher.Servlet.Service (Request, Response);
-
-      elsif Dispatcher.Mapping = null or else Dispatcher.Mapping.Servlet = null then
+      if Route = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
-
-         --  If we have some filters, create the filter chain
-         --  and invoke the first filter.
-      elsif Dispatcher.Mapping.Filters /= null then
-         declare
-            Chain : Filter_Chain;
-         begin
-            ASF.Requests.Tools.Set_Context (Request, Dispatcher.Mapping.Servlet.all'Access,
-                                            Response'Unchecked_Access);
-            Chain.Filters := Dispatcher.Mapping.Filters;
-            Chain.Servlet := Dispatcher.Mapping.Servlet;
-            Chain.Filter_Pos := Chain.Filters'Last;
-            Do_Filter (Chain    => Chain,
-                       Request  => Request,
-                       Response => Response);
-         end;
-
       else
-         ASF.Requests.Tools.Set_Context (Request, Dispatcher.Mapping.Servlet.all'Access,
-                                         Response'Unchecked_Access);
-         Dispatcher.Mapping.Servlet.Service (Request, Response);
+         declare
+            Servlet_Route : constant ASF.Routes.Servlets.Servlet_Route_Type_Access
+              := ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all)'Access;
+         begin
+            if Servlet_Route.Filters = null then
+               ASF.Requests.Tools.Set_Context (Request,
+                                               Response'Unchecked_Access,
+                                               Dispatcher.Context'Unrestricted_Access);
+               Servlet_Route.Servlet.Service (Request, Response);
+            else
+               --  If we have some filters, create the filter chain
+               --  and invoke the first filter.
+               declare
+                  Chain : Filter_Chain;
+               begin
+                  ASF.Requests.Tools.Set_Context (Request,
+                                                  Response'Unchecked_Access,
+                                                  Dispatcher.Context'Unrestricted_Access);
+                  Chain.Filters := Servlet_Route.Filters.all'Access;
+                  Chain.Servlet := Servlet_Route.Servlet;
+                  Chain.Filter_Pos := Chain.Filters'Last;
+                  Do_Filter (Chain    => Chain,
+                             Request  => Request,
+                             Response => Response);
+               end;
+            end if;
+         end;
       end if;
    end Forward;
 
@@ -406,11 +406,12 @@ package body ASF.Servlets is
    procedure Include (Dispatcher : in Request_Dispatcher;
                       Request    : in out Requests.Request'Class;
                       Response   : in out Responses.Response'Class) is
+      Route : constant ASF.Routes.Route_Type_Access := ASF.Routes.Get_Route (Dispatcher.Context);
    begin
-      if Dispatcher.Mapping = null or else Dispatcher.Mapping.Servlet = null then
+      if Route = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
       else
-         Dispatcher.Mapping.Servlet.Service (Request, Response);
+         ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet.Service (Request, Response);
       end if;
    end Include;
 
@@ -425,13 +426,14 @@ package body ASF.Servlets is
                                     return Request_Dispatcher is
    begin
       return R : Request_Dispatcher do
-         R.Mapping := Context.Find_Mapping (URI => Path);
-         if R.Mapping /= null and then R.Mapping.Path_Pos > 1 then
-            R.Pos := R.Mapping.Path_Pos - 1;
-         else
-            R.Pos := 0;
-         end if;
-         R.Path := To_Unbounded_String (Path);
+         Context.Routes.Find_Route (Path, R.Context);
+         --  R.Mapping := Context.Find_Mapping (URI => Path);
+         --  if R.Mapping /= null and then R.Mapping.Path_Pos > 1 then
+         --   R.Pos := R.Mapping.Path_Pos - 1;
+         --  else
+         R.Pos := ASF.Routes.Get_Path_Pos (R.Context);
+--           end if;
+--         R.Path := To_Unbounded_String (Path);
       end return;
    end Get_Request_Dispatcher;
 
@@ -569,7 +571,7 @@ package body ASF.Servlets is
    --  ------------------------------
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Name     : in String;
-                         Filter   : in ASF.Filters.Filter_Access) is
+                         Filter   : in Filter_Access) is
    begin
       Log.Info ("Add servlet filter '{0}'", Name);
 
@@ -598,8 +600,12 @@ package body ASF.Servlets is
       if Chain.Filter_Pos = 0 then
          Chain.Servlet.Service (Request, Response);
       else
-         Chain.Filter_Pos := Chain.Filter_Pos - 1;
-         Chain.Filters (Chain.Filter_Pos + 1).Do_Filter (Request, Response, Chain);
+         declare
+            Filter : constant ASF.Filters.Filter_Access := Chain.Filters (Chain.Filter_Pos);
+         begin
+            Chain.Filter_Pos := Chain.Filter_Pos - 1;
+            Filter.Do_Filter (Request, Response, Chain);
+         end;
       end if;
    end Do_Filter;
 
@@ -611,105 +617,90 @@ package body ASF.Servlets is
       return Chain.Servlet.Context;
    end Get_Servlet_Context;
 
-   procedure Free is
-     new Ada.Unchecked_Deallocation (Filter_List, Filter_List_Access);
-
-   procedure Free is
-     new Ada.Unchecked_Deallocation (Mapping_Node, Mapping_Access);
-
-   procedure Free_List (Map : in out Mapping_Access) is
+   function Match_Pattern (Pattern : in String;
+                           URI     : in String) return Boolean is
+      Pos  : Natural := Pattern'First;
+      Last : Natural;
    begin
-      while Map /= null loop
-         declare
-            Next : constant Mapping_Access := Map.Next_Map;
-         begin
-            Free (Map);
-            Map := Next;
-         end;
+      --  *.html,       /home/*.html -> True
+      --  /home/*.html, /home/users/:id ->False
+      --  /home/*.html, /home/users/:id/view.html -> True
+      --  /home/*.html, /home/index.html -> True
+      loop
+         if Pattern (Pos) = '*' then
+            if Pos = Pattern'Last then
+               return True;
+            end if;
+            Pos := Pos + 1;
+            if Pattern (Pos) /= '.' then
+               return False;
+            end if;
+            Last := Util.Strings.Rindex (URI, '.');
+            if Last = 0 then
+               return False;
+            end if;
+            if Pattern (Pos .. Pattern'Last) = URI (Last .. URI'Last) then
+               return True;
+            else
+               return False;
+            end if;
+         elsif Pos > URI'Last then
+            return False;
+         elsif Pattern (Pos) /= URI (Pos) then
+            return False;
+         end if;
+         Pos := Pos + 1;
+         if Pos = Pattern'Last then
+            if Pos = URI'Last then
+               return True;
+            else
+               return False;
+            end if;
+         end if;
       end loop;
-   end Free_List;
-
-   procedure Finalize (Map : in out Mapping_Node) is
-   begin
-      Free_List (Map.Child_Map);
-      Free (Map.Filters);
-   end Finalize;
-
-   procedure Traverse (Map : in out Mapping_Node) is
-   begin
-      null;
-   end Traverse;
-
-   procedure Dump_Map (Map : in Mapping_Node;
-                       Indent : in String := "") is
-      function Get_Name return String;
-      pragma Inline (Get_Name);
-
-      function Get_Filters return String;
-      pragma Inline (Get_Filters);
-
-      function Get_Name return String is
-      begin
-         if Map.Servlet /= null then
-            return Map.Servlet.Get_Name;
-         else
-            return "";
-         end if;
-      end Get_Name;
-
-      function Get_Filters return String is
-      begin
-         if Map.Filters /= null then
-            return " F(" & Natural'Image (Map.Filters'Length) & ")";
-         else
-            return "";
-         end if;
-      end Get_Filters;
-
-      Name : constant String := Get_Name;
-   begin
-      case Map.Map_Type is
-         when MAP_URI_NODE =>
-            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI, Name & Get_Filters);
-
-         when MAP_URI =>
-            Log.Info ("{0} +- [{1}] => {2}", Indent, Map.URI, Name & Get_Filters);
-
-         when MAP_WILDCARD =>
-            Log.Info ("{0} +- [*] => {2}", Indent, Name & Get_Filters);
-
-         when MAP_EXTENSION | MAP_PATH_EXTENSION =>
-            Log.Info ("{0} +- [*.{1}] => {2}", Indent, Map.URI, Name & Get_Filters);
-
-      end case;
-      if Map.Child_Map /= null then
-         Map.Child_Map.Dump_Map (Indent & " ");
-      end if;
-      if Map.Next_Map /= null then
-         Map.Next_Map.Dump_Map (Indent);
-      end if;
-   end Dump_Map;
+   end Match_Pattern;
 
    --  ------------------------------
-   --  Append the filter to the filter list defined by the mapping node.
+   --  Install the servlet filters after all the mappings have been registered.
    --  ------------------------------
-   procedure Append_Filter (Mapping : in out Mapping_Node;
-                            Filter  : in Filter_Access) is
-      List : Filter_List_Access;
+   procedure Install_Filters (Registry : in out Servlet_Registry) is
+      procedure Process (URI   : in String;
+                         Route : in ASF.Routes.Route_Type_Access);
+
+      procedure Process (URI   : in String;
+                         Route : in ASF.Routes.Route_Type_Access) is
+         Iter : Util.Strings.Vectors.Cursor := Registry.Filter_Patterns.First;
+         Servlet_Route : ASF.Routes.Servlets.Servlet_Route_Type_Access;
+      begin
+         if not (Route.all in ASF.Routes.Servlets.Servlet_Route_Type'Class) then
+            return;
+         end if;
+         Servlet_Route := ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all)'Access;
+         while Util.Strings.Vectors.Has_Element (Iter) loop
+            declare
+               Pattern : constant String := Util.Strings.Vectors.Element (Iter);
+               Filter  : Filter_Access;
+            begin
+               if Match_Pattern (Pattern, URI) then
+                  Filter := Registry.Filter_Rules.Element (Pattern);
+                  ASF.Routes.Servlets.Append_Filter (Servlet_Route.all, Filter.all'Access);
+               end if;
+            end;
+            Util.Strings.Vectors.Next (Iter);
+         end loop;
+      end Process;
+
    begin
-      --  Filters are executed through the <b>Filter_Chain.Do_Filter</b> method
-      --  starting from the last position to the first.  To append a filter,
-      --  it must be inserted as first position of the list.
-      if Mapping.Filters = null then
-         List := new Filter_List (1 .. 1);
-      else
-         List := new Filter_List (1 .. Mapping.Filters'Last + 1);
-         List (2 .. List'Last) := Mapping.Filters.all;
-         Free (Mapping.Filters);
-      end if;
-      List (List'First) := Filter;
-      Mapping.Filters := List;
-   end Append_Filter;
+      Registry.Routes.Iterate (Process'Access);
+   end Install_Filters;
+
+   --  ------------------------------
+   --  Start the application.
+   --  ------------------------------
+   procedure Start (Registry : in out Servlet_Registry) is
+   begin
+      Install_Filters (Registry);
+   end Start;
 
    --  ------------------------------
    --  Add a filter mapping with the given pattern
@@ -719,7 +710,8 @@ package body ASF.Servlets is
    procedure Add_Filter_Mapping (Registry : in out Servlet_Registry;
                                  Pattern  : in String;
                                  Name     : in String) is
-      Pos : constant Filter_Maps.Cursor := Registry.Filters.Find (Name);
+      Pos  : constant Filter_Maps.Cursor := Registry.Filters.Find (Name);
+      Rule : constant Filter_Maps.Cursor := Registry.Filter_Rules.Find (Pattern);
    begin
       Log.Info ("Add filter mapping {0} -> {1}", Pattern, Name);
 
@@ -727,48 +719,11 @@ package body ASF.Servlets is
          Log.Error ("No servlet filter {0}", Name);
          raise Servlet_Error with "No servlet filter " & Name;
       end if;
-      declare
-         Wildcard     : constant Natural := Util.Strings.Index (Pattern, '*');
-         Mapping      : Mapping_Access := Registry.Find_Mapping (URI => Pattern);
-         Copy_Mapping : Mapping_Access;
-      begin
-         if Mapping = null then
-            Log.Error ("No servlet mapping for URI {0}", Pattern);
-            return;
-         end if;
-
-         --  SCz 2011-06-09: this is still not perfect.... If we have a servlet
-         --  mapping to some extension (*.html), and we want to install a filter
-         --  for a specific page, we have to create a new URI mapping for that specific
-         --  page so that it can have dedicated filters.
-         if (Mapping.Map_Type = MAP_EXTENSION and then
-               (Pattern'Length < 3 or else
-                  Pattern (Pattern'First) /= '*' or else Pattern (Pattern'First + 1) /= '.'))
-             or
-               (Mapping.Map_Type = MAP_PATH_EXTENSION and Wildcard = 0) then
-            Registry.Add_Mapping (Pattern => Pattern,
-                                  Server  => Mapping.Servlet);
-            Copy_Mapping := Registry.Find_Mapping (URI => Pattern);
-            Copy_Mapping.Path_Pos := 1;
-            if Wildcard /= 0 then
-               Copy_Mapping.Map_Type := MAP_PATH_EXTENSION;
-            else
-               Copy_Mapping.Map_Type := MAP_URI;
-            end if;
-            if Mapping.Filters /= null then
-               for I in Mapping.Filters.all'Range loop
-                  Copy_Mapping.Append_Filter (Mapping.Filters (I));
-               end loop;
-            end if;
-            Mapping := Copy_Mapping;
-         end if;
-         Mapping.Append_Filter (Filter_Maps.Element (Pos));
-      end;
-      if Registry.Mappings /= null then
-         Dump_Map (Registry.Mappings.all, "");
-      end if;
-      if Registry.Extension_Mapping /= null then
-         Dump_Map (Registry.Extension_Mapping.all, "");
+      if not Filter_Maps.Has_Element (Rule) then
+         Registry.Filter_Patterns.Append (Pattern);
+         Registry.Filter_Rules.Insert (Pattern, Filter_Maps.Element (Pos));
+      else
+         Registry.Filter_Rules.Include (Pattern, Filter_Maps.Element (Pos));
       end if;
    end Add_Filter_Mapping;
 
@@ -798,163 +753,17 @@ package body ASF.Servlets is
    procedure Add_Mapping (Registry : in out Servlet_Registry;
                           Pattern  : in String;
                           Server   : in Servlet_Access) is
-      First_Pos : Natural;
-      Pos       : Natural;
-      Last_Pos  : Natural;
-      Node      : Mapping_Access;
-      Prev_Node : Mapping_Access;
-      Is_Last   : Boolean := False;
-      Is_Wildcard : Boolean := False;
-      Is_Extension : Boolean := False;
-      Map       : Mapping_Access;
+      Route     : ASF.Routes.Servlets.Servlet_Route_Type_Access;
+      Context   : aliased EL.Contexts.Default.Default_Context;
+
+      use type ASF.Routes.Servlets.Servlet_Route_Type_Access;
    begin
       if Pattern'Length = 0 or Server = null then
          return;
       end if;
-
-      Log.Info ("Add mapping {0} -> {1}", Pattern, To_String (Server.Name));
-
-      --  Add an extension mapping
-      if Pattern'Length >= 3 and then
-         Pattern (Pattern'First) = '*' and then Pattern (Pattern'First + 1) = '.' then
-         Map := new Mapping_Node '(Limited_Controlled with
-                                   Len              => Pattern'Length - 2,
-                                   URI              => Pattern (Pattern'First + 2 .. Pattern'Last),
-                                   Map_Type         => MAP_EXTENSION,
-                                   Child_Map        => null,
-                                   Next_Servlet_Map => Server.Mappings,
-                                   Filters          => null,
-                                   Path_Pos         => 1,
-                                   Servlet          => Server,
-                                   Next_Map         => Registry.Extension_Mapping);
-         Registry.Extension_Mapping := Map;
-         Server.Mappings := Map;
-         return;
-      end if;
-
-      --  Find the position in the map tree for this mapping.
-      Node      := Registry.Mappings;
-      First_Pos := Pattern'First;
-      Last_Pos  := Pattern'Last;
-      if Pattern (First_Pos) = '/' then
-         First_Pos := First_Pos + 1;
-      end if;
-      while Node /= null loop
-         Pos := Index (Pattern, "/", First_Pos);
-         if Pos > First_Pos then
-            Last_Pos := Pos - 1;
-         else
-            Last_Pos    := Pattern'Last;
-            Is_Last     := True;
-            Is_Wildcard := Pattern (First_Pos .. Last_Pos) = "*";
-            Is_Extension := Pattern (First_Pos) = '*' and then Last_Pos >= First_Pos + 1
-              and then Pattern (First_Pos + 1) = '.';
-         end if;
-
-         --  Look for the node that matches
-         while Node /= null loop
-            case Node.Map_Type is
-               when MAP_URI =>
-                  if Node.URI = Pattern (First_Pos .. Last_Pos) then
-                     Prev_Node := Node;
-                     Node := Node.Child_Map;
-                     First_Pos := Last_Pos + 2;
-                     exit;
-                  end if;
-
-               when MAP_URI_NODE =>
-                  if not Is_Wildcard and Node.URI = Pattern (First_Pos .. Last_Pos) then
-                     Prev_Node := Node;
-                     Node := Node.Child_Map;
-                     First_Pos := Last_Pos + 2;
-                     exit;
-                  end if;
-
-               when MAP_WILDCARD | MAP_EXTENSION | MAP_PATH_EXTENSION =>
-                  null;
-
-            end case;
-            Node := Node.Next_Map;
-         end loop;
-      end loop;
-
-      while First_Pos <= Pattern'Last loop
-         Pos := Index (Pattern, "/", First_Pos);
-         if Pos > First_Pos then
-            Last_Pos := Pos - 1;
-         else
-            Last_Pos    := Pattern'Last;
-            Is_Last     := True;
-            Is_Wildcard := Pattern (First_Pos .. Last_Pos) = "*";
-            Is_Extension := Pattern (First_Pos) = '*' and then Last_Pos >= First_Pos + 1
-              and then Pattern (First_Pos + 1) = '.';
-         end if;
-
-         if Is_Wildcard then
-            Node :=  new Mapping_Node '(Limited_Controlled with
-                                        Len              => Last_Pos - First_Pos + 1,
-                                        URI              => Pattern (First_Pos .. Last_Pos),
-                                        Map_Type         => MAP_WILDCARD,
-                                        Child_Map        => null,
-                                        Filters          => null,
-                                        Servlet          => Server,
-                                        Next_Servlet_Map => Server.Mappings,
-                                        Path_Pos         => First_Pos - 1,
-                                        Next_Map         => null);
-
-         elsif Is_Extension then
-            Node :=  new Mapping_Node '(Limited_Controlled with
-                                        Len              => Last_Pos - First_Pos + 1,
-                                        URI              => Pattern (First_Pos .. Last_Pos),
-                                        Map_Type         => MAP_EXTENSION,
-                                        Child_Map        => null,
-                                        Filters          => null,
-                                        Servlet          => Server,
-                                        Next_Servlet_Map => Server.Mappings,
-                                        Path_Pos         => Last_Pos,
-                                        Next_Map         => null);
-
-         elsif Is_Last then
-            Node :=  new Mapping_Node '(Limited_Controlled with
-                                        Len              => Last_Pos - First_Pos + 1,
-                                        URI              => Pattern (First_Pos .. Last_Pos),
-                                        Map_Type         => MAP_URI,
-                                        Child_Map        => null,
-                                        Filters          => null,
-                                        Servlet          => Server,
-                                        Next_Servlet_Map => Server.Mappings,
-                                        Path_Pos         => Last_Pos,
-                                        Next_Map         => null);
-
-         else
-            Node :=  new Mapping_Node '(Limited_Controlled with
-                                        Len              => Last_Pos - First_Pos + 1,
-                                        URI              => Pattern (First_Pos .. Last_Pos),
-                                        Map_Type         => MAP_URI_NODE,
-                                        Child_Map        => null,
-                                        Filters          => null,
-                                        Next_Servlet_Map => null,
-                                        Servlet          => null,
-                                        Path_Pos         => 0,
-                                        Next_Map         => null);
-         end if;
-
-         --  Link the new node into the tree.
-         if Prev_Node = null then
-            if Registry.Mappings /= null then
-               Node.Next_Map := Registry.Mappings;
-            end if;
-            Registry.Mappings := Node;
-         else
-            if Prev_Node.Child_Map /= null then
-               Node.Next_Map := Prev_Node.Child_Map;
-            end if;
-            Prev_Node.Child_Map := Node;
-         end if;
-
-         Prev_Node := Node;
-         First_Pos := Last_Pos + 2;
-      end loop;
+      Route := new ASF.Routes.Servlets.Servlet_Route_Type;
+      Route.Servlet := Server;
+      Registry.Routes.Add_Route (Pattern, Route.all'Access, Context);
    end Add_Mapping;
 
    --  ------------------------------
@@ -968,93 +777,6 @@ package body ASF.Servlets is
 
       Server.Error_Pages.Include (Error, Page);
    end Set_Error_Page;
-
-   --  ------------------------------
-   --  Find the servlet and filter mapping that must be used for the given URI.
-   --  Search the mapping according to Ch 12/SRV 11. Mapping Requests to Servlets:
-   --  o look for an exact match,
-   --  o look for the longest match,
-   --  o look for an extension
-   --  o use the default servlet mapping
-   --  ------------------------------
-   function Find_Mapping (Registry : in Servlet_Registry;
-                          URI      : in String) return Mapping_Access is
-      use Ada.Strings;
-      use Util.Strings;
-
-      First_Pos : Natural := URI'First;
-      Pos       : Natural;
-      Last_Pos  : Natural;
-      Node      : Mapping_Access := Registry.Mappings;
-      Is_Last   : Boolean := False;
-   begin
-      if URI'Length > 0 and then URI (First_Pos) = '/' then
-         First_Pos := First_Pos + 1;
-      end if;
-
-      --  Scan each component path descending in the map tree until
-      --  we have a match (exact or wildcard).
-      while Node /= null loop
-         Pos := Index (URI, '/', First_Pos);
-         if Pos > First_Pos then
-            Last_Pos := Pos - 1;
-         else
-            Last_Pos := URI'Last;
-            Is_Last  := True;
-         end if;
-         while Node /= null loop
-            case Node.Map_Type is
-               --  Check for an exact match if this is the last component.
-               when MAP_URI =>
-                  if Node.URI = URI (First_Pos .. Last_Pos) then
-                     if Is_Last then
-                        return Node;
-                     end if;
-                     Node := Node.Child_Map;
-                     First_Pos := Last_Pos + 2;
-                     exit;
-                  end if;
-
-               --  Check for a component path, descend the map tree
-               when MAP_URI_NODE =>
-                  if Node.URI = URI (First_Pos .. Last_Pos) then
-                     Node := Node.Child_Map;
-                     First_Pos := Last_Pos + 2;
-                     exit;
-                  end if;
-
-               --  If we have a wildcard in the map tree, this is a match.
-               when MAP_WILDCARD =>
-                  return Node;
-
-               --  We have an extension
-               when MAP_EXTENSION | MAP_PATH_EXTENSION =>
-                  Pos  := Util.Strings.Rindex (Source => URI, Ch => '.');
-                  if Pos > 0 and then
-                    Node.URI (Node.URI'First + 1 .. Node.URI'Last) = URI (Pos .. URI'Last) then
-                     return Node;
-                  end if;
-
-            end case;
-            Node := Node.Next_Map;
-         end loop;
-      end loop;
-
-      --  No exact match and no wildcard match.
-      --  Look for an extension.
-      Pos  := Util.Strings.Rindex (Source => URI, Ch => '.');
-      if Pos > 0 then
-         Pos  := Pos + 1;
-         Node := Registry.Extension_Mapping;
-         while Node /= null loop
-            if Node.URI = URI (Pos .. URI'Last) then
-               return Node;
-            end if;
-            Node := Node.Next_Map;
-         end loop;
-      end if;
-      return null;
-   end Find_Mapping;
 
    function Hash (N : Integer) return Ada.Containers.Hash_Type is
    begin
@@ -1100,7 +822,7 @@ package body ASF.Servlets is
                        & "H2 {font-family:Tahoma,Arial,sans-serif;color:white;"
                        & "background-color:#525D76;font-size:16px;} "
                        & "H3 {font-family:Tahoma,Arial,sans-serif;color:white;"
-                       &" background-color:#525D76;font-size:14px;} "
+                       & " background-color:#525D76;font-size:14px;} "
                        & "BODY {font-family:Tahoma,Arial,sans-serif;color:black;"
                        & "background-color:white;} "
                        & "B {font-family:Tahoma,Arial,sans-serif;color:white;"
@@ -1193,8 +915,6 @@ package body ASF.Servlets is
    overriding
    procedure Finalize (Registry : in out Servlet_Registry) is
    begin
-      Free_List (Registry.Mappings);
-      Free_List (Registry.Extension_Mapping);
       ASF.Sessions.Factory.Session_Factory (Registry).Finalize;
    end Finalize;
 

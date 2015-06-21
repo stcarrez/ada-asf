@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests.tools -- ASF Requests Tools
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -103,10 +103,10 @@ package body ASF.Requests.Tools is
    --  </ul/
    --  ------------------------------
    procedure Set_Context (Req      : in out Request'Class;
-                          Servlet  : access ASF.Servlets.Servlet'Class;
-                          Response : in ASF.Responses.Response_Access) is
+                          Response : in ASF.Responses.Response_Access;
+                          Context  : access ASF.Routes.Route_Context_Type) is
    begin
-      Req.Servlet := Servlet;
+      Req.Context := Context;
       Req.Info.Response := Response;
    end Set_Context;
 

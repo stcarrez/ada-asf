@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;
 
 with ASF.Servlets;
+with ASF.Routes.Servlets;
 
 with Util.Strings;
 with Util.Strings.Transforms;
@@ -27,6 +28,28 @@ with Util.Strings.Tokenizers;
 --  The <b>ASF.Requests</b> package is an Ada implementation of
 --  the Java servlet request (JSR 315 3. The Request).
 package body ASF.Requests is
+
+   use type ASF.Servlets.Servlet_Access;
+   use type ASF.Routes.Route_Type_Access;
+
+   function Get_Servlet (Req : in Request'Class) return ASF.Servlets.Servlet_Access;
+
+   --  ------------------------------
+   --  Get the servlet associated with the request object.
+   --  Returns null if there is no such servlet.
+   --  ------------------------------
+   function Get_Servlet (Req : in Request'Class) return ASF.Servlets.Servlet_Access is
+      Route : ASF.Routes.Route_Type_Access;
+   begin
+      if Req.Context = null then
+         return null;
+      end if;
+      Route := Req.Context.Get_Route;
+      if Route = null then
+         return null;
+      end if;
+      return ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet;
+   end Get_Servlet;
 
    --  ------------------------------
    --  Returns the value of the named attribute as an Object, or null if no attribute
@@ -346,8 +369,8 @@ package body ASF.Requests is
          Locale : Util.Locales.Locale := Util.Locales.Get_Locale (Name);
       begin
          if Locale = Util.Locales.NULL_LOCALE and then Name'Length > 2
-           and then Name (Name'First + 2) = '-' then
-
+           and then Name (Name'First + 2) = '-'
+         then
             Locale := Get_Locale (Name (Name'First .. Name'First + 1) & "_"
                                   & To_Upper_Case (Name (Name'First + 3 .. Name'Last)));
          end if;
@@ -537,11 +560,10 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_Path_Info (Req : in Request) return String is
    begin
-      if Req.Path_Pos = 0 then
-         return To_String (Req.Path_Info);
+      if Req.Context = null then
+         return "";
       else
-         return Ada.Strings.Unbounded.Slice (Req.Path_Info, Req.Path_Pos + 1,
-                                             Length (Req.Path_Info));
+         return ASF.Routes.Get_Path (Req.Context.all, ASF.Routes.SUFFIX);
       end if;
    end Get_Path_Info;
 
@@ -553,11 +575,12 @@ package body ASF.Requests is
    --  The container does not decode this string.
    --  ------------------------------
    function Get_Context_Path (Req : in Request) return String is
+      Servlet : constant ASF.Servlets.Servlet_Access := Get_Servlet (Req);
    begin
-      if Req.Servlet = null then
+      if Servlet = null then
          return "/";
       else
-         return Req.Servlet.Get_Servlet_Context.Get_Context_Path;
+         return Servlet.Get_Servlet_Context.Get_Context_Path;
       end if;
    end Get_Context_Path;
 
@@ -665,10 +688,10 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_Servlet_Path (Req : in Request) return String is
    begin
-      if Req.Path_Pos = 0 then
+      if Req.Context = null then
          return "";
       else
-         return Ada.Strings.Unbounded.Slice (Req.Path_Info, 1, Req.Path_Pos);
+         return ASF.Routes.Get_Path (Req.Context.all, ASF.Routes.PREFIX);
       end if;
    end Get_Servlet_Path;
 
@@ -677,13 +700,14 @@ package body ASF.Requests is
    --  Get and check the request session
    --  ------------------------------
    function Has_Session (Req : in Request'Class) return Boolean is
+      Servlet : constant ASF.Servlets.Servlet_Access := Get_Servlet (Req);
    begin
       Req.Load_Cookies;
       for I in Req.Info.Cookies'Range loop
          if ASF.Cookies.Get_Name (Req.Info.Cookies (I)) = "SID" then
             declare
                SID : constant String := ASF.Cookies.Get_Value (Req.Info.Cookies (I));
-               Ctx : constant Servlets.Servlet_Registry_Access := Req.Servlet.Get_Servlet_Context;
+               Ctx : constant Servlets.Servlet_Registry_Access := Servlet.Get_Servlet_Context;
             begin
                Ctx.Find_Session (Id     => SID,
                                  Result => Req.Info.Session);
@@ -720,8 +744,9 @@ package body ASF.Requests is
       --  Create the session if necessary.
       if Create and not Req.Info.Session.Is_Valid then
          declare
-            Ctx : constant ASF.Servlets.Servlet_Registry_Access
-              := Req.Servlet.Get_Servlet_Context;
+            Servlet : constant ASF.Servlets.Servlet_Access := Get_Servlet (Req);
+            Ctx     : constant ASF.Servlets.Servlet_Registry_Access
+              := Servlet.Get_Servlet_Context;
          begin
             Ctx.Create_Session (Req.Info.Session);
             declare
@@ -745,8 +770,9 @@ package body ASF.Requests is
                             Path     : in String;
                             Path_Pos : in Natural := 0) is
    begin
-      Req.Path_Info := To_Unbounded_String (Path);
-      Req.Path_Pos  := Path_Pos;
+--        Req.Path_Info := To_Unbounded_String (Path);
+--        Req.Path_Pos  := Path_Pos;
+      null;
    end Set_Path_Info;
 
    --  ------------------------------
@@ -771,9 +797,26 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_Resource (Req  : in Request;
                           Path : in String) return String is
+      Servlet : constant ASF.Servlets.Servlet_Access := Get_Servlet (Req);
    begin
-      return Req.Servlet.Get_Servlet_Context.Get_Resource (Path);
+      if Servlet = null then
+         return "";
+      else
+         return Servlet.Get_Servlet_Context.Get_Resource (Path);
+      end if;
    end Get_Resource;
+
+   --  ------------------------------
+   --  Returns the route object that is associated with the request.
+   --  ------------------------------
+   function Get_Route (Req : in Request) return ASF.Routes.Route_Type_Access is
+   begin
+      if Req.Context = null then
+         return null;
+      else
+         return ASF.Routes.Get_Route (Req.Context.all);
+      end if;
+   end Get_Route;
 
    --  ------------------------------
    --  Initialize the request object.

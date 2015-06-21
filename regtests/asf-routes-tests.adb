@@ -77,7 +77,7 @@ package body ASF.Routes.Tests is
       T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("user"),
                                 Util.Beans.Objects.To_Object (T.Bean.all'Access));
       for I in T.Routes'Range loop
-         T.Routes (I).Index := I;
+         T.Routes (I) := new Test_Route_Type '(Index => I);
       end loop;
    end Set_Up;
 
@@ -89,12 +89,12 @@ package body ASF.Routes.Tests is
                            Path   : in String;
                            Index  : in Positive;
                            Bean   : in out Test_Bean'Class) is
-      Route   : constant Route_Type_Access := T.Routes (Index)'Unchecked_Access;
+      Route   : constant Route_Type_Access := T.Routes (Index).all'Access;
       R       : Route_Context_Type;
    begin
       Router.Find_Route (Path, R);
       declare
-         P : constant String := Get_Path_Info (R);
+         P : constant String := Get_Path (R);
       begin
          T.Assert_Equals (Path, P, "Add_Route + Find_Route with " & Path);
          T.Assert (Get_Route (R) /= null, "Get_Route returns a null route for " & Path);
@@ -113,7 +113,7 @@ package body ASF.Routes.Tests is
                         Path   : in String;
                         Index  : in Positive;
                         Bean   : in out Test_Bean'Class) is
-      Route   : constant Route_Type_Access := T.Routes (Index)'Unchecked_Access;
+      Route   : constant Route_Type_Access := T.Routes (Index).all'Access;
    begin
       Router.Add_Route (Path, Route, T.ELContext.all);
       Verify_Route (T, Router, Path, Index, Bean);
@@ -151,6 +151,7 @@ package body ASF.Routes.Tests is
       Add_Route (T, Router, "/view/page/content/page1.html", 4, Bean);
       Add_Route (T, Router, "/view/page/content/page2.html", 5, Bean);
       Add_Route (T, Router, "/view/page/content/*.html", 6, Bean);
+      Add_Route (T, Router, "/ajax/*", 7, Bean);
 
       --  Verify precedence and wildcard matching.
       Verify_Route (T, Router, "/list/index.html", 3, Bean);
@@ -159,6 +160,7 @@ package body ASF.Routes.Tests is
       Verify_Route (T, Router, "/view/page/content/t.html", 6, Bean);
       Verify_Route (T, Router, "/view/page/content/1/t.html", 6, Bean);
       Verify_Route (T, Router, "/view/page/content/1/2/t.html", 6, Bean);
+      Verify_Route (T, Router, "/ajax/form/save", 7, Bean);
    end Test_Add_Route_With_Ext;
 
    --  ------------------------------

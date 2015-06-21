@@ -28,14 +28,35 @@ package body ASF.Routes is
    --  ------------------------------
    --  Get path information after the routing.
    --  ------------------------------
-   function Get_Path_Info (Context : in Route_Context_Type) return String is
+   function Get_Path (Context : in Route_Context_Type;
+                           Mode    : in Path_Mode := FULL) return String is
    begin
       if Context.Path = null then
          return "";
-      else
+      elsif Mode = FULL then
          return Context.Path.all;
+      else
+         declare
+            Pos : constant Natural := Get_Path_Pos (Context);
+         begin
+            if Pos = 0 then
+               return Context.Path.all;
+            elsif Mode = PREFIX then
+               if Pos > Context.Path'Last then
+                  return Context.Path.all;
+               else
+                  return Context.Path (Context.Path'First .. Pos - 1);
+               end if;
+            else
+               if Pos > Context.Path'Last then
+                  return "";
+               else
+                  return Context.Path (Pos .. Context.Path'Last);
+               end if;
+            end if;
+         end;
       end if;
-   end Get_Path_Info;
+   end Get_Path;
 
    --  ------------------------------
    --  Return the route associated with the resolved route context.
@@ -44,6 +65,20 @@ package body ASF.Routes is
    begin
       return Context.Route;
    end Get_Route;
+
+   --  ------------------------------
+   --  Return the position of the variable part of the path.
+   --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern
+   --  is returned.
+   --  ------------------------------
+   function Get_Path_Pos (Context : in Route_Context_Type) return Natural is
+   begin
+      if Context.Count = 0 then
+         return 0;
+      else
+         return Context.Params (Context.Count).Route.Get_Path_Pos (Context.Params (Context.Count));
+      end if;
+   end Get_Path_Pos;
 
    --  ------------------------------
    --  Inject the parameters that have been extracted from the path according
@@ -303,7 +338,7 @@ package body ASF.Routes is
       Log.Debug ("Finding route for {0}", Path);
 
       Context.Path := new String '(Path);
-      Router.Route.Find_Match (Path, Path'First, Match, Context);
+      Router.Route.Find_Match (Context.Path.all, Context.Path'First, Match, Context);
    end Find_Route;
 
    --  Find recursively a match on the given route sub-tree.  The match must start at the position
@@ -398,6 +433,17 @@ package body ASF.Routes is
          Child := Child.Next_Route;
       end loop;
    end Iterate;
+
+   --  ------------------------------
+   --  Return the position of the variable part of the path.
+   --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern
+   --  is returned.
+   --  ------------------------------
+   function Get_Path_Pos (Node  : in Route_Node_Type;
+                          Param : in Route_Param_Type) return Natural is
+   begin
+      return Param.Last + 1;
+   end Get_Path_Pos;
 
    --  ------------------------------
    --  Check if the route node accepts the given path component.
@@ -551,10 +597,26 @@ package body ASF.Routes is
    end Get_Pattern;
 
    --  ------------------------------
+   --  Return the position of the variable part of the path.
+   --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern
+   --  is returned.
+   --  ------------------------------
+   overriding
+   function Get_Path_Pos (Node  : in Wildcard_Node_Type;
+                          Param : in Route_Param_Type) return Natural is
+   begin
+      return Param.First - 1;
+   end Get_Path_Pos;
+
+   --  ------------------------------
    --  Release the storage held by the router.
    --  ------------------------------
    overriding
    procedure Finalize (Router : in out Router_Type) is
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => Route_Type'Class,
+                                        Name   => Route_Type_Access);
+
       procedure Free is
         new Ada.Unchecked_Deallocation (Object => Route_Node_Type'Class,
                                         Name   => Route_Node_Access);
@@ -573,8 +635,8 @@ package body ASF.Routes is
             Node.Children := Child.Next_Route;
             Destroy (Child);
          end loop;
+         Free (Node.Route);
          Free (Node);
-         Node := null;
       end Destroy;
 
       Child : Route_Node_Access;

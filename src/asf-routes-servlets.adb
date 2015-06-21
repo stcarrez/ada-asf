@@ -26,7 +26,9 @@ package body ASF.Routes.Servlets is
      new Ada.Unchecked_Deallocation (Object => ASF.Filters.Filter_List,
                                      Name   => ASF.Filters.Filter_List_Access);
 
+   --  ------------------------------
    --  Get the servlet to call for the route.
+   --  ------------------------------
    function Get_Servlet (Route : in Servlet_Route_Type) return ASF.Servlets.Servlet_Access is
    begin
       return Route.Servlet;
@@ -59,7 +61,9 @@ package body ASF.Routes.Servlets is
       Route.Filters := List;
    end Append_Filter;
 
+   --  ------------------------------
    --  Release the storage held by the route.
+   --  ------------------------------
    overriding
    procedure Finalize (Route : in out Servlet_Route_Type) is
    begin

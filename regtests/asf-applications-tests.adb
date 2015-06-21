@@ -186,6 +186,7 @@ package body ASF.Applications.Tests is
       end if;
       ASF.Applications.Main.Configs.Read_Configuration (App  => ASF.Tests.Get_Application.all,
                                                         File => Config);
+      ASF.Tests.Get_Application.Start;
    end Initialize_Test_Application;
 
    --  ------------------------------

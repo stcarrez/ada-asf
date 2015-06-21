@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  contexts-facelets-flash -- Flash context
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -150,7 +150,8 @@ package body ASF.Contexts.Flash is
       use type ASF.Events.Phases.Phase_Type;
    begin
       if (Phase = ASF.Events.Phases.INVOKE_APPLICATION
-          or Phase = ASF.Events.Phases.RENDER_RESPONSE) and then not Flash.Last_Phase_Done then
+          or Phase = ASF.Events.Phases.RENDER_RESPONSE) and then not Flash.Last_Phase_Done
+      then
          Flash.Do_Last_Phase_Actions (Context);
       end if;
    end Do_Post_Phase_Actions;

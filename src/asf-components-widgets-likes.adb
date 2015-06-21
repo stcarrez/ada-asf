@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-widgets-likes -- Social Likes Components
---  Copyright (C) 2013, 2014 Stephane Carrez
+--  Copyright (C) 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -94,8 +94,8 @@ package body ASF.Components.Widgets.Likes is
       Request : constant ASF.Requests.Request_Access := Context.Get_Request;
    begin
       if not Context.Is_Ajax_Request and then
-        Util.Beans.Objects.Is_Null (Request.Get_Attribute (FACEBOOK_SCRIPT_ATTRIBUTE)) then
-
+        Util.Beans.Objects.Is_Null (Request.Get_Attribute (FACEBOOK_SCRIPT_ATTRIBUTE))
+      then
          Request.Set_Attribute (FACEBOOK_SCRIPT_ATTRIBUTE, Util.Beans.Objects.To_Object (True));
          Writer.Queue_Script ("(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0];"
                               & "if (d.getElementById(id)) return;"
@@ -142,8 +142,8 @@ package body ASF.Components.Widgets.Likes is
       Request : constant ASF.Requests.Request_Access := Context.Get_Request;
    begin
       if not Context.Is_Ajax_Request and then
-        Util.Beans.Objects.Is_Null (Request.Get_Attribute (GOOGLE_SCRIPT_ATTRIBUTE)) then
-
+        Util.Beans.Objects.Is_Null (Request.Get_Attribute (GOOGLE_SCRIPT_ATTRIBUTE))
+      then
          Request.Set_Attribute (GOOGLE_SCRIPT_ATTRIBUTE, Util.Beans.Objects.To_Object (True));
          Writer.Queue_Include_Script ("https://apis.google.com/js/plusone.js");
       end if;
@@ -169,8 +169,8 @@ package body ASF.Components.Widgets.Likes is
       Lang    : constant String := Util.Locales.Get_ISO3_Language (Context.Get_Locale);
    begin
       if not Context.Is_Ajax_Request and then
-        Util.Beans.Objects.Is_Null (Request.Get_Attribute (TWITTER_SCRIPT_ATTRIBUTE)) then
-
+        Util.Beans.Objects.Is_Null (Request.Get_Attribute (TWITTER_SCRIPT_ATTRIBUTE))
+      then
          Request.Set_Attribute (TWITTER_SCRIPT_ATTRIBUTE, Util.Beans.Objects.To_Object (True));
          Writer.Queue_Script ("!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],"
                               & "p=/^http:/.test(d.location)?'http':'https';"

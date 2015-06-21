@@ -147,7 +147,7 @@ package body ASF.Servlets.Files is
 
       use Util.Files;
 
-      URI  : constant String := Request.Get_Path_Info;
+      URI  : constant String := Request.Get_Servlet_Path;
       Path : constant String := Find_File_Path (Name => URI, Paths => Server.Dir.all);
    begin
       if not Ada.Directories.Exists (Path)

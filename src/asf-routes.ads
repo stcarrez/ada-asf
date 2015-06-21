@@ -34,6 +34,11 @@ package ASF.Routes is
    --  Get path information after the routing.
    function Get_Path_Info (Context : in Route_Context_Type) return String;
 
+   --  Return the position of the variable part of the path.
+   --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern
+   --  is returned.
+   function Get_Path_Pos (Context : in Route_Context_Type) return Natural;
+
    --  Return the route associated with the resolved route context.
    function Get_Route (Context : in Route_Context_Type) return Route_Type_Access;
 

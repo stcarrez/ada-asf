@@ -27,12 +27,15 @@ package ASF.Routes is
    type Route_Type is limited interface;
    type Route_Type_Access is access all Route_Type'Class;
 
+   type Path_Mode is (FULL, PREFIX, SUFFIX);
+
    --  The <tt>Route_Context_Type</tt> defines the context information after a path
    --  has been routed.
    type Route_Context_Type is tagged limited private;
 
    --  Get path information after the routing.
-   function Get_Path_Info (Context : in Route_Context_Type) return String;
+   function Get_Path (Context : in Route_Context_Type;
+                      Mode    : in Path_Mode := FULL) return String;
 
    --  Return the position of the variable part of the path.
    --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern
@@ -80,6 +83,15 @@ private
    type Route_Node_Type;
    type Route_Node_Access is access all Route_Node_Type'Class;
 
+   --  Describes a variable path component whose value must be injected in an Ada bean.
+   type Route_Param_Type is limited record
+      Route : Route_Node_Access;
+      First : Natural := 0;
+      Last  : Natural := 0;
+   end record;
+
+   type Route_Param_Array is array (Positive range <>) of Route_Param_Type;
+
    type Route_Match_Type is (NO_MATCH, MAYBE_MATCH, WILDCARD_MATCH, YES_MATCH);
 
    type Route_Node_Type is abstract tagged limited record
@@ -102,6 +114,12 @@ private
    --  Return the component path pattern that this route node represents.
    --  Example: 'index.html', '#{user.id}', ':id'
    function Get_Pattern (Node : in Route_Node_Type) return String is abstract;
+
+   --  Return the position of the variable part of the path.
+   --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern
+   --  is returned.
+   function Get_Path_Pos (Node  : in Route_Node_Type;
+                          Param : in Route_Param_Type) return Natural;
 
    --  Find recursively a match on the given route sub-tree.  The match must start at the position
    --  <tt>First</tt> in the path up to the last path position.  While the path components are
@@ -221,14 +239,12 @@ private
    overriding
    function Get_Pattern (Node : in Wildcard_Node_Type) return String;
 
-   --  Describes a variable path component whose value must be injected in an Ada bean.
-   type Route_Param_Type is limited record
-      Route : Route_Node_Access;
-      First : Natural := 0;
-      Last  : Natural := 0;
-   end record;
-
-   type Route_Param_Array is array (Positive range <>) of Route_Param_Type;
+   --  Return the position of the variable part of the path.
+   --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern
+   --  is returned.
+   overriding
+   function Get_Path_Pos (Node  : in Wildcard_Node_Type;
+                          Param : in Route_Param_Type) return Natural;
 
    MAX_ROUTE_PARAMS : constant Positive := 10;
 

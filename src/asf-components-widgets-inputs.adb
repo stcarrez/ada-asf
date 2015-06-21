@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-widgets-inputs -- Input widget components
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -164,7 +164,8 @@ package body ASF.Components.Widgets.Inputs is
       begin
          if Match'Length = 0 or else
            (Match'Length <= Label'Length
-            and then Match = Label (Label'First .. Label'First + Match'Length - 1)) then
+            and then Match = Label (Label'First .. Label'First + Match'Length - 1))
+         then
             if Need_Comma then
                Writer.Write (",");
             end if;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-locales -- Locale support
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -83,7 +83,8 @@ package body ASF.Locales is
             --  We need a match on the language.  The variant/country can be ignored and will
             --  be honored by the resource bundle.
             if Fac.Locales (I) = Locale
-              or Get_Language (Fac.Locales (I)) = Get_Language (Locale) then
+              or Get_Language (Fac.Locales (I)) = Get_Language (Locale)
+            then
                Found_Locale := Locale;
                Found_Quality := Quality;
                return;

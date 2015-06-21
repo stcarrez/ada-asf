@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.faces -- Faces servlet
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,10 @@ with ASF.Applications;
 
 package body ASF.Servlets.Faces is
 
+   --  ------------------------------
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
+   --  ------------------------------
    procedure Initialize (Server  : in out Faces_Servlet;
                          Context : in Servlet_Registry'Class) is
       pragma Unreferenced (Context);
@@ -33,6 +35,7 @@ package body ASF.Servlets.Faces is
       end if;
    end Initialize;
 
+   --  ------------------------------
    --  Called by the server (via the service method) to allow a servlet to handle
    --  a GET request.
    --
@@ -69,16 +72,18 @@ package body ASF.Servlets.Faces is
    --  data is neither safe nor idempotent.
    --
    --  If the request is incorrectly formatted, Do_Get  returns an HTTP "Bad Request"
+   --  ------------------------------
    procedure Do_Get (Server   : in Faces_Servlet;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
-      URI    : constant String := Request.Get_Path_Info;
+      URI    : constant String := Request.Get_Servlet_Path;
    begin
       Server.App.Dispatch (Page     => URI,
                            Request  => Request,
                            Response => Response);
    end Do_Get;
 
+   --  ------------------------------
    --  Called by the server (via the service method) to allow a servlet to handle
    --  a POST request. The HTTP POST method allows the client to send data of unlimited
    --  length to the Web server a single time and is useful when posting information
@@ -108,10 +113,11 @@ package body ASF.Servlets.Faces is
    --
    --  If the HTTP POST request is incorrectly formatted, doPost returns
    --  an HTTP "Bad Request" message.
+   --  ------------------------------
    procedure Do_Post (Server   : in Faces_Servlet;
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class) is
-      URI    : constant String := Request.Get_Path_Info;
+      URI    : constant String := Request.Get_Servlet_Path;
    begin
       Server.App.Dispatch (Page     => URI,
                            Request  => Request,

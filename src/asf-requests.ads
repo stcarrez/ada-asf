@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ with ASF.Sessions;
 with ASF.Responses;
 with ASF.Principals;
 with ASF.Parts;
-limited with ASF.Servlets;
+with ASF.Routes;
 
 --  The <b>ASF.Requests</b> package is an Ada implementation of
 --  the Java servlet request (JSR 315 3. The Request).
@@ -401,6 +401,9 @@ package ASF.Requests is
    function Get_Resource (Req  : in Request;
                           Path : in String) return String;
 
+   --  Returns the route object that is associated with the request.
+   function Get_Route (Req : in Request) return ASF.Routes.Route_Type_Access;
+
    --  Initialize the request object.
    overriding
    procedure Initialize (Req : in out Request);
@@ -434,10 +437,8 @@ private
 
    type Request is abstract new Ada.Finalization.Limited_Controlled with record
       Attributes  : Util.Beans.Objects.Maps.Map;
-      Path_Info   : Unbounded_String;
-      Path_Pos    : Natural := 0;
-      Servlet     : access ASF.Servlets.Servlet'Class;
       Info        : Request_Data_Access := null;
+      Context     : access ASF.Routes.Route_Context_Type;
    end record;
 
 end ASF.Requests;

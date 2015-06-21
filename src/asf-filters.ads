@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.filters -- ASF Filters
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +35,8 @@ package ASF.Filters is
    --  to process multiple requests possibly at the same time.
    type Filter is limited interface;
    type Filter_Access is access all Filter'Class;
+   type Filter_List is array (Natural range <>) of Filter_Access;
+   type Filter_List_Access is access all Filter_List;
 
    --  The Do_Filter method of the Filter is called by the container each time
    --  a request/response pair is passed through the chain due to a client request

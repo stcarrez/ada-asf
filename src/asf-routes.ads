@@ -87,7 +87,7 @@ private
    procedure Inject_Parameter (Node      : in Route_Node_Type;
                                Param     : in String;
                                Into      : in out Util.Beans.Basic.Bean'Class;
-                               ELContext : in EL.Contexts.ELContext'Class) is abstract;
+                               ELContext : in EL.Contexts.ELContext'Class) is null;
 
    --  Check if the route node accepts the given path component.
    function Matches (Node    : in Route_Node_Type;
@@ -131,13 +131,6 @@ private
    --  Return the component path pattern that this route node represents (ie, 'Name').
    overriding
    function Get_Pattern (Node : in Path_Node_Type) return String;
-
-   --  Inject the parameter that was extracted from the path.
-   overriding
-   procedure Inject_Parameter (Node      : in Path_Node_Type;
-                               Param     : in String;
-                               Into      : in out Util.Beans.Basic.Bean'Class;
-                               ELContext : in EL.Contexts.ELContext'Class) is null;
 
    --  A variable path component whose value is injected in an Ada bean using the EL expression.
    --  The route node is created each time an EL expression is found in the route pattern.
@@ -209,12 +202,19 @@ private
    overriding
    function Get_Pattern (Node : in Extension_Node_Type) return String;
 
-   --  Inject the parameter that was extracted from the path.
+   type Wildcard_Node_Type is new Route_Node_Type with null record;
+   type Wildcard_Node_Access is access all Wildcard_Node_Type'Class;
+
+   --  Check if the route node accepts the given extension.
+   --  Returns WILDCARD_MATCH.
    overriding
-   procedure Inject_Parameter (Node      : in Extension_Node_Type;
-                               Param     : in String;
-                               Into      : in out Util.Beans.Basic.Bean'Class;
-                               ELContext : in EL.Contexts.ELContext'Class) is null;
+   function Matches (Node    : in Wildcard_Node_Type;
+                     Name    : in String;
+                     Is_Last : in Boolean) return Route_Match_Type;
+
+   --  Return the component path pattern that this route node represents (ie, *).
+   overriding
+   function Get_Pattern (Node : in Wildcard_Node_Type) return String;
 
    --  Describes a variable path component whose value must be injected in an Ada bean.
    type Route_Param_Type is limited record

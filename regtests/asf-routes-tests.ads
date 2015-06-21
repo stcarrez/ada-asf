@@ -45,7 +45,8 @@ package ASF.Routes.Tests is
    type Test_Route_Type is new Route_Type with record
       Index : Natural := 0;
    end record;
-   type Test_Route_Array is array (1 .. MAX_TEST_ROUTES) of aliased Test_Route_Type;
+   type Test_Route_Type_Access is access Test_Route_Type;
+   type Test_Route_Array is array (1 .. MAX_TEST_ROUTES) of Test_Route_Type_Access;
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);
 

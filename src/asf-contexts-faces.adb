@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ with ASF.Contexts.Flash;
 with ASF.Contexts.Exceptions.Iterate;
 with ASF.Applications.Main;
 with ASF.Applications.Messages.Utils;
+with ASF.Routes.Servlets.Faces;
 package body ASF.Contexts.Faces is
 
    package Task_Context is new Ada.Task_Attributes
@@ -451,6 +452,33 @@ package body ASF.Contexts.Faces is
    begin
       Context.Root := View;
    end Set_View_Root;
+
+   --  ------------------------------
+   --  Get the view name associated with the current faces request.
+   --  The view name is obtained from the request and the route mapping definition.
+   --  If a pretty URL configuration was set through the `url-mapping` definition, the view
+   --  name correspond to the `view-id` declaration.  Otherwise, the view name corresponds
+   --  to the servlet's path.
+   --  ------------------------------
+   function Get_View_Name (Context : in Faces_Context) return String is
+      use type ASF.Routes.Route_Type_Access;
+      use type ASF.Requests.Request_Access;
+
+      Route : ASF.Routes.Route_Type_Access;
+   begin
+      if Context.Request = null then
+         return "";
+      end if;
+      Route := Context.Request.Get_Route;
+      if Route = null then
+         return "";
+      end if;
+      if Route.all in ASF.Routes.Servlets.Faces.Faces_Route_Type'Class then
+         return To_String (ASF.Routes.Servlets.Faces.Faces_Route_Type'Class (Route.all).View);
+      else
+         return Context.Request.Get_Servlet_Path;
+      end if;
+   end Get_View_Name;
 
    --  ------------------------------
    --  Create an identifier for a component.

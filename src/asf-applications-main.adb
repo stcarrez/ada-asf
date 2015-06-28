@@ -571,6 +571,7 @@ package body ASF.Applications.Main is
       App.Set_Context (Context'Unchecked_Access);
 
       begin
+         Request.Inject_Parameters (ELContext);
          Application'Class (App).Execute_Lifecycle (Context);
 
       exception

@@ -76,6 +76,9 @@ package body ASF.Applications.Tests is
 
       Caller.Add_Test (Suite, "Test GET with view action",
                        Test_View_Action'Access);
+
+      Caller.Add_Test (Suite, "Test GET with request parameter injection from URI",
+                       Test_View_Inject_Parameter'Access);
    end Add_Tests;
 
    package Save_Binding is
@@ -630,5 +633,47 @@ package body ASF.Applications.Tests is
       Assert_Matches (T, ".*Name: John Email: john@gmail.com Gender: male",
                       Reply, "Wrong generated content");
    end Test_View_Action;
+
+   --  ------------------------------
+   --  Test a GET request with pretty URL and request parameter injection.
+   --  ------------------------------
+   procedure Test_View_Inject_Parameter (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-inject.xml");
+      App     : constant ASF.Applications.Main.Application_Access := ASF.Tests.Get_Application;
+   begin
+      ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);
+
+      Form.Use_Flash := True;
+      Request.Set_Attribute ("user", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Do_Get (Request, Reply, "/users/john/view", "view-user.txt");
+
+      Assert_Equals (T, 0, Form.Called, "View action must not be called");
+      Assert_Equals (T, "john", Form.Name, "View parameter for name was not set");
+      Assert_Matches (T, ".*Name: john Email:  Gender: ",
+                      Reply, "Wrong generated content");
+
+      Do_Get (Request, Reply, "/users/harry/potter/view", "view-user2.txt");
+
+      Assert_Equals (T, "harry", Form.Name, "View parameter for name was not set");
+      Assert_Equals (T, "potter", Form.Email, "View parameter for email was not set");
+      Assert_Matches (T, ".*Name: harry Email: potter Gender: ",
+                      Reply, "Wrong generated content");
+
+      Do_Get (Request, Reply, "/users/Gandalf/Mithrandir/view/wizard", "view-user3.txt");
+
+      Assert_Equals (T, "Gandalf", Form.Name, "View parameter for name was not set");
+      Assert_Equals (T, "Mithrandir", Form.Email, "View parameter for email was not set");
+      Assert_Equals (T, "wizard", Form.Gender, "View parameter for gender was not set");
+      Assert_Matches (T, ".*Name: Gandalf Email: Mithrandir Gender: wizard",
+                      Reply, "Wrong generated content");
+
+   end Test_View_Inject_Parameter;
+
 
 end ASF.Applications.Tests;

@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with System.Address_Image;
 
 with ASF.Filters;
 with ASF.Streams;
@@ -27,6 +28,7 @@ with EL.Contexts.Default;
 with GNAT.Traceback.Symbolic;
 
 with Util.Strings;
+with Util.Strings.Maps;
 with Util.Files;
 with Util.Log.Loggers;
 
@@ -693,6 +695,103 @@ package body ASF.Servlets is
    begin
       Registry.Routes.Iterate (Process'Access);
    end Install_Filters;
+
+   --  ------------------------------
+   --  Dump the routes and filter configuration in the log with the given log level.
+   --  ------------------------------
+   procedure Dump_Routes (Registry : in out Servlet_Registry;
+                          Level    : in Util.Log.Level_Type) is
+      use type ASF.Filters.Filter_List_Access;
+      use type ASF.Filters.Filter_Access;
+
+      function Get_Servlet_Name (Servlet : in Servlet_Access) return String;
+      function Get_Filter_Names (Filters : in ASF.Filters.Filter_List_Access) return String;
+      procedure Print_Route (URI   : in String;
+                             Route : in ASF.Routes.Route_Type_Access);
+      procedure Collect_Servlet (Pos : in Servlet_Maps.Cursor);
+      procedure Collect_Filter (Pos : in Filter_Maps.Cursor);
+
+      Maps : Util.Strings.Maps.Map;
+
+      function Get_Servlet_Name (Servlet : in Servlet_Access) return String is
+      begin
+         if Servlet = null then
+            return "null";
+         else
+            declare
+               N : constant String := System.Address_Image (Servlet.all'Address);
+            begin
+               if Maps.Contains (N) then
+                  return Maps.Element (N);
+               else
+                  return " ? at " & N;
+               end if;
+            end;
+         end if;
+      end Get_Servlet_Name;
+
+      function Get_Filter_Names (Filters : in ASF.Filters.Filter_List_Access) return String is
+         Result : Ada.Strings.Unbounded.Unbounded_String;
+      begin
+         for I in Filters'Range loop
+            if Length (Result) > 0 then
+               Append (Result, ", ");
+            end if;
+            if Filters (I) = null then
+               Append (Result, "null");
+            else
+               declare
+                  N : constant String := System.Address_Image (Filters(I).all'Address);
+               begin
+                  if Maps.Contains (N) then
+                     Append (Result, Maps.Element (N));
+                  else
+                     Append (Result, " ? at " & N);
+                  end if;
+               end;
+            end if;
+         end loop;
+         return To_String (Result);
+      end Get_Filter_Names;
+
+      procedure Print_Route (URI   : in String;
+                             Route : in ASF.Routes.Route_Type_Access) is
+         Servlet_Route : ASF.Routes.Servlets.Servlet_Route_Type_Access;
+      begin
+         if not (Route.all in ASF.Routes.Servlets.Servlet_Route_Type'Class) then
+            Log.Print (Level, "Route {0} to {1}", URI, System.Address_Image (Route.all'Address));
+         else
+            Servlet_Route := ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all)'Access;
+            if Servlet_Route.Filters /= null then
+               Log.Print (Level, "Route {0} to {1} with filters {2}",
+                          URI, Get_Servlet_Name (Servlet_Route.Servlet),
+                          Get_Filter_Names (Servlet_Route.Filters));
+            else
+               Log.Print (Level, "Route {0} to {1}", URI,
+                          Get_Servlet_Name (Servlet_Route.Servlet));
+            end if;
+         end if;
+      end Print_Route;
+
+      procedure Collect_Servlet (Pos : in Servlet_Maps.Cursor) is
+         Key     : constant String := Servlet_Maps.Key (Pos);
+         Servlet : constant Servlet_Access := Servlet_Maps.Element (Pos);
+      begin
+         Maps.Include (System.Address_Image (Servlet.all'Address), Key);
+      end Collect_Servlet;
+
+      procedure Collect_Filter (Pos : in Filter_Maps.Cursor) is
+         Key     : constant String := Filter_Maps.Key (Pos);
+         Filter : constant Filter_Access := Filter_Maps.Element (Pos);
+      begin
+         Maps.Include (System.Address_Image (Filter.all'Address), Key);
+      end Collect_Filter;
+
+   begin
+      Registry.Servlets.Iterate (Collect_Servlet'Access);
+      Registry.Filters.Iterate (Collect_Filter'Access);
+      Registry.Routes.Iterate (Print_Route'Access);
+   end Dump_Routes;
 
    --  ------------------------------
    --  Start the application.

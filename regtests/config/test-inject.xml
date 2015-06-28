@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+    version="1.2">
+
+  <context-param>
+    <param-name>content-type.default</param-name>
+    <param-value>text/plain</param-value>
+  </context-param>
+
+  <navigation-rule>
+    <from-view-id>/tests/form-text-redirect.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/tests/flash-data.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/tests/form-text.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/tests/nav-success.xhtml</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/tests/view-action.xhtml</from-view-id>
+    <navigation-case>
+      <if>#{empty form.email}</if>
+      <to-view-id>/tests/view-action.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+
+    <navigation-case>
+      <if>#{not empty form.email}</if>
+      <to-view-id>/tests/view-action.xhtml</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/tests/404.html</location>
+  </error-page>
+
+  <url-mapping>
+    <pattern>/users/#{user.name}/view</pattern>
+    <view-id>/tests/view-inject.html</view-id>
+  </url-mapping>
+
+  <url-mapping>
+    <pattern>/users/#{user.name}/#{user.email}/view</pattern>
+    <view-id>/tests/view-inject.html</view-id>
+  </url-mapping>
+
+  <url-mapping>
+    <pattern>/users/#{user.name}/#{user.email}/view/#{user.gender}</pattern>
+    <view-id>/tests/view-inject.html</view-id>
+  </url-mapping>
+
+</faces-config>

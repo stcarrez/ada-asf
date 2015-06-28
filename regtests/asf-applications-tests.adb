@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Log;
 with Util.Test_Caller;
 
 with ASF.Tests;
@@ -648,6 +649,7 @@ package body ASF.Applications.Tests is
    begin
       ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);
 
+      App.Dump_Routes (Util.Log.INFO_LEVEL);
       Form.Use_Flash := True;
       Request.Set_Attribute ("user", To_Object (Value   => Form'Unchecked_Access,
                                                 Storage => STATIC));

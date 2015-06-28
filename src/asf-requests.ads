@@ -16,11 +16,13 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with EL.Objects;
+with EL.Contexts;
+
 with Util.Locales;
-with Ada.Calendar;
-with Ada.Strings.Unbounded;
 with Util.Beans.Objects.Maps;
 
+with Ada.Calendar;
+with Ada.Strings.Unbounded;
 with Ada.Finalization;
 
 with ASF.Cookies;
@@ -404,7 +406,12 @@ package ASF.Requests is
    --  Returns the route object that is associated with the request.
    function Get_Route (Req : in Request) return ASF.Routes.Route_Type_Access;
 
-   --  Initialize the request object.
+   --  Inject the parameters that have been extracted from the path according
+   --  to the selected route.  The parameters are injected in the request attributes map.
+   procedure Inject_Parameters (Req       : in out Request;
+                                ELContext : in EL.Contexts.ELContext'Class);
+
+      --  Initialize the request object.
    overriding
    procedure Initialize (Req : in out Request);
 
@@ -436,7 +443,7 @@ private
    type Request_Data_Access is access Request_Data;
 
    type Request is abstract new Ada.Finalization.Limited_Controlled with record
-      Attributes  : Util.Beans.Objects.Maps.Map;
+      Attributes  : Util.Beans.Objects.Maps.Map_Bean;
       Info        : Request_Data_Access := null;
       Context     : access ASF.Routes.Route_Context_Type;
    end record;

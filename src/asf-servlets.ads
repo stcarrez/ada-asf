@@ -28,6 +28,7 @@ with Ada.Strings.Hash;
 with Ada.Calendar;
 with Ada.Exceptions;
 
+with Util.Log;
 with Util.Properties;
 with Util.Strings.Vectors;
 
@@ -435,6 +436,10 @@ package ASF.Servlets is
    --  Finalize the servlet registry releasing the internal mappings.
    overriding
    procedure Finalize (Registry : in out Servlet_Registry);
+
+   --  Dump the routes and filter configuration in the log with the given log level.
+   procedure Dump_Routes (Registry : in out Servlet_Registry;
+                          Level    : in Util.Log.Level_Type);
 
 private
 

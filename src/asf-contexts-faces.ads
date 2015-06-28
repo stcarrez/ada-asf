@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -212,6 +212,13 @@ package ASF.Contexts.Faces is
    --  Get the component view root.
    procedure Set_View_Root (Context : in out Faces_Context;
                             View    : in ASF.Components.Root.UIViewRoot);
+
+   --  Get the view name associated with the current faces request.
+   --  The view name is obtained from the request and the route mapping definition.
+   --  If a pretty URL configuration was set through the `url-mapping` definition, the view
+   --  name correspond to the `view-id` declaration.  Otherwise, the view name corresponds
+   --  to the servlet's path.
+   function Get_View_Name (Context : in Faces_Context) return String;
 
    --  Create an identifier for a component.
    procedure Create_Unique_Id (Context : in out Faces_Context;

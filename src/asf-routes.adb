@@ -371,7 +371,9 @@ package body ASF.Routes is
                return;
             end if;
             N.Find_Match (Path, Last + 2, Match, Context);
-            return;
+            if Match = YES_MATCH then
+               return;
+            end if;
          elsif Match = MAYBE_MATCH then
             declare
                Count : constant Natural := Context.Count + 1;

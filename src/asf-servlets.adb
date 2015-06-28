@@ -841,6 +841,7 @@ package body ASF.Servlets is
          raise Servlet_Error with "No servlet " & Name;
       end if;
 
+      Log.Info ("Add servlet mapping {0} -> {1}", Pattern, Name);
       Registry.Add_Mapping (Pattern, Servlet_Maps.Element (Pos));
    end Add_Mapping;
 

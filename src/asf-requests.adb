@@ -819,6 +819,18 @@ package body ASF.Requests is
    end Get_Route;
 
    --  ------------------------------
+   --  Inject the parameters that have been extracted from the path according
+   --  to the selected route.  The parameters are injected in the request attributes map.
+   --  ------------------------------
+   procedure Inject_Parameters (Req       : in out Request;
+                                ELContext : in EL.Contexts.ELContext'Class) is
+   begin
+      if Req.Context /= null then
+         ASF.Routes.Inject_Parameters (Req.Context.all, Req.Attributes, ELContext);
+      end if;
+   end Inject_Parameters;
+
+   --  ------------------------------
    --  Initialize the request object.
    --  ------------------------------
    overriding

@@ -152,6 +152,7 @@ package body ASF.Routes.Tests is
       Add_Route (T, Router, "/view/page/content/page2.html", 5, Bean);
       Add_Route (T, Router, "/view/page/content/*.html", 6, Bean);
       Add_Route (T, Router, "/ajax/*", 7, Bean);
+      Add_Route (T, Router, "*.html", 8, Bean);
 
       --  Verify precedence and wildcard matching.
       Verify_Route (T, Router, "/list/index.html", 3, Bean);
@@ -161,6 +162,7 @@ package body ASF.Routes.Tests is
       Verify_Route (T, Router, "/view/page/content/1/t.html", 6, Bean);
       Verify_Route (T, Router, "/view/page/content/1/2/t.html", 6, Bean);
       Verify_Route (T, Router, "/ajax/form/save", 7, Bean);
+      Verify_Route (T, Router, "/view/index.html", 8, Bean);
    end Test_Add_Route_With_Ext;
 
    --  ------------------------------

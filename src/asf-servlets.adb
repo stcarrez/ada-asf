@@ -767,6 +767,19 @@ package body ASF.Servlets is
    end Add_Mapping;
 
    --  ------------------------------
+   --  Add a route associated with the given path pattern.  The pattern is split into components.
+   --  Some path components can be a fixed string (/home) and others can be variable.
+   --  When a path component is variable, the value can be retrieved from the route context.
+   --  ------------------------------
+   procedure Add_Route (Registry  : in out Servlet_Registry;
+                        Pattern   : in String;
+                        To        : in ASF.Routes.Route_Type_Access;
+                        ELContext : in EL.Contexts.ELContext'Class) is
+   begin
+      Registry.Routes.Add_Route (Pattern, To, ELContext);
+   end Add_Route;
+
+   --  ------------------------------
    --  Set the error page that will be used if a servlet returns an error.
    --  ------------------------------
    procedure Set_Error_Page (Server : in out Servlet_Registry;

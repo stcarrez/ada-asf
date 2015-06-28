@@ -48,7 +48,7 @@ package body ASF.Lifecycles.Restore is
       use ASF.Components;
 
       Req     : constant ASF.Requests.Request_Access := Context.Get_Request;
-      Page    : constant String := Req.Get_Servlet_Path;
+      Page    : constant String := Context.Get_View_Name;
       View    : Components.Root.UIViewRoot;
    begin
       Controller.View_Handler.Restore_View (Page, Context, View);

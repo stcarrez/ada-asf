@@ -443,6 +443,7 @@ package body ASF.Routes is
    --  ------------------------------
    function Get_Path_Pos (Node  : in Route_Node_Type;
                           Param : in Route_Param_Type) return Natural is
+      pragma Unreferenced (Node);
    begin
       return Param.Last + 1;
    end Get_Path_Pos;
@@ -557,7 +558,7 @@ package body ASF.Routes is
       if not Is_Last then
          return WILDCARD_MATCH;
       else
-         Pos := Util.Strings.Index (Name, '.');
+         Pos := Util.Strings.RIndex (Name, '.');
          if Pos = 0 then
             return NO_MATCH;
          elsif Name (Pos .. Name'Last) = Node.Ext then
@@ -585,6 +586,7 @@ package body ASF.Routes is
    function Matches (Node    : in Wildcard_Node_Type;
                      Name    : in String;
                      Is_Last : in Boolean) return Route_Match_Type is
+      pragma Unreferenced (Node, Name, Is_Last);
    begin
       return WILDCARD_MATCH;
    end Matches;
@@ -594,6 +596,7 @@ package body ASF.Routes is
    --  ------------------------------
    overriding
    function Get_Pattern (Node : in Wildcard_Node_Type) return String is
+      pragma Unreferenced (Node);
    begin
       return "*";
    end Get_Pattern;
@@ -606,6 +609,7 @@ package body ASF.Routes is
    overriding
    function Get_Path_Pos (Node  : in Wildcard_Node_Type;
                           Param : in Route_Param_Type) return Natural is
+      pragma Unreferenced (Node);
    begin
       return Param.First - 1;
    end Get_Path_Pos;

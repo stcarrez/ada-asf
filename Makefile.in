@@ -8,12 +8,14 @@ ASF_LIBRARY_TYPE=static
 MODE=distrib
 GNATMAKE=@GNATMAKE@
 GNATCLEAN=gnatclean
+GPRINSTALL=@GPRINSTALL@
 SVN=svn
 INSTALL=@INSTALL@
 
 GPRPATH=asf.gpr
 ASF_GPRPATH=asf_core.gpr
 AWS_GPRPATH=asf_aws.gpr
+ASF_UNIT_GPRPATH=asf_unit.gpr
 
 BUILDS_SHARED=@BUILDS_SHARED@
 
@@ -138,7 +140,7 @@ clean_test:
 
 # Clean root project and all imported projects too.
 clean_tree:
-	$(GNATCLEAN) -P "$(GPRPATH)" -r
+	$(GNATCLEAN) -q -P "$(GPRPATH)" -r
 
 # Check *all* sources for errors, even those not changed.
 # Does not build executables.
@@ -174,7 +176,7 @@ DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure conf
 configure.in Makefile.in install-sh distrib test.properties ChangeLog aclocal.m4 \
 asf.gpr.in asf_core.gpr.in asf_aws.gpr.in asf_unit.gpr.in asf_tests.gpr.in samples.gpr.in config.gpr \
 src asfunit samples regtests web bundles samples.properties dynamo.xml \
-bin obj lib debian
+bin obj lib
 
 dist:
 	-rm -rf $(distdir)
@@ -212,6 +214,17 @@ install_shared:
 	$(MAKE) ASF_LIBRARY_TYPE=relocatable install_lib
 
 install_lib:
+ifneq (${GPRINSTALL},)
+	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+		--build-name=$(ASF_LIBRARY_TYPE) $(GPRPATH)
+	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+		--build-name=$(ASF_LIBRARY_TYPE) $(ASF_GPRPATH)
+	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+		--build-name=$(ASF_LIBRARY_TYPE) $(ASF_UNIT_GPRPATH)
+	test T${HAVE_AWS} = Tno || \
+	 $(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+		--build-name=$(ASF_LIBRARY_TYPE) $(AWS_GPRPATH)
+else
 	-rm -rf ${includedir}/ada-asf ${includedir}/ada-asf-aws ${includedir}/ada-asf-unit
 	-rm -rf ${alidir}/ada-asf ${alidir}/ada-asf-aws ${alidir}/ada-asf-unit
 	$(MKDIR) -p ${includedir}/ada-asf
@@ -264,6 +277,7 @@ endif
 	${CP} dynamo.xml ${dynamodir}/asf/
 	${CP} NOTICE.txt ${dynamodir}/asf/
 	${CP} LICENSE.txt ${dynamodir}/asf/
+endif
 
 install-info:
 	@echo "Installation directories:"
@@ -275,6 +289,13 @@ install-info:
 	@echo "  export ADA_PROJECT_PATH=${projectdir}:$$ADA_PROJECT_PATH"
 
 uninstall:
+ifneq (${GPRINSTALL},)
+	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(GPRPATH)
+	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(ASF_GPRPATH)
+	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(ASF_UNIT_GPRPATH)
+	test T${HAVE_AWS} = Tno || \
+	 $(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(AWS_GPRPATH)
+else
 	rm -rf ${includedir}/ada-asf
 	rm -rf ${includedir}/ada-asf-aws
 	rm -rf ${includedir}/ada-asf-unit
@@ -290,6 +311,7 @@ uninstall:
 	rm -f ${projectdir}/asf_aws.gpr
 	rm -rf ${awadir}/web
 	rm -rf ${dynamodir}/asf
+endif
 
 # prepare before releasing a new version of the package
 # (collect information about changes and SVN repository)

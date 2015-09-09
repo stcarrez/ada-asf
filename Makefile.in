@@ -76,6 +76,9 @@ MAKE_ARGS += -XUTIL_BUILD=relocatable -XUTIL_LIBRARY_TYPE=relocatable
 MAKE_ARGS += -XEL_BUILD=relocatable -XEL_LIBRARY_TYPE=relocatable
 MAKE_ARGS += -XSECURITY_BUILD=relocatable -XSECURITY_LIBRARY_TYPE=relocatable
 MAKE_ARGS += -XXMLADA_BUILD=relocatable -XAWS_BUILD=relocatable
+MAKE_ARGS += -XUTIL_HTTP_AWS_BUILD=relocatable -XUTIL_HTTP_AWS_LIBRARY_TYPE=relocatable
+MAKE_ARGS += -XUTIL_UNIT_BUILD=relocatable -XUTIL_UNIT_LIBRARY_TYPE=relocatable
+MAKE_ARGS += -XLIBRARY_TYPE=relocatable
 endif
 
 ifeq (${BUILDS_SHARED},yes)

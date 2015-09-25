@@ -22,6 +22,7 @@ with ASF.Responses.Mockup;
 with ASF.Server;
 with ASF.Applications.Main;
 with Util.Tests;
+with Util.XUnit;
 
 with EL.Contexts.Default;
 with EL.Variables;
@@ -37,6 +38,9 @@ package ASF.Tests is
    procedure Initialize (Props       : in Util.Properties.Manager;
                          Application : in ASF.Applications.Main.Application_Access := null;
                          Factory     : in out ASF.Applications.Main.Application_Factory'Class);
+
+   --  Called when the testsuite execution has finished.
+   procedure Finish (Status : in Util.XUnit.Status);
 
    --  Get the server
    function Get_Server return access ASF.Server.Container;

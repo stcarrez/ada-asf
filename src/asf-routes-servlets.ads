@@ -21,8 +21,7 @@ with ASF.Filters;
 with ASF.Servlets;
 package ASF.Routes.Servlets is
 
-   type Servlet_Route_Type is new Ada.Finalization.Limited_Controlled
-     and ASF.Routes.Route_Type with record
+   type Servlet_Route_Type is new ASF.Routes.Route_Type with record
       Filters : ASF.Filters.Filter_List_Access;
       Servlet : ASF.Servlets.Servlet_Access;
    end record;
@@ -38,5 +37,10 @@ package ASF.Routes.Servlets is
    --  Release the storage held by the route.
    overriding
    procedure Finalize (Route : in out Servlet_Route_Type);
+
+   type Proxy_Route_Type is new Servlet_Route_Type with record
+      Route   : ASF.Routes.Route_Type_Access;
+   end record;
+   type Proxy_Route_Type_Access is access all Proxy_Route_Type'Class;
 
 end ASF.Routes.Servlets;

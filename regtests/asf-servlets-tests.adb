@@ -24,6 +24,7 @@ with ASF.Streams;
 with ASF.Routes.Servlets;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
+with ASF.Filters.Dump;
 package body ASF.Servlets.Tests is
 
    use Util.Tests;
@@ -123,6 +124,35 @@ package body ASF.Servlets.Tests is
    end Test_Servlet_Path;
 
    --  ------------------------------
+   --  Test mapping and servlet path on a request.
+   --  ------------------------------
+   procedure Test_Filter_Mapping (T : in out Test) is
+      Ctx : Servlet_Registry;
+
+      S1  : aliased Test_Servlet1;
+      S2  : aliased Test_Servlet2;
+      F1  : aliased ASF.Filters.Dump.Dump_Filter;
+      F2  : aliased ASF.Filters.Dump.Dump_Filter;
+   begin
+      Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
+      Ctx.Add_Servlet ("Json", S2'Unchecked_Access);
+      Ctx.Add_Filter ("Dump", F1'Unchecked_Access);
+      Ctx.Add_Filter ("Dump2", F2'Unchecked_Access);
+      Ctx.Add_Mapping (Pattern => "*.html", Name => "Faces");
+      Ctx.Add_Mapping (Pattern => "*.json", Name => "Json");
+      Ctx.Add_Filter_Mapping (Pattern => "/dump/file.html", Name => "Dump");
+      Ctx.Add_Filter_Mapping (Pattern => "/dump/result/test.html", Name => "Dump");
+      Ctx.Add_Filter_Mapping (Pattern => "/dump/result/test.html", Name => "Dump2");
+      Ctx.Start;
+      T.Check_Mapping (Ctx, "test.html", S1'Unchecked_Access);
+      T.Check_Mapping (Ctx, "file.html", S1'Unchecked_Access);
+      T.Check_Mapping (Ctx, "/dump/test.html", S1'Unchecked_Access);
+      T.Check_Mapping (Ctx, "/dump/file.html", S1'Unchecked_Access, 1);
+      T.Check_Mapping (Ctx, "/dump/result/test.html", S1'Unchecked_Access, 2);
+      T.Check_Mapping (Ctx, "test.json", S2'Unchecked_Access);
+   end Test_Filter_Mapping;
+
+   --  ------------------------------
    --  Test add servlet
    --  ------------------------------
    procedure Test_Add_Servlet (T : in out Test) is
@@ -182,11 +212,14 @@ package body ASF.Servlets.Tests is
    procedure Check_Mapping (T      : in out Test;
                             Ctx    : in Servlet_Registry;
                             URI    : in String;
-                            Server : in Servlet_Access) is
+                            Server : in Servlet_Access;
+                            Filter : in Natural := 0) is
       use type ASF.Routes.Route_Type_Access;
+      use type ASF.Filters.Filter_List_Access;
 
       Disp  : constant Request_Dispatcher := Ctx.Get_Request_Dispatcher (URI);
       Route : constant ASF.Routes.Route_Type_Access := Disp.Context.Get_Route;
+      Servlet_Route : ASF.Routes.Servlets.Servlet_Route_Type_Access;
    begin
       if Server = null then
          T.Assert (Route = null, "No mapping returned for URI: " & URI);
@@ -194,8 +227,17 @@ package body ASF.Servlets.Tests is
          T.Assert (Route /= null, "A mapping is returned for URI: " & URI);
          T.Assert (Route.all in ASF.Routes.Servlets.Servlet_Route_Type'Class,
                    "The route is not a Servlet route");
-         T.Assert (ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet = Server,
+         Servlet_Route := ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all)'Access;
+         T.Assert (Servlet_Route.Servlet = Server,
                    "Invalid mapping returned for URI: " & URI);
+         if Filter = 0 then
+            T.Assert (Disp.Filters = null,
+                      "Filters are configured for URI: " & URI);
+         else
+            T.Assert (Disp.Filters /= null, "No filter on the route URI: " & URI);
+            Util.Tests.Assert_Equals (T, Filter, Disp.Filters'Length,
+                                      "Invalid mapping returned for URI: " & URI);
+         end if;
       end if;
    end Check_Mapping;
 
@@ -276,6 +318,8 @@ package body ASF.Servlets.Tests is
                        Test_Get_Resource'Access);
       Caller.Add_Test (Suite, "Test ASF.Requests.Get_Servlet_Path",
                        Test_Servlet_Path'Access);
+      Caller.Add_Test (Suite, "Test ASF.Servlets.Add_Filter",
+                       Test_Filter_Mapping'Access);
    end Add_Tests;
 
 end ASF.Servlets.Tests;

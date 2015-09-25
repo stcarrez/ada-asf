@@ -462,6 +462,7 @@ private
 
    type Request_Dispatcher is limited record
       Context : aliased ASF.Routes.Route_Context_Type;
+      Filters : Filter_List_Access;
       Servlet : Servlet_Access := null;
       Pos     : Natural := 0;
    end record;

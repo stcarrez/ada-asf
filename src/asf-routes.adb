@@ -67,6 +67,15 @@ package body ASF.Routes is
    end Get_Route;
 
    --  ------------------------------
+   --  Change the context to use a new route.
+   --  ------------------------------
+   procedure Change_Route (Context : in out Route_Context_Type;
+                           To      : in Route_Type_Access) is
+   begin
+      Context.Route := To;
+   end Change_Route;
+
+   --  ------------------------------
    --  Return the position of the variable part of the path.
    --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern
    --  is returned.
@@ -310,8 +319,8 @@ package body ASF.Routes is
          First := Pos + 2;
          exit when First > Pattern'Last;
       end loop;
-      if Parent.Route = null then
-         Parent.Route := To;
+      if Parent.Route.Is_Null then
+         Parent.Route := Route_Type_Refs.Create (To);
       end if;
    end Add_Route;
 
@@ -367,7 +376,7 @@ package body ASF.Routes is
          Match := N.Matches (Path (Pos .. Last), Last = Path'Last);
          if Match = YES_MATCH then
             if Last = Path'Last then
-               Context.Route := N.Route;
+               Context.Route := N.Route.Value;
                return;
             end if;
             N.Find_Match (Path, Last + 2, Match, Context);
@@ -384,9 +393,9 @@ package body ASF.Routes is
                Context.Params (Count).Last := Last;
 
                --  We reached the end of the path and we have a route, this is a match.
-               if Last = Path'Last and N.Route /= null then
+               if Last = Path'Last and not N.Route.Is_Null then
                   Match := YES_MATCH;
-                  Context.Route := N.Route;
+                  Context.Route := N.Route.Value;
                   return;
                end if;
                N.Find_Match (Path, Last + 2, Match, Context);
@@ -407,7 +416,7 @@ package body ASF.Routes is
                   Context.Params (Count).Route := N;
                   Context.Params (Count).First := Pos;
                   Context.Params (Count).Last := Path'Last;
-                  Context.Route := N.Route;
+                  Context.Route := N.Route.Value;
                   return;
                end if;
             end;
@@ -427,8 +436,8 @@ package body ASF.Routes is
                                                            Route   : in Route_Type_Access)) is
       Child : Route_Node_Access := Node.Children;
    begin
-      if Node.Route /= null then
-         Process (Path, Node.Route);
+      if not Node.Route.Is_Null then
+         Process (Path, Node.Route.Value);
       end if;
       while Child /= null loop
          Child.Iterate (Path & "/" & Child.Get_Pattern, Process);
@@ -641,7 +650,7 @@ package body ASF.Routes is
             Node.Children := Child.Next_Route;
             Destroy (Child);
          end loop;
-         Free (Node.Route);
+         --  Free (Node.Route);
          Free (Node);
       end Destroy;
 

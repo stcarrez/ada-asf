@@ -77,7 +77,7 @@ package body ASF.Routes.Tests is
       T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("user"),
                                 Util.Beans.Objects.To_Object (T.Bean.all'Access));
       for I in T.Routes'Range loop
-         T.Routes (I) := new Test_Route_Type '(Index => I);
+         T.Routes (I) := Route_Type_Refs.Create (new Test_Route_Type '(Util.Refs.Ref_Entity with Index => I));
       end loop;
    end Set_Up;
 
@@ -89,7 +89,7 @@ package body ASF.Routes.Tests is
                            Path   : in String;
                            Index  : in Positive;
                            Bean   : in out Test_Bean'Class) is
-      Route   : constant Route_Type_Access := T.Routes (Index).all'Access;
+      Route   : constant Route_Type_Access := T.Routes (Index).Value;
       R       : Route_Context_Type;
    begin
       Router.Find_Route (Path, R);
@@ -113,7 +113,7 @@ package body ASF.Routes.Tests is
                         Path   : in String;
                         Index  : in Positive;
                         Bean   : in out Test_Bean'Class) is
-      Route   : constant Route_Type_Access := T.Routes (Index).all'Access;
+      Route   : constant Route_Type_Access := T.Routes (Index).Value;
    begin
       Router.Add_Route (Path, Route, T.ELContext.all);
       Verify_Route (T, Router, Path, Index, Bean);

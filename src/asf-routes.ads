@@ -19,13 +19,23 @@
 with Ada.Finalization;
 
 with Util.Beans.Basic;
+with Util.Refs;
 with EL.Expressions;
 with EL.Contexts;
 
 package ASF.Routes is
 
-   type Route_Type is limited interface;
+   type Route_Type is abstract new Util.Refs.Ref_Entity with null record;
    type Route_Type_Access is access all Route_Type'Class;
+
+   --  function Duplicate (Route : in Route_Type) return Route_Type_Access is abstract;
+
+   package Route_Type_Refs is
+     new Util.Refs.Indefinite_References (Element_Type => Route_Type'Class,
+                                          Element_Access => Route_Type_Access);
+
+   subtype Route_Type_Ref is Route_Type_Refs.Ref;
+   --  subtype Route_Type_Access is Route_Type_Refs.Element_Access;
 
    type Path_Mode is (FULL, PREFIX, SUFFIX);
 
@@ -44,6 +54,10 @@ package ASF.Routes is
 
    --  Return the route associated with the resolved route context.
    function Get_Route (Context : in Route_Context_Type) return Route_Type_Access;
+
+   --  Change the context to use a new route.
+   procedure Change_Route (Context : in out Route_Context_Type;
+                           To      : in Route_Type_Access);
 
    --  Inject the parameters that have been extracted from the path according
    --  to the selected route.
@@ -78,6 +92,8 @@ package ASF.Routes is
 
 private
 
+   -- use type Route_Type_Refs.Element_Access;
+
    type String_Access is access all String;
 
    type Route_Node_Type;
@@ -97,7 +113,7 @@ private
    type Route_Node_Type is abstract tagged limited record
       Next_Route : Route_Node_Access;
       Children   : Route_Node_Access;
-      Route      : Route_Type_Access;
+      Route      : Route_Type_Ref;
    end record;
 
    --  Inject the parameter that was extracted from the path.

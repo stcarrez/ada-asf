@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF -- Ada Server Faces
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +17,12 @@
 -----------------------------------------------------------------------
 
 with Util.Tests;
+with ASF.Tests;
 with ASF.Testsuite;
 procedure ASF_Harness is
 
-   procedure Harness is new Util.Tests.Harness (ASF.Testsuite.Suite);
+   procedure Harness is new Util.Tests.Harness (Suite  => ASF.Testsuite.Suite,
+                                                Finish => ASF.Tests.Finish);
 
 begin
    Harness ("asf-tests.xml");

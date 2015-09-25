@@ -42,14 +42,17 @@ package body ASF.Tests is
 
    CONTEXT_PATH : constant String := "/asfunit";
 
-   Server   : access ASF.Server.Container;
+   type Container_Access is access ASF.Server.Container;
 
-   App      : ASF.Applications.Main.Application_Access := null;
-   Faces    : aliased ASF.Servlets.Faces.Faces_Servlet;
-   Files    : aliased ASF.Servlets.Files.File_Servlet;
-   Ajax     : aliased ASF.Servlets.Ajax.Ajax_Servlet;
-   Dump     : aliased ASF.Filters.Dump.Dump_Filter;
-   Measures : aliased ASF.Servlets.Measures.Measure_Servlet;
+   Server      : Container_Access;
+
+   App_Created : ASF.Applications.Main.Application_Access;
+   App         : ASF.Applications.Main.Application_Access;
+   Faces       : aliased ASF.Servlets.Faces.Faces_Servlet;
+   Files       : aliased ASF.Servlets.Files.File_Servlet;
+   Ajax        : aliased ASF.Servlets.Ajax.Ajax_Servlet;
+   Dump        : aliased ASF.Filters.Dump.Dump_Filter;
+   Measures    : aliased ASF.Servlets.Measures.Measure_Servlet;
 
    --  Save the response headers and content in a file
    procedure Save_Response (Name     : in String;
@@ -68,7 +71,10 @@ package body ASF.Tests is
       if Application /= null then
          App := Application;
       else
-         App := new ASF.Applications.Main.Application;
+         if App_Created = null then
+            App_Created := new ASF.Applications.Main.Application;
+         end if;
+         App := App_Created;
       end if;
 
       Server := new ASF.Server.Container;
@@ -104,6 +110,25 @@ package body ASF.Tests is
       App.Add_Filter_Mapping (Name => "dump", Pattern => "*.css");
       App.Add_Filter_Mapping (Name => "dump", Pattern => "/ajax/*");
    end Initialize;
+
+   --  ------------------------------
+   --  Called when the testsuite execution has finished.
+   --  ------------------------------
+   procedure Finish (Status : in Util.XUnit.Status) is
+      pragma Unreferenced (Status);
+
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => ASF.Applications.Main.Application'Class,
+                                        Name   => ASF.Applications.Main.Application_Access);
+
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => ASF.Server.Container,
+                                        Name   => Container_Access);
+
+   begin
+      Free (App_Created);
+      Free (Server);
+   end Finish;
 
    --  ------------------------------
    --  Get the server

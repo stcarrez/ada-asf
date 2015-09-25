@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Servlets Tests - Unit tests for ASF.Servlets
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,11 +52,15 @@ package ASF.Servlets.Tests is
    --  Test mapping and servlet path on a request.
    procedure Test_Servlet_Path (T : in out Test);
 
+   --  Test mapping and servlet path on a request.
+   procedure Test_Filter_Mapping (T : in out Test);
+
    --  Check that the mapping for the given URI matches the server.
    procedure Check_Mapping (T      : in out Test;
                             Ctx    : in Servlet_Registry;
                             URI    : in String;
-                            Server : in Servlet_Access);
+                            Server : in Servlet_Access;
+                            Filter : in Natural := 0);
 
    --  Check that the request is done on the good servlet and with the correct servlet path
    --  and path info.

@@ -367,7 +367,7 @@ package body ASF.Servlets is
             Servlet_Route : constant ASF.Routes.Servlets.Servlet_Route_Type_Access
               := ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all)'Access;
          begin
-            if Servlet_Route.Filters = null then
+            if Dispatcher.Filters = null then
                ASF.Requests.Tools.Set_Context (Request,
                                                Response'Unchecked_Access,
                                                Dispatcher.Context'Unrestricted_Access);
@@ -381,7 +381,7 @@ package body ASF.Servlets is
                   ASF.Requests.Tools.Set_Context (Request,
                                                   Response'Unchecked_Access,
                                                   Dispatcher.Context'Unrestricted_Access);
-                  Chain.Filters := Servlet_Route.Filters.all'Access;
+                  Chain.Filters := Dispatcher.Filters.all'Access;
                   Chain.Servlet := Servlet_Route.Servlet;
                   Chain.Filter_Pos := Chain.Filters'Last;
                   Do_Filter (Chain    => Chain,
@@ -426,16 +426,31 @@ package body ASF.Servlets is
    function Get_Request_Dispatcher (Context : in Servlet_Registry;
                                     Path    : in String)
                                     return Request_Dispatcher is
+      use type ASF.Filters.Filter_List_Access;
+
+      Route : ASF.Routes.Route_Type_Access;
    begin
       return R : Request_Dispatcher do
          Context.Routes.Find_Route (Path, R.Context);
-         --  R.Mapping := Context.Find_Mapping (URI => Path);
-         --  if R.Mapping /= null and then R.Mapping.Path_Pos > 1 then
-         --   R.Pos := R.Mapping.Path_Pos - 1;
-         --  else
+         Route := ASF.Routes.Get_Route (R.Context);
+         if Route /= null then
+            if Route.all in ASF.Routes.Servlets.Servlet_Route_Type'Class then
+               declare
+                  Servlet_Route : constant ASF.Routes.Servlets.Servlet_Route_Type_Access
+                    := ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all)'Access;
+                  Proxy : ASF.Routes.Servlets.Proxy_Route_Type_Access;
+               begin
+                  if Servlet_Route.Filters /= null then
+                     R.Filters := Servlet_Route.Filters.all'Access;
+                  end if;
+                  if Servlet_Route.all in ASF.Routes.Servlets.Proxy_Route_Type'Class then
+                     Proxy := ASF.Routes.Servlets.Proxy_Route_Type'Class (Servlet_Route.all)'Access;
+                     ASF.Routes.Change_Route (R.Context, Proxy.Route);
+                  end if;
+               end;
+            end if;
+         end if;
          R.Pos := ASF.Routes.Get_Path_Pos (R.Context);
---           end if;
---         R.Path := To_Unbounded_String (Path);
       end return;
    end Get_Request_Dispatcher;
 
@@ -668,6 +683,7 @@ package body ASF.Servlets is
    procedure Install_Filters (Registry : in out Servlet_Registry) is
       procedure Process (URI   : in String;
                          Route : in ASF.Routes.Route_Type_Access);
+      procedure Make_Route;
 
       procedure Process (URI   : in String;
                          Route : in ASF.Routes.Route_Type_Access) is
@@ -692,7 +708,33 @@ package body ASF.Servlets is
          end loop;
       end Process;
 
+      --  ------------------------------
+      --  Setup a route for each filter mapping so that we can configure the filter
+      --  for the filter mapping route.
+      --  ------------------------------
+      procedure Make_Route is
+         Context : aliased EL.Contexts.Default.Default_Context;
+         Iter    : Util.Strings.Vectors.Cursor := Registry.Filter_Patterns.First;
+         Proxy   : ASF.Routes.Servlets.Proxy_Route_Type_Access;
+      begin
+         while Util.Strings.Vectors.Has_Element (Iter) loop
+            declare
+               Pattern : constant String := Util.Strings.Vectors.Element (Iter);
+               Route   : ASF.Routes.Route_Context_Type;
+            begin
+               Registry.Routes.Find_Route (Pattern, Route);
+               if Route.Get_Route /= null then
+                  Proxy := new ASF.Routes.Servlets.Proxy_Route_Type;
+                  Proxy.Route := Route.Get_Route;
+                  Registry.Routes.Add_Route (Pattern, Proxy.all'Access, Context);
+               end if;
+            end;
+            Util.Strings.Vectors.Next (Iter);
+         end loop;
+      end Make_Route;
+
    begin
+      Make_Route;
       Registry.Routes.Iterate (Process'Access);
    end Install_Filters;
 

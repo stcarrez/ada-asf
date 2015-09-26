@@ -478,6 +478,12 @@ private
                                             Hash         => Ada.Strings.Hash,
                                             Equivalent_Keys => "=");
 
+   package Filter_List_Maps is new
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => String,
+                                            Element_Type => Filter_List_Access,
+                                            Hash         => Ada.Strings.Hash,
+                                            Equivalent_Keys => "=");
+
    package Servlet_Maps is new
      Ada.Containers.Indefinite_Hashed_Maps (Key_Type     => String,
                                             Element_Type => Servlet_Access,
@@ -496,7 +502,7 @@ private
       Config            : Util.Properties.Manager;
       Servlets          : Servlet_Maps.Map;
       Filters           : Filter_Maps.Map;
-      Filter_Rules      : Filter_Maps.Map;
+      Filter_Rules      : Filter_List_Maps.Map;
       Filter_Patterns   : Util.Strings.Vectors.Vector;
       Error_Pages       : Error_Maps.Map;
       Context_Path      : Unbounded_String;

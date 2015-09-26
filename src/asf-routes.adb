@@ -628,9 +628,6 @@ package body ASF.Routes is
    --  ------------------------------
    overriding
    procedure Finalize (Router : in out Router_Type) is
-      procedure Free is
-        new Ada.Unchecked_Deallocation (Object => Route_Type'Class,
-                                        Name   => Route_Type_Access);
 
       procedure Free is
         new Ada.Unchecked_Deallocation (Object => Route_Node_Type'Class,
@@ -650,7 +647,6 @@ package body ASF.Routes is
             Node.Children := Child.Next_Route;
             Destroy (Child);
          end loop;
-         --  Free (Node.Route);
          Free (Node);
       end Destroy;
 

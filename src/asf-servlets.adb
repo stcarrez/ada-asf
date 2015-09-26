@@ -729,6 +729,11 @@ package body ASF.Servlets is
                if Route.Get_Route /= null then
                   Proxy := new ASF.Routes.Servlets.Proxy_Route_Type;
                   Proxy.Route := Route.Get_Route;
+
+                  --  If the route is also a proxy, get the real route pointed to by the proxy.
+                  if Proxy.Route.all in ASF.Routes.Servlets.Proxy_Route_Type'Class then
+                     Proxy.Route := Routes.Servlets.Proxy_Route_Type'Class (Proxy.Route.all).Route;
+                  end if;
                   Registry.Routes.Add_Route (Pattern, Proxy.all'Access, Context);
                end if;
             end;

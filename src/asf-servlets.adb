@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with System.Address_Image;
+with Ada.Unchecked_Deallocation;
 
 with ASF.Filters;
 with ASF.Streams;
@@ -697,11 +698,13 @@ package body ASF.Servlets is
          while Util.Strings.Vectors.Has_Element (Iter) loop
             declare
                Pattern : constant String := Util.Strings.Vectors.Element (Iter);
-               Filter  : Filter_Access;
+               Filter  : Filter_List_Access;
             begin
                if Match_Pattern (Pattern, URI) then
                   Filter := Registry.Filter_Rules.Element (Pattern);
-                  ASF.Routes.Servlets.Append_Filter (Servlet_Route.all, Filter.all'Access);
+                  for I in Filter'Range loop
+                     ASF.Routes.Servlets.Append_Filter (Servlet_Route.all, Filter (I).all'Access);
+                  end loop;
                end if;
             end;
             Util.Strings.Vectors.Next (Iter);
@@ -851,8 +854,45 @@ package body ASF.Servlets is
    procedure Add_Filter_Mapping (Registry : in out Servlet_Registry;
                                  Pattern  : in String;
                                  Name     : in String) is
+      procedure Append (Key  : in String;
+                        List : in out Filter_List_Access);
+
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => ASF.Filters.Filter_List,
+                                        Name   => Filter_List_Access);
+
       Pos  : constant Filter_Maps.Cursor := Registry.Filters.Find (Name);
-      Rule : constant Filter_Maps.Cursor := Registry.Filter_Rules.Find (Pattern);
+      Rule : constant Filter_List_Maps.Cursor := Registry.Filter_Rules.Find (Pattern);
+
+      --  ------------------------------
+      --  Append the filter in the filter list.
+      --  ------------------------------
+      procedure Append (Key  : in String;
+                        List : in out Filter_List_Access) is
+         pragma Unreferenced (Key);
+         use type ASF.Filters.Filter_Access;
+         use type ASF.Filters.Filter_List;
+         use ASF.Filters;
+
+         Filter   : constant ASF.Filters.Filter_Access := Filter_Maps.Element (Pos).all'Access;
+         New_List : Filter_List_Access;
+      begin
+         --  Check that the filter is not already executed.
+         for I in List'Range loop
+            if List (I) = Filter then
+               return;
+            end if;
+         end loop;
+
+         New_List := new ASF.Filters.Filter_List (1 .. List'Last + 1);
+         New_List.all (2 .. New_List'Last) := List.all;
+         New_List (New_List'First) := Filter;
+         Free (List);
+         List := New_List;
+      end Append;
+
+      List : Filter_List_Access;
+
    begin
       Log.Info ("Add filter mapping {0} -> {1}", Pattern, Name);
 
@@ -860,11 +900,13 @@ package body ASF.Servlets is
          Log.Error ("No servlet filter {0}", Name);
          raise Servlet_Error with "No servlet filter " & Name;
       end if;
-      if not Filter_Maps.Has_Element (Rule) then
+      if not Filter_List_Maps.Has_Element (Rule) then
          Registry.Filter_Patterns.Append (Pattern);
-         Registry.Filter_Rules.Insert (Pattern, Filter_Maps.Element (Pos));
+         List := new ASF.Filters.Filter_List (1 .. 1);
+         List (List'First) := Filter_Maps.Element (Pos).all'Access;
+         Registry.Filter_Rules.Insert (Pattern, List);
       else
-         Registry.Filter_Rules.Include (Pattern, Filter_Maps.Element (Pos));
+         Registry.Filter_Rules.Update_Element (Rule, Append'Access);
       end if;
    end Add_Filter_Mapping;
 

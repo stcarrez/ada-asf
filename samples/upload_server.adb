@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  upload_server -- Example of server with a servlet
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ procedure Upload_Server is
    Upload  : aliased Upload_Servlet.Servlet;
    App     : aliased ASF.Servlets.Servlet_Registry;
    WS      : ASF.Server.Web.AWS_Container;
-   Log     : Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Upload_Server");
+   Log     : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Upload_Server");
 begin
    --  Register the servlets and filters
    App.Add_Servlet (Name => "upload", Server => Upload'Unchecked_Access);

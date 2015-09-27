@@ -3,6 +3,7 @@ Version 1.1     -
   - New request route mapping with support for URL component extraction and parameter
     injection in Ada beans
   - Improvement of configure, build and installation with gprinstall when available
+  - Integrate jQuery 1.11.3 and jQuery UI 1.11.4
 
 Version 1.0.1   - Jul 2014
   - Fix minor configuration issue with GNAT 2014

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  volume_server -- Example of server with a servlet
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ procedure Volume_Server is
    Compute : aliased Volume_Servlet.Servlet;
    App     : aliased ASF.Servlets.Servlet_Registry;
    WS      : ASF.Server.Web.AWS_Container;
-   Log     : Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Volume_Server");
+   Log     : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Volume_Server");
 begin
    --  Register the servlets and filters
    App.Add_Servlet (Name => "compute", Server => Compute'Unchecked_Access);

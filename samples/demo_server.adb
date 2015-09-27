@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  demo_server -- Demo server for Ada Server Faces
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,14 +39,13 @@ with Countries;
 with Volume;
 with Messages;
 with Facebook;
---  with Images;
 with Users;
 procedure Demo_Server is
 
    CONTEXT_PATH : constant String := "/demo";
    CONFIG_PATH  : constant String := "samples.properties";
 
-   Log          : Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Openid");
+   Log          : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Openid");
 
    Factory      : ASF.Applications.Main.Application_Factory;
    C            : ASF.Applications.Config;

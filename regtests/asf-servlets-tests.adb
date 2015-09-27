@@ -121,6 +121,8 @@ package body ASF.Servlets.Tests is
       Ctx.Add_Mapping (Pattern => "/p1/p2/p3/*", Name => "Faces");
 
       Check_Request (T, Ctx, "/p1/p2/p3/home/test.html", "/p1/p2/p3", "/home/test.html");
+      Check_Request (T, Ctx, "/root/home/test.jsf", "/root/home/test.jsf", "");
+      Check_Request (T, Ctx, "/test.jsf", "/test.jsf", "");
    end Test_Servlet_Path;
 
    --  ------------------------------

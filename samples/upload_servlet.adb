@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  upload_servlet -- Servlet example to upload files on the server
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -124,11 +124,13 @@ package body Upload_Servlet is
             elsif Name (Ext_Pos .. Name'Last) = ".jpg"
               or Name (Ext_Pos .. Name'Last) = ".gif"
               or Name (Ext_Pos .. Name'Last) = ".xbm"
-              or Name (Ext_Pos .. Name'Last) = ".png" then
+              or Name (Ext_Pos .. Name'Last) = ".png"
+            then
                return IMAGE;
 
             elsif Name (Ext_Pos .. Name'Last) = ".zip"
-              or Name (Ext_Pos .. Name'Last) = ".jar" then
+              or Name (Ext_Pos .. Name'Last) = ".jar"
+            then
                return ZIP;
 
             elsif Name (Ext_Pos .. Name'Last) = ".pdf" then

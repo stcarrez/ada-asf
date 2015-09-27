@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  volume_servlet -- Servlet example to compute some volumes
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,11 @@
 with Ada.Numerics;
 with ASF.Streams;
 package body Volume_Servlet is
+
+   procedure Write (Response : in out Responses.Response'Class;
+                    Message  : in String;
+                    Height   : in String;
+                    Radius   : in String);
 
    --  ------------------------------
    --  Write the volume form page with an optional response message.

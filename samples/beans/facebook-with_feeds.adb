@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  facebook - Use Facebook Graph API
---  Copyright (C) 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -276,7 +276,8 @@ package body Facebook is
             S      : constant ASF.Sessions.Session := F.Get_Session (False);
          begin
             if S.Is_Valid and
-            then not Util.Beans.Objects.Is_Null (S.Get_Attribute ("access_token")) then
+            then not Util.Beans.Objects.Is_Null (S.Get_Attribute ("access_token"))
+            then
                return Util.Beans.Objects.To_Object (True);
             else
                return Util.Beans.Objects.To_Object (False);

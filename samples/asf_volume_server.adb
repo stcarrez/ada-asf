@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf_volume_server -- The volume_server application with Ada Server Faces
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +38,7 @@ procedure Asf_Volume_Server is
    CONTEXT_PATH : constant String := "/volume";
    CONFIG_PATH  : constant String := "samples.properties";
 
-   Log     : Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Openid");
+   Log     : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Openid");
 
    Factory : ASF.Applications.Main.Application_Factory;
    App     : aliased ASF.Applications.Main.Application;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.beans -- Bean Registration and Factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Util.Log.Loggers;
+with Util.Beans.Objects.Maps;
 package body ASF.Beans is
 
    --  The logger
@@ -168,5 +169,13 @@ package body ASF.Beans is
    begin
       Result := Factory.Create.all;
    end Create;
+
+   --  ------------------------------
+   --  Create a map bean object that allows to associate name/value pairs in a bean.
+   --  ------------------------------
+   function Create_Map_Bean return Util.Beans.Basic.Readonly_Bean_Access is
+   begin
+      return new Util.Beans.Objects.Maps.Map_Bean;
+   end Create_Map_Bean;
 
 end ASF.Beans;

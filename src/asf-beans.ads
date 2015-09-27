@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.beans -- Bean Registration and Factory
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -139,6 +139,9 @@ package ASF.Beans is
                      Context : in EL.Contexts.ELContext'Class;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access;
                      Scope   : out Scope_Type);
+
+   --  Create a map bean object that allows to associate name/value pairs in a bean.
+   function Create_Map_Bean return Util.Beans.Basic.Readonly_Bean_Access;
 
 private
 

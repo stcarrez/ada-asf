@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -245,6 +245,8 @@ package body ASF.Applications.Main is
 
       Application'Class (App).Initialize_Components;
 
+      ASF.Beans.Register_Class (App.Factory, "ASF.Beans.Map_Bean",
+                                ASF.Beans.Create_Map_Bean'Access);
       Application'Class (App).Initialize_Config (Params);
 
       App.Set_Init_Parameters (Params => Params);

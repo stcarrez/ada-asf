@@ -568,6 +568,18 @@ package body ASF.Requests is
    end Get_Path_Info;
 
    --  ------------------------------
+   --  Get the request path that correspond to the servlet path and the path info.
+   --  ------------------------------
+   function Get_Path (Req : in Request) return String is
+   begin
+      if Req.Context = null then
+         return "";
+      else
+         return ASF.Routes.Get_Path (Req.Context.all, ASF.Routes.FULL);
+      end if;
+   end Get_Path;
+
+   --  ------------------------------
    --  Returns the portion of the request URI that indicates the context of the
    --  request. The context path always comes first in a request URI. The path
    --  starts with a "/" character but does not end with a "/" character.

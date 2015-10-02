@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.measures -- Dump performance measurements
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -138,7 +138,7 @@ package body ASF.Servlets.Measures is
                         Request  : in out Requests.Request'Class;
                         Response : in out Responses.Response'Class;
                         Chain    : in out ASF.Servlets.Filter_Chain) is
-      URI   : constant String := Request.Get_Path_Info;
+      URI   : constant String := Request.Get_Request_URI;
       Stamp : Util.Measures.Stamp;
    begin
       Util.Measures.Set_Current (F.Current);

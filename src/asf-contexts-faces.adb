@@ -476,7 +476,7 @@ package body ASF.Contexts.Faces is
       if Route.all in ASF.Routes.Servlets.Faces.Faces_Route_Type'Class then
          return To_String (ASF.Routes.Servlets.Faces.Faces_Route_Type'Class (Route.all).View);
       else
-         return Context.Request.Get_Servlet_Path;
+         return Context.Request.Get_Path;
       end if;
    end Get_View_Name;
 

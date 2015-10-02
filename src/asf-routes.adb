@@ -29,7 +29,7 @@ package body ASF.Routes is
    --  Get path information after the routing.
    --  ------------------------------
    function Get_Path (Context : in Route_Context_Type;
-                           Mode    : in Path_Mode := FULL) return String is
+                      Mode    : in Path_Mode := FULL) return String is
    begin
       if Context.Path = null then
          return "";
@@ -39,19 +39,21 @@ package body ASF.Routes is
          declare
             Pos : constant Natural := Get_Path_Pos (Context);
          begin
-            if Pos = 0 then
-               return Context.Path.all;
-            elsif Mode = PREFIX then
+            if Mode = PREFIX then
                if Pos > Context.Path'Last then
                   return Context.Path.all;
-               else
+               elsif Pos /= 0 then
                   return Context.Path (Context.Path'First .. Pos - 1);
+               else
+                  return "";
                end if;
             else
                if Pos > Context.Path'Last then
                   return "";
-               else
+               elsif Pos /= 0 then
                   return Context.Path (Pos .. Context.Path'Last);
+               else
+                  return Context.Path.all;
                end if;
             end if;
          end;
@@ -374,27 +376,9 @@ package body ASF.Routes is
       end if;
       while N /= null loop
          Match := N.Matches (Path (Pos .. Last), Last = Path'Last);
-         if Match = YES_MATCH then
-            if Last = Path'Last then
-               Context.Route := N.Route.Value;
-               return;
-            end if;
-            N.Find_Match (Path, Last + 2, Match, Context);
-            if Match = YES_MATCH then
-               return;
-            end if;
-         elsif Match = MAYBE_MATCH then
-            declare
-               Count : constant Natural := Context.Count + 1;
-            begin
-               Context.Count := Count;
-               Context.Params (Count).Route := N;
-               Context.Params (Count).First := Pos;
-               Context.Params (Count).Last := Last;
-
-               --  We reached the end of the path and we have a route, this is a match.
-               if Last = Path'Last and not N.Route.Is_Null then
-                  Match := YES_MATCH;
+         case Match is
+            when YES_MATCH =>
+               if Last = Path'Last then
                   Context.Route := N.Route.Value;
                   return;
                end if;
@@ -402,25 +386,74 @@ package body ASF.Routes is
                if Match = YES_MATCH then
                   return;
                end if;
-               Context.Count := Count - 1;
-            end;
-         elsif Match = WILDCARD_MATCH then
-            declare
-               Ext   : constant Natural := Util.Strings.Rindex (Path, '/');
-               Count : Natural;
-            begin
-               Match := N.Matches (Path (Ext + 1 .. Path'Last), True);
-               if Match = YES_MATCH or Match = WILDCARD_MATCH then
-                  Count := Context.Count + 1;
+
+            when MAYBE_MATCH =>
+               declare
+                  Count : constant Natural := Context.Count + 1;
+               begin
                   Context.Count := Count;
                   Context.Params (Count).Route := N;
                   Context.Params (Count).First := Pos;
-                  Context.Params (Count).Last := Path'Last;
-                  Context.Route := N.Route.Value;
+                  Context.Params (Count).Last := Last;
+
+                  --  We reached the end of the path and we have a route, this is a match.
+                  if Last = Path'Last and not N.Route.Is_Null then
+                     Match := YES_MATCH;
+                     Context.Route := N.Route.Value;
+                     return;
+                  end if;
+                  N.Find_Match (Path, Last + 2, Match, Context);
+                  if Match = YES_MATCH then
+                     return;
+                  end if;
+                  Context.Count := Count - 1;
+               end;
+
+            when WILDCARD_MATCH =>
+               declare
+                  Ext   : constant Natural := Util.Strings.Rindex (Path, '/');
+                  Count : Natural;
+               begin
+                  Match := N.Matches (Path (Ext + 1 .. Path'Last), True);
+                  if Match = YES_MATCH or Match = WILDCARD_MATCH or Match = EXT_MATCH then
+                     Count := Context.Count + 1;
+                     Context.Count := Count;
+                     Context.Params (Count).Route := N;
+                     Context.Params (Count).First := Pos;
+                     Context.Params (Count).Last := Path'Last;
+                     Context.Route := N.Route.Value;
+                     if Match = EXT_MATCH then
+                        Match := YES_MATCH;
+                     end if;
+                     return;
+                  end if;
+               end;
+
+            when EXT_MATCH =>
+               if Last = Path'Last then
+                  declare
+                     Count : Natural;
+                  begin
+                     Count := Context.Count + 1;
+                     Context.Count := Context.Count + 1;
+                     Context.Count := Count;
+                     Context.Params (Count).Route := N;
+                     Context.Params (Count).First := Pos;
+                     Context.Params (Count).Last := Path'Last;
+                     Context.Route := N.Route.Value;
+                     Match := YES_MATCH;
+                     return;
+                  end;
+               end if;
+               N.Find_Match (Path, Last + 2, Match, Context);
+               if Match = YES_MATCH then
                   return;
                end if;
-            end;
-         end if;
+
+            when NO_MATCH =>
+               null;
+
+         end case;
          N := N.Next_Route;
       end loop;
       Match := NO_MATCH;
@@ -571,7 +604,7 @@ package body ASF.Routes is
          if Pos = 0 then
             return NO_MATCH;
          elsif Name (Pos .. Name'Last) = Node.Ext then
-            return YES_MATCH;
+            return EXT_MATCH;
          else
             return NO_MATCH;
          end if;

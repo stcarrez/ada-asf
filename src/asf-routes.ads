@@ -108,7 +108,7 @@ private
 
    type Route_Param_Array is array (Positive range <>) of Route_Param_Type;
 
-   type Route_Match_Type is (NO_MATCH, MAYBE_MATCH, WILDCARD_MATCH, YES_MATCH);
+   type Route_Match_Type is (NO_MATCH, MAYBE_MATCH, WILDCARD_MATCH, EXT_MATCH, YES_MATCH);
 
    type Route_Node_Type is abstract tagged limited record
       Next_Route : Route_Node_Access;

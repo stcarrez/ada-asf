@@ -292,6 +292,9 @@ package ASF.Requests is
    --  precedes the query string and will start with a "/" character.
    function Get_Path_Info (Req : in Request) return String;
 
+   --  Get the request path that correspond to the servlet path and the path info.
+   function Get_Path (Req : in Request) return String;
+
    --  Returns the portion of the request URI that indicates the context of the
    --  request. The context path always comes first in a request URI. The path
    --  starts with a "/" character but does not end with a "/" character.

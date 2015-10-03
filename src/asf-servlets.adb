@@ -644,6 +644,8 @@ package body ASF.Servlets is
       --  /home/*.html, /home/users/:id ->False
       --  /home/*.html, /home/users/:id/view.html -> True
       --  /home/*.html, /home/index.html -> True
+      --  /home/*,      /home/users/:id -> True
+      --  /home/*,      /home/admin/*.html -> True
       loop
          if Pattern (Pos) = '*' then
             if Pos = Pattern'Last then
@@ -668,8 +670,8 @@ package body ASF.Servlets is
             return False;
          end if;
          Pos := Pos + 1;
-         if Pos = Pattern'Last then
-            if Pos = URI'Last then
+         if Pos > Pattern'Last then
+            if Pos > URI'Last then
                return True;
             else
                return False;

@@ -55,6 +55,9 @@ package ASF.Servlets.Tests is
    --  Test mapping and servlet path on a request.
    procedure Test_Filter_Mapping (T : in out Test);
 
+   --  Test execution of filters
+   procedure Test_Filter_Execution (T : in out Test);
+
    --  Check that the mapping for the given URI matches the server.
    procedure Check_Mapping (T      : in out Test;
                             Ctx    : in Servlet_Registry;

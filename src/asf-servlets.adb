@@ -414,7 +414,7 @@ package body ASF.Servlets is
       if Route = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
       else
-         ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet.Service (Request, Response);
+         Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet.Service (Request, Response);
       end if;
    end Include;
 
@@ -445,7 +445,7 @@ package body ASF.Servlets is
                      R.Filters := Servlet_Route.Filters.all'Access;
                   end if;
                   if Servlet_Route.all in ASF.Routes.Servlets.Proxy_Route_Type'Class then
-                     Proxy := ASF.Routes.Servlets.Proxy_Route_Type'Class (Servlet_Route.all)'Access;
+                     Proxy := Routes.Servlets.Proxy_Route_Type'Class (Servlet_Route.all)'Access;
                      ASF.Routes.Change_Route (R.Context, Proxy.Route);
                   end if;
                end;
@@ -636,6 +636,9 @@ package body ASF.Servlets is
    end Get_Servlet_Context;
 
    function Match_Pattern (Pattern : in String;
+                           URI     : in String) return Boolean;
+
+   function Match_Pattern (Pattern : in String;
                            URI     : in String) return Boolean is
       Pos  : Natural := Pattern'First;
       Last : Natural;
@@ -793,7 +796,7 @@ package body ASF.Servlets is
                Append (Result, "null");
             else
                declare
-                  N : constant String := System.Address_Image (Filters(I).all'Address);
+                  N : constant String := System.Address_Image (Filters (I).all'Address);
                begin
                   if Maps.Contains (N) then
                      Append (Result, Maps.Element (N));

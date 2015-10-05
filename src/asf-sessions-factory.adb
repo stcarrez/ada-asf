@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.sessions.factory -- ASF Sessions factory
---  Copyright (C) 2010, 2011, 2012, 2014 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -173,7 +173,7 @@ package body ASF.Sessions.Factory is
          use Ada.Streams;
          use Interfaces;
 
-         Size : Stream_Element_Offset := Rand'Length / 4;
+         Size : constant Stream_Element_Offset := Rand'Length / 4;
       begin
          --  Generate the random sequence.
          for I in 0 .. Size - 1 loop

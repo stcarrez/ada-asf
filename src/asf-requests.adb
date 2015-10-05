@@ -24,6 +24,7 @@ with ASF.Routes.Servlets;
 with Util.Strings;
 with Util.Strings.Transforms;
 with Util.Strings.Tokenizers;
+with Util.Dates.RFC7231;
 
 --  The <b>ASF.Requests</b> package is an Ada implementation of
 --  the Java servlet request (JSR 315 3. The Request).
@@ -484,6 +485,7 @@ package body ASF.Requests is
       end loop;
    end Iterate_Cookies;
 
+   --  ------------------------------
    --  Returns the value of the specified request header as a long value that
    --  represents a Date object. Use this method with headers that contain dates,
    --  such as If-Modified-Since.
@@ -494,11 +496,12 @@ package body ASF.Requests is
    --  If the request did not have a header of the specified name, this method
    --  returns -1. If the header can't be converted to a date, the method throws
    --  an IllegalArgumentException.
+   --  ------------------------------
    function Get_Date_Header (Req  : in Request;
                              Name : in String) return Ada.Calendar.Time is
       Header : constant String := Request'Class (Req).Get_Header (Name);
    begin
-      return Ada.Calendar.Clock;
+      return Util.Dates.RFC7231.Value (Header);
    end Get_Date_Header;
 
 
@@ -707,19 +710,18 @@ package body ASF.Requests is
       end if;
    end Get_Servlet_Path;
 
-
    --  ------------------------------
    --  Get and check the request session
    --  ------------------------------
    function Has_Session (Req : in Request'Class) return Boolean is
-      Servlet : constant ASF.Servlets.Servlet_Access := Get_Servlet (Req);
    begin
       Req.Load_Cookies;
       for I in Req.Info.Cookies'Range loop
          if ASF.Cookies.Get_Name (Req.Info.Cookies (I)) = "SID" then
             declare
-               SID : constant String := ASF.Cookies.Get_Value (Req.Info.Cookies (I));
-               Ctx : constant Servlets.Servlet_Registry_Access := Servlet.Get_Servlet_Context;
+               Servlet : constant ASF.Servlets.Servlet_Access := Get_Servlet (Req);
+               SID     : constant String := ASF.Cookies.Get_Value (Req.Info.Cookies (I));
+               Ctx     : constant Servlets.Servlet_Registry_Access := Servlet.Get_Servlet_Context;
             begin
                Ctx.Find_Session (Id     => SID,
                                  Result => Req.Info.Session);
@@ -744,17 +746,18 @@ package body ASF.Requests is
    --  ------------------------------
    function Get_Session (Req    : in Request;
                          Create : in Boolean := False) return ASF.Sessions.Session is
+      Has_Session : Boolean;
    begin
       if not Req.Info.Session_Initialized then
          --  Look if the session exist
-         if not Req.Has_Session then
-            null;
-         end if;
+         Has_Session := Req.Has_Session;
          Req.Info.Session_Initialized := True;
+      else
+         Has_Session := Req.Info.Session.Is_Valid;
       end if;
 
       --  Create the session if necessary.
-      if Create and not Req.Info.Session.Is_Valid then
+      if Create and not Has_Session then
          declare
             Servlet : constant ASF.Servlets.Servlet_Access := Get_Servlet (Req);
             Ctx     : constant ASF.Servlets.Servlet_Registry_Access

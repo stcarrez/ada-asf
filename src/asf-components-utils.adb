@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-util -- ASF Util Components
---  Copyright (C) 2009, 2010, 2011, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,7 +76,7 @@ package body ASF.Components.Utils is
       Bean := Util.Beans.Objects.To_Bean (Value);
       if Bean = null or else not (Bean.all in Util.Beans.Basic.List_Bean'Class) then
          ASF.Components.Base.Log_Error (UI, "Invalid list bean: it does not implement"
-                                        &" 'List_Bean' interface");
+                                        & " 'List_Bean' interface");
          return null;
       end if;
       List := Util.Beans.Basic.List_Bean'Class (Bean.all)'Unchecked_Access;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-mappers -- Read servlet configuration files
---  Copyright (C) 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Ada.Containers;
 with EL.Utils;
 
 package body ASF.Servlets.Mappers is
@@ -29,6 +29,38 @@ package body ASF.Servlets.Mappers is
                          Field : in Servlet_Fields;
                          Value : in Util.Beans.Objects.Object) is
       use Util.Beans.Objects;
+      use type Ada.Containers.Count_Type;
+
+      procedure Add_Filter (Pattern : in Util.Beans.Objects.Object);
+      procedure Add_Mapping (Pattern : in Util.Beans.Objects.Object);
+      procedure Add_Mapping (Handler : access procedure (Pattern : in Util.Beans.Objects.Object);
+                             Message : in String);
+
+      procedure Add_Filter (Pattern : in Util.Beans.Objects.Object) is
+      begin
+         N.Handler.Add_Filter_Mapping (Pattern => To_String (Pattern),
+                                       Name    => To_String (N.Filter_Name));
+      end Add_Filter;
+
+      procedure Add_Mapping (Pattern : in Util.Beans.Objects.Object) is
+      begin
+         N.Handler.Add_Mapping (Pattern => To_String (Pattern),
+                                Name    => To_String (N.Servlet_Name));
+      end Add_Mapping;
+
+      procedure Add_Mapping (Handler : access procedure (Pattern : in Util.Beans.Objects.Object);
+                             Message : in String) is
+         Last : constant Ada.Containers.Count_Type := N.URL_Patterns.Length;
+      begin
+         if Last = 0 then
+            raise Util.Serialize.Mappers.Field_Error with Message;
+         end if;
+         for I in 1 .. Last loop
+            N.URL_Patterns.Query_Element (Positive (I), Handler);
+         end loop;
+         N.URL_Patterns.Clear;
+      end Add_Mapping;
+
    begin
       --  <context-param>
       --    <param-name>property</param-name>
@@ -46,7 +78,7 @@ package body ASF.Servlets.Mappers is
             N.Servlet_Name := Value;
 
          when URL_PATTERN =>
-            N.URL_Pattern := Value;
+            N.URL_Patterns.Append (Value);
 
          when PARAM_NAME =>
             N.Param_Name := Value;
@@ -67,12 +99,10 @@ package body ASF.Servlets.Mappers is
             N.Location := Value;
 
          when FILTER_MAPPING =>
-            N.Handler.Add_Filter_Mapping (Pattern => To_String (N.URL_Pattern),
-                                          Name    => To_String (N.Filter_Name));
+            Add_Mapping (Add_Filter'Access, "Missing url-pattern for the filter mapping");
 
          when SERVLET_MAPPING =>
-            N.Handler.Add_Mapping (Pattern => To_String (N.URL_Pattern),
-                                   Name    => To_String (N.Servlet_Name));
+            Add_Mapping (Add_Mapping'Access, "Missing url-pattern for the servlet mapping");
 
          when CONTEXT_PARAM =>
             declare

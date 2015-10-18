@@ -251,7 +251,7 @@ package body ASF.Views.Facelets is
          if Facelet_Maps.Has_Element (Pos) then
             return Element (Pos);
          else
-            return Result : Facelet;
+            return Empty;
          end if;
       end Find;
 

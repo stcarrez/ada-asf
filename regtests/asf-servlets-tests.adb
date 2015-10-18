@@ -280,6 +280,12 @@ package body ASF.Servlets.Tests is
       Ctx.Add_Route (Pattern   => "/wikis/#{user.name}/#{user.email}/view.html",
                      To        => Route.all'Access,
                      ELContext => EL_Ctx);
+
+      Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
+      Route.Servlet := S1'Unchecked_Access;
+      Ctx.Add_Route (Pattern   => "/wikis/#{user.name}/#{user.email}/view",
+                     To        => Route.all'Access,
+                     ELContext => EL_Ctx);
       Ctx.Add_Mapping (Pattern => "/wikis/*.html", Name => "Faces");
       Ctx.Add_Filter_Mapping (Pattern => "/wikis/*", Name => "F1");
       Ctx.Add_Filter_Mapping (Pattern => "/wikis/admin/*", Name => "F2");
@@ -301,7 +307,33 @@ package body ASF.Servlets.Tests is
          Assert_Equals (T, ASF.Responses.SC_OK, Reply.Get_Status, "Invalid status");
          Assert_Equals (T, "URI: /wikis/Gandalf/Mithrandir/view.html", Result, "Invalid content");
          Assert_Equals (T, "Gandalf", User.Name, "User name was not extracted from the URI");
+
+         --  And verify that the filter are traversed.
+         Assert_Equals (T, 1, F1.Counter, "Filter was executed for /html/*.html");
+         Assert_Equals (T, 0, F2.Counter, "Filter was not executed for /html/*.html");
       end;
+
+      F1.Counter := 0;
+      declare
+         Dispatcher : constant Request_Dispatcher
+           := Ctx.Get_Request_Dispatcher (Path => "/wikis/Gandalf/Mithrandir/view");
+         Result : Ada.Strings.Unbounded.Unbounded_String;
+      begin
+         User.Name := Ada.Strings.Unbounded.To_Unbounded_String ("");
+         Request.Set_Request_URI ("/wikis/Gandalf/Mithrandir/view");
+         Forward (Dispatcher, Request, Reply);
+
+         --  Check the response after the Test_Servlet1.Do_Get method execution.
+         Reply.Read_Content (Result);
+         Assert_Equals (T, ASF.Responses.SC_OK, Reply.Get_Status, "Invalid status");
+         Assert_Equals (T, "URI: /wikis/Gandalf/Mithrandir/view", Result, "Invalid content");
+         Assert_Equals (T, "Gandalf", User.Name, "User name was not extracted from the URI");
+
+         --  And verify that the filter are traversed.
+         Assert_Equals (T, 1, F1.Counter, "Filter was executed for /html/*.html");
+         Assert_Equals (T, 0, F2.Counter, "Filter was not executed for /html/*.html");
+      end;
+
    end Test_Complex_Filter_Execution;
 
    --  ------------------------------

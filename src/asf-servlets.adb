@@ -856,6 +856,10 @@ package body ASF.Servlets is
       Install_Filters (Registry);
    end Start;
 
+   procedure Free is
+     new Ada.Unchecked_Deallocation (Object => ASF.Filters.Filter_List,
+                                     Name   => Filter_List_Access);
+
    --  ------------------------------
    --  Add a filter mapping with the given pattern
    --  If the URL pattern is already mapped to a different servlet,
@@ -866,10 +870,6 @@ package body ASF.Servlets is
                                  Name     : in String) is
       procedure Append (Key  : in String;
                         List : in out Filter_List_Access);
-
-      procedure Free is
-        new Ada.Unchecked_Deallocation (Object => ASF.Filters.Filter_List,
-                                        Name   => Filter_List_Access);
 
       Pos  : constant Filter_Maps.Cursor := Registry.Filters.Find (Name);
       Rule : constant Filter_List_Maps.Cursor := Registry.Filter_Rules.Find (Pattern);
@@ -1122,6 +1122,16 @@ package body ASF.Servlets is
    overriding
    procedure Finalize (Registry : in out Servlet_Registry) is
    begin
+      --  Release the filter mapping lists that have been allocated.
+      while not Registry.Filter_Rules.Is_Empty loop
+         declare
+            Pos    : Filter_List_Maps.Cursor := Registry.Filter_Rules.First;
+            Filter : Filter_List_Access := Filter_List_Maps.Element (Pos).all'Access;
+         begin
+            Free (Filter);
+            Registry.Filter_Rules.Delete (Pos);
+         end;
+      end loop;
       ASF.Sessions.Factory.Session_Factory (Registry).Finalize;
    end Finalize;
 

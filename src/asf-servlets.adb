@@ -446,7 +446,7 @@ package body ASF.Servlets is
                   end if;
                   if Servlet_Route.all in ASF.Routes.Servlets.Proxy_Route_Type'Class then
                      Proxy := Routes.Servlets.Proxy_Route_Type'Class (Servlet_Route.all)'Access;
-                     ASF.Routes.Change_Route (R.Context, Proxy.Route);
+                     ASF.Routes.Change_Route (R.Context, Proxy.Route.all'Access);
                   end if;
                end;
             end if;
@@ -727,17 +727,19 @@ package body ASF.Servlets is
       begin
          while Util.Strings.Vectors.Has_Element (Iter) loop
             declare
+               use ASF.Routes.Servlets;
+
                Pattern : constant String := Util.Strings.Vectors.Element (Iter);
                Route   : ASF.Routes.Route_Context_Type;
             begin
                Registry.Routes.Find_Route (Pattern, Route);
                if Route.Get_Route /= null then
                   Proxy := new ASF.Routes.Servlets.Proxy_Route_Type;
-                  Proxy.Route := Route.Get_Route;
+                  Proxy.Route := Servlet_Route_Type'Class (Route.Get_Route.all)'Access;
 
                   --  If the route is also a proxy, get the real route pointed to by the proxy.
-                  if Proxy.Route.all in ASF.Routes.Servlets.Proxy_Route_Type'Class then
-                     Proxy.Route := Routes.Servlets.Proxy_Route_Type'Class (Proxy.Route.all).Route;
+                  if Proxy.Route.all in Proxy_Route_Type'Class then
+                     Proxy.Route := Proxy_Route_Type'Class (Proxy.Route.all).Route;
                   end if;
                   Registry.Routes.Add_Route (Pattern, Proxy.all'Access, Context);
                end if;
@@ -819,11 +821,11 @@ package body ASF.Servlets is
             Servlet_Route := ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all)'Access;
             if Servlet_Route.Filters /= null then
                Log.Print (Level, "Route {0} to {1} with filters {2}",
-                          URI, Get_Servlet_Name (Servlet_Route.Servlet),
+                          URI, Get_Servlet_Name (Servlet_Route.Get_Servlet),
                           Get_Filter_Names (Servlet_Route.Filters));
             else
                Log.Print (Level, "Route {0} to {1}", URI,
-                          Get_Servlet_Name (Servlet_Route.Servlet));
+                          Get_Servlet_Name (Servlet_Route.Get_Servlet));
             end if;
          end if;
       end Print_Route;

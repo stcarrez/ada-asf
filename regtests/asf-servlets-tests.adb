@@ -18,6 +18,9 @@
 
 with Util.Test_Caller;
 with Util.Measures;
+with Util.Beans.Objects;
+
+with EL.Contexts.Default;
 
 with ASF.Applications;
 with ASF.Streams;
@@ -26,6 +29,9 @@ with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Filters.Dump;
 with ASF.Filters.Tests;
+with ASF.Beans.Resolvers;
+with ASF.Applications.Tests;
+with ASF.Routes.Servlets.Faces;
 package body ASF.Servlets.Tests is
 
    use Util.Tests;
@@ -35,8 +41,15 @@ package body ASF.Servlets.Tests is
                      Response : in out Responses.Response'Class) is
       pragma Unreferenced (Server);
 
-      Output : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
+      ELContext      : aliased EL.Contexts.Default.Default_Context;
+      Root_Resolver  : aliased ASF.Beans.Resolvers.ELResolver;
+      Output         : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
    begin
+      --  Minimal setting for the EL context creation to inject URI parameters in an Ada bean.
+      Root_Resolver.Initialize (null, Request'Unchecked_Access);
+      ELContext.Set_Resolver (Root_Resolver'Unchecked_Access);
+      Request.Inject_Parameters (ELContext);
+
       Output.Write ("URI: " & Request.Get_Request_URI);
       Response.Set_Status (Responses.SC_OK);
    end Do_Get;
@@ -244,6 +257,54 @@ package body ASF.Servlets.Tests is
    end Test_Filter_Execution;
 
    --  ------------------------------
+   --  Test execution of filters on complex mapping.
+   --  ------------------------------
+   procedure Test_Complex_Filter_Execution (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Ctx     : Servlet_Registry;
+      S1      : aliased Test_Servlet1;
+      F1      : aliased ASF.Filters.Tests.Test_Filter;
+      F2      : aliased ASF.Filters.Tests.Test_Filter;
+      User    : aliased ASF.Applications.Tests.Form_Bean;
+      EL_Ctx  : EL.Contexts.Default.Default_Context;
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Route   : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
+   begin
+      Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
+      Route.Servlet := S1'Unchecked_Access;
+      Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
+      Ctx.Add_Filter ("F1", F1'Unchecked_Access);
+      Ctx.Add_Filter ("F2", F2'Unchecked_Access);
+      Ctx.Add_Route (Pattern   => "/wikis/#{user.name}/#{user.email}/view.html",
+                     To        => Route.all'Access,
+                     ELContext => EL_Ctx);
+      Ctx.Add_Mapping (Pattern => "/wikis/*.html", Name => "Faces");
+      Ctx.Add_Filter_Mapping (Pattern => "/wikis/*", Name => "F1");
+      Ctx.Add_Filter_Mapping (Pattern => "/wikis/admin/*", Name => "F2");
+      Ctx.Start;
+      Ctx.Dump_Routes (Util.Log.INFO_LEVEL);
+      Request.Set_Attribute ("user",
+                             To_Object (Value => User'Unchecked_Access, Storage => STATIC));
+      Request.Set_Method ("GET");
+      declare
+         Dispatcher : constant Request_Dispatcher
+           := Ctx.Get_Request_Dispatcher (Path => "/wikis/Gandalf/Mithrandir/view.html");
+         Result : Ada.Strings.Unbounded.Unbounded_String;
+      begin
+         Request.Set_Request_URI ("/wikis/Gandalf/Mithrandir/view.html");
+         Forward (Dispatcher, Request, Reply);
+
+         --  Check the response after the Test_Servlet1.Do_Get method execution.
+         Reply.Read_Content (Result);
+         Assert_Equals (T, ASF.Responses.SC_OK, Reply.Get_Status, "Invalid status");
+         Assert_Equals (T, "URI: /wikis/Gandalf/Mithrandir/view.html", Result, "Invalid content");
+         Assert_Equals (T, "Gandalf", User.Name, "User name was not extracted from the URI");
+      end;
+   end Test_Complex_Filter_Execution;
+
+   --  ------------------------------
    --  Test add servlet
    --  ------------------------------
    procedure Test_Add_Servlet (T : in out Test) is
@@ -372,7 +433,8 @@ package body ASF.Servlets.Tests is
                Disp : constant Request_Dispatcher
                  := Ctx.Get_Request_Dispatcher (Path => "/joe/black/joe.jsf");
             begin
-               T.Assert (Disp.Context.Get_Route /= null, "No mapping found for /joe/black/joe.jsf");
+               T.Assert (Disp.Context.Get_Route /= null,
+                         "No mapping found for /joe/black/joe.jsf");
             end;
          end loop;
          Util.Measures.Report (St, "Find 1000 mapping (extension)");
@@ -420,6 +482,8 @@ package body ASF.Servlets.Tests is
                        Test_Filter_Mapping'Access);
       Caller.Add_Test (Suite, "Test ASF.Filters.Do_Filter",
                        Test_Filter_Execution'Access);
+      Caller.Add_Test (Suite, "Test ASF.Filters.Do_Filter (complex)",
+                       Test_Complex_Filter_Execution'Access);
    end Add_Tests;
 
 end ASF.Servlets.Tests;

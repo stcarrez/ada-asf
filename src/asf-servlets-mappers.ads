@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-mappers -- Read servlet configuration files
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
 with Util.Serialize.IO.XML;
+with Util.Beans.Objects.Vectors;
 
 with EL.Contexts;
 
@@ -58,7 +59,7 @@ package ASF.Servlets.Mappers is
    type Servlet_Config is limited record
       Filter_Name      : Util.Beans.Objects.Object;
       Servlet_Name     : Util.Beans.Objects.Object;
-      URL_Pattern      : Util.Beans.Objects.Object;
+      URL_Patterns     : Util.Beans.Objects.Vectors.Vector;
       Param_Name       : Util.Beans.Objects.Object;
       Param_Value      : Util.Beans.Objects.Object;
       Mime_Type        : Util.Beans.Objects.Object;

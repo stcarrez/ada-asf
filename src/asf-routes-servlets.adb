@@ -70,4 +70,17 @@ package body ASF.Routes.Servlets is
       Free (Route.Filters);
    end Finalize;
 
+   --  ------------------------------
+   --  Get the servlet to call for the route.
+   --  ------------------------------
+   overriding
+   function Get_Servlet (Route : in Proxy_Route_Type) return ASF.Servlets.Servlet_Access is
+   begin
+      if Route.Route /= null then
+         return Route.Route.Get_Servlet;
+      else
+         return Route.Servlet;
+      end if;
+   end Get_Servlet;
+
 end ASF.Routes.Servlets;

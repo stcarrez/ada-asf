@@ -38,8 +38,12 @@ package ASF.Routes.Servlets is
    procedure Finalize (Route : in out Servlet_Route_Type);
 
    type Proxy_Route_Type is new Servlet_Route_Type with record
-      Route   : ASF.Routes.Route_Type_Access;
+      Route   : Servlet_Route_Type_Access;
    end record;
    type Proxy_Route_Type_Access is access all Proxy_Route_Type'Class;
+
+   --  Get the servlet to call for the route.
+   overriding
+   function Get_Servlet (Route : in Proxy_Route_Type) return ASF.Servlets.Servlet_Access;
 
 end ASF.Routes.Servlets;

@@ -91,6 +91,8 @@ private
       Modify_Time : Ada.Calendar.Time;
    end record;
 
+   Empty : constant Facelet := (others => <>);
+
    --  Tag library map indexed on the library namespace.
    package Facelet_Maps is new
      Ada.Containers.Hashed_Maps (Key_Type        => Unbounded_String,

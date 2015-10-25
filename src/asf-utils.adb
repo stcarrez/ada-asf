@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,14 @@ package body ASF.Utils is
    ALT_ATTR           : aliased constant String := "alt";
    DISABLED_ATTR      : aliased constant String := "disabled";
    READONLY_ATTR      : aliased constant String := "readonly";
+   PLACEHOLDER_ATTR   : aliased constant String := "placeholder";
+   PATTERN_ATTR       : aliased constant String := "pattern";
+   AUTOFOCUS_ATTR     : aliased constant String := "autofocus";
+   LIST_ATTR          : aliased constant String := "list";
+   FORMENCTYPE_ATTR   : aliased constant String := "formenctype";
+   FORMMETHOD_ATTR    : aliased constant String := "formmethod";
+   FORMACTION_ATTR    : aliased constant String := "formaction";
+   FORMTARGET_ATTR    : aliased constant String := "formtarget";
 
    ACCEPT_ATTR        : aliased constant String := "accept";
 
@@ -112,6 +120,14 @@ package body ASF.Utils is
       Names.Insert (ALT_ATTR'Access);
       Names.Insert (DISABLED_ATTR'Access);
       Names.Insert (READONLY_ATTR'Access);
+      Names.Insert (PLACEHOLDER_ATTR'Access);
+      Names.Insert (PATTERN_ATTR'Access);
+      Names.Insert (AUTOFOCUS_ATTR'Access);
+      Names.Insert (LIST_ATTR'Access);
+      Names.Insert (FORMENCTYPE_ATTR'Access);
+      Names.Insert (FORMMETHOD_ATTR'Access);
+      Names.Insert (FORMACTION_ATTR'Access);
+      Names.Insert (FORMTARGET_ATTR'Access);
    end Set_Input_Attributes;
 
    --  ------------------------------

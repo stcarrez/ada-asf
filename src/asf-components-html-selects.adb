@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-selects -- ASF HTML UISelectOne and UISelectMany components
---  Copyright (C) 2011, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -339,6 +339,7 @@ package body ASF.Components.Html.Selects is
             --  Render the input radio checkbox.
             Writer.Start_Element ("input");
             Writer.Write_Attribute ("type", "radio");
+            Writer.Write_Attribute ("name", Id);
             if Item.Is_Disabled then
                Writer.Write_Attribute ("disabled", "disabled");
             end if;

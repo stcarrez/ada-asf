@@ -1,0 +1,24 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:w="http://code.google.com/p/ada-asf/widget"
+     style='padding: 10px'>
+    <div style="padding: 10px">
+        <w:chosen value='#{compute.height}' id="chosen-example-1">
+            <f:facet name="options">width: "95%", disable_search: true</f:facet>
+            <f:facet name="events">.bind("change", function(event, params) {
+                alert("Selected country: " + $(this).val());
+            } )
+            </f:facet>
+            <f:selectItems value="#{countries}"/>
+        </w:chosen>
+    </div>
+    <div style="padding: 10px">
+        <w:chosen value='#{compute.height}' id="chosen-example-2">
+            <f:facet name="options">width: "95%"</f:facet>
+            <f:facet name="events">.bind("change", function(event, params) {
+                alert("Selected country: " + $(this).val());
+            } )
+            </f:facet>
+            <f:selectItems value="#{countries}"/>
+        </w:chosen>
+    </div>
+</div>

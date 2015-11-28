@@ -1,5 +1,5 @@
 <!-- ASF Widget tag library documentation
-  -  Copyright (C) 2013 Stephane Carrez
+  -  Copyright (C) 2013, 2015 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +35,15 @@
             prettyPrint();
         </util:script>
         <code class="prettyprint lang-autocomplete linenums:1"><util:file src="/widgets/autocomplete.xhtml" escape="true"/>
+        </code>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'chosen'}">
+        <util:script>
+            Sample_Highlight('chosen', 'w:chosen');
+            prettyPrint();
+        </util:script>
+        <code class="prettyprint lang-autocomplete linenums:1"><util:file src="/widgets/chosen.xhtml" escape="true"/>
         </code>
     </c:when>
 

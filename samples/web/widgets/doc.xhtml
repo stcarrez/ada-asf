@@ -80,6 +80,34 @@
         </ui:decorate>
     </c:when>
 
+    <c:when test="#{param['code'] eq 'chosen'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="w:chosen"/>
+            <ui:define name="description">
+                The <b>w:chosen</b> component is a <b>h:selectOne</b> component that uses jQuery Chosen support
+                It renders the <b>select</b> component with its options and activates the jQuery Chosen support on it.
+                <p>
+                    The <b>w:chosen</b> component uses the <b>options</b> facet to allow to provide specific options
+                    to the jQuery Chosen library.  The <b>events</b> facet can be used to invoke jQuery specific
+                    operations on the Chosen selector and bind some events.
+                </p>
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>id</b>
+                    <i>String</i>
+                    <span>The id of the element (this is mandatory for the correct jQuery Chosen support).</span>
+                </li>
+                <li class="attr-optional">
+                    <b>rendered</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
+                        or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
     <c:when test="#{param['code'] eq 'inputText'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="w:inputText"/>

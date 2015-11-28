@@ -1,0 +1,36 @@
+<div xmlns:w="http://code.google.com/p/ada-asf/widget"
+     xmlns:f="http://java.sun.com/jsf/core">
+  <w:chosen id='panel-1' styleClass='myClass'>
+    <f:selectItem itemLabel="red" itemValue="0"/>
+    <f:selectItem itemLabel="blue" itemValue="1"/>
+    <f:selectItem itemLabel="green" itemValue="2"/>
+    <f:facet name="options">width: "95%"</f:facet>
+    <f:facet name="events">.bind("change", function(event, params) {
+          alert("Selected country: " + $(this).val());
+    } )
+    </f:facet>
+  </w:chosen>
+
+  <w:chosen id='panel-2' styleClass='myClass'>
+    <f:selectItem itemLabel="red" itemValue="0"/>
+    <f:selectItem itemLabel="blue" itemValue="1"/>
+    <f:selectItem itemLabel="green" itemValue="2"/>
+    <f:facet name="events">.bind("change", function(event, params) {
+          alert("Selected country: " + $(this).val());
+    } )
+    </f:facet>
+  </w:chosen>
+
+  <w:chosen id='panel-3' styleClass='myClass'>
+    <f:selectItem itemLabel="red" itemValue="0"/>
+    <f:selectItem itemLabel="blue" itemValue="1"/>
+    <f:selectItem itemLabel="green" itemValue="2"/>
+  </w:chosen>
+
+  <w:chosen id='panel-4' styleClass='myClass'>
+    <f:selectItem itemLabel="red" itemValue="0"/>
+    <f:selectItem itemLabel="blue" itemValue="1"/>
+    <f:selectItem itemLabel="green" itemValue="2"/>
+    <f:facet name="options">width: "55%"</f:facet>
+  </w:chosen>
+</div>

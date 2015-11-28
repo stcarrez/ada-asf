@@ -1,4 +1,7 @@
-<div><select name="panel-1" id="panel-1" class="myClass"><option value="0">red</option><option value="1">blue</option><option value="2">green</option></select></div><script type="text/javascript">$('#panel-1').chosen({         width: "95%",
-         disable_search_threshold: 10,
-         change:
-});</script>
+<div><select name="panel-1" id="panel-1" class="myClass"><option value="0">red</option><option value="1">blue</option><option value="2">green</option></select><select name="panel-2" id="panel-2" class="myClass"><option value="0">red</option><option value="1">blue</option><option value="2">green</option></select><select name="panel-3" id="panel-3" class="myClass"><option value="0">red</option><option value="1">blue</option><option value="2">green</option></select><select name="panel-4" id="panel-4" class="myClass"><option value="0">red</option><option value="1">blue</option><option value="2">green</option></select></div><script type="text/javascript">$('#panel-1').chosen({width: "95%"}).bind("change", function(event, params) {
+          alert("Selected country: " + $(this).val());
+    } )
+;$('#panel-2').chosen({}).bind("change", function(event, params) {
+          alert("Selected country: " + $(this).val());
+    } )
+;$('#panel-3').chosen({});$('#panel-4').chosen({width: "55%"});</script>

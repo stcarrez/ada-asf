@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  widgets-factory -- Factory for widget Components
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ with ASF.Components.Widgets.Gravatars;
 with ASF.Components.Widgets.Likes;
 with ASF.Components.Widgets.Panels;
 with ASF.Components.Widgets.Tabs;
+with ASF.Components.Widgets.Selects;
 
 package body ASF.Components.Widgets.Factory is
 
@@ -30,6 +31,7 @@ package body ASF.Components.Widgets.Factory is
    function Create_Accordion return UIComponent_Access;
    function Create_Input return UIComponent_Access;
    function Create_Input_Date return UIComponent_Access;
+   function Create_Chosen return UIComponent_Access;
    function Create_Complete return UIComponent_Access;
    function Create_Gravatar return UIComponent_Access;
    function Create_Like return UIComponent_Access;
@@ -68,6 +70,14 @@ package body ASF.Components.Widgets.Factory is
    begin
       return new ASF.Components.Widgets.Inputs.UIComplete;
    end Create_Complete;
+
+   --  ------------------------------
+   --  Create a UIChoser component
+   --  ------------------------------
+   function Create_Chosen return UIComponent_Access is
+   begin
+      return new ASF.Components.Widgets.Selects.UIChosen;
+   end Create_Chosen;
 
    --  ------------------------------
    --  Create a UIGravatar component
@@ -114,6 +124,7 @@ package body ASF.Components.Widgets.Factory is
    URI              : aliased constant String := "http://code.google.com/p/ada-asf/widget";
    ACCORDION_TAG    : aliased constant String := "accordion";
    AUTOCOMPLETE_TAG : aliased constant String := "autocomplete";
+   CHOSEN_TAG       : aliased constant String := "chosen";
    INPUT_DATE_TAG   : aliased constant String := "inputDate";
    INPUT_TEXT_TAG   : aliased constant String := "inputText";
    GRAVATAR_TAG     : aliased constant String := "gravatar";
@@ -129,25 +140,28 @@ package body ASF.Components.Widgets.Factory is
          2 => (Name      => AUTOCOMPLETE_TAG'Access,
                Component => Create_Complete'Access,
                Tag       => Create_Component_Node'Access),
-         3 => (Name      => INPUT_DATE_TAG'Access,
+         3 => (Name      => CHOSEN_TAG'Access,
+               Component => Create_Chosen'Access,
+               Tag       => Create_Component_Node'Access),
+         4 => (Name      => INPUT_DATE_TAG'Access,
                Component => Create_Input_Date'Access,
                Tag       => Create_Component_Node'Access),
-         4 => (Name      => INPUT_TEXT_TAG'Access,
+         5 => (Name      => INPUT_TEXT_TAG'Access,
                Component => Create_Input'Access,
                Tag       => Create_Component_Node'Access),
-         5 => (Name      => GRAVATAR_TAG'Access,
+         6 => (Name      => GRAVATAR_TAG'Access,
                Component => Create_Gravatar'Access,
                Tag       => Create_Component_Node'Access),
-         6 => (Name      => LIKE_TAG'Access,
+         7 => (Name      => LIKE_TAG'Access,
                Component => Create_Like'Access,
                Tag       => Create_Component_Node'Access),
-         7 => (Name      => PANEL_TAG'Access,
+         8 => (Name      => PANEL_TAG'Access,
                Component => Create_Panel'Access,
                Tag       => Create_Component_Node'Access),
-         8 => (Name      => TAB_TAG'Access,
+         9 => (Name      => TAB_TAG'Access,
                Component => Create_Tab'Access,
                Tag       => Create_Component_Node'Access),
-         9 => (Name      => TAB_VIEW_TAG'Access,
+        10 => (Name      => TAB_VIEW_TAG'Access,
                Component => Create_TabView'Access,
                Tag       => Create_Component_Node'Access)
         );

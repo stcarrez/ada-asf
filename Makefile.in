@@ -272,12 +272,12 @@ ifneq (${OS},Windows_NT)
 	   ${LN} $(libprefix)aws.$(LIBVER) $(libprefix)aws.$(LIBEXT))
 endif
 endif
+endif
 	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd ${dynamodir}/asf/web && tar xf -)
 	${CP} bundles/*.properties ${dynamodir}/asf/bundles/
 	${CP} dynamo.xml ${dynamodir}/asf/
 	${CP} NOTICE.txt ${dynamodir}/asf/
 	${CP} LICENSE.txt ${dynamodir}/asf/
-endif
 
 install-info:
 	@echo "Installation directories:"

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.messages-factory -- Application Message Factory
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,6 +53,12 @@ package ASF.Applications.Messages.Factory is
    --  Add a localized global message in the current faces context.
    procedure Add_Message (Message_Id : in String;
                           Severity   : in Messages.Severity := ERROR);
+
+   --  Add a localized field message in the current faces context.  The message is associated
+   --  with the component identified by <tt>Client_Id</tt>.
+   procedure Add_Field_Message (Client_Id  : in String;
+                                Message_Id : in String;
+                                Severity   : in Messages.Severity := ERROR);
 
    --  Add a localized global message in the faces context.
    procedure Add_Message (Context    : in out ASF.Contexts.Faces.Faces_Context'Class;

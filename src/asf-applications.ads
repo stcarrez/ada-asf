@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Strings.Unbounded;
 
 with Util.Strings;
 with Util.Properties;
@@ -79,6 +80,10 @@ package ASF.Applications is
    --  Get the configuration parameter;
    function Get (Self  : Config;
                  Param : Config_Param) return String;
+
+   --  Get the configuration parameter;
+   function Get (Self  : Config;
+                 Param : Config_Param) return Ada.Strings.Unbounded.Unbounded_String;
 
    --  Get the configuration parameter;
    function Get (Self  : Config;

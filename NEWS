@@ -6,6 +6,7 @@ Version 1.1     -
   - Integrate jQuery 1.11.3 and jQuery UI 1.11.4
   - Integrate jQuery Chosen 1.4.2
   - New component <w:chosen> for the Chosen support
+  - Added a servlet cache control filter
 
 Version 1.0.1   - Jul 2014
   - Fix minor configuration issue with GNAT 2014

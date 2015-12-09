@@ -53,6 +53,7 @@ package ASF.Servlets is
 
    --  Filter chain as defined by JSR 315 6. Filtering
    type Filter_Chain is limited private;
+   type Filter_Config is private;
 
    type Filter_Access is access all ASF.Filters.Filter'Class;
    type Filter_List_Access is access all ASF.Filters.Filter_List;
@@ -64,6 +65,21 @@ package ASF.Servlets is
                         Request  : in out Requests.Request'Class;
                         Response : in out Responses.Response'Class);
 
+   --  Get the filter name.
+   function Get_Filter_Name (Config : in Filter_Config) return String;
+
+   --  Returns a String containing the value of the named context-wide initialization
+   --  parameter, or the default value if the parameter does not exist.
+   --
+   --  The filter parameter name is automatically prefixed by the filter name followed by '.'.
+   function Get_Init_Parameter (Config  : in Filter_Config;
+                                Name    : in String;
+                                Default : in String := "") return String;
+   function Get_Init_Parameter (Config : in Filter_Config;
+                                Name    : in String;
+                                Default : in String := "")
+                                return Ada.Strings.Unbounded.Unbounded_String;
+
    --  type Servlet_Registry;
    type Servlet_Registry is new ASF.Sessions.Factory.Session_Factory with private;
 
@@ -71,6 +87,9 @@ package ASF.Servlets is
 
    --  Get the servlet context associated with the filter chain.
    function Get_Servlet_Context (Chain : in Filter_Chain) return Servlet_Registry_Access;
+
+   --  Get the servlet context associated with the filter config.
+   function Get_Servlet_Context (Config : in Filter_Config) return Servlet_Registry_Access;
 
    --  The <b>Servlet</b> represents the component that will handle
    --  an HTTP request received by the server.
@@ -330,6 +349,10 @@ package ASF.Servlets is
    function Get_Init_Parameter (Context : in Servlet_Registry;
                                 Name    : in String;
                                 Default : in String := "") return String;
+   function Get_Init_Parameter (Context : in Servlet_Registry;
+                                Name    : in String;
+                                Default : in String := "")
+                                return Ada.Strings.Unbounded.Unbounded_String;
 
    --  Set the init parameter identified by <b>Name</b> to the value <b>Value</b>.
    procedure Set_Init_Parameter (Context : in out Servlet_Registry;
@@ -511,5 +534,10 @@ private
 
    --  Install the servlet filters after all the mappings have been registered.
    procedure Install_Filters (Registry : in out Servlet_Registry);
+
+   type Filter_Config is record
+      Name      : Unbounded_String;
+      Context   : Servlet_Registry_Access := null;
+   end record;
 
 end ASF.Servlets;

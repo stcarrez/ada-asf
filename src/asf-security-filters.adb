@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-filters -- Security filter
---  Copyright (C) 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,11 +35,13 @@ package body ASF.Security.Filters is
    --  is being placed into service.
    --  ------------------------------
    procedure Initialize (Server  : in out Auth_Filter;
-                         Context : in ASF.Servlets.Servlet_Registry'Class) is
+                         Config  : in ASF.Servlets.Filter_Config) is
       use ASF.Applications.Main;
+
+      Context : constant Servlets.Servlet_Registry_Access := Servlets.Get_Servlet_Context (Config);
    begin
-      if Context in Application'Class then
-         Server.Set_Permission_Manager (Application'Class (Context).Get_Security_Manager);
+      if Context.all in Application'Class then
+         Server.Set_Permission_Manager (Application'Class (Context.all).Get_Security_Manager);
       end if;
    end Initialize;
 

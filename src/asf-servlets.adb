@@ -638,16 +638,11 @@ package body ASF.Servlets is
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Name     : in String;
                          Filter   : in Filter_Access) is
-      Config : Filter_Config;
    begin
       Log.Info ("Add servlet filter '{0}'", Name);
 
       Filter_Maps.Include (Registry.Filters, Name,
                            Filter.all'Unchecked_Access);
-
-      Config.Name    := To_Unbounded_String (Name);
-      Config.Context := Registry'Unchecked_Access;
-      Filter.Initialize (Config);
    end Add_Filter;
 
    procedure Add_Filter (Registry : in out Servlet_Registry;
@@ -741,6 +736,8 @@ package body ASF.Servlets is
       procedure Process (URI   : in String;
                          Route : in ASF.Routes.Route_Type_Access);
       procedure Make_Route;
+      procedure Initialize_Filter (Key    : in String;
+                                   Filter : in Filter_Access);
 
       procedure Process (URI   : in String;
                          Route : in ASF.Routes.Route_Type_Access) is
@@ -799,7 +796,22 @@ package body ASF.Servlets is
          end loop;
       end Make_Route;
 
+      Config : Filter_Config;
+
+      procedure Initialize_Filter (Key    : in String;
+                                   Filter : in Filter_Access) is
+      begin
+         Config.Name := To_Unbounded_String (Key);
+         Filter.Initialize (Config);
+      end Initialize_Filter;
+
+      Iter   : Filter_Maps.Cursor := Registry.Filters.First;
    begin
+      Config.Context := Registry'Unchecked_Access;
+      while Filter_Maps.Has_Element (Iter) loop
+         Filter_Maps.Query_Element (Position => Iter, Process => Initialize_Filter'Access);
+         Filter_Maps.Next (Iter);
+      end loop;
       Make_Route;
       Registry.Routes.Iterate (Process'Access);
    end Install_Filters;

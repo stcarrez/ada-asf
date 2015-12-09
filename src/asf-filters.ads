@@ -64,6 +64,6 @@ package ASF.Filters is
    --  Called by the servlet container to indicate to a filter that the filter
    --  instance is being placed into service.
    procedure Initialize (Server  : in out Filter;
-                         Context : in ASF.Servlets.Servlet_Registry'Class) is null;
+                         Config  : in ASF.Servlets.Filter_Config) is null;
 
 end ASF.Filters;

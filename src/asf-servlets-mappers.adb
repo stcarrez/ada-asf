@@ -110,7 +110,7 @@ package body ASF.Servlets.Mappers is
             begin
                --  If the context parameter already has a value, do not set it again.
                --  The value comes from an application setting and we want to keep it.
-               if N.Handler.Get_Init_Parameter (Name) = "" then
+               if String '(N.Handler.all.Get_Init_Parameter (Name)) = "" then
                   if Util.Beans.Objects.Is_Null (N.Param_Value) then
                      N.Handler.Set_Init_Parameter (Name  => Name,
                                                    Value => "");

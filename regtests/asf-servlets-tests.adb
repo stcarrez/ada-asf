@@ -28,6 +28,7 @@ with ASF.Routes.Servlets;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Filters.Dump;
+with ASF.Filters.Cache_Control;
 with ASF.Filters.Tests;
 with ASF.Beans.Resolvers;
 with ASF.Applications.Tests;
@@ -337,6 +338,82 @@ package body ASF.Servlets.Tests is
    end Test_Complex_Filter_Execution;
 
    --  ------------------------------
+   --  Test execution of the cache control filter.
+   --  ------------------------------
+   procedure Test_Cache_Control_Filter (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Ctx     : Servlet_Registry;
+      S1      : aliased Test_Servlet1;
+      F1      : aliased ASF.Filters.Cache_Control.Cache_Control_Filter;
+      F2      : aliased ASF.Filters.Cache_Control.Cache_Control_Filter;
+      User    : aliased ASF.Applications.Tests.Form_Bean;
+      EL_Ctx  : EL.Contexts.Default.Default_Context;
+      Request : ASF.Requests.Mockup.Request;
+      Route   : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
+   begin
+      Ctx.Set_Init_Parameter ("F1." & ASF.Filters.Cache_Control.CACHE_CONTROL_PARAM, "no-cache");
+      Ctx.Set_Init_Parameter ("F2." & ASF.Filters.Cache_Control.CACHE_CONTROL_PARAM, "max-age: 10");
+
+      Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
+      Route.Servlet := S1'Unchecked_Access;
+      Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
+      Ctx.Add_Filter ("F1", F1'Unchecked_Access);
+      Ctx.Add_Route (Pattern   => "/wikis/no-cache/view.html",
+                     To        => Route.all'Access,
+                     ELContext => EL_Ctx);
+
+      Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
+      Route.Servlet := S1'Unchecked_Access;
+      Ctx.Add_Filter ("F2", F2'Unchecked_Access);
+      Ctx.Add_Route (Pattern   => "/wikis/cache/view.html",
+                     To        => Route.all'Access,
+                     ELContext => EL_Ctx);
+
+      Ctx.Add_Filter_Mapping (Pattern => "/wikis/no-cache/*", Name => "F1");
+      Ctx.Add_Filter_Mapping (Pattern => "/wikis/cache/*", Name => "F2");
+      Ctx.Start;
+      Request.Set_Attribute ("user",
+                             To_Object (Value => User'Unchecked_Access, Storage => STATIC));
+      Request.Set_Method ("GET");
+      declare
+         Dispatcher : constant Request_Dispatcher
+           := Ctx.Get_Request_Dispatcher (Path => "/wikis/no-cache/view.html");
+         Result : Ada.Strings.Unbounded.Unbounded_String;
+         Reply  : ASF.Responses.Mockup.Response;
+      begin
+         Request.Set_Request_URI ("/wikis/no-cache/view.html");
+         Forward (Dispatcher, Request, Reply);
+
+         --  Check the response after the Test_Servlet1.Do_Get method execution.
+         Reply.Read_Content (Result);
+         Assert_Equals (T, ASF.Responses.SC_OK, Reply.Get_Status, "Invalid status");
+         T.Assert (Reply.Contains_Header ("Cache-Control"),
+                   "A Cache-Control is missing in the response");
+         Assert_Equals (T, "no-cache", Reply.Get_Header ("Cache-Control"),
+                        "Invalid Cache-Control header");
+      end;
+
+      declare
+         Dispatcher : constant Request_Dispatcher
+           := Ctx.Get_Request_Dispatcher (Path => "/wikis/cache/view.html");
+         Result : Ada.Strings.Unbounded.Unbounded_String;
+         Reply  : ASF.Responses.Mockup.Response;
+      begin
+         Request.Set_Request_URI ("/wikis/cache/view.html");
+         Forward (Dispatcher, Request, Reply);
+
+         --  Check the response after the Test_Servlet1.Do_Get method execution.
+         Reply.Read_Content (Result);
+         Assert_Equals (T, ASF.Responses.SC_OK, Reply.Get_Status, "Invalid status");
+         T.Assert (Reply.Contains_Header ("Cache-Control"),
+                   "A Cache-Control is missing in the response");
+         Assert_Equals (T, "max-age: 10", Reply.Get_Header ("Cache-Control"),
+                        "Invalid Cache-Control header");
+      end;
+   end Test_Cache_Control_Filter;
+
+   --  ------------------------------
    --  Test add servlet
    --  ------------------------------
    procedure Test_Add_Servlet (T : in out Test) is
@@ -516,6 +593,8 @@ package body ASF.Servlets.Tests is
                        Test_Filter_Execution'Access);
       Caller.Add_Test (Suite, "Test ASF.Filters.Do_Filter (complex)",
                        Test_Complex_Filter_Execution'Access);
+      Caller.Add_Test (Suite, "Test ASF.Filters.Cache_Control.Do_Filter",
+                       Test_Cache_Control_Filter'Access);
    end Add_Tests;
 
 end ASF.Servlets.Tests;

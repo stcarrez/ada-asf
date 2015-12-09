@@ -57,6 +57,42 @@ package body ASF.Servlets is
    No_Time : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (Year => 1901,
                                                                  Month => 1,
                                                                  Day   => 1);
+   --  ------------------------------
+   --  Get the filter name.
+   --  ------------------------------
+   function Get_Filter_Name (Config : in Filter_Config) return String is
+   begin
+      return To_String (Config.Name);
+   end Get_Filter_Name;
+
+   --  ------------------------------
+   --  Returns a String containing the value of the named context-wide initialization
+   --  parameter, or the default value if the parameter does not exist.
+   --
+   --  The filter parameter name is automatically prefixed by the filter name followed by '.'.
+   --  ------------------------------
+   function Get_Init_Parameter (Config  : in Filter_Config;
+                                Name    : in String;
+                                Default : in String := "") return String is
+   begin
+      return Config.Context.all.Get_Init_Parameter (To_String (Config.Name) & "." & Name, Default);
+   end Get_Init_Parameter;
+
+   function Get_Init_Parameter (Config : in Filter_Config;
+                                Name    : in String;
+                                Default : in String := "")
+                                return Ada.Strings.Unbounded.Unbounded_String is
+   begin
+      return Config.Context.all.Get_Init_Parameter (To_String (Config.Name) & "." & Name, Default);
+   end Get_Init_Parameter;
+
+   --  ------------------------------
+   --  Get the servlet context associated with the filter config.
+   --  ------------------------------
+   function Get_Servlet_Context (Config : in Filter_Config) return Servlet_Registry_Access is
+   begin
+      return Config.Context;
+   end Get_Servlet_Context;
 
    --  ------------------------------
    --  Get the servlet name.
@@ -502,6 +538,18 @@ package body ASF.Servlets is
       return Context.Config.Get (Name, Default);
    end Get_Init_Parameter;
 
+   function Get_Init_Parameter (Context : in Servlet_Registry;
+                                Name    : in String;
+                                Default : in String := "")
+                                return Ada.Strings.Unbounded.Unbounded_String is
+   begin
+      if Context.Config.Exists (Name) then
+         return Context.Config.Get (Name);
+      else
+         return Ada.Strings.Unbounded.To_Unbounded_String (Default);
+      end if;
+   end Get_Init_Parameter;
+
    --  ------------------------------
    --  Set the init parameter identified by <b>Name</b> to the value <b>Value</b>.
    --  ------------------------------
@@ -590,13 +638,16 @@ package body ASF.Servlets is
    procedure Add_Filter (Registry : in out Servlet_Registry;
                          Name     : in String;
                          Filter   : in Filter_Access) is
+      Config : Filter_Config;
    begin
       Log.Info ("Add servlet filter '{0}'", Name);
 
       Filter_Maps.Include (Registry.Filters, Name,
                            Filter.all'Unchecked_Access);
 
-      Filter.Initialize (Registry);
+      Config.Name    := To_Unbounded_String (Name);
+      Config.Context := Registry'Unchecked_Access;
+      Filter.Initialize (Config);
    end Add_Filter;
 
    procedure Add_Filter (Registry : in out Servlet_Registry;

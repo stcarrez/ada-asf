@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-filters -- Security filter
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,7 @@ package ASF.Security.Filters is
    --  is being placed into service.
    overriding
    procedure Initialize (Server  : in out Auth_Filter;
-                         Context : in ASF.Servlets.Servlet_Registry'Class);
+                         Config  : in ASF.Servlets.Filter_Config);
 
    --  Set the permission manager that must be used to verify the permission.
    procedure Set_Permission_Manager (Filter  : in out Auth_Filter;

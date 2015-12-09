@@ -33,6 +33,6 @@ package ASF.Filters.Tests is
    --  Initialize the test filter.
    overriding
    procedure Initialize (Server  : in out Test_Filter;
-                         Context : in ASF.Servlets.Servlet_Registry'Class);
+                         Config  : in ASF.Servlets.Filter_Config);
 
 end ASF.Filters.Tests;

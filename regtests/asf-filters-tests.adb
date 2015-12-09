@@ -35,8 +35,8 @@ package body ASF.Filters.Tests is
    --  ------------------------------
    overriding
    procedure Initialize (Server  : in out Test_Filter;
-                         Context : in ASF.Servlets.Servlet_Registry'Class) is
-      pragma Unreferenced (Context);
+                         Config  : in ASF.Servlets.Filter_Config) is
+      pragma Unreferenced (Config);
    begin
       Server.Count := Server.Counter'Unchecked_Access;
    end Initialize;

@@ -61,6 +61,9 @@ package ASF.Servlets.Tests is
    --  Test execution of filters on complex mapping.
    procedure Test_Complex_Filter_Execution (T : in out Test);
 
+   --  Test execution of the cache control filter.
+   procedure Test_Cache_Control_Filter (T : in out Test);
+
    --  Check that the mapping for the given URI matches the server.
    procedure Check_Mapping (T      : in out Test;
                             Ctx    : in Servlet_Registry;

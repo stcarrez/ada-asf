@@ -92,7 +92,7 @@ install: install_static install-info
 endif
 
 # Build executables for all mains defined by the project.
-build: regtests/asf-testsuite.adb
+build: setup regtests/asf-testsuite.adb
 	$(GNATMAKE) -m -p -P "$(ASF_GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_AWS} = Tno || \
 		$(GNATMAKE) -m -p -P "$(AWS_GPRPATH)" $(MAKE_ARGS)
@@ -103,6 +103,11 @@ static:
 
 shared:
 	$(MAKE) ASF_LIBRARY_TYPE=relocatable build
+
+setup: obj/asf/static lib/asf/static
+
+obj/asf/static lib/asf/static:
+	$(MKDIR) -p $@
 
 # Build and run the unit tests
 check test:	build-tests runtest

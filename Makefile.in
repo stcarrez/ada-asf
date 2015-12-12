@@ -104,9 +104,9 @@ static:
 shared:
 	$(MAKE) ASF_LIBRARY_TYPE=relocatable build
 
-setup: obj/asf/static lib/asf/static
+setup: obj/asf/static lib/asf/static obj/asf-aws/static lib/asf-aws/static
 
-obj/asf/static lib/asf/static:
+obj/asf/static lib/asf/static obj/asf-aws/static lib/asf-aws/static:
 	$(MKDIR) -p $@
 
 # Build and run the unit tests

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-utils-scrollers -- Data scrollers
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Contexts.Faces;
+
 with ASF.Contexts.Writer;
-with ASF.Components.Html;
 package body ASF.Components.Utils.Scrollers is
 
    --  ------------------------------

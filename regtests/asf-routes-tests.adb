@@ -279,7 +279,6 @@ package body ASF.Routes.Tests is
       Router.Iterate (Process'Access);
 
       declare
-         R  : Route_Context_Type;
          St : Util.Measures.Stamp;
       begin
          for I in 1 .. 1000 loop
@@ -293,7 +292,6 @@ package body ASF.Routes.Tests is
       end;
 
       declare
-         R  : Route_Context_Type;
          St : Util.Measures.Stamp;
       begin
          for I in 1 .. 1000 loop

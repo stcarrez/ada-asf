@@ -21,10 +21,8 @@ with ASF.Applications.Main;
 with ASF.Applications.Tests;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
-with ASF.Requests.Tools;
 with ASF.Servlets.Faces;
 with ASF.Converters.Dates;
-with ASF.Routes.Servlets;
 with ASF.Server;
 with Ada.Directories;
 with Ada.Unchecked_Deallocation;
@@ -97,7 +95,6 @@ package body ASF.Applications.Views.Tests is
             Req       : ASF.Requests.Mockup.Request;
             Reply     : aliased ASF.Responses.Mockup.Response;
             Content   : Unbounded_String;
-            Route     : aliased ASF.Routes.Servlets.Servlet_Route_Type;
          begin
             Req.Set_Method ("GET");
             Req.Set_Request_URI ("/asfunit/" & View_Name);

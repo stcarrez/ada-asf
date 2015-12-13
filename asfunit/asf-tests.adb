@@ -281,6 +281,8 @@ package body ASF.Tests is
                             Source  : String := GNAT.Source_Info.File;
                             Line    : Natural := GNAT.Source_Info.Line) is
    begin
+      Assert_Equals (T, Status, Reply.Get_Status,
+                     "Invalid response status", Source, Line);
       T.Assert (Condition => Reply.Contains_Header (Header),
                 Message   => Message & ": missing header '" & Header & "'",
                 Source    => Source,

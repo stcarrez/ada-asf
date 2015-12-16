@@ -106,7 +106,6 @@ package body ASF.Applications.Main.Configs is
                                                       Context.all'Access);
       pragma Warnings (Off, Bean_Config);
       pragma Warnings (Off, Navigation_Config);
-      pragma Warnings (Off, Servlet_Config);
       pragma Warnings (Off, Faces_Config);
 
       Config    : aliased Application_Config;
@@ -133,6 +132,7 @@ package body ASF.Applications.Main.Configs is
       Reader.Add_Mapping ("module", AMapper'Access);
       Reader.Add_Mapping ("web-app", AMapper'Access);
       Config.App := App;
+      Servlet_Config.Config.Override_Context := Override_Context;
       Application_Mapper.Set_Context (Reader, Config'Unchecked_Access);
    end Reader_Config;
 

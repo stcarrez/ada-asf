@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications-main-configs -- Configuration support for ASF Applications
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,7 @@ package ASF.Applications.Main.Configs is
       Reader  : in out Util.Serialize.IO.XML.Parser;
       App     : in ASF.Contexts.Faces.Application_Access;
       Context : in EL.Contexts.Default.Default_Context_Access;
+      Override_Context : in Boolean := False;
    package Reader_Config is
       Prop_Context : aliased EL.Contexts.Properties.Property_Resolver;
    end Reader_Config;

@@ -68,6 +68,7 @@ package ASF.Servlets.Mappers is
       Location         : Util.Beans.Objects.Object;
       Handler          : Servlet_Registry_Access;
       Context          : EL.Contexts.ELContext_Access;
+      Override_Context : Boolean := True;
    end record;
    type Servlet_Config_Access is access all Servlet_Config;
 

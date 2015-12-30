@@ -240,9 +240,6 @@ else
 	test T${HAVE_AWS} = Tno || \
 		 ${MKDIR} -p ${alidir}/ada-asf-aws
 	${MKDIR} -p ${alidir}/ada-asf-unit
-	${MKDIR} -p ${dynamodir}/asf/bundles
-	${MKDIR} -p ${dynamodir}/asf/web/js
-	${MKDIR} -p ${dynamodir}/asf/web/js/jquery-ui
 	${CP} -p asfunit/*.ad[bs] ${includedir}/ada-asf-unit
 	${CP} -p src/*.ad[bs] ${includedir}/ada-asf
 	test T${HAVE_AWS} = Tno || \
@@ -278,6 +275,8 @@ ifneq (${OS},Windows_NT)
 endif
 endif
 endif
+	${MKDIR} -p ${dynamodir}/asf/bundles
+	${MKDIR} -p ${dynamodir}/asf/web
 	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd ${dynamodir}/asf/web && tar xf -)
 	${CP} bundles/*.properties ${dynamodir}/asf/bundles/
 	${CP} dynamo.xml ${dynamodir}/asf/
@@ -285,11 +284,13 @@ endif
 	${CP} LICENSE.txt ${dynamodir}/asf/
 
 install-info:
+ifeq (${GPRINSTALL},)
 	@echo "Installation directories:"
 	@echo "  Ada source files:    ${includedir}"
 	@echo "  ALI files:           ${alidir}"
 	@echo "  Libraries:           ${libdir}"
 	@echo "  GNAT project:        ${projectdir}"
+endif
 	@echo "Environment setup:"
 	@echo "  export ADA_PROJECT_PATH=${projectdir}:$$ADA_PROJECT_PATH"
 

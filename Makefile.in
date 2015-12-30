@@ -137,7 +137,7 @@ clean:	clean_test
 	-rm -f lib/asfunit/*.a lib/asfunit/*.$(DLLEXT)
 	-rm -rf obj/* lib/*
 	-rm -rf cov
-	-rm asf-coverage.info asf-coverage-body.info
+	-rm -f asf-coverage.info asf-coverage-body.info
 
 # Clean the files produced by the unit tests
 clean_test:

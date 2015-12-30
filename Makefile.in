@@ -177,8 +177,8 @@ coverage-report:
 			--output-directory cov
 
 # Files to package in source distribution
-DISTFILES=README NEWS LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
-configure.in Makefile.in install-sh distrib test.properties ChangeLog aclocal.m4 \
+DISTFILES=README.md NEWS LICENSE.txt NOTICE.txt config.guess configure config.sub \
+configure.in Makefile.in install-sh distrib test.properties aclocal.m4 \
 asf.gpr.in asf_core.gpr.in asf_aws.gpr.in asf_unit.gpr.in asf_tests.gpr.in samples.gpr.in config.gpr \
 src asfunit samples regtests web bundles samples.properties dynamo.xml \
 bin obj lib

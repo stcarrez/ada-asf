@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -413,6 +413,14 @@ package ASF.Requests is
    --  to the selected route.  The parameters are injected in the request attributes map.
    procedure Inject_Parameters (Req       : in out Request;
                                 ELContext : in EL.Contexts.ELContext'Class);
+
+   --  Get the path parameter value for the given parameter index.
+   --  The <tt>No_Parameter</tt> exception is raised if the parameter does not exist.
+   function Get_Path_Parameter (Req     : in Request;
+                                Index   : in Positive) return String;
+
+   --  Get the number of path parameters that were extracted for the route.
+   function Get_Path_Parameter_Count (Req     : in Request) return Natural;
 
       --  Initialize the request object.
    overriding

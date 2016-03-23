@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-routes -- Request routing
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,6 +59,32 @@ package body ASF.Routes is
          end;
       end if;
    end Get_Path;
+
+   --  ------------------------------
+   --  Get the path parameter value for the given parameter index.
+   --  The <tt>No_Parameter</tt> exception is raised if the parameter does not exist.
+   --  ------------------------------
+   function Get_Parameter (Context : in Route_Context_Type;
+                           Index   : in Positive) return String is
+   begin
+      if Index > Context.Count then
+         raise No_Parameter;
+      else
+         declare
+            Param : Route_Param_Type renames Context.Params (Index);
+         begin
+            return Context.Path (Param.First .. Param.Last);
+         end;
+      end if;
+   end Get_Parameter;
+
+   --  ------------------------------
+   --  Get the number of path parameters that were extracted for the route.
+   --  ------------------------------
+   function Get_Parameter_Count (Context : in Route_Context_Type) return Natural is
+   begin
+      return Context.Count;
+   end Get_Parameter_Count;
 
    --  ------------------------------
    --  Return the route associated with the resolved route context.

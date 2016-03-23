@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-routes -- Request routing
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,6 +37,8 @@ package ASF.Routes is
    subtype Route_Type_Ref is Route_Type_Refs.Ref;
    --  subtype Route_Type_Access is Route_Type_Refs.Element_Access;
 
+   No_Parameter : exception;
+
    type Path_Mode is (FULL, PREFIX, SUFFIX);
 
    --  The <tt>Route_Context_Type</tt> defines the context information after a path
@@ -46,6 +48,14 @@ package ASF.Routes is
    --  Get path information after the routing.
    function Get_Path (Context : in Route_Context_Type;
                       Mode    : in Path_Mode := FULL) return String;
+
+   --  Get the path parameter value for the given parameter index.
+   --  The <tt>No_Parameter</tt> exception is raised if the parameter does not exist.
+   function Get_Parameter (Context : in Route_Context_Type;
+                           Index   : in Positive) return String;
+
+   --  Get the number of path parameters that were extracted for the route.
+   function Get_Parameter_Count (Context : in Route_Context_Type) return Natural;
 
    --  Return the position of the variable part of the path.
    --  If the URI matches a wildcard pattern, the position of the last '/' in the wildcard pattern

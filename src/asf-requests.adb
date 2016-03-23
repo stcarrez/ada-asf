@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -844,6 +844,32 @@ package body ASF.Requests is
          ASF.Routes.Inject_Parameters (Req.Context.all, Req.Attributes, ELContext);
       end if;
    end Inject_Parameters;
+
+   --  ------------------------------
+   --  Get the path parameter value for the given parameter index.
+   --  The <tt>No_Parameter</tt> exception is raised if the parameter does not exist.
+   --  ------------------------------
+   function Get_Path_Parameter (Req     : in Request;
+                                Index   : in Positive) return String is
+   begin
+      if Req.Context /= null then
+         return ASF.Routes.Get_Parameter (Req.Context.all, Index);
+      else
+         raise ASF.Routes.No_Parameter;
+      end if;
+   end Get_Path_Parameter;
+
+   --  ------------------------------
+   --  Get the number of path parameters that were extracted for the route.
+   --  ------------------------------
+   function Get_Path_Parameter_Count (Req     : in Request) return Natural is
+   begin
+      if Req.Context /= null then
+         return ASF.Routes.Get_Parameter_Count (Req.Context.all);
+      else
+         return 0;
+      end if;
+   end Get_Path_Parameter_Count;
 
    --  ------------------------------
    --  Initialize the request object.

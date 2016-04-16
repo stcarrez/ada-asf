@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-dates -- Date Converters
---  Copyright (C) 2011, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2014, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,7 +81,7 @@ private
    type Date_Converter is new Converter with record
       Date_Style : Style_Type := DEFAULT;
       Time_Style : Style_Type := DEFAULT;
-      Format     : Format_Type;
+      Format     : Format_Type := BOTH;
       Locale     : Util.Locales.Locale;
       Pattern    : Ada.Strings.Unbounded.Unbounded_String;
    end record;

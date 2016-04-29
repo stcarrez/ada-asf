@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 
 with Util.Strings.Transforms;
 with Unicode;
+with Interfaces;
 package body ASF.Contexts.Writer is
 
    use Unicode;
@@ -408,31 +409,26 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    procedure Write_Wide_Char (Stream : in out Response_Writer;
                               Char   : in Wide_Wide_Character) is
-      Code : constant Unicode_Char := Wide_Wide_Character'Pos (Char);
+      use Interfaces;
+
+      Code : constant Unsigned_32 := Wide_Wide_Character'Pos (Char);
    begin
       Close_Current (Stream);
       --  Tilde or less...
-      if Code < 16#100# then
+      if Code < 16#080# then
          Stream.Write_Char (Character'Val (Code));
+      elsif Code < 16#7ff# then
+         Stream.Write_Char (Character'Val (Shift_Right (Code, 6) or 16#C0#));
+         Stream.Write_Char (Character'Val ((Code and 16#3F#) or 16#80#));
+      elsif Code < 16#0ffff# then
+         Stream.Write_Char (Character'Val (Shift_Right (Code, 12) or 16#E0#));
+         Stream.Write_Char (Character'Val ((Shift_Right (Code, 6) and 16#3F#) or 16#80#));
+         Stream.Write_Char (Character'Val ((Code and 16#3F#) or 16#80#));
       else
-         declare
-            S : String (1 .. 5) := "&#00;";
-            C : Unicode_Char;
-         begin
-            C := Code and 16#0F#;
-            if C > 10 then
-               S (4) := Character'Val (C - 10 + Character'Pos ('A'));
-            else
-               S (4) := Character'Val (C + Character'Pos ('0'));
-            end if;
-            C := (Code / 16) and 16#0F#;
-            if C > 10 then
-               S (3) := Character'Val (C - 10 + Character'Pos ('A'));
-            else
-               S (3) := Character'Val (C + Character'Pos ('0'));
-            end if;
-            Stream.Write (S);
-         end;
+         Stream.Write_Char (Character'Val (Shift_Right (Code, 18) or 16#E0#));
+         Stream.Write_Char (Character'Val ((Shift_Right (Code, 12) and 16#3F#) or 16#80#));
+         Stream.Write_Char (Character'Val ((Shift_Right (Code, 6) and 16#3F#) or 16#80#));
+         Stream.Write_Char (Character'Val ((Code and 16#3F#) or 16#80#));
       end if;
    end Write_Wide_Char;
 

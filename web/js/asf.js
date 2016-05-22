@@ -1,6 +1,6 @@
 /*
  *  asf -- Ada Server Faces
- *  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+ *  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
  *  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -79,6 +79,9 @@ var ASF = {};
 
         } else if (action.action === "notification") {
 	        ASF.Message(node, action.id, action.data, 'asf-notification').message('autoClose');
+
+        } else if (action.action === "get") {
+            ASF.Update(null, action.url, id);
 
         } else if (action.action === "script") {
             try {

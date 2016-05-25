@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.server -- ASF Server
---  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -75,13 +75,34 @@ package body ASF.Server is
          Free (Server.Applications);
       end if;
       Server.Nb_Bindings := Count + 1;
-      Apps (Apps'Last).Context  := Context;
-      Apps (Apps'Last).Base_URI := Ada.Strings.Unbounded.To_Unbounded_String (URI);
+      Apps (Count + 1).Context  := Context;
+      Apps (Count + 1).Base_URI := Ada.Strings.Unbounded.To_Unbounded_String (URI);
       Server.Applications := Apps;
 
       --  Inform the servlet registry about the base URI.
       Context.Register_Application (URI);
    end Register_Application;
+
+   --  ------------------------------
+   --  Remove the application
+   --  ------------------------------
+   procedure Remove_Application (Server  : in out Container;
+                                 Context : in ASF.Servlets.Servlet_Registry_Access) is
+      use type ASF.Servlets.Servlet_Registry_Access;
+
+      Count : constant Natural := Server.Nb_Bindings;
+      Apps  : constant Binding_Array_Access := Server.Applications;
+   begin
+      for I in 1 .. Count loop
+         if Apps (I).Context = Context then
+            Server.Nb_Bindings := Count - 1;
+            if I < Count then
+               Apps (I) := Apps (Count);
+            end if;
+            return;
+         end if;
+      end loop;
+   end Remove_Application;
 
    --  ------------------------------
    --  Start the applications that have been registered.

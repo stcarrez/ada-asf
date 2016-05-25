@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.server -- ASF Server
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,10 @@ package ASF.Server is
    procedure Register_Application (Server  : in out Container;
                                    URI     : in String;
                                    Context : in ASF.Servlets.Servlet_Registry_Access);
+
+   --  Remove the application
+   procedure Remove_Application (Server  : in out Container;
+                                 Context : in ASF.Servlets.Servlet_Registry_Access);
 
    --  Start the applications that have been registered.
    procedure Start (Server : in out Container);

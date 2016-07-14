@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -166,7 +166,8 @@ package body ASF.Components.Utils.Factory is
                            Optimize  => False);
       Mapper.Set_Function (Name      => "urlEncode",
                            Namespace => URI,
-                           Func      => Url_Encode'Access);
+                           Func      => Url_Encode'Access,
+                           Optimize  => False);
    end Set_Functions;
 
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object is

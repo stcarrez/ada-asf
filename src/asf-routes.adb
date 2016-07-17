@@ -448,7 +448,7 @@ package body ASF.Routes is
                      Context.Params (Count).First := Pos;
                      Context.Params (Count).Last := Path'Last;
                      Context.Route := N.Route.Value;
-                     if Match = EXT_MATCH then
+                     if Match = EXT_MATCH or Match = WILDCARD_MATCH then
                         Match := YES_MATCH;
                      end if;
                      return;

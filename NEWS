@@ -1,3 +1,6 @@
+Version 1.2     -
+  - New EL function util:translate for translation with a resource bundle
+
 Version 1.1     - Dec 2015
   - New EL function util:formatDate
   - New request route mapping with support for URL component extraction and parameter

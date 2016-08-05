@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -146,6 +146,11 @@ package body ASF.Components.Utils.Factory is
    function Format_Date (Date   : in EL.Objects.Object;
                          Format : in EL.Objects.Object) return EL.Objects.Object;
 
+   --  Translate a value using a resource bundle and applying a prefix for the translation.
+   function Translate (Bundle  : in EL.Objects.Object;
+                       Prefix  : in EL.Objects.Object;
+                       Value   : in EL.Objects.Object) return EL.Objects.Object;
+
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
    begin
       Mapper.Set_Function (Name      => "escapeJavaScript",
@@ -167,6 +172,9 @@ package body ASF.Components.Utils.Factory is
       Mapper.Set_Function (Name      => "urlEncode",
                            Namespace => URI,
                            Func      => Url_Encode'Access);
+      Mapper.Set_Function (Name      => "translate",
+                           Namespace => URI,
+                           Func      => Translate'Access);
    end Set_Functions;
 
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object is
@@ -224,6 +232,22 @@ package body ASF.Components.Utils.Factory is
          return EL.Objects.To_Object (Result);
       end;
    end Format_Date;
+
+   --  ------------------------------
+   --  Translate a value using a resource bundle and applying a prefix for the translation.
+   --  ------------------------------
+   function Translate (Bundle  : in EL.Objects.Object;
+                       Prefix  : in EL.Objects.Object;
+                       Value   : in EL.Objects.Object) return EL.Objects.Object is
+      Bean    : access Util.Beans.Basic.Readonly_Bean'Class;
+   begin
+      Bean := Util.Beans.Objects.To_Bean (Bundle);
+      if Bean = null then
+         return Value;
+      else
+         return Bean.Get_Value (EL.Objects.To_String (Prefix) & EL.Objects.To_String (Value));
+      end if;
+   end Translate;
 
    use Ada.Strings.Maps;
 

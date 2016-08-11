@@ -171,7 +171,8 @@ package body ASF.Components.Utils.Factory is
                            Optimize  => False);
       Mapper.Set_Function (Name      => "urlEncode",
                            Namespace => URI,
-                           Func      => Url_Encode'Access);
+                           Func      => Url_Encode'Access,
+                           Optimize  => False);
       Mapper.Set_Function (Name      => "translate",
                            Namespace => URI,
                            Func      => Translate'Access);
@@ -286,3 +287,4 @@ package body ASF.Components.Utils.Factory is
    end Url_Encode;
 
 end ASF.Components.Utils.Factory;
+

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-routes-tests - Unit tests for ASF.Routes
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -163,6 +163,10 @@ package body ASF.Routes.Tests is
       Verify_Route (T, Router, "/view/page/content/1/2/t.html", 6, Bean);
       Verify_Route (T, Router, "/ajax/form/save", 7, Bean);
       Verify_Route (T, Router, "/view/index.html", 8, Bean);
+
+      Add_Route (T, Router, "/ajax/timeKeeper/*", 9, Bean);
+      Verify_Route (T, Router, "/ajax/form/save", 7, Bean);
+      Verify_Route (T, Router, "/ajax/timeKeeper/save", 9, Bean);
    end Test_Add_Route_With_Ext;
 
    --  ------------------------------

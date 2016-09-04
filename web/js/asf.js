@@ -18,79 +18,69 @@
 var ASF = {};
 
 (function () {
-    /**
-     * Execute the AJAX response action represented by the JSON object <b>action</b>.
-     *
-     * @param node the current node
-     * @param action the JSON action object
-     */
-    ASF.ExecuteOne = function(node, action) {
-        var id = action.id ? action.id : node;
-        if (action.child) {
-            id = $(id).children(action.child);
-        }
-        if (action.action === "update") {
-	        $(id).html(action.data);
-
-        } else if (action.action === "prepend") {
-	        $(id).prepend(action.data);
-
-        } else if (action.action === "append") {
-	        $(id).append(action.data);
-
-        } else if (action.action === "show") {
+    ASF.Actions = {
+        update: function(id, action) {
+            $(id).html(action.data);
+        },
+        prepend: function(id, action) {
+            $(id).prepend(action.data);
+        },
+        append: function(id, action) {
+            $(id).append(action.data);
+        },
+        show: function(id, action) {
             $(id).show('slow');
-
-        } else if (action.action === "hide") {
+        },
+        hide: function(id, action) {
             $(id).hide('slow');
-
-        } else if (action.action === "delete") {
-	        $(id).remove();
-
-        } else if (action.action === "removeClass") {
-	        $(id).removeClass(action.data);
-
-        } else if (action.action === "addClass") {
-	        $(id).addClass(action.data);
-
-        } else if (action.action === "fadeIn") {
+        },
+        "delete": function(id, action) {
+            $(id).remove();
+        },
+        removeClass: function(id, action) {
+            $(id).removeClass(action.data);
+        },
+        addClass: function(id, action) {
+            $(id).addClass(action.data);
+        },
+        fadeIn: function(id, action) {
             $(id).fadeIn('slow');
-
-        } else if (action.action === "fadeOut") {
+        },
+        fadeOut: function(id, action) {
             $(id).fadeOut('slow');
-
-        } else if (action.action === "slideUp") {
+        },
+        slideUp: function(id, action) {
             $(id).slideUp('slow');
-
-        } else if (action.action === "slideDown") {
+        },
+        slideDown: function(id, action) {
             $(id).slideDown('slow');
-
-        } else if (action.action === "closeDialog") {
+        },
+        closeDialog: function(id, action) {
             $(id).dialog('close');
-
-        } else if (action.action === "closePopup") {
+        },
+        closePopup: function(id, action) {
             $(id).popup('close');
-
-        } else if (action.action === "redirect") {
+        },
+        redirect: function(id, action) {
             document.location = action.url;
-
-        } else if (action.action === "message") {
-	        ASF.Message(node, action.id, action.data);
-
-        } else if (action.action === "notification") {
+        },
+        message: function(id, action) {
+            ASF.Message(node, action.id, action.data);
+        },
+        notification: function(id, action) {
 	        ASF.Message(node, action.id, action.data, 'asf-notification').message('autoClose');
-
-        } else if (action.action === "get") {
+        },
+        get: function(id, action) {
             ASF.Update(null, action.url, id);
-
-        } else if (action.action === "script") {
+        },
+        script: function(id, action) {
             try {
                 eval(action.script);
             } catch (e) {
                 alert(e);
             }
-
-	    } else if (action.action === "clear") {
+        },
+        clear: function(id, action) {
 	        $(id).each(function() {
                 switch (this.type) {
                 case 'password':
@@ -106,7 +96,24 @@ var ASF = {};
                     break;
                 }
             });
-	    }
+        }
+    };
+
+    /**
+     * Execute the AJAX response action represented by the JSON object <b>action</b>.
+     *
+     * @param node the current node
+     * @param action the JSON action object
+     */
+    ASF.ExecuteOne = function(node, action) {
+        var id = action.id ? action.id : node;
+        if (action.child) {
+            id = $(id).children(action.child);
+        }
+        if (ASF.Actions.hasOwnProperty(action.action)) {
+            var handler = ASF.Actions[action.action];
+            handler(id, action);
+        }
     };
 
     ASF.Execute = function(node, data) {

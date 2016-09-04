@@ -1,6 +1,6 @@
 /**
  * asf.css - ASF component styles
- * Copyright (C) 2012, 2013 Stephane Carrez
+ * Copyright (C) 2012, 2013, 2016 Stephane Carrez
  * Licensed under the Apache License, Version 2.0 (the "License");
  */
 
@@ -93,9 +93,14 @@ div.asf-popup div.ui-corner-all {
 }
 
 div.ui-panel-header, div.ui-panel-footer, div.ui-panel-content {
-    padding: 5px;
+    padding: 0.5%;
+    width: 99%;
 }
 div.ui-panel-header a.ui-panel-icon {
     float: right;
     margin-left: 3px;
+}
+.asf-cancel {
+    display: inline-block;
+    padding: .4em 1em;
 }

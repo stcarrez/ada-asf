@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with System.Address_Image;
 with Ada.Unchecked_Deallocation;
 with Util.Strings;
 with Util.Beans.Objects;
@@ -153,11 +152,13 @@ package body ASF.Routes is
    --  Add a route associated with the given path pattern.  The pattern is split into components.
    --  Some path components can be a fixed string (/home) and others can be variable.
    --  When a path component is variable, the value can be retrieved from the route context.
+   --  Once the route path is created, the <tt>Process</tt> procedure is called with the route
+   --  reference.
    --  ------------------------------
    procedure Add_Route (Router    : in out Router_Type;
                         Pattern   : in String;
-                        To        : in Route_Type_Access;
-                        ELContext : in EL.Contexts.ELContext'Class) is
+                        ELContext : in EL.Contexts.ELContext'Class;
+                        Process   : not null access procedure (Route : in out Route_Type_Ref)) is
       First    : Natural := Pattern'First;
       Pos      : Natural;
       Node     : Route_Node_Access := Router.Route.Children;
@@ -167,7 +168,7 @@ package body ASF.Routes is
       Parent   : Route_Node_Access := Router.Route'Unchecked_Access;
       Found    : Boolean;
    begin
-      Log.Info ("Adding route {0} to {1}", Pattern, System.Address_Image (To.all'Address));
+      Log.Info ("Adding route {0}", Pattern);
       loop
          --  Ignore consecutive '/'.
          while First <= Pattern'Last and then Pattern (First) = '/' loop
@@ -347,9 +348,7 @@ package body ASF.Routes is
          First := Pos + 2;
          exit when First > Pattern'Last;
       end loop;
-      if Parent.Route.Is_Null then
-         Parent.Route := Route_Type_Refs.Create (To);
-      end if;
+      Process (Parent.Route);
    end Add_Route;
 
    --  ------------------------------
@@ -626,7 +625,7 @@ package body ASF.Routes is
       if not Is_Last then
          return WILDCARD_MATCH;
       else
-         Pos := Util.Strings.RIndex (Name, '.');
+         Pos := Util.Strings.Rindex (Name, '.');
          if Pos = 0 then
             return NO_MATCH;
          elsif Name (Pos .. Name'Last) = Node.Ext then

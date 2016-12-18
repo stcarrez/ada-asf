@@ -771,25 +771,34 @@ package body ASF.Servlets is
       procedure Make_Route is
          Context : aliased EL.Contexts.Default.Default_Context;
          Iter    : Util.Strings.Vectors.Cursor := Registry.Filter_Patterns.First;
-         Proxy   : ASF.Routes.Servlets.Proxy_Route_Type_Access;
       begin
          while Util.Strings.Vectors.Has_Element (Iter) loop
             declare
                use ASF.Routes.Servlets;
+               procedure Insert (Ref : in out ASF.Routes.Route_Type_Ref);
 
                Pattern : constant String := Util.Strings.Vectors.Element (Iter);
                Route   : ASF.Routes.Route_Context_Type;
+
+               procedure Insert (Ref : in out ASF.Routes.Route_Type_Ref) is
+                  Proxy   : ASF.Routes.Servlets.Proxy_Route_Type_Access;
+               begin
+                  if Ref.Is_Null then
+                     Proxy := new ASF.Routes.Servlets.Proxy_Route_Type;
+                     Proxy.Route := Servlet_Route_Type'Class (Route.Get_Route.all)'Access;
+
+                     --  If the route is also a proxy, get the real route pointed to by the proxy.
+                     if Proxy.Route.all in Proxy_Route_Type'Class then
+                        Proxy.Route := Proxy_Route_Type'Class (Proxy.Route.all).Route;
+                     end if;
+                     Ref := ASF.Routes.Route_Type_Refs.Create (Proxy.all'Access);
+                  end if;
+               end Insert;
+
             begin
                Registry.Routes.Find_Route (Pattern, Route);
                if Route.Get_Route /= null then
-                  Proxy := new ASF.Routes.Servlets.Proxy_Route_Type;
-                  Proxy.Route := Servlet_Route_Type'Class (Route.Get_Route.all)'Access;
-
-                  --  If the route is also a proxy, get the real route pointed to by the proxy.
-                  if Proxy.Route.all in Proxy_Route_Type'Class then
-                     Proxy.Route := Proxy_Route_Type'Class (Proxy.Route.all).Route;
-                  end if;
-                  Registry.Routes.Add_Route (Pattern, Proxy.all'Access, Context);
+                  Registry.Routes.Add_Route (Pattern, Context, Insert'Access);
                end if;
             end;
             Util.Strings.Vectors.Next (Iter);
@@ -1012,30 +1021,42 @@ package body ASF.Servlets is
    procedure Add_Mapping (Registry : in out Servlet_Registry;
                           Pattern  : in String;
                           Server   : in Servlet_Access) is
-      Route     : ASF.Routes.Servlets.Servlet_Route_Type_Access;
-      Context   : aliased EL.Contexts.Default.Default_Context;
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref);
 
-      use type ASF.Routes.Servlets.Servlet_Route_Type_Access;
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
+         To     : ASF.Routes.Servlets.Servlet_Route_Type_Access;
+      begin
+         if Route.Is_Null then
+            To := new ASF.Routes.Servlets.Servlet_Route_Type;
+            To.Servlet := Server;
+            Route := ASF.Routes.Route_Type_Refs.Create (To.all'Access);
+         else
+            Log.Warn ("Mapping {0} already defined", Pattern);
+         end if;
+      end Insert;
+
+      Context   : aliased EL.Contexts.Default.Default_Context;
    begin
       if Pattern'Length = 0 or Server = null then
          return;
       end if;
-      Route := new ASF.Routes.Servlets.Servlet_Route_Type;
-      Route.Servlet := Server;
-      Registry.Routes.Add_Route (Pattern, Route.all'Access, Context);
+      Registry.Routes.Add_Route (Pattern, Context, Insert'Access);
    end Add_Mapping;
 
    --  ------------------------------
    --  Add a route associated with the given path pattern.  The pattern is split into components.
    --  Some path components can be a fixed string (/home) and others can be variable.
    --  When a path component is variable, the value can be retrieved from the route context.
+   --  Once the route path is created, the <tt>Process</tt> procedure is called with the route
+   --  reference.
    --  ------------------------------
    procedure Add_Route (Registry  : in out Servlet_Registry;
                         Pattern   : in String;
-                        To        : in ASF.Routes.Route_Type_Access;
-                        ELContext : in EL.Contexts.ELContext'Class) is
+                        ELContext : in EL.Contexts.ELContext'Class;
+                        Process   : not null access
+                          procedure (Route : in out ASF.Routes.Route_Type_Ref)) is
    begin
-      Registry.Routes.Add_Route (Pattern, To, ELContext);
+      Registry.Routes.Add_Route (Pattern, ELContext, Process);
    end Add_Route;
 
    --  ------------------------------

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -425,10 +425,13 @@ package ASF.Servlets is
    --  Add a route associated with the given path pattern.  The pattern is split into components.
    --  Some path components can be a fixed string (/home) and others can be variable.
    --  When a path component is variable, the value can be retrieved from the route context.
+   --  Once the route path is created, the <tt>Process</tt> procedure is called with the route
+   --  reference.
    procedure Add_Route (Registry  : in out Servlet_Registry;
                         Pattern   : in String;
-                        To        : in ASF.Routes.Route_Type_Access;
-                        ELContext : in EL.Contexts.ELContext'Class);
+                        ELContext : in EL.Contexts.ELContext'Class;
+                        Process   : not null access
+                          procedure (Route : in out ASF.Routes.Route_Type_Ref));
 
    --  Set the error page that will be used if a servlet returns an error.
    procedure Set_Error_Page (Server : in out Servlet_Registry;

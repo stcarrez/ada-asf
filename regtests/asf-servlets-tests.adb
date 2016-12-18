@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Sessions Tests - Unit tests for ASF.Sessions
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -262,6 +262,7 @@ package body ASF.Servlets.Tests is
    --  ------------------------------
    procedure Test_Complex_Filter_Execution (T : in out Test) is
       use Util.Beans.Objects;
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref);
 
       Ctx     : Servlet_Registry;
       S1      : aliased Test_Servlet1;
@@ -271,22 +272,25 @@ package body ASF.Servlets.Tests is
       EL_Ctx  : EL.Contexts.Default.Default_Context;
       Request : ASF.Requests.Mockup.Request;
       Reply   : ASF.Responses.Mockup.Response;
-      Route   : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
+
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
+         To   : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
+      begin
+         To := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
+         To.Servlet := S1'Unchecked_Access;
+         Route := ASF.Routes.Route_Type_Refs.Create (To.all'Access);
+      end Insert;
    begin
-      Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
-      Route.Servlet := S1'Unchecked_Access;
       Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
       Ctx.Add_Filter ("F1", F1'Unchecked_Access);
       Ctx.Add_Filter ("F2", F2'Unchecked_Access);
       Ctx.Add_Route (Pattern   => "/wikis/#{user.name}/#{user.email}/view.html",
-                     To        => Route.all'Access,
-                     ELContext => EL_Ctx);
+                     ELContext => EL_Ctx,
+                     Process   => Insert'Access);
 
-      Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
-      Route.Servlet := S1'Unchecked_Access;
       Ctx.Add_Route (Pattern   => "/wikis/#{user.name}/#{user.email}/view",
-                     To        => Route.all'Access,
-                     ELContext => EL_Ctx);
+                     ELContext => EL_Ctx,
+                     Process   => Insert'Access);
       Ctx.Add_Mapping (Pattern => "/wikis/*.html", Name => "Faces");
       Ctx.Add_Filter_Mapping (Pattern => "/wikis/*", Name => "F1");
       Ctx.Add_Filter_Mapping (Pattern => "/wikis/admin/*", Name => "F2");
@@ -342,6 +346,7 @@ package body ASF.Servlets.Tests is
    --  ------------------------------
    procedure Test_Cache_Control_Filter (T : in out Test) is
       use Util.Beans.Objects;
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref);
 
       Ctx     : Servlet_Registry;
       S1      : aliased Test_Servlet1;
@@ -350,25 +355,29 @@ package body ASF.Servlets.Tests is
       User    : aliased ASF.Applications.Tests.Form_Bean;
       EL_Ctx  : EL.Contexts.Default.Default_Context;
       Request : ASF.Requests.Mockup.Request;
-      Route   : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
+
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
+         To   : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
+      begin
+         To := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
+         To.Servlet := S1'Unchecked_Access;
+         Route := ASF.Routes.Route_Type_Refs.Create (To.all'Access);
+      end Insert;
    begin
       Ctx.Set_Init_Parameter ("F1." & ASF.Filters.Cache_Control.CACHE_CONTROL_PARAM, "no-cache");
-      Ctx.Set_Init_Parameter ("F2." & ASF.Filters.Cache_Control.CACHE_CONTROL_PARAM, "max-age: 10");
+      Ctx.Set_Init_Parameter ("F2." & ASF.Filters.Cache_Control.CACHE_CONTROL_PARAM,
+                              "max-age: 10");
 
-      Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
-      Route.Servlet := S1'Unchecked_Access;
       Ctx.Add_Servlet ("Faces", S1'Unchecked_Access);
       Ctx.Add_Filter ("F1", F1'Unchecked_Access);
       Ctx.Add_Route (Pattern   => "/wikis/no-cache/view.html",
-                     To        => Route.all'Access,
-                     ELContext => EL_Ctx);
+                     ELContext => EL_Ctx,
+                     Process   => Insert'Access);
 
-      Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
-      Route.Servlet := S1'Unchecked_Access;
       Ctx.Add_Filter ("F2", F2'Unchecked_Access);
       Ctx.Add_Route (Pattern   => "/wikis/cache/view.html",
-                     To        => Route.all'Access,
-                     ELContext => EL_Ctx);
+                     ELContext => EL_Ctx,
+                     Process   => Insert'Access);
 
       Ctx.Add_Filter_Mapping (Pattern => "/wikis/no-cache/*", Name => "F1");
       Ctx.Add_Filter_Mapping (Pattern => "/wikis/cache/*", Name => "F2");

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-faces-mappers -- Read faces specific configuration files
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +15,14 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Ada.Unchecked_Deallocation;
 with ASF.Routes.Servlets.Faces;
 package body ASF.Servlets.Faces.Mappers is
 
    use type ASF.Routes.Route_Type_Access;
 
-   procedure Free is
-     new Ada.Unchecked_Deallocation (Object => ASF.Routes.Servlets.Faces.Faces_Route_Type'Class,
-                                     Name   => ASF.Routes.Servlets.Faces.Faces_Route_Type_Access);
+   function Find_Servlet (Container : in Servlet_Registry_Access;
+                          View      : in String)
+                          return ASF.Servlets.Servlet_Access;
 
    function Find_Servlet (Container : in Servlet_Registry_Access;
                           View      : in String)
@@ -49,8 +48,6 @@ package body ASF.Servlets.Faces.Mappers is
                          Field : in Servlet_Fields;
                          Value : in Util.Beans.Objects.Object) is
       use Util.Beans.Objects;
-
-      Route : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
    begin
       case Field is
          when URL_PATTERN =>
@@ -61,19 +58,26 @@ package body ASF.Servlets.Faces.Mappers is
 
          when URL_MAPPING =>
             declare
+               procedure Insert (Route : in out ASF.Routes.Route_Type_Ref);
+
                View    : constant String := To_String (N.View_Id);
                Servlet : constant ASF.Servlets.Servlet_Access := Find_Servlet (N.Handler, View);
+
+               procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
+                  To : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
+               begin
+                  if Route.Is_Null then
+                     To := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
+                     To.View    := To_Unbounded_String (View);
+                     To.Servlet := Servlet;
+                     Route := ASF.Routes.Route_Type_Refs.Create (To.all'Access);
+                  end if;
+               end Insert;
+
             begin
-               Route := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
-               Route.View    := To_Unbounded_String (View);
-               Route.Servlet := Servlet;
                N.Handler.Add_Route (Pattern   => To_String (N.URL_Pattern),
-                                    To        => Route.all'Access,
-                                    ELContext => N.Context.all);
-            exception
-               when others =>
-                  Free (Route);
-                  raise;
+                                    ELContext => N.Context.all,
+                                    Process   => Insert'Access);
             end;
       end case;
    end Set_Member;

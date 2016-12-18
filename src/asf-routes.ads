@@ -83,10 +83,12 @@ package ASF.Routes is
    --  Add a route associated with the given path pattern.  The pattern is split into components.
    --  Some path components can be a fixed string (/home) and others can be variable.
    --  When a path component is variable, the value can be retrieved from the route context.
+   --  Once the route path is created, the <tt>Process</tt> procedure is called with the route
+   --  reference.
    procedure Add_Route (Router    : in out Router_Type;
                         Pattern   : in String;
-                        To        : in Route_Type_Access;
-                        ELContext : in EL.Contexts.ELContext'Class);
+                        ELContext : in EL.Contexts.ELContext'Class;
+                        Process   : not null access procedure (Route : in out Route_Type_Ref));
 
    --  Build the route context from the given path by looking at the different routes registered
    --  in the router with <tt>Add_Route</tt>.

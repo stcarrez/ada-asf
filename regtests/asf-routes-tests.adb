@@ -106,16 +106,19 @@ package body ASF.Routes.Tests is
    end Verify_Route;
 
    --  ------------------------------
-   --  Add the route associted with the path pattern.
+   --  Add the route associated with the path pattern.
    --  ------------------------------
    procedure Add_Route (T      : in out Test;
                         Router : in out Router_Type;
                         Path   : in String;
                         Index  : in Positive;
                         Bean   : in out Test_Bean'Class) is
-      Route   : constant Route_Type_Access := T.Routes (Index).Value;
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
+      begin
+         Route := T.Routes (Index);
+      end Insert;
    begin
-      Router.Add_Route (Path, Route, T.ELContext.all);
+      Router.Add_Route (Path, T.ELContext.all, Insert'Access);
       Verify_Route (T, Router, Path, Index, Bean);
    end Add_Route;
 

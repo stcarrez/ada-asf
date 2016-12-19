@@ -16,20 +16,25 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Strings;
+with Util.Serialize.IO;
 with ASF.Requests;
 with ASF.Responses;
+with ASF.Servlets;
+with EL.Contexts;
 with Security.Permissions;
 
 --  == REST ==
 --  The <tt>ASF.Rest</tt> package provides support to implement easily some RESTful API.
 package ASF.Rest is
 
-   type Request is abstract new ASF.Requests.Request with null record;
+   subtype Request is ASF.Requests.Request;
 
-   type Response is abstract new ASF.Responses.Response with null record;
+   subtype Response is ASF.Responses.Response;
+
+   subtype Output_Stream is Util.Serialize.IO.Output_Stream;
 
    --  The HTTP rest method.
-   type Method_Type is (GET, HEAD, POST, PUT, DELETE, OPTIONS);
+   type Method_Type is (GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT, OPTIONS);
 
    type Descriptor is abstract tagged limited private;
    type Descriptor_Access is access all Descriptor'Class;
@@ -41,7 +46,8 @@ package ASF.Rest is
    --  Dispatch the request to the API handler.
    procedure Dispatch (Handler : in Descriptor;
                        Req     : in out ASF.Rest.Request'Class;
-                       Reply   : in out ASF.Rest.Response'Class) is abstract;
+                       Reply   : in out ASF.Rest.Response'Class;
+                       Stream  : in out Output_Stream'Class) is abstract;
 
 private
 
@@ -55,5 +61,12 @@ private
    --  Register the API descriptor in a list.
    procedure Register (List : in out Descriptor_Access;
                        Item : in Descriptor_Access);
+
+   --  Register the list of API descriptors for a given servlet and a root path.
+   procedure Register (Registry  : in out ASF.Servlets.Servlet_Registry;
+                       Name      : in String;
+                       URI       : in String;
+                       ELContext : in EL.Contexts.ELContext'Class;
+                       List      : in Descriptor_Access);
 
 end ASF.Rest;

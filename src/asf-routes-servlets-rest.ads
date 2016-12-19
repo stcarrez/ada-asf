@@ -25,5 +25,6 @@ package ASF.Routes.Servlets.Rest is
    type API_Route_Type is new ASF.Routes.Servlets.Servlet_Route_Type with record
       Descriptors : Descriptor_Array;
    end record;
+   type API_Route_Type_Access is access all API_Route_Type'Class;
 
 end ASF.Routes.Servlets.Rest;

@@ -32,10 +32,14 @@ package body Monitor is
       Pos : Positive;
    begin
       Pos := Positive'Value (Id);
-      Monitors (Pos).Put (0);
+      --  Monitors (Pos).Put (0);
+
+      --  Get the monitor values.
       declare
          Values : constant Value_Array := Monitors (Pos).Get_Values;
       begin
+
+         --  Write the JSON/XML document.
          Stream.Start_Document;
          Stream.Start_Array ("values");
          for V of Values loop
@@ -83,16 +87,19 @@ package body Monitor is
          Dt  : constant Duration := Now - Slot_Start;
          Cnt : Natural := Natural (Dt / Slot_Size);
       begin
-         while Cnt > 0 loop
-            Cnt := Cnt - 1;
-            Pos := Pos + 1;
-            if Pos > Values'Last then
-               Pos := Values'First;
-               Value_Count := Values'Length;
-            elsif Value_Count < Values'Length then
-               Value_Count := Value_Count + 1;
-            end if;
-         end loop;
+         if Cnt > 0 then
+            while Cnt > 0 loop
+               Cnt := Cnt - 1;
+               Pos := Pos + 1;
+               if Pos > Values'Last then
+                  Pos := Values'First;
+                  Value_Count := Values'Length;
+               elsif Value_Count < Values'Length then
+                  Value_Count := Value_Count + 1;
+               end if;
+               Slot_Start := Slot_Start + Slot_Size;
+            end loop;
+         end if;
          Values (Pos) := Value;
       end Put;
 
@@ -107,7 +114,7 @@ package body Monitor is
          N      : Natural;
       begin
          if Value_Count = Values'Length then
-            Cnt := Values'Length - Pos + 1;
+            Cnt := Values'Last - Pos;
          else
             Cnt := 0;
          end if;

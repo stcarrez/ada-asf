@@ -6,7 +6,7 @@ with "asf";
 project Samples is
 
    Mains := ("render.adb", "volume_server.adb", "demo_server.adb",
-   "asf_volume_server.adb", "openid.adb", "upload_server.adb");
+   "asf_volume_server.adb", "openid.adb", "upload_server.adb", "api_server.adb");
 
    for Main use Mains;
 
@@ -21,7 +21,7 @@ project Samples is
       end case;
    end Naming;
 
-   for Source_Dirs use ("samples", "samples/beans");
+   for Source_Dirs use ("samples", "samples/beans", "samples/rest");
 
    for Object_Dir use "./" & Config'Object_Dir & "/obj";
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";

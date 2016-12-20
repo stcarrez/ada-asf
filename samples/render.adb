@@ -44,6 +44,8 @@ begin
    Conf.Set ("view.ignore_white_spaces", "false");
    Conf.Set ("view.escape_unknown_tags", "false");
    Conf.Set ("view.ignore_empty_lines", "true");
+   Conf.Set ("view.dir", ".");
+   Conf.Set ("view.file_ext", "");
 
    App.Initialize (Conf, Factory);
    loop
@@ -80,7 +82,8 @@ begin
          return;
       end if;
 
-      Req.Set_Path_Info (View_Name (View_Name'First .. Pos - 1));
+      Req.Set_Method ("GET");
+      Req.Set_Request_URI (View_Name (View_Name'First .. Pos - 1));
       App.Dispatch (Page     => View_Name (View_Name'First .. Pos - 1),
                     Request  => Req,
                     Response => Reply);

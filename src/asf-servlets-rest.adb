@@ -90,7 +90,7 @@ package body ASF.Servlets.Rest is
       Route  : constant ASF.Routes.Route_Type_Access := Request.Get_Route;
    begin
       if Route = null or else not (Route.all in ASF.Routes.Servlets.Rest.API_Route_Type'Class) then
-         Response.Set_Status (ASF.Responses.SC_INTERNAL_SERVER_ERROR);
+         Response.Set_Status (ASF.Responses.SC_NOT_FOUND);
          return;
       end if;
       declare

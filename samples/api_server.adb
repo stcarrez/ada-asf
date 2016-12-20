@@ -35,7 +35,7 @@ procedure API_Server is
    Log     : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Api_Server");
 begin
    Util.Log.Loggers.Initialize (CONFIG_PATH);
-   App.Set_Init_Parameter (ASF.Applications.VIEW_DIR, "samples/web");
+   App.Set_Init_Parameter (ASF.Applications.VIEW_DIR, "samples/web/monitor");
 
    --  Register the servlets and filters
    App.Add_Servlet (Name => "api", Server => Api'Unchecked_Access);
@@ -49,9 +49,9 @@ begin
 
    Monitor.Mon_API.Register (App, "api", Ctx);
 
-   WS.Register_Application ("/sample", App'Unchecked_Access);
+   WS.Register_Application ("/monitor", App'Unchecked_Access);
 
-   Log.Info ("Connect you browser to: http://localhost:8080/sample/index.html");
+   Log.Info ("Connect you browser to: http://localhost:8080/monitor/index.html");
 
    WS.Start;
 

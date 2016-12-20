@@ -36,17 +36,20 @@ package Monitor is
    package Mon_API is new ASF.Rest.Definition (Object_Type => Mon,
                                                URI         => "/api/monitor");
 
+private
+
+   --  Declare each REST API with a relative URI from Mon_API definition.
+   --  GET /api/monitor/:id
    package Mon_Get_Values is new Mon_API.Definition (Handler    => Get_Values'Access,
                                                      Method     => ASF.Rest.GET,
                                                      Pattern    => ":id",
                                                      Permission => 0);
 
-   package Mon_Put_Value is new Mon_API.Definition (Handler    => Get_Values'Access,
+   --  PUT /api/monitor/:id
+   package Mon_Put_Value is new Mon_API.Definition (Handler    => Put_Value'Access,
                                                     Method     => ASF.Rest.PUT,
                                                     Pattern    => ":id",
                                                     Permission => 0);
-
-private
 
    MAX_VALUES  : constant Natural := 1000;
    MAX_MONITOR : constant Natural := 10;
@@ -65,7 +68,7 @@ private
       Values      : Value_Array (1 .. MAX_VALUES) := (others => 0);
       Value_Count : Natural := 0;
       Pos         : Natural := 1;
-      Slot_Size   : Duration := 1.0;
+      Slot_Size   : Duration := 10.0;
       Slot_Start  : Ada.Calendar.Time := Ada.Calendar.Clock;
    end Monitor_Data;
 

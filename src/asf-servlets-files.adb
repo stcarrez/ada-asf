@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.files -- Static file servlet
---  Copyright (C) 2010, 2011, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2013, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Util.Files;
+with Util.Log.Loggers;
 with Util.Strings;
 with Util.Streams;
 with Util.Streams.Files;
@@ -33,6 +34,9 @@ package body ASF.Servlets.Files is
    use Ada.Streams.Stream_IO;
    use Ada.Directories;
 
+   --  The logger
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Servlets.Files");
+
    --  ------------------------------
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
@@ -42,8 +46,13 @@ package body ASF.Servlets.Files is
       Dir      : constant String := Context.Get_Init_Parameter (ASF.Applications.VIEW_DIR);
       Def_Type : constant String := Context.Get_Init_Parameter ("content-type.default");
    begin
-      Server.Dir := new String '(Dir);
+      if Dir = "" then
+         Server.Dir := new String '("./");
+      else
+         Server.Dir := new String '(Dir);
+      end if;
       Server.Default_Content_Type := new String '(Def_Type);
+      Log.Info ("File servlet using directory '{0}'", Server.Dir.all);
    end Initialize;
 
    --  ------------------------------
@@ -153,6 +162,7 @@ package body ASF.Servlets.Files is
       if Path'Length = 0 or else not Ada.Directories.Exists (Path)
         or else Ada.Directories.Kind (Path) /= Ada.Directories.Ordinary_File
       then
+         Log.Debug ("Servlet file cannot read file {0}", Path);
          Response.Send_Error (Responses.SC_NOT_FOUND);
          return;
       end if;

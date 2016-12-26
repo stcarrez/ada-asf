@@ -15,8 +15,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+/**
+ * @namespace ui.list
+ */
 (function($, undefined) {
 
+    /**
+     * @class List management
+     */
     $.widget( "ui.list", $.ui.mouse, {
         currentNode: null,
 
@@ -126,7 +132,7 @@
         },
 
         /**
-         * Enable or disable the mouseover effect on the full list.
+         * @name ui.list Enable or disable the mouseover effect on the full list.
          *
          * @param status when true, enable the mouseover effect.
          */

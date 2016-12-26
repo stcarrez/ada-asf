@@ -18,6 +18,9 @@
 (function($, undefined) {
 
     /**
+     * @class ui.editfield
+     * @extends ui.widget
+     *
      * The editfield component switches the content of a <div> element to an <input> field
      * that can be edited.  The <tt>enterEdit</tt> operation switch the <div> element to
      * the <input> field and sets the ".asf-editing" CSS class on the element.
@@ -113,6 +116,9 @@
     });
 
     /**
+     * @class ui.editable
+     * @extends ui.widget
+     *
      * The editable component enters in edit mode when the user clicks on it.
      * The editing mode is activated by the 'asf-editing' CSS which puts the component in editing mode
      * and makes the input fields visible.
@@ -179,6 +185,10 @@
     });
 
 
+    /**
+     * @class ui.item
+     * @extends ui.mouse
+     */
     $.widget( "ui.item", $.ui.mouse, {
         currentNode: null,
 

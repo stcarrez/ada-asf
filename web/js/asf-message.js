@@ -15,14 +15,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+/**
+ * @namespace ui.message
+     * @class ui.message
+ */
 (function($, undefined) {
 
     /**
+     * @class ui.message
+     * @extends ui.widget
+     *
      * The message component is a small popup element intended to display some message.
+     * The component onto which it is applied is turned into a popup element.  The popup
+     * is closed automatically after a delay or if the user clicks on the popup element.
      */
-    $.widget("ui.message", {
+    var proto = {
         options: {
+	    /**
+	     * @cfg {Object} attachment The attachment object.
+	     */
             attachment: null,
+
+	    /**
+	     * @cfg {String} css The CSS to apply on the popup div.
+	     */
             css: null
         },
 
@@ -90,6 +106,8 @@
                 self.element.remove();
             });
         }
-    });
+    };
 
+    $.widget("ui.message", proto);
+    
 })( jQuery );

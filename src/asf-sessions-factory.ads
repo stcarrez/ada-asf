@@ -65,6 +65,10 @@ package ASF.Sessions.Factory is
    procedure Set_Max_Inactive_Interval (Factory  : in out Session_Factory;
                                         Interval : in Duration);
 
+   --  Release all the sessions.
+   overriding
+   procedure Finalize (Factory : in out Session_Factory);
+
 private
 
    use Util.Strings;

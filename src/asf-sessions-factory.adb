@@ -143,6 +143,15 @@ package body ASF.Sessions.Factory is
       Factory.Sessions.Initialize;
    end Initialize;
 
+   --  ------------------------------
+   --  Release all the sessions.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Factory : in out Session_Factory) is
+   begin
+      Factory.Sessions.Clear;
+   end Finalize;
+
    protected body Session_Cache is
 
       --  ------------------------------

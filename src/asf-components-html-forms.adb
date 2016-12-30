@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -337,6 +337,7 @@ package body ASF.Components.Html.Forms is
             Free (UI.Validators (I).Validator);
          end if;
       end loop;
+      UIHtmlComponent (UI).Finalize;
    end Finalize;
 
    --  ------------------------------

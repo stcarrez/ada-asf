@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.sessions.factory -- ASF Sessions factory
---  Copyright (C) 2010, 2011, 2012, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2014, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,7 +89,7 @@ package body ASF.Sessions.Factory is
    procedure Delete_Session (Factory : in out Session_Factory;
                              Sess    : in out Session) is
    begin
-      null;
+      Factory.Sessions.Delete (Sess);
    end Delete_Session;
 
    --  ------------------------------
@@ -165,6 +165,18 @@ package body ASF.Sessions.Factory is
       begin
          Sessions.Insert (Sess.Impl.Id.all'Access, Sess);
       end Insert;
+
+      --  ------------------------------
+      --  Remove the session from the session cache.
+      --  ------------------------------
+      procedure Delete (Sess : in out Session) is
+         Pos : Session_Maps.Cursor := Sessions.Find (Sess.Impl.Id.all'Access);
+      begin
+         if Session_Maps.Has_Element (Pos) then
+            Session_Maps.Delete (Sessions, Pos);
+         end if;
+         Finalize (Sess);
+      end Delete;
 
       --  ------------------------------
       --  Generate a random bitstream.

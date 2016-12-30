@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.sessions.factory -- ASF Sessions factory
---  Copyright (C) 2010, 2011, 2014 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2014, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -84,6 +84,9 @@ private
 
       --  Insert the session in the session cache.
       procedure Insert (Sess : in Session);
+
+      --  Remove the session from the session cache.
+      procedure Delete (Sess : in out Session);
 
       --  Generate a random bitstream.
       procedure Generate_Id (Rand : out Ada.Streams.Stream_Element_Array);

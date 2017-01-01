@@ -68,11 +68,12 @@ var ASF = {};
         redirect: function(id, action) {
             document.location = action.url;
         },
-        message: function(id, action) {
-            ASF.Message(node, action.id, action.data);
+        message: function(id, action, node) {
+            ASF.Message(action.attach ? action.attach : node, action.id, action.data);
         },
-        notification: function(id, action) {
-	        ASF.Message(node, action.id, action.data, 'asf-notification').message('autoClose');
+        notification: function(id, action, node) {
+	        ASF.Message(action.attach ? action.attach : node,
+	                    action.id, action.data, 'asf-notification').message('autoClose');
         },
         get: function(id, action) {
             ASF.Update(null, action.url, id);

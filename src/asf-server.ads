@@ -71,6 +71,7 @@ private
       Nb_Bindings  : Natural := 0;
       Applications : Binding_Array_Access := null;
       Default      : ASF.Servlets.Servlet_Registry;
+      Is_Started   : Boolean := False;
    end record;
 
    type Request_Context is record

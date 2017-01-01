@@ -69,18 +69,28 @@ package body ASF.Server is
                                    Context : in ASF.Servlets.Servlet_Registry_Access) is
       Count : constant Natural := Server.Nb_Bindings;
       Apps  : constant Binding_Array_Access := new Binding_Array (1 .. Count + 1);
+      Old   : Binding_Array_Access := Server.Applications;
    begin
-      if Server.Applications /= null then
+      if Old /= null then
          Apps (1 .. Count) := Server.Applications (1 .. Count);
-         Free (Server.Applications);
       end if;
-      Server.Nb_Bindings := Count + 1;
       Apps (Count + 1).Context  := Context;
       Apps (Count + 1).Base_URI := Ada.Strings.Unbounded.To_Unbounded_String (URI);
-      Server.Applications := Apps;
 
       --  Inform the servlet registry about the base URI.
       Context.Register_Application (URI);
+
+      --  Start the application if the container is started.
+      if Server.Is_Started then
+         Context.Start;
+      end if;
+
+      --  Update the binding.
+      Server.Applications := Apps;
+      Server.Nb_Bindings := Count + 1;
+      if Old /= null then
+         Free (Old);
+      end if;
    end Register_Application;
 
    --  ------------------------------
@@ -109,10 +119,13 @@ package body ASF.Server is
    --  ------------------------------
    procedure Start (Server : in out Container) is
    begin
-      if Server.Applications /= null then
-         for I in Server.Applications'Range loop
-            Server.Applications (I).Context.Start;
-         end loop;
+      if not Server.Is_Started then
+         Server.Is_Started := True;
+         if Server.Applications /= null then
+            for I in Server.Applications'Range loop
+               Server.Applications (I).Context.Start;
+            end loop;
+         end if;
       end if;
    end Start;
 

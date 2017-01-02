@@ -97,6 +97,9 @@ private
 
       --  Initialize the random generator.
       procedure Initialize;
+
+      --  Clear the session cache.
+      procedure Clear;
    private
       --  Id to session map.
       Sessions     : Session_Maps.Map;

@@ -187,6 +187,12 @@ package body ASF.Sessions.Factory is
          Finalize (Sess);
       end Delete;
 
+      --  Clear the session cache.
+      procedure Clear is
+      begin
+         null;
+      end Clear;
+
       --  ------------------------------
       --  Generate a random bitstream.
       --  ------------------------------

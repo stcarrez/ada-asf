@@ -101,14 +101,23 @@ package body ASF.Server is
       use type ASF.Servlets.Servlet_Registry_Access;
 
       Count : constant Natural := Server.Nb_Bindings;
-      Apps  : constant Binding_Array_Access := Server.Applications;
+      Old   : Binding_Array_Access := Server.Applications;
+      Apps  : Binding_Array_Access;
    begin
       for I in 1 .. Count loop
-         if Apps (I).Context = Context then
-            Server.Nb_Bindings := Count - 1;
+         if Old (I).Context = Context then
             if I < Count then
-               Apps (I) := Apps (Count);
+               Old (I) := Old (Count);
             end if;
+            if Count > 1 then
+               Apps := new Binding_Array (1 .. Count - 1);
+               Apps.all := Old (1 .. Count - 1);
+            else
+               Apps := null;
+            end if;
+            Server.Applications := Apps;
+            Server.Nb_Bindings := Count - 1;
+            Free (Old);
             return;
          end if;
       end loop;

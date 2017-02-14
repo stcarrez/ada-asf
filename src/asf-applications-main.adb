@@ -106,6 +106,17 @@ package body ASF.Applications.Main is
    end Create_Security_Manager;
 
    --  ------------------------------
+   --  Create the OAuth application manager.  The OAuth application manager is created
+   --  during the initialization phase of the application.  The default implementation
+   --  creates a <b>Security.OAuth.Servers.Auth_Manager</b> object.
+   --  ------------------------------
+   function Create_OAuth_Manager (App : in Application_Factory)
+                                  return OAuth.Servers.Auth_Manager_Access is
+   begin
+      return new OAuth.Servers.Auth_Manager;
+   end Create_OAuth_Manager;
+
+   --  ------------------------------
    --  Create the exception handler.  The exception handler is created during
    --  the initialization phase of the application.  The default implementation
    --  creates a <b>ASF.Contexts.Exceptions.Exception_Handler</b> object.

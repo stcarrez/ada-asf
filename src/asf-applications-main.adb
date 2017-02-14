@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -112,6 +112,7 @@ package body ASF.Applications.Main is
    --  ------------------------------
    function Create_OAuth_Manager (App : in Application_Factory)
                                   return OAuth.Servers.Auth_Manager_Access is
+      pragma Unreferenced (App);
    begin
       return new OAuth.Servers.Auth_Manager;
    end Create_OAuth_Manager;
@@ -262,6 +263,9 @@ package body ASF.Applications.Main is
 
       --  Create the permission manager.
       App.Permissions := Factory.Create_Security_Manager;
+
+      --  Create the OAuth manager.
+      App.OAuth := Factory.Create_OAuth_Manager;
 
       Application'Class (App).Initialize_Components;
 

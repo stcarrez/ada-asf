@@ -776,10 +776,14 @@ package body ASF.Applications.Main is
       procedure Free is
         new Ada.Unchecked_Deallocation (Policies.Policy_Manager'Class,
                                         Policies.Policy_Manager_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (OAuth.Servers.Auth_Manager'Class,
+                                        OAuth.Servers.Auth_Manager_Access);
    begin
       Free (App.Navigation);
       Free (App.Lifecycle);
       Free (App.Permissions);
+      Free (App.OAuth);
       ASF.Servlets.Servlet_Registry (App).Finalize;
    end Finalize;
 

@@ -115,6 +115,10 @@ package ASF.Applications.Main is
    function Get_Security_Manager (App : in Application)
                                     return Security.Policies.Policy_Manager_Access;
 
+   --  Get the OAuth application manager associated with this application.
+   function Get_OAuth_Manager (App : in Application)
+                               return Security.OAuth.Servers.Auth_Manager_Access;
+
    --  Get the action event listener responsible for processing action
    --  events and triggering the navigation to the next view using the
    --  navigation handler.
@@ -327,11 +331,13 @@ private
       Action_Listener : ASF.Events.Faces.Actions.Action_Listener_Access;
 
       --  The navigation handler.
-      Navigation      : ASF.Navigations.Navigation_Handler_Access := null;
+      Navigation      : ASF.Navigations.Navigation_Handler_Access;
 
       --  The permission manager.
-      Permissions     : Security.Policies.Policy_Manager_Access := null;
+      Permissions     : Security.Policies.Policy_Manager_Access;
 
+      --  The OAuth application manager.
+      OAuth           : Security.OAuth.Servers.Auth_Manager_Access;
    end record;
 
 end ASF.Applications.Main;

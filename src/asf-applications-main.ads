@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +42,7 @@ with ASF.Responses;
 with ASF.Servlets;
 with ASF.Events.Faces.Actions;
 with Security.Policies;  use Security;
+with Security.OAuth.Servers;
 
 package ASF.Applications.Main is
 
@@ -78,6 +79,12 @@ package ASF.Applications.Main is
    --  creates a <b>Security.Policies.Policy_Manager</b> object.
    function Create_Security_Manager (App : in Application_Factory)
                                        return Security.Policies.Policy_Manager_Access;
+
+   --  Create the OAuth application manager.  The OAuth application manager is created
+   --  during the initialization phase of the application.  The default implementation
+   --  creates a <b>Security.OAuth.Servers.Auth_Manager</b> object.
+   function Create_OAuth_Manager (App : in Application_Factory)
+                                  return Security.OAuth.Servers.Auth_Manager_Access;
 
    --  Create the exception handler.  The exception handler is created during
    --  the initialization phase of the application.  The default implementation

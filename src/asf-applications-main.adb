@@ -165,6 +165,15 @@ package body ASF.Applications.Main is
    end Get_Security_Manager;
 
    --  ------------------------------
+   --  Get the OAuth application manager associated with this application.
+   --  ------------------------------
+   function Get_OAuth_Manager (App : in Application)
+                               return OAuth.Servers.Auth_Manager_Access is
+   begin
+      return App.OAuth;
+   end Get_OAuth_Manager;
+
+   --  ------------------------------
    --  Get the action event listener responsible for processing action
    --  events and triggering the navigation to the next view using the
    --  navigation handler.

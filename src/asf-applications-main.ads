@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +42,7 @@ with ASF.Responses;
 with ASF.Servlets;
 with ASF.Events.Faces.Actions;
 with Security.Policies;  use Security;
+with Security.OAuth.Servers;
 
 package ASF.Applications.Main is
 
@@ -79,6 +80,12 @@ package ASF.Applications.Main is
    function Create_Security_Manager (App : in Application_Factory)
                                        return Security.Policies.Policy_Manager_Access;
 
+   --  Create the OAuth application manager.  The OAuth application manager is created
+   --  during the initialization phase of the application.  The default implementation
+   --  creates a <b>Security.OAuth.Servers.Auth_Manager</b> object.
+   function Create_OAuth_Manager (App : in Application_Factory)
+                                  return Security.OAuth.Servers.Auth_Manager_Access;
+
    --  Create the exception handler.  The exception handler is created during
    --  the initialization phase of the application.  The default implementation
    --  creates a <b>ASF.Contexts.Exceptions.Exception_Handler</b> object.
@@ -107,6 +114,10 @@ package ASF.Applications.Main is
    --  Get the permission manager associated with this application.
    function Get_Security_Manager (App : in Application)
                                     return Security.Policies.Policy_Manager_Access;
+
+   --  Get the OAuth application manager associated with this application.
+   function Get_OAuth_Manager (App : in Application)
+                               return Security.OAuth.Servers.Auth_Manager_Access;
 
    --  Get the action event listener responsible for processing action
    --  events and triggering the navigation to the next view using the
@@ -320,11 +331,13 @@ private
       Action_Listener : ASF.Events.Faces.Actions.Action_Listener_Access;
 
       --  The navigation handler.
-      Navigation      : ASF.Navigations.Navigation_Handler_Access := null;
+      Navigation      : ASF.Navigations.Navigation_Handler_Access;
 
       --  The permission manager.
-      Permissions     : Security.Policies.Policy_Manager_Access := null;
+      Permissions     : Security.Policies.Policy_Manager_Access;
 
+      --  The OAuth application manager.
+      OAuth           : Security.OAuth.Servers.Auth_Manager_Access;
    end record;
 
 end ASF.Applications.Main;

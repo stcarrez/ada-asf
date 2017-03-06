@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -106,6 +106,18 @@ package body ASF.Applications.Main is
    end Create_Security_Manager;
 
    --  ------------------------------
+   --  Create the OAuth application manager.  The OAuth application manager is created
+   --  during the initialization phase of the application.  The default implementation
+   --  creates a <b>Security.OAuth.Servers.Auth_Manager</b> object.
+   --  ------------------------------
+   function Create_OAuth_Manager (App : in Application_Factory)
+                                  return OAuth.Servers.Auth_Manager_Access is
+      pragma Unreferenced (App);
+   begin
+      return new OAuth.Servers.Auth_Manager;
+   end Create_OAuth_Manager;
+
+   --  ------------------------------
    --  Create the exception handler.  The exception handler is created during
    --  the initialization phase of the application.  The default implementation
    --  creates a <b>ASF.Contexts.Exceptions.Exception_Handler</b> object.
@@ -152,6 +164,15 @@ package body ASF.Applications.Main is
    begin
       return App.Permissions;
    end Get_Security_Manager;
+
+   --  ------------------------------
+   --  Get the OAuth application manager associated with this application.
+   --  ------------------------------
+   function Get_OAuth_Manager (App : in Application)
+                               return OAuth.Servers.Auth_Manager_Access is
+   begin
+      return App.OAuth;
+   end Get_OAuth_Manager;
 
    --  ------------------------------
    --  Get the action event listener responsible for processing action
@@ -242,6 +263,9 @@ package body ASF.Applications.Main is
 
       --  Create the permission manager.
       App.Permissions := Factory.Create_Security_Manager;
+
+      --  Create the OAuth manager.
+      App.OAuth := Factory.Create_OAuth_Manager;
 
       Application'Class (App).Initialize_Components;
 
@@ -752,10 +776,14 @@ package body ASF.Applications.Main is
       procedure Free is
         new Ada.Unchecked_Deallocation (Policies.Policy_Manager'Class,
                                         Policies.Policy_Manager_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (OAuth.Servers.Auth_Manager'Class,
+                                        OAuth.Servers.Auth_Manager_Access);
    begin
       Free (App.Navigation);
       Free (App.Lifecycle);
       Free (App.Permissions);
+      Free (App.OAuth);
       ASF.Servlets.Servlet_Registry (App).Finalize;
    end Finalize;
 

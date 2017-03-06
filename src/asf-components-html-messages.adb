@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.messages -- Faces messages
---  Copyright (C) 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -135,8 +135,8 @@ package body ASF.Components.Html.Messages is
 
       procedure Process_Message (Message : in ASF.Applications.Messages.Message);
 
-      Show_Detail  : constant Boolean := UI.Get_Attribute ("showDetail", Context, True);
-      Show_Summary : constant Boolean := UI.Get_Attribute ("showSummary", Context, False);
+      Show_Detail  : constant Boolean := UI.Get_Attribute ("showDetail", Context, False);
+      Show_Summary : constant Boolean := UI.Get_Attribute ("showSummary", Context, True);
 
       procedure Process_Message (Message : in ASF.Applications.Messages.Message) is
       begin

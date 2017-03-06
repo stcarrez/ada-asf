@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views -- Views
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ package body ASF.Views is
    begin
       return new File_Info '(Length       => Path'Length,
                              Path         => Path,
-                             Relative_Pos => Relative_Position);
+                             Relative_Pos => Relative_Position - Path'First + 1);
    end Create_File_Info;
 
    --  ------------------------------

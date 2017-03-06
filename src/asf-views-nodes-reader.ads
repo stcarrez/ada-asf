@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -198,8 +198,9 @@ private
                                Prefix : in String);
 
    type Element_Context is record
-      Parent : Tag_Node_Access;
-      Text   : Boolean;
+      Parent      : Tag_Node_Access;
+      Text        : Boolean;
+      Has_Content : Boolean;
    end record;
    type Element_Context_Access is access all Element_Context;
    type Element_Context_Array is array (Natural range <>) of aliased Element_Context;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -166,20 +166,25 @@ package body ASF.Views.Facelets is
                    Result  : out Facelet) is
       Path   : constant String := Find_Facelet_Path (Factory, Name);
    begin
-      if not Ada.Directories.Exists (Path) then
+      if Path = "" or else not Ada.Directories.Exists (Path) then
          Log.Warn ("Cannot read '{0}': file does not exist", Path);
          Result.Root := null;
          return;
       end if;
 
       declare
-         RPos   : constant Natural := Path'Length - Name'Length + 1;
-         File   : File_Info_Access := Create_File_Info (Path, RPos);
+         RPos   : constant Integer := Path'Last - Name'Length + 1;
+         File   : File_Info_Access;
          Reader : ASF.Views.Nodes.Reader.Xhtml_Reader;
          Read   : Input_Sources.File.File_Input;
          Mtime  : Ada.Calendar.Time;
          Ctx    : aliased EL.Contexts.Default.Default_Context;
       begin
+         if Rpos <= Path'First then
+            File := Create_File_Info (Path, Path'First);
+         else
+            File := Create_File_Info (Path, RPos);
+         end if;
          Log.Info ("Loading facelet: '{0}' - {1} - {2}", Path, Name,
                    Natural'Image (File.Relative_Pos));
 

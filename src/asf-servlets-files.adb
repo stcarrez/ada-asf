@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.files -- Static file servlet
---  Copyright (C) 2010, 2011, 2013, 2015, 2016 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2013, 2015, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -107,6 +107,18 @@ package body ASF.Servlets.Files is
       end if;
       if Path (Pos .. Path'Last) = ".jpg" then
          Response.Set_Content_Type ("image/jpg");
+         return;
+      end if;
+      if Path (Pos .. Path'Last) = ".pdf" then
+         Response.Set_Content_Type ("application/pdf");
+         return;
+      end if;
+      if Path (Pos .. Path'Last) = ".svg" then
+         Response.Set_Content_Type ("image/svg+xml");
+         return;
+      end if;
+      if Path (Pos .. Path'Last) = ".ico" then
+         Response.Set_Content_Type ("image/vnd.microsoft.icon");
          return;
       end if;
       Response.Set_Content_Type (Server.Default_Content_Type.all);

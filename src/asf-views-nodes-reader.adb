@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -423,6 +423,10 @@ package body ASF.Views.Nodes.Reader is
    begin
       Handler.Line.Line := Sax.Locators.Get_Line_Number (Handler.Locator);
       Handler.Line.Column := Sax.Locators.Get_Column_Number (Handler.Locator);
+      if not Handler.Current.Has_Content then
+         Handler.Current.Has_Content := True;
+         Handler.Collect_Text (">");
+      end if;
 
       --  Push the current context to keep track where we are.
       Push (Handler);
@@ -478,6 +482,7 @@ package body ASF.Views.Nodes.Reader is
                               Attributes => Attributes);
          Handler.Current.Parent := Node;
          Handler.Current.Text   := False;
+         Handler.Current.Has_Content := True;
 
          Finish_Text_Node (Handler);
          Handler.Spaces := Null_Unbounded_String;
@@ -490,6 +495,7 @@ package body ASF.Views.Nodes.Reader is
             --  Optimization: we know in which state we are.
             Handler.State := HAS_CONTENT;
             Handler.Current.Text := True;
+            Handler.Current.Has_Content := False;
             if Is_Unknown then
                Log.Error ("{0}: Element '{1}' not found",
                           To_String (Handler.Locator), Qname);
@@ -522,12 +528,30 @@ package body ASF.Views.Nodes.Reader is
             end if;
             if Handler.Escape_Unknown_Tags and Is_Unknown then
                Handler.Collect_Text ("&gt;");
-            else
-               Handler.Collect_Text (">");
+--            else
+--               Handler.Collect_Text (">");
             end if;
          end;
       end if;
    end Start_Element;
+
+   function Is_Self_Closing (Tag : in String) return Boolean is
+   begin
+      case Tag (Tag'First) is
+         when 'b' =>
+            return Tag = "br";
+         when 'h' =>
+            return Tag = "hr";
+         when 'm' =>
+            return Tag = "meta";
+         when 'i' =>
+            return Tag = "img";
+         when 'l' =>
+            return Tag = "link";
+         when others =>
+            return False;
+      end case;
+   end Is_Self_Closing;
 
    --  ------------------------------
    --  End_Element
@@ -557,8 +581,14 @@ package body ASF.Views.Nodes.Reader is
                Handler.Collect_Text ("&lt;/");
                Handler.Collect_Text (Qname);
                Handler.Collect_Text ("&gt;");
+            elsif not Handler.Current.Has_Content and then Is_Self_Closing (Qname) then
+               Handler.Collect_Text (" />");
             else
-               Handler.Collect_Text ("</");
+               if not Handler.Current.Has_Content then
+                  Handler.Collect_Text ("></");
+               else
+                  Handler.Collect_Text ("</");
+               end if;
                Handler.Collect_Text (Qname);
                Handler.Collect_Text (">");
             end if;
@@ -578,6 +608,10 @@ package body ASF.Views.Nodes.Reader is
    procedure Characters (Handler : in out Xhtml_Reader;
                          Ch      : in Unicode.CES.Byte_Sequence) is
    begin
+      if not Handler.Current.Has_Content then
+         Handler.Current.Has_Content := True;
+         Handler.Collect_Text (">");
+      end if;
       Collect_Text (Handler, Ch);
    end Characters;
 
@@ -589,6 +623,10 @@ package body ASF.Views.Nodes.Reader is
                                    Ch      : in Unicode.CES.Byte_Sequence) is
    begin
       if not Handler.Ignore_White_Spaces then
+         if not Handler.Current.Has_Content then
+            Handler.Current.Has_Content := True;
+            Handler.Collect_Text (">");
+         end if;
          Collect_Text (Handler, Ch);
       end if;
    end Ignorable_Whitespace;
@@ -744,6 +782,7 @@ package body ASF.Views.Nodes.Reader is
       Parser.Root   := new Tag_Node;
       Parser.Functions.Factory := Factory;
       Parser.Current.Parent := Parser.Root;
+      Parser.Current.Has_Content := True;
       Parser.ELContext := Parser.Context'Unchecked_Access;
       Parser.Context.Set_Function_Mapper (Parser.Functions'Unchecked_Access);
       Parser.Functions.Mapper := Context.Get_Function_Mapper;

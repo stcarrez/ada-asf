@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-models-selects -- Data model for UISelectOne and UISelectMany
---  Copyright (C) 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Characters.Conversions;
+with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 package body ASF.Models.Selects is
+
+   function UTF8_Decode (S : in String) return Wide_Wide_String
+      renames Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Decode;
 
    --  ------------------------------
    --  Return an Object from the select item record.
@@ -64,17 +67,15 @@ package body ASF.Models.Selects is
                                 Description : in String := "";
                                 Disabled    : in Boolean := False;
                                 Escaped     : in Boolean := True) return Select_Item is
-      use Ada.Characters.Conversions;
-
       Result : Select_Item;
    begin
       Result.Item := Select_Item_Refs.Create;
       declare
          Item : constant Select_Item_Record_Access := Result.Item.Value;
       begin
-         Item.Label       := To_Unbounded_Wide_Wide_String (To_Wide_Wide_String (Label));
-         Item.Value       := To_Unbounded_Wide_Wide_String (To_Wide_Wide_String (Value));
-         Item.Description := To_Unbounded_Wide_Wide_String (To_Wide_Wide_String (Description));
+         Item.Label       := To_Unbounded_Wide_Wide_String (UTF8_Decode (Label));
+         Item.Value       := To_Unbounded_Wide_Wide_String (UTF8_Decode (Value));
+         Item.Description := To_Unbounded_Wide_Wide_String (UTF8_Decode (Description));
          Item.Disabled    := Disabled;
          Item.Escape      := Escaped;
       end;

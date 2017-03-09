@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -87,7 +87,8 @@ package body ASF.Views.Nodes.Jsf is
       end if;
 
       if Cvt = null then
-         Node.Error ("Converter was not found");
+         Node.Error ("Converter '{0}' was not found",
+                     Util.Beans.Objects.To_String (Node.Converter));
          return;
       end if;
 

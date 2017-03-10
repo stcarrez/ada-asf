@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests.mockup -- ASF Requests mockup
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -140,12 +140,47 @@ package body ASF.Requests.Mockup is
    end Get_Request_URI;
 
    --  ------------------------------
-   --  Set the request URI.
+   --  Set the request URI.  When <tt>Split</tt> is true, the request parameters are
+   --  cleared and initialized with the query parameters passed in the URI.
    --  ------------------------------
-   procedure Set_Request_URI (Req : in out Request;
-                              URI : in String) is
+   procedure Set_Request_URI (Req   : in out Request;
+                              URI   : in String;
+                              Split : in Boolean := False) is
    begin
-      Req.URI := To_Unbounded_String (URI);
+      if not Split then
+         Req.URI := To_Unbounded_String (URI);
+      else
+         Req.Parameters.Clear;
+         declare
+            Sep       : Natural := Util.Strings.Index (URI, '?');
+            Sep2, Pos : Natural;
+         begin
+            if Sep = 0 then
+               Pos := URI'Last;
+               Req.URI := To_Unbounded_String (URI);
+            else
+               Pos := Sep + 1;
+               Req.URI := To_Unbounded_String (URI (URI'First .. Sep - 1));
+            end if;
+
+            --  Do a simple parameter identification and split.
+            --  Since this is for a mockup, we don't need full compliance.
+            while Pos < URI'Last loop
+               Sep := Util.Strings.Index (URI, '=', Pos);
+               if Sep = 0 then
+                  Req.Set_Parameter (URI (Pos .. URI'Last), "");
+                  exit;
+               end if;
+               Sep2 := Util.Strings.Index (URI, '&', Sep + 1);
+               if Sep2 = 0 then
+                  Req.Set_Parameter (URI (Pos .. Sep - 1), URI (Sep + 1 .. URI'Last));
+                  exit;
+               end if;
+               Req.Set_Parameter (URI (Pos .. Sep - 1), URI (Sep + 1 .. Sep2 - 1));
+               Pos := Sep2 + 1;
+            end loop;
+         end;
+      end if;
    end Set_Request_URI;
 
    --  ------------------------------

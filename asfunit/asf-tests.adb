@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF tests - ASF Tests Framework
---  Copyright (C) 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -190,7 +190,7 @@ package body ASF.Tests is
                      Save     : in String := "") is
    begin
       Request.Set_Method (Method => "GET");
-      Request.Set_Request_URI (URI => CONTEXT_PATH & URI);
+      Request.Set_Request_URI (URI => CONTEXT_PATH & URI, Split => True);
       Request.Set_Protocol (Protocol => "HTTP/1.1");
       Do_Req (Request, Response);
 
@@ -209,7 +209,7 @@ package body ASF.Tests is
                       Save     : in String := "") is
    begin
       Request.Set_Method (Method => "POST");
-      Request.Set_Request_URI (URI => CONTEXT_PATH & URI);
+      Request.Set_Request_URI (URI => CONTEXT_PATH & URI, Split => False);
       Request.Set_Protocol (Protocol => "HTTP/1.1");
       Do_Req (Request, Response);
 

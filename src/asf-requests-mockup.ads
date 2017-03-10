@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests.mockup -- ASF Requests mockup
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,9 +86,11 @@ package ASF.Requests.Mockup is
    --  HEAD /xyz?a=b HTTP/1.1       /xyz
    function Get_Request_URI (Req : in Request) return String;
 
-   --  Set the request URI.
-   procedure Set_Request_URI (Req : in out Request;
-                              URI : in String);
+   --  Set the request URI.  When <tt>Split</tt> is true, the request parameters are
+   --  cleared and initialized with the query parameters passed in the URI.
+   procedure Set_Request_URI (Req   : in out Request;
+                              URI   : in String;
+                              Split : in Boolean := False);
 
    --  Returns the value of the specified request header as a String. If the request
    --  did not include a header of the specified name, this method returns null.

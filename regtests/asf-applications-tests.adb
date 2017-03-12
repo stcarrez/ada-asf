@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-tests -  ASF Application tests using ASFUnit
---  Copyright (C) 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -593,10 +593,8 @@ package body ASF.Applications.Tests is
       Form.Use_Flash := True;
       Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
                                                 Storage => STATIC));
-      Request.Set_Parameter ("name", "John");
-      Request.Set_Parameter ("email", "john@gmail.com");
-      Request.Set_Parameter ("is_a", "male");
-      Do_Get (Request, Reply, "/tests/view-params.html", "view-params.txt");
+      Do_Get (Request, Reply, "/tests/view-params.html?name=John&email=john@gmail.com&is_a=male",
+              "view-params.txt");
 
       Assert_Equals (T, "John", Form.Name, "View parameter for name was not set");
       Assert_Equals (T, "john@gmail.com", Form.Email, "View parameter for email was not set");
@@ -622,10 +620,8 @@ package body ASF.Applications.Tests is
       Form.Use_Flash := True;
       Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
                                                 Storage => STATIC));
-      Request.Set_Parameter ("name", "John");
-      Request.Set_Parameter ("email", "john@gmail.com");
-      Request.Set_Parameter ("is_a", "male");
-      Do_Get (Request, Reply, "/tests/view-action.html", "view-action.txt");
+      Do_Get (Request, Reply, "/tests/view-action.html?name=John&email=john@gmail.com&is_a=male",
+              "view-action.txt");
 
       Assert_Equals (T, 1, Form.Called, "View action was not called");
       Assert_Equals (T, "John", Form.Name, "View parameter for name was not set");

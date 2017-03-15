@@ -46,6 +46,8 @@ package body ASF.Views.Nodes.Reader is
    --  Freeze the current Text_Tag node, counting the number of elements it contains.
    procedure Finish_Text_Node (Handler : in out Xhtml_Reader'Class);
 
+   function Is_Self_Closing (Tag : in String) return Boolean;
+
    --  ------------------------------
    --  Push the current context when entering in an element.
    --  ------------------------------

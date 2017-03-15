@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-mappers -- Read servlet configuration files
---  Copyright (C) 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,7 +111,8 @@ package body ASF.Servlets.Mappers is
                --  If the context parameter already has a value, do not set it again.
                --  The value comes from an application setting and we want to keep it.
                if N.Override_Context
-                 or else String '(N.Handler.all.Get_Init_Parameter (Name)) = "" then
+                 or else String '(N.Handler.all.Get_Init_Parameter (Name)) = ""
+               then
                   if Util.Beans.Objects.Is_Null (N.Param_Value) then
                      N.Handler.Set_Init_Parameter (Name  => Name,
                                                    Value => "");

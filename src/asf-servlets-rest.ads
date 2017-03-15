@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-rest -- REST servlet
---  Copyright (C) 2016 Stephane Carrez
+--  Copyright (C) 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,8 @@ package ASF.Servlets.Rest is
    --  Create a route for the REST API.
    function Create_Route (Registry : in ASF.Servlets.Servlet_Registry;
                           Name     : in String)
+                          return ASF.Routes.Servlets.Rest.API_Route_Type_Access;
+   function Create_Route (Servlet  : in ASF.Servlets.Servlet_Access)
                           return ASF.Routes.Servlets.Rest.API_Route_Type_Access;
 
    procedure Dispatch (Server   : in Rest_Servlet;

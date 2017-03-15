@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-rest -- REST servlet
---  Copyright (C) 2016 Stephane Carrez
+--  Copyright (C) 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,11 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Rest;
+
 with ASF.Applications;
 with ASF.Streams.JSON;
 with Util.Streams.Texts;
 with Util.Serialize.IO.JSON;
-with ASF.Routes.Servlets.Rest;
 package body ASF.Servlets.Rest is
 
    --  ------------------------------
@@ -83,6 +82,7 @@ package body ASF.Servlets.Rest is
                        Method   : in ASF.Rest.Method_Type;
                        Request  : in out Requests.Request'Class;
                        Response : in out Responses.Response'Class) is
+      pragma Unreferenced (Server);
       use type ASF.Routes.Route_Type_Access;
       use type ASF.Routes.Servlets.Rest.API_Route_Type;
       use type ASF.Rest.Descriptor_Access;
@@ -96,13 +96,18 @@ package body ASF.Servlets.Rest is
       declare
          Api    : constant access ASF.Routes.Servlets.Rest.API_Route_Type
            := ASF.Routes.Servlets.Rest.API_Route_Type (Route.all)'Access;
+         Desc   : constant ASF.Rest.Descriptor_Access := Api.Descriptors (Method);
          Output : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
          Stream : ASF.Streams.JSON.Print_Stream;
       begin
-         if Api.Descriptors (Method) = null then
+         if Desc = null then
             Response.Set_Status (ASF.Responses.SC_NOT_FOUND);
             return;
          end if;
+--         if not App.Has_Permission (Desc.Permission) then
+--            Response.Set_Status (ASF.Responses.SC_FORBIDDEN);
+--            return;
+--         end if;
          ASF.Streams.JSON.Initialize (Stream, Output);
          Api.Descriptors (Method).Dispatch (Request, Response, Stream);
       end;
@@ -120,6 +125,16 @@ package body ASF.Servlets.Rest is
       end if;
       Result := new ASF.Routes.Servlets.Rest.API_Route_Type;
       Result.Servlet := Servlet_Maps.Element (Pos);
+      return Result;
+   end Create_Route;
+
+   --  Create a route for the REST API.
+   function Create_Route (Servlet  : in ASF.Servlets.Servlet_Access)
+                          return ASF.Routes.Servlets.Rest.API_Route_Type_Access is
+      Result : ASF.Routes.Servlets.Rest.API_Route_Type_Access;
+   begin
+      Result := new ASF.Routes.Servlets.Rest.API_Route_Type;
+      Result.Servlet := Servlet;
       return Result;
    end Create_Route;
 

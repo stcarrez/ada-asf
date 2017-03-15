@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-routes-tests - Unit tests for ASF.Routes
---  Copyright (C) 2015, 2016 Stephane Carrez
+--  Copyright (C) 2015, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ with Util.Measures;
 with Util.Log.Loggers;
 with Util.Test_Caller;
 
-with EL.Contexts.Default;
 package body ASF.Routes.Tests is
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Routes.Tests");
@@ -77,7 +76,8 @@ package body ASF.Routes.Tests is
       T.Root_Resolver.Register (Ada.Strings.Unbounded.To_Unbounded_String ("user"),
                                 Util.Beans.Objects.To_Object (T.Bean.all'Access));
       for I in T.Routes'Range loop
-         T.Routes (I) := Route_Type_Refs.Create (new Test_Route_Type '(Util.Refs.Ref_Entity with Index => I));
+         T.Routes (I) := Route_Type_Refs.Create
+            (new Test_Route_Type '(Util.Refs.Ref_Entity with Index => I));
       end loop;
    end Set_Up;
 
@@ -113,6 +113,8 @@ package body ASF.Routes.Tests is
                         Path   : in String;
                         Index  : in Positive;
                         Bean   : in out Test_Bean'Class) is
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref);
+
       procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
       begin
          Route := T.Routes (Index);
@@ -265,6 +267,9 @@ package body ASF.Routes.Tests is
    --  Test the Iterate over several paths.
    --  ------------------------------
    procedure Test_Iterate (T : in out Test) is
+      procedure Process (Pattern : in String;
+                         Route   : in Route_Type_Access);
+
       Router  : Router_Type;
       Bean    : Test_Bean;
 

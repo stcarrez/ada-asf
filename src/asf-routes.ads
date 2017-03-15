@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-routes -- Request routing
---  Copyright (C) 2015, 2016 Stephane Carrez
+--  Copyright (C) 2015, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -103,8 +103,6 @@ package ASF.Routes is
                                                            Route   : in Route_Type_Access));
 
 private
-
-   -- use type Route_Type_Refs.Element_Access;
 
    type String_Access is access all String;
 

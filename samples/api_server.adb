@@ -20,6 +20,7 @@ with ASF.Server.Web;
 with ASF.Servlets.Rest;
 with ASF.Servlets.Files;
 with ASF.Applications;
+with ASF.Rest;
 with Util.Log.Loggers;
 with Monitor;
 with EL.Contexts.Default;
@@ -47,7 +48,9 @@ begin
    App.Add_Mapping (Name => "files", Pattern => "*.css");
    App.Add_Mapping (Name => "files", Pattern => "*.js");
 
-   Monitor.Mon_API.Register (App, "api", Ctx);
+--   Monitor.Mon_API.Register (App, "api", Ctx);
+   ASF.Rest.Register (App, Monitor.API_Get_Values.Definition);
+   ASF.Rest.Register (App, Monitor.API_Put_Value.Definition);
 
    WS.Register_Application ("/monitor", App'Unchecked_Access);
 

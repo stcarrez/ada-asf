@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-widgets-panels -- Collapsible panels
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
 with Util.Beans.Objects;
 with ASF.Components.Base;
 package body ASF.Components.Widgets.Panels is
+
+   procedure Render_Action_Icon (Writer  : in out ASF.Contexts.Writer.Response_Writer'Class;
+                                 Name    : in String);
 
    procedure Render_Action_Icon (Writer  : in out ASF.Contexts.Writer.Response_Writer'Class;
                                  Name    : in String) is

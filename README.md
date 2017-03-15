@@ -11,10 +11,10 @@ as the Java Server Faces (See JSR 252, JSR 314 and JSR 344).
 
 To build ASF, you will need:
 
-* Ada Util     (http://code.google.com/p/ada-util             1.8.0)
-* Ada EL       (http://code.google.com/p/ada-el               1.6.0)
-* Ada Security (http://code.google.com/p/ada-security         1.1.2)
-* AWS          (http://libre.adacore.com/libre/tools/aws/     2.11)
+* Ada Util     (https://github.com/stcarrez/ada-util          1.9.0)
+* Ada EL       (https://github.com/stcarrez/ada-el            1.6.1)
+* Ada Security (https://github.com/stcarrez/ada-security      1.2.0)
+* AWS          (http://libre.adacore.com/libre/tools/aws/     3.1)
 * XML/Ada      (http://libre.adacore.com/libre/tools/xmlada/  4.3)
 
 Build with the following commands:
@@ -42,7 +42,7 @@ And unit tests are executed with:
 
 The Ada Server Faces sources as well as a wiki documentation is provided on:
 
-   http://code.google.com/p/ada-asf/
+   https://github.com/stcarrez/ada-asf/wiki
 
 # Licenses
 

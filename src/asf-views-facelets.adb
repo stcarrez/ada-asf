@@ -173,17 +173,17 @@ package body ASF.Views.Facelets is
       end if;
 
       declare
-         RPos   : constant Integer := Path'Last - Name'Length + 1;
+         Pos    : constant Integer := Path'Last - Name'Length + 1;
          File   : File_Info_Access;
          Reader : ASF.Views.Nodes.Reader.Xhtml_Reader;
          Read   : Input_Sources.File.File_Input;
          Mtime  : Ada.Calendar.Time;
          Ctx    : aliased EL.Contexts.Default.Default_Context;
       begin
-         if Rpos <= Path'First then
+         if Pos <= Path'First then
             File := Create_File_Info (Path, Path'First);
          else
-            File := Create_File_Info (Path, RPos);
+            File := Create_File_Info (Path, Pos);
          end if;
          Log.Info ("Loading facelet: '{0}' - {1} - {2}", Path, Name,
                    Natural'Image (File.Relative_Pos));

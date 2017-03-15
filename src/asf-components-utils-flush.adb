@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-utils-flush -- Flush javascript queue and response
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,8 @@ package body ASF.Components.Utils.Flush is
    begin
       if UI.Get_Attribute (Name    => "response",
                            Context => Context,
-                           Default => False) then
+                           Default => False)
+      then
          Writer.Write_Scripts;
       else
          Writer.Flush;

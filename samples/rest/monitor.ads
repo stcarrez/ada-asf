@@ -16,40 +16,31 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Calendar;
-with ASF.Rest.Definition;
+with ASF.Rest.Operation;
 package Monitor is
 
-   type Mon is new Natural;
-
    --  Get values of the monitor.
-   procedure Get_Values (D      : in out Mon;
-                         Req    : in out ASF.Rest.Request'Class;
+   procedure Get_Values (Req    : in out ASF.Rest.Request'Class;
                          Reply  : in out ASF.Rest.Response'Class;
                          Stream : in out ASF.Rest.Output_Stream'Class);
 
    --  PUT /mon/:id
-   procedure Put_Value (D      : in out Mon;
-                        Req    : in out ASF.Rest.Request'Class;
+   procedure Put_Value (Req    : in out ASF.Rest.Request'Class;
                         Reply  : in out ASF.Rest.Response'Class;
                         Stream : in out ASF.Rest.Output_Stream'Class);
 
-   package Mon_API is new ASF.Rest.Definition (Object_Type => Mon,
-                                               URI         => "/api/monitor");
-
-private
-
    --  Declare each REST API with a relative URI from Mon_API definition.
    --  GET /api/monitor/:id
-   package Mon_Get_Values is new Mon_API.Definition (Handler    => Get_Values'Access,
+   package API_Get_Values is new ASF.Rest.Operation (Handler    => Get_Values'Access,
                                                      Method     => ASF.Rest.GET,
-                                                     Pattern    => ":id",
-                                                     Permission => 0);
+                                                     URI        => "/mon/:id");
 
    --  PUT /api/monitor/:id
-   package Mon_Put_Value is new Mon_API.Definition (Handler    => Put_Value'Access,
+   package API_Put_Value is new ASF.Rest.Operation (Handler    => Put_Value'Access,
                                                     Method     => ASF.Rest.PUT,
-                                                    Pattern    => ":id",
-                                                    Permission => 0);
+                                                    URI        => "/mon/:id");
+
+private
 
    MAX_VALUES  : constant Natural := 1000;
    MAX_MONITOR : constant Natural := 10;

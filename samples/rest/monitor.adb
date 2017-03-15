@@ -24,8 +24,7 @@ package body Monitor is
    Monitors : Monitor_Array;
 
    --  Get values of the monitor.
-   procedure Get_Values (D : in out Mon;
-                         Req    : in out ASF.Rest.Request'Class;
+   procedure Get_Values (Req    : in out ASF.Rest.Request'Class;
                          Reply  : in out ASF.Rest.Response'Class;
                          Stream : in out ASF.Rest.Output_Stream'Class) is
       Id  : constant String := Req.Get_Path_Parameter (1);
@@ -55,8 +54,7 @@ package body Monitor is
    end Get_Values;
 
    --  PUT /mon/:id
-   procedure Put_Value (D : in out Mon;
-                        Req    : in out ASF.Rest.Request'Class;
+   procedure Put_Value (Req    : in out ASF.Rest.Request'Class;
                         Reply  : in out ASF.Rest.Response'Class;
                         Stream : in out ASF.Rest.Output_Stream'Class) is
       Id  : constant String := Req.Get_Path_Parameter (1);

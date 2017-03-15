@@ -49,6 +49,15 @@ package ASF.Rest is
                        Reply   : in out ASF.Rest.Response'Class;
                        Stream  : in out Output_Stream'Class) is abstract;
 
+   type Operation_Access is
+      access procedure (Req    : in out ASF.Rest.Request'Class;
+                        Reply  : in out ASF.Rest.Response'Class;
+                        Stream : in out ASF.Rest.Output_Stream'Class);
+
+   --  Register the API definition in the servlet registry.
+   procedure Register (Registry   : in out ASF.Servlets.Servlet_Registry'Class;
+                       Definition : in Descriptor_Access);
+
 private
 
    type Descriptor is abstract tagged limited record
@@ -68,5 +77,16 @@ private
                        URI       : in String;
                        ELContext : in EL.Contexts.ELContext'Class;
                        List      : in Descriptor_Access);
+
+   type Static_Descriptor is new Descriptor with record
+      Handler : Operation_Access;
+   end record;
+
+   --  Dispatch the request to the API handler.
+   overriding
+   procedure Dispatch (Handler : in Static_Descriptor;
+                       Req     : in out ASF.Rest.Request'Class;
+                       Reply   : in out ASF.Rest.Response'Class;
+                       Stream  : in out Output_Stream'Class);
 
 end ASF.Rest;

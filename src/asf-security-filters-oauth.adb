@@ -16,8 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Strings.Unbounded;
-
 with Util.Log.Loggers;
 
 with ASF.Applications.Main;
@@ -31,6 +29,8 @@ package body ASF.Security.Filters.OAuth is
 
    --  The logger
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Security.Filters.OAuth");
+
+   function Get_Access_Token (Request : in ASF.Requests.Request'Class) return String;
 
    --  ------------------------------
    --  Called by the servlet container to indicate to a servlet that the servlet
@@ -76,7 +76,6 @@ package body ASF.Security.Filters.OAuth is
                         Request  : in out ASF.Requests.Request'Class;
                         Response : in out ASF.Responses.Response'Class;
                         Chain    : in out ASF.Servlets.Filter_Chain) is
-      use Ada.Strings.Unbounded;
       use Policies.URLs;
       use type Policies.Policy_Manager_Access;
 
@@ -97,15 +96,19 @@ package body ASF.Security.Filters.OAuth is
          if Bearer'Length = 0 then
             Log.Info ("Ask authentication on {0} due to missing access token", URL);
             Auth_Filter'Class (F).Do_Login (Request, Response);
-            return;            
+            return;
          end if;
          F.Realm.Authenticate (Bearer, Grant);
          if Grant.Status /= Valid_Grant then
             Log.Info ("Ask authentication on {0} due to missing access token", URL);
             Auth_Filter'Class (F).Do_Deny (Request, Response);
-            return;            
+            return;
          end if;
 
+         --  OAuth_Permission
+         --  if not F.Manager.Has_Permission (Context, Perm) then
+         --     -- deny
+         --  Request.Set_Attribute ("application", Grant.Application);
          --  Request is authorized, proceed to the next filter.
          ASF.Servlets.Do_Filter (Chain    => Chain,
                                  Request  => Request,

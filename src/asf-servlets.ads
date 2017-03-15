@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets -- ASF Servlets
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -315,6 +315,9 @@ package ASF.Servlets is
    procedure Include (Dispatcher : in Request_Dispatcher;
                       Request    : in out Requests.Request'Class;
                       Response   : in out Responses.Response'Class);
+
+   --  Returns the servlet that will be called when forwarding the request.
+   function Get_Servlet (Dispatcher : in Request_Dispatcher) return Servlet_Access;
 
    --  Returns a Request_Dispatcher object that acts as a wrapper for the resource
    --  located at the given path.  A Request_Dispatcher  object can be used to forward

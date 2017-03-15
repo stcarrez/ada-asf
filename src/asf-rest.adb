@@ -18,6 +18,7 @@
 with ASF.Routes;
 with ASF.Routes.Servlets.Rest;
 with ASF.Servlets.Rest;
+with EL.Contexts.Default;
 with Util.Log.Loggers;
 package body ASF.Rest is
 
@@ -82,6 +83,57 @@ package body ASF.Rest is
          Registry.Add_Route (URI & "/" & Item.Pattern.all, ELContext, Insert'Access);
          Item := Item.Next;
       end loop;
+   end Register;
+
+   --  Dispatch the request to the API handler.
+   overriding
+   procedure Dispatch (Handler : in Static_Descriptor;
+                       Req     : in out ASF.Rest.Request'Class;
+                       Reply   : in out ASF.Rest.Response'Class;
+                       Stream  : in out Output_Stream'Class) is
+   begin
+      Handler.Handler (Req, Reply, Stream);
+   end Dispatch;
+
+   --  Register the API definition in the servlet registry.
+   procedure Register (Registry   : in out ASF.Servlets.Servlet_Registry'Class;
+                       Definition : in Descriptor_Access) is
+      use type ASF.Routes.Route_Type_Access;
+      use type ASF.Servlets.Servlet_Access;
+
+      Dispatcher : constant ASF.Servlets.Request_Dispatcher
+         := Registry.Get_Request_Dispatcher (Definition.Pattern.all);
+      Servlet    : ASF.Servlets.Servlet_Access := ASF.Servlets.Get_Servlet (Dispatcher);
+
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
+         R : constant ASF.Routes.Route_Type_Access := Route.Value;
+         D : ASF.Routes.Servlets.Rest.API_Route_Type_Access;
+      begin
+         if R /= null then
+            if not (R.all in ASF.Routes.Servlets.Rest.API_Route_Type'Class) then
+               Log.Error ("Route API for {0} already used by another page",
+                          Definition.Pattern.all);
+               return;
+            end if;
+            D := ASF.Routes.Servlets.Rest.API_Route_Type (R.all)'Access;
+         else
+            D := ASF.Servlets.Rest.Create_Route (Servlet);
+            Route := ASF.Routes.Route_Type_Refs.Create (D.all'Access);
+         end if;
+         if D.Descriptors (Definition.Method) /= null then
+            Log.Error ("Route API for {0} is already used", Definition.Pattern.all);
+         end if;
+         D.Descriptors (Definition.Method) := Definition;
+      end Insert;
+
+      Ctx     : EL.Contexts.Default.Default_Context;
+   begin
+      if Servlet = null then
+         Log.Error ("Cannot register REST operation {0}: no REST servlet",
+                    Definition.Pattern.all);
+         return;
+      end if;
+      Registry.Add_Route (Definition.Pattern.all, Ctx, Insert'Access);
    end Register;
 
 end ASF.Rest;

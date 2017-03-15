@@ -50,11 +50,12 @@ package body ASF.Rest is
                        URI       : in String;
                        ELContext : in EL.Contexts.ELContext'Class;
                        List      : in Descriptor_Access) is
+      procedure Insert (Route : in out ASF.Routes.Route_Type_Ref);
       use type ASF.Routes.Route_Type_Access;
       Item : Descriptor_Access := List;
 
       procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
-         R : ASF.Routes.Route_Type_Access := Route.Value;
+         R : constant ASF.Routes.Route_Type_Access := Route.Value;
          D : ASF.Routes.Servlets.Rest.API_Route_Type_Access;
       begin
          if R /= null then

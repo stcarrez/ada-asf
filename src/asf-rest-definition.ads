@@ -40,9 +40,9 @@ package ASF.Rest.Definition is
                                      Req    : in out ASF.Rest.Request'Class;
                                      Reply  : in out ASF.Rest.Response'Class;
                                      Stream : in out ASF.Rest.Output_Stream'Class);
-      Method     : Method_Type;
+      Method     : Method_Type := ASF.Rest.GET;
       Pattern    : String;
-      Permission : Security.Permissions.Permission_Index;
+      Permission : Security.Permissions.Permission_Index := Security.Permissions.NONE;
    package Definition is
       Instance : aliased Descriptor;
    end Definition;

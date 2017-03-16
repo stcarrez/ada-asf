@@ -293,4 +293,10 @@ private
    overriding
    procedure Finalize (Router : in out Router_Type);
 
+   --  Insert the route node at the correct place in the children list
+   --  according to the rule kind.
+   procedure Insert (Parent : in Route_Node_Access;
+                     Node   : in Route_Node_Access;
+                     Kind   : in Route_Match_Type);
+
 end ASF.Routes;

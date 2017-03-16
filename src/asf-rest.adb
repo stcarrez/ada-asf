@@ -113,9 +113,11 @@ package body ASF.Rest is
             if not (R.all in ASF.Routes.Servlets.Rest.API_Route_Type'Class) then
                Log.Error ("Route API for {0} already used by another page",
                           Definition.Pattern.all);
-               return;
+               D := ASF.Servlets.Rest.Create_Route (Servlet);
+               Route := ASF.Routes.Route_Type_Refs.Create (D.all'Access);
+            else
+               D := ASF.Routes.Servlets.Rest.API_Route_Type (R.all)'Access;
             end if;
-            D := ASF.Routes.Servlets.Rest.API_Route_Type (R.all)'Access;
          else
             D := ASF.Servlets.Rest.Create_Route (Servlet);
             Route := ASF.Routes.Route_Type_Refs.Create (D.all'Access);

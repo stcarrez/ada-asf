@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-rest-tests - Unit tests for ASF.Rest and ASF.Servlets.Rest
---  Copyright (C) 2016 Stephane Carrez
+--  Copyright (C) 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,14 +22,42 @@ with Util.Measures;
 
 with EL.Contexts.Default;
 
+with Security.Permissions;
 with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Servlets.Rest;
 with ASF.Rest.Definition;
+with ASF.Rest.Operation;
 
 package body ASF.Rest.Tests is
 
    package Caller is new Util.Test_Caller (Test, "Rest");
+
+   package Test_Permission is
+      new Security.Permissions.Definition ("test-permission");
+
+   package API_Simple_Get is
+     new ASF.Rest.Operation (Handler    => Simple_Get'Access,
+                             URI        => "/simple/:id");
+
+   package API_Simple_List is
+     new ASF.Rest.Operation (Handler    => Simple_Get'Access,
+                             URI        => "/simple");
+
+   package API_Simple_Post is
+     new ASF.Rest.Operation (Handler    => Simple_Post'Access,
+                             URI        => "/simple",
+                             Method     => ASF.Rest.POST);
+
+   package API_Simple_Delete is
+     new ASF.Rest.Operation (Handler    => Simple_Delete'Access,
+                             URI        => "/simple/:id",
+                             Method     => ASF.Rest.DELETE);
+
+   package API_Simple_Put is
+     new ASF.Rest.Operation (Handler    => Simple_Put'Access,
+                             URI        => "/simple/:id",
+                             Method     => ASF.Rest.PUT);
 
    package Test_API_Definition is
      new ASF.Rest.Definition (Object_Type => Test_API,
@@ -39,7 +67,7 @@ package body ASF.Rest.Tests is
      new Test_API_Definition.Definition (Handler    => Create'Access,
                                          Method     => ASF.Rest.POST,
                                          Pattern    => "",
-                                         Permission => 0);
+                                         Permission => Test_Permission.Permission);
 
    package API_Update is
      new Test_API_Definition.Definition (Handler    => Update'Access,
@@ -65,6 +93,38 @@ package body ASF.Rest.Tests is
                                          Pattern    => ":id",
                                          Permission => 0);
 
+   procedure Simple_Get (Req    : in out ASF.Rest.Request'Class;
+                         Reply  : in out ASF.Rest.Response'Class;
+                         Stream : in out ASF.Rest.Output_Stream'Class) is
+      Data : Test_API;
+   begin
+      List (Data, Req, Reply, Stream);
+   end Simple_Get;
+
+   procedure Simple_Put (Req    : in out ASF.Rest.Request'Class;
+                         Reply  : in out ASF.Rest.Response'Class;
+                         Stream : in out ASF.Rest.Output_Stream'Class) is
+      Data : Test_API;
+   begin
+      Update (Data, Req, Reply, Stream);
+   end Simple_Put;
+
+   procedure Simple_Post (Req    : in out ASF.Rest.Request'Class;
+                          Reply  : in out ASF.Rest.Response'Class;
+                          Stream : in out ASF.Rest.Output_Stream'Class) is
+      Data : Test_API;
+   begin
+      Create (Data, Req, Reply, Stream);
+   end Simple_Post;
+
+   procedure Simple_Delete (Req    : in out ASF.Rest.Request'Class;
+                            Reply  : in out ASF.Rest.Response'Class;
+                            Stream : in out ASF.Rest.Output_Stream'Class) is
+      Data : Test_API;
+   begin
+      Delete (Data, Req, Reply, Stream);
+   end Simple_Delete;
+
    procedure Create (Data   : in out Test_API;
                      Req    : in out ASF.Rest.Request'Class;
                      Reply  : in out ASF.Rest.Response'Class;
@@ -83,7 +143,7 @@ package body ASF.Rest.Tests is
                      Stream : in out ASF.Rest.Output_Stream'Class) is
       Id : constant String := Req.Get_Path_Parameter (1);
    begin
-      null;
+      Reply.Set_Status (ASF.Responses.SC_OK);
    end Update;
 
    procedure Delete (Data   : in out Test_API;
@@ -174,8 +234,16 @@ package body ASF.Rest.Tests is
       Reply   : ASF.Responses.Mockup.Response;
    begin
       Ctx.Add_Servlet ("API", S1'Unchecked_Access);
+      Ctx.Add_Mapping (Name => "API", Pattern => "/simple/*");
       Ctx.Start;
       Ctx.Dump_Routes (Util.Log.INFO_LEVEL);
+      ASF.Rest.Register (Ctx, API_Simple_Get.Definition);
+      ASF.Rest.Register (Ctx, API_Simple_List.Definition);
+      ASF.Rest.Register (Ctx, API_Simple_Post.Definition);
+      ASF.Rest.Register (Ctx, API_Simple_Put.Definition);
+      ASF.Rest.Register (Ctx, API_Simple_Delete.Definition);
+      Ctx.Dump_Routes (Util.Log.INFO_LEVEL);
+
       Test_API_Definition.Register (Registry  => Ctx,
                                     Name      => "API",
                                     ELContext => EL_Ctx);
@@ -201,6 +269,7 @@ package body ASF.Rest.Tests is
    procedure Test_Create (T : in out Test) is
    begin
       Test_Operation (T, "POST", "/test", ASF.Responses.SC_CREATED);
+      Test_Operation (T, "POST", "/simple", ASF.Responses.SC_CREATED);
    end Test_Create;
 
    --  ------------------------------
@@ -209,6 +278,7 @@ package body ASF.Rest.Tests is
    procedure Test_Update (T : in out Test) is
    begin
       Test_Operation (T, "PUT", "/test/44", ASF.Responses.SC_OK);
+      Test_Operation (T, "PUT", "/simple/44", ASF.Responses.SC_OK);
    end Test_Update;
 
    --  ------------------------------
@@ -219,6 +289,9 @@ package body ASF.Rest.Tests is
       Test_Operation (T, "GET", "/test", ASF.Responses.SC_OK);
       Test_Operation (T, "GET", "/test/44", ASF.Responses.SC_OK);
       Test_Operation (T, "GET", "/test/100", ASF.Responses.SC_NOT_FOUND);
+      Test_Operation (T, "GET", "/simple", ASF.Responses.SC_OK);
+      Test_Operation (T, "GET", "/simple/44", ASF.Responses.SC_OK);
+      Test_Operation (T, "GET", "/simple/100", ASF.Responses.SC_NOT_FOUND);
    end Test_Get;
 
    --  ------------------------------
@@ -227,6 +300,7 @@ package body ASF.Rest.Tests is
    procedure Test_Delete (T : in out Test) is
    begin
       Test_Operation (T, "DELETE", "/test/44", ASF.Responses.SC_NO_CONTENT);
+      Test_Operation (T, "DELETE", "/simple/44", ASF.Responses.SC_NO_CONTENT);
    end Test_Delete;
 
    --  ------------------------------
@@ -235,6 +309,7 @@ package body ASF.Rest.Tests is
    procedure Test_Invalid (T : in out Test) is
    begin
       Test_Operation (T, "TRACE", "/test/44", ASF.Responses.SC_NOT_FOUND);
+      Test_Operation (T, "TRACE", "/simple/44", ASF.Responses.SC_NOT_FOUND);
    end Test_Invalid;
 
 end ASF.Rest.Tests;

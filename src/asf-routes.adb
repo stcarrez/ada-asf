@@ -149,6 +149,61 @@ package body ASF.Routes is
    end Finalize;
 
    --  ------------------------------
+   --  Insert the route node at the correct place in the children list
+   --  according to the rule kind.
+   --  ------------------------------
+   procedure Insert (Parent : in Route_Node_Access;
+                     Node   : in Route_Node_Access;
+                     Kind   : in Route_Match_Type) is
+      Previous, Current : Route_Node_Access;
+   begin
+      Current := Parent.Children;
+      case Kind is
+         --  Add at head of the list.
+         when YES_MATCH =>
+            null;
+
+         when MAYBE_MATCH =>
+            while Current /= null loop
+               if not (Current.all in Path_Node_Type'Class) then
+                  exit;
+               end if;
+               Previous := Current;
+               Current := Current.Next_Route;
+            end loop;
+
+         --  Add before the 
+         when EXT_MATCH =>
+            while Current /= null loop
+               if not (Current.all in Path_Node_Type'Class)
+                  and not (Current.all in Param_Node_Type'Class)
+                  and not (Current.all in EL_Node_Type'Class) then
+                  exit;
+               end if;
+               Previous := Current;
+               Current := Current.Next_Route;
+            end loop;
+
+         when WILDCARD_MATCH =>
+            while Current /= null loop
+               Previous := Current;
+               Current := Current.Next_Route;
+            end loop;
+
+         when others =>
+            null;
+
+      end case;
+      if Previous /= null then
+         Node.Next_Route := Previous.Next_Route;
+         Previous.Next_Route := Node;
+      else
+         Node.Next_Route := Parent.Children;
+         Parent.Children := Node;
+      end if;
+   end Insert;
+
+   --  ------------------------------
    --  Add a route associated with the given path pattern.  The pattern is split into components.
    --  Some path components can be a fixed string (/home) and others can be variable.
    --  When a path component is variable, the value can be retrieved from the route context.
@@ -166,6 +221,7 @@ package body ASF.Routes is
       Match    : Route_Match_Type := NO_MATCH;
       New_Path : Path_Node_Access;
       Parent   : Route_Node_Access := Router.Route'Unchecked_Access;
+      Parent2  : Route_Node_Access;
       Found    : Boolean;
    begin
       Log.Info ("Adding route {0}", Pattern);
@@ -208,11 +264,7 @@ package body ASF.Routes is
                if not Found then
                   E := new EL_Node_Type;
                   E.Value := EL.Expressions.Create_Expression (Pattern (First .. Pos), ELContext);
-                  if Prev /= null then
-                     Prev.Next_Route := E.all'Access;
-                  else
-                     Parent.Children := E.all'Access;
-                  end if;
+                  Insert (Parent, E.all'Access, MAYBE_MATCH);
                   Parent := E.all'Access;
                end if;
             end;
@@ -244,11 +296,7 @@ package body ASF.Routes is
                if not Found then
                   Param := new Param_Node_Type (Len => Pos - First + 1);
                   Param.Name := Pattern (First .. Pos);
-                  if Prev /= null then
-                     Prev.Next_Route := Param.all'Access;
-                  else
-                     Parent.Children := Param.all'Access;
-                  end if;
+                  Insert (Parent, Param.all'Access, MAYBE_MATCH);
                   Parent := Param.all'Access;
                end if;
             end;
@@ -271,13 +319,10 @@ package body ASF.Routes is
                begin
                   Wildcard := new Wildcard_Node_Type;
                   Node := Wildcard.all'Access;
-                  if Prev /= null then
-                     Prev.Next_Route := Node;
-                  else
-                     Parent.Children := Node;
-                  end if;
+                  Insert (Parent, Node, WILDCARD_MATCH);
                end;
             end if;
+            Parent2 := Parent;
             Parent := Node;
 
          elsif Pattern (First) = '*' and Pos = Pattern'Last then
@@ -309,11 +354,7 @@ package body ASF.Routes is
                if not Found then
                   Ext := new Extension_Node_Type (Len => Pos - First + 1);
                   Ext.Ext := Pattern (First .. Pos);
-                  if Prev /= null then
-                     Prev.Next_Route := Ext.all'Access;
-                  else
-                     Parent.Children := Ext.all'Access;
-                  end if;
+                  Insert (Parent, Ext.all'Access, EXT_MATCH);
                   Parent := Ext.all'Access;
                end if;
             end;
@@ -340,8 +381,7 @@ package body ASF.Routes is
             if not Found then
                New_Path := new Path_Node_Type (Len => Pos - First + 1);
                New_Path.Name := Pattern (First .. Pos);
-               New_Path.Next_Route := Parent.Children;
-               Parent.Children := New_Path.all'Access;
+               Insert (Parent, New_Path.all'Access, YES_MATCH);
                Parent := Parent.Children;
             end if;
          end if;
@@ -349,6 +389,9 @@ package body ASF.Routes is
          exit when First > Pattern'Last;
       end loop;
       Process (Parent.Route);
+      if Parent2 /= null then
+         Parent2.Route := Parent.Route;
+      end if;
    end Add_Route;
 
    --  ------------------------------

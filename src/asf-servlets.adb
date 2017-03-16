@@ -394,38 +394,29 @@ package body ASF.Servlets is
                       Request    : in out Requests.Request'Class;
                       Response   : in out Responses.Response'Class) is
       use type ASF.Filters.Filter_List_Access;
-
-      Route : constant ASF.Routes.Route_Type_Access := ASF.Routes.Get_Route (Dispatcher.Context);
    begin
-      if Route = null then
+      if Dispatcher.Servlet = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
+      elsif Dispatcher.Filters = null then
+         ASF.Requests.Tools.Set_Context (Request,
+                                         Response'Unchecked_Access,
+                                         Dispatcher.Context'Unrestricted_Access);
+         Dispatcher.Servlet.Service (Request, Response);
       else
+         --  If we have some filters, create the filter chain
+         --  and invoke the first filter.
          declare
-            Servlet_Route : constant ASF.Routes.Servlets.Servlet_Route_Type_Access
-              := ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all)'Access;
+            Chain : Filter_Chain;
          begin
-            if Dispatcher.Filters = null then
-               ASF.Requests.Tools.Set_Context (Request,
-                                               Response'Unchecked_Access,
-                                               Dispatcher.Context'Unrestricted_Access);
-               Servlet_Route.Servlet.Service (Request, Response);
-            else
-               --  If we have some filters, create the filter chain
-               --  and invoke the first filter.
-               declare
-                  Chain : Filter_Chain;
-               begin
-                  ASF.Requests.Tools.Set_Context (Request,
-                                                  Response'Unchecked_Access,
-                                                  Dispatcher.Context'Unrestricted_Access);
-                  Chain.Filters := Dispatcher.Filters.all'Access;
-                  Chain.Servlet := Servlet_Route.Servlet;
-                  Chain.Filter_Pos := Chain.Filters'Last;
-                  Do_Filter (Chain    => Chain,
-                             Request  => Request,
-                             Response => Response);
-               end;
-            end if;
+            ASF.Requests.Tools.Set_Context (Request,
+                                            Response'Unchecked_Access,
+                                            Dispatcher.Context'Unrestricted_Access);
+            Chain.Filters := Dispatcher.Filters.all'Access;
+            Chain.Servlet := Dispatcher.Servlet;
+            Chain.Filter_Pos := Chain.Filters'Last;
+            Do_Filter (Chain    => Chain,
+                       Request  => Request,
+                       Response => Response);
          end;
       end if;
    end Forward;
@@ -445,12 +436,11 @@ package body ASF.Servlets is
    procedure Include (Dispatcher : in Request_Dispatcher;
                       Request    : in out Requests.Request'Class;
                       Response   : in out Responses.Response'Class) is
-      Route : constant ASF.Routes.Route_Type_Access := ASF.Routes.Get_Route (Dispatcher.Context);
    begin
-      if Route = null then
+      if Dispatcher.Servlet = null then
          Response.Send_Error (Responses.SC_NOT_FOUND);
       else
-         Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet.Service (Request, Response);
+         Dispatcher.Servlet.Service (Request, Response);
       end if;
    end Include;
 
@@ -491,6 +481,9 @@ package body ASF.Servlets is
                   if Servlet_Route.all in ASF.Routes.Servlets.Proxy_Route_Type'Class then
                      Proxy := Routes.Servlets.Proxy_Route_Type'Class (Servlet_Route.all)'Access;
                      ASF.Routes.Change_Route (R.Context, Proxy.Route.all'Access);
+                     R.Servlet := Proxy.Route.Servlet;
+                  else
+                     R.Servlet := Servlet_Route.Servlet;
                   end if;
                end;
             end if;

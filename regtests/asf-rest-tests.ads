@@ -24,6 +24,21 @@ with ASF.Tests;
 
 package ASF.Rest.Tests is
 
+   --  Test API with simple operations.
+   procedure Simple_Get (Req    : in out ASF.Rest.Request'Class;
+                         Reply  : in out ASF.Rest.Response'Class;
+                         Stream : in out ASF.Rest.Output_Stream'Class);
+   procedure Simple_Put (Req    : in out ASF.Rest.Request'Class;
+                         Reply  : in out ASF.Rest.Response'Class;
+                         Stream : in out ASF.Rest.Output_Stream'Class);
+   procedure Simple_Post (Req    : in out ASF.Rest.Request'Class;
+                          Reply  : in out ASF.Rest.Response'Class;
+                          Stream : in out ASF.Rest.Output_Stream'Class);
+   procedure Simple_Delete (Req    : in out ASF.Rest.Request'Class;
+                            Reply  : in out ASF.Rest.Response'Class;
+                            Stream : in out ASF.Rest.Output_Stream'Class);
+
+   --  Test API with an object created for each request.
    type Test_API is record
       N : Natural := 0;
    end record;

@@ -9,8 +9,8 @@ MODE=distrib
 GNATMAKE=@GNATMAKE@
 GNATCLEAN=gnatclean
 GPRINSTALL=@GPRINSTALL@
-SVN=svn
 INSTALL=@INSTALL@
+DYNAMO=dynamo
 
 GPRPATH=asf.gpr
 ASF_GPRPATH=asf_core.gpr
@@ -129,15 +129,11 @@ regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile
 # Analyzes only on those sources that have changed.
 # Does not build executables.
 autobuild:
-	$(GNATMAKE) -gnatc -c -k  -P "$(GPRPATH)"
+	$(GNATMAKE) $(MAKE_ARGS) -gnatc -c -k  -P "$(GPRPATH)"
 
 # Clean the root project of all build products.
 clean:	clean_test
-	-rm -f lib/asf/*.a lib/asf/*.$(DLLEXT)
-	-rm -f lib/asfunit/*.a lib/asfunit/*.$(DLLEXT)
-	-rm -rf obj/* lib/*
-	-rm -rf cov
-	-rm -f asf-coverage.info asf-coverage-body.info
+	-rm -rf lib obj bin
 
 # Clean the files produced by the unit tests
 clean_test:
@@ -150,7 +146,7 @@ clean_tree:
 # Check *all* sources for errors, even those not changed.
 # Does not build executables.
 analyze:
-	$(GNATMAKE) -f  -gnatc -c -k  -P "$(GPRPATH)"
+	$(GNATMAKE) $(MAKE_ARGS) -f  -gnatc -c -k  -P "$(GPRPATH)"
 
 # Clean, then build executables for all mains defined by the project.
 rebuild: clean build
@@ -176,41 +172,11 @@ coverage-report:
 	genhtml --ignore-errors source asf-coverage-body.info --legend --title "Ada Server Faces" \
 			--output-directory cov
 
-# Files to package in source distribution
-DISTFILES=README.md NEWS LICENSE.txt NOTICE.txt config.guess configure config.sub \
-configure.in Makefile.in install-sh distrib test.properties aclocal.m4 \
-asf.gpr.in asf_core.gpr.in asf_aws.gpr.in asf_unit.gpr.in asf_tests.gpr.in samples.gpr.in config.gpr \
-src asfunit samples regtests web bundles samples.properties dynamo.xml \
-bin obj lib
+doc:
+	$(DYNAMO) build-doc -markdown wiki
 
 dist:
-	-rm -rf $(distdir)
-	mkdir $(distdir)
-	-chmod 777 $(distdir)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
-	for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
-	  else \
-	    test -f $(distdir)/$$file \
-	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
-	    || cp -p $$d/$$file $(distdir)/$$file || :; \
-	  fi; \
-	done
-	-rm -rf $(distdir)/bin/*
-	-rm -rf $(distdir)/obj/*
-	-rm -rf $(distdir)/obj/asf/*
-	-rm -rf $(distdir)/obj/asfunit/*
-	-rm -rf $(distdir)/lib/*
-	-rm -rf $(distdir)/lib/asf/*
-	-rm -rf $(distdir)/lib/asfunit/*
-	-rm -rf $(distdir)/regtests/result/*
-	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
-	    --exclude="*.log" --exclude="*.a" \
-	    -cvzf $(DIST_FILE) $(distdir)
+	git archive -o $(DIST_FILE) --prefix=$(distdir)/ HEAD
 
 install_static:
 	$(MAKE) ASF_LIBRARY_TYPE=static install_lib
@@ -318,10 +284,3 @@ else
 	rm -rf ${awadir}/web
 	rm -rf ${dynamodir}/asf
 endif
-
-# prepare before releasing a new version of the package
-# (collect information about changes and SVN repository)
-prepare-release:
-	# ${SVN} update
-	# ${SVN} info > CHANGES
-	# ${SVN} log -v > ChangeLog

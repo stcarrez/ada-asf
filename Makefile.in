@@ -281,6 +281,5 @@ else
 	rm -f ${projectdir}/asf_unit.gpr
 	rm -f ${projectdir}/asf_core.gpr
 	rm -f ${projectdir}/asf_aws.gpr
-	rm -rf ${awadir}/web
-	rm -rf ${dynamodir}/asf
 endif
+	rm -rf ${dynamodir}/asf

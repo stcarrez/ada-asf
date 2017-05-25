@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -175,6 +175,13 @@ package body ASF.Components.Html.Forms is
          Id  : constant Unbounded_String := UI.Get_Client_Id;
          Val : constant String := UIInput'Class (UI).Get_Parameter (Context);
       begin
+         --  SCz 2017-05-25: we don't know with AWS whether a parameter is
+         --  submitted or not.  It returns the empty string when a parameter
+         --  is not found.  If the value is empty and not required,
+         --  don't set the valid flag so that we get the JSF behavior.
+         if Val'Length = 0 and then not UI.Is_Required (Context) then
+            return;
+         end if;
          if not UI.Is_Secret then
             Log.Debug ("Set input parameter {0} -> {1}", Id, Val);
          end if;

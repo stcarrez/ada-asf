@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-response -- Response phase
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,11 +26,10 @@ with Util.Log.Loggers;
 package body ASF.Lifecycles.Response is
 
    use Ada.Exceptions;
-   use Util.Log;
    use ASF.Applications;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Lifecycles.Response");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Lifecycles.Response");
 
    --  ------------------------------
    --  Initialize the phase controller.
@@ -51,6 +50,7 @@ package body ASF.Lifecycles.Response is
       View    : constant Components.Root.UIViewRoot := Context.Get_View_Root;
    begin
       if Components.Root.Get_Root (View) = null then
+         Log.Warn ("Page not found: {0}", Context.Get_View_Name);
          Context.Get_Response.Send_Error (ASF.Responses.SC_NOT_FOUND);
          Context.Response_Completed;
       else

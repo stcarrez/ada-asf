@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-routes -- Request routing
---  Copyright (C) 2015, 2016 Stephane Carrez
+--  Copyright (C) 2015, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -172,7 +172,7 @@ package body ASF.Routes is
                Current := Current.Next_Route;
             end loop;
 
-         --  Add before the 
+         --  Add before the
          when EXT_MATCH =>
             while Current /= null loop
                if not (Current.all in Path_Node_Type'Class)
@@ -217,7 +217,6 @@ package body ASF.Routes is
       First    : Natural := Pattern'First;
       Pos      : Natural;
       Node     : Route_Node_Access := Router.Route.Children;
-      Prev     : Route_Node_Access;
       Match    : Route_Match_Type := NO_MATCH;
       New_Path : Path_Node_Access;
       Parent   : Route_Node_Access := Router.Route'Unchecked_Access;
@@ -242,8 +241,6 @@ package body ASF.Routes is
             declare
                E : EL_Node_Access;
             begin
-               --  First := First + 1;
-               Prev := null;
                Found := False;
 
                --  Find the EL_Node that have the same EL expression.
@@ -257,7 +254,6 @@ package body ASF.Routes is
                         exit;
                      end if;
                   end if;
-                  Prev := Node;
                   Node := Node.Next_Route;
                end loop;
 
@@ -274,7 +270,6 @@ package body ASF.Routes is
                Param    : Param_Node_Access;
             begin
                First := First + 1;
-               Prev := null;
                Found := False;
 
                --  Find the Param_Node that have the same name.
@@ -288,7 +283,6 @@ package body ASF.Routes is
                         exit;
                      end if;
                   end if;
-                  Prev := Node;
                   Node := Node.Next_Route;
                end loop;
 
@@ -302,14 +296,12 @@ package body ASF.Routes is
             end;
 
          elsif Pattern (First) = '*' and First = Pattern'Last then
-            Prev := null;
             Found := False;
 
             --  Find the Wildcard_Node.
             while Node /= null loop
                Found := Node.all in Wildcard_Node_Type'Class;
                exit when Found;
-               Prev := Node;
                Node := Node.Next_Route;
             end loop;
 
@@ -333,7 +325,6 @@ package body ASF.Routes is
                Ext      : Extension_Node_Access;
             begin
                First := First + 1;
-               Prev := null;
                Found := False;
 
                --  Find the Extension_Node that have the same name.
@@ -347,7 +338,6 @@ package body ASF.Routes is
                         exit;
                      end if;
                   end if;
-                  Prev := Node;
                   Node := Node.Next_Route;
                end loop;
 

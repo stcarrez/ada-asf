@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core-views -- ASF View Components
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,9 @@ package ASF.Components.Core.Views is
    --  Name of the facet that holds the metadata information
    --  (we use the same name as JSF 2 specification).
    METADATA_FACET_NAME : constant String := "javax_faces_metadata";
+
+   type UIViewMetaData;
+   type UIViewMetaData_Access is access all UIViewMetaData'Class;
 
    --  ------------------------------
    --  View component
@@ -130,6 +133,11 @@ package ASF.Components.Core.Views is
    procedure Set_After_View (UI   : in out UIView'Class;
                              Tree : in Base.UIComponent_Access);
 
+   --  Set the metadata facet on the UIView component.
+   procedure Set_Metadata (UI    : in out UIView;
+                           Meta  : in UIViewMetaData_Access;
+                           Tag   : access ASF.Views.Nodes.Tag_Node'Class);
+
    --  Finalize the object.
    overriding
    procedure Finalize (UI : in out UIView);
@@ -174,7 +182,6 @@ package ASF.Components.Core.Views is
    --  we have to propagate the rendering on the real view root.  Therefore, the Encode_XXX
    --  operations are overriden to propagate on the real root.
    type UIViewMetaData is new UIView with private;
-   type UIViewMetaData_Access is access all UIViewMetaData'Class;
 
    --  Start encoding the UIComponent.
    overriding
@@ -211,11 +218,6 @@ package ASF.Components.Core.Views is
 
    --  Get the root component.
    function Get_Root (UI      : in UIViewMetaData) return Base.UIComponent_Access;
-
-   --  Set the metadata facet on the UIView component.
-   procedure Set_Metadata (UI    : in out UIView;
-                           Meta  : in UIViewMetaData_Access;
-                           Tag   : access ASF.Views.Nodes.Tag_Node'Class);
 
 private
 

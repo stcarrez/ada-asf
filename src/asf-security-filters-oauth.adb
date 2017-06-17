@@ -20,7 +20,6 @@ with Util.Log.Loggers;
 
 with ASF.Applications.Main;
 
-with Security.Contexts;
 with Security.Policies.URLs;
 package body ASF.Security.Filters.OAuth is
 
@@ -89,9 +88,9 @@ package body ASF.Security.Filters.OAuth is
       end if;
       declare
          Bearer  : constant String := Get_Access_Token (Request);
-         Auth    : Principal_Access;
+         --  Auth    : Principal_Access;
          Grant   : Servers.Grant_Type;
-         Context : aliased Contexts.Security_Context;
+         --  Context : aliased Contexts.Security_Context;
       begin
          if Bearer'Length = 0 then
             Log.Info ("Ask authentication on {0} due to missing access token", URL);

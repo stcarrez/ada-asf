@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-rest -- REST Support
---  Copyright (C) 2016 Stephane Carrez
+--  Copyright (C) 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -103,7 +103,7 @@ package body ASF.Rest is
 
       Dispatcher : constant ASF.Servlets.Request_Dispatcher
          := Registry.Get_Request_Dispatcher (Definition.Pattern.all);
-      Servlet    : ASF.Servlets.Servlet_Access := ASF.Servlets.Get_Servlet (Dispatcher);
+      Servlet    : constant ASF.Servlets.Servlet_Access := ASF.Servlets.Get_Servlet (Dispatcher);
 
       procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
          R : constant ASF.Routes.Route_Type_Access := Route.Value;

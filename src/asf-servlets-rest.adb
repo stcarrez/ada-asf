@@ -18,8 +18,6 @@
 
 with ASF.Applications;
 with ASF.Streams.JSON;
-with Util.Streams.Texts;
-with Util.Serialize.IO.JSON;
 package body ASF.Servlets.Rest is
 
    --  ------------------------------
@@ -97,7 +95,7 @@ package body ASF.Servlets.Rest is
          Api    : constant access ASF.Routes.Servlets.Rest.API_Route_Type
            := ASF.Routes.Servlets.Rest.API_Route_Type (Route.all)'Access;
          Desc   : constant ASF.Rest.Descriptor_Access := Api.Descriptors (Method);
-         Output : ASF.Streams.Print_Stream := Response.Get_Output_Stream;
+         Output : constant ASF.Streams.Print_Stream := Response.Get_Output_Stream;
          Stream : ASF.Streams.JSON.Print_Stream;
       begin
          if Desc = null then

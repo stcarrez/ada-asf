@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-widgets-inputs -- Input widget components
---  Copyright (C) 2013, 2015 Stephane Carrez
+--  Copyright (C) 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ with ASF.Models.Selects;
 with ASF.Components.Utils;
 with ASF.Components.Html.Messages;
 with ASF.Events.Faces.Actions;
+with ASF.Views.Nodes;
 with ASF.Applications.Messages.Vectors;
 
 with Util.Beans.Basic;

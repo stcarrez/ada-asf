@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ with Ada.Unchecked_Deallocation;
 
 with Util.Test_Caller;
 
+with ASF.Applications.Main;
 with ASF.Applications.Messages.Factory;
 with ASF.Contexts.Flash;
 with ASF.Contexts.Faces.Mockup;

@@ -22,7 +22,7 @@ with ASF.Requests;
 with ASF.Responses;
 with ASF.Servlets;
 with Security.OAuth.Servers; use Security.OAuth;
-with Security.Policies;  use Security;
+with Security.Policies;
 
 --  The <b>ASF.Security.Filters.OAuth</b> package provides a servlet filter that
 --  implements the RFC 6749 "Accessing Protected Resources" part: it extracts the OAuth

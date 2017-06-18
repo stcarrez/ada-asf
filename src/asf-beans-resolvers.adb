@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-beans-resolvers -- Resolver to create and give access to managed beans
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ with ASF.Beans.Params;
 with ASF.Beans.Flash;
 with ASF.Beans.Globals;
 with ASF.Beans.Headers;
+with ASF.Beans.Requests;
 package body ASF.Beans.Resolvers is
 
    --  ------------------------------
@@ -67,6 +68,9 @@ package body ASF.Beans.Resolvers is
 
       elsif Key = ASF.Beans.Globals.INIT_PARAM_ATTRIBUTE_NAME then
          return ASF.Beans.Globals.Instance;
+
+      elsif Key = ASF.Beans.Requests.REQUEST_ATTRIBUTE_NAME then
+         return ASF.Beans.Requests.Instance;
       end if;
       declare
          Result : Util.Beans.Objects.Object;

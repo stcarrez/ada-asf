@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-locales -- Locale support
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Strings.Vectors;
 with ASF.Contexts.Faces;
 with Ada.Strings.Unbounded;
 package body ASF.Locales is
@@ -42,17 +43,16 @@ package body ASF.Locales is
    procedure Initialize (Fac    : in out Factory;
                          Beans  : in out ASF.Beans.Bean_Factory;
                          Config : in Util.Properties.Manager'Class) is
-      Names : constant Util.Properties.Name_Array := Config.Get_Names ("bundle.var.");
+      Names : Util.Strings.Vectors.Vector;
       Dir   : constant String := Config.Get ("bundle.dir", "bundles");
    begin
+      Config.Get_Names (Names, "bundle.var.");
       Util.Properties.Bundles.Initialize (Fac.Factory, Dir);
-      for I in Names'Range loop
+      for Name of Names loop --  I in Names'Range loop
          declare
-            Name   : Util.Properties.Value renames Names (I);
             Value  : constant String := Config.Get (Name);
-            Bundle : constant String := Ada.Strings.Unbounded.To_String (Name);
          begin
-            Register (Fac, Beans, Bundle (Bundle'First + 11 .. Bundle'Last), Value);
+            Register (Fac, Beans, Name (Name'First + 11 .. Name'Last), Value);
          end;
       end loop;
    end Initialize;

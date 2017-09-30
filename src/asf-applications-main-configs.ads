@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications-main-configs -- Configuration support for ASF Applications
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,7 @@ package ASF.Applications.Main.Configs is
    --  By instantiating this package, the <b>Reader</b> gets populated with the XML mappings
    --  to read the servlet, managed beans and navigation rules.
    generic
-      Reader  : in out Util.Serialize.IO.XML.Parser;
+      Mapper  : in out Util.Serialize.Mappers.Processing;
       App     : in ASF.Contexts.Faces.Application_Access;
       Context : in EL.Contexts.Default.Default_Context_Access;
       Override_Context : in Boolean := False;

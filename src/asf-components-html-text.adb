@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -236,7 +236,7 @@ package body ASF.Components.Html.Text is
 
       declare
          Params : constant UIParameter_Access_Array := Get_Parameters (UI);
-         Values : Object_Array (Params'Range);
+         Values : ASF.Utils.Object_Array (Params'Range);
          Result : Ada.Strings.Unbounded.Unbounded_String;
          Fmt    : constant String := EL.Objects.To_String (UI.Get_Value);
       begin

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-beans-mappers -- Read XML managed bean declaratiosn
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@
 
 with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
-with Util.Serialize.IO.XML;
 with EL.Contexts;
 
 package ASF.Beans.Mappers is
@@ -53,7 +52,7 @@ package ASF.Beans.Mappers is
 
    --  Setup the XML parser to read the managed bean definitions.
    generic
-      Reader  : in out Util.Serialize.IO.XML.Parser;
+      Mapper  : in out Util.Serialize.Mappers.Processing;
       Factory : in Bean_Factory_Access;
       Context : in EL.Contexts.ELContext_Access;
    package Reader_Config is

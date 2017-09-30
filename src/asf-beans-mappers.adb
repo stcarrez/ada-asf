@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-beans-mappers -- Read XML managed bean declaratiosn
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -100,12 +100,12 @@ package body ASF.Beans.Mappers is
    --  ------------------------------
    package body Reader_Config is
    begin
-      Reader.Add_Mapping ("faces-config", MBean_Mapping'Access);
-      Reader.Add_Mapping ("module", MBean_Mapping'Access);
-      Reader.Add_Mapping ("web-app", MBean_Mapping'Access);
+      Mapper.Add_Mapping ("faces-config", MBean_Mapping'Access);
+      Mapper.Add_Mapping ("module", MBean_Mapping'Access);
+      Mapper.Add_Mapping ("web-app", MBean_Mapping'Access);
       Config.Factory := Factory;
       Config.Context := Context;
-      Config_Mapper.Set_Context (Reader, Config'Unchecked_Access);
+      Config_Mapper.Set_Context (Mapper, Config'Unchecked_Access);
    end Reader_Config;
 
 begin

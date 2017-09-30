@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-faces-mappers -- Read faces specific configuration files
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@
 
 with Util.Beans.Objects;
 with Util.Serialize.Mappers.Record_Mapper;
-with Util.Serialize.IO.XML;
 
 with EL.Contexts;
 
@@ -62,7 +61,7 @@ package ASF.Servlets.Faces.Mappers is
 
    --  Setup the XML parser to read the servlet and mapping rules <b>url-mapping</b>.
    generic
-      Reader  : in out Util.Serialize.IO.XML.Parser;
+      Mapper  : in out Util.Serialize.Mappers.Processing;
       Handler : in Servlet_Registry_Access;
       Context : in EL.Contexts.ELContext_Access;
    package Reader_Config is

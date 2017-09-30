@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-reader -- Read XML navigation files
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,14 +105,14 @@ package body ASF.Navigations.Mappers is
    --  ------------------------------
    package body Reader_Config is
    begin
-      Reader.Add_Mapping ("faces-config", Mapping'Access);
-      Reader.Add_Mapping ("module", Mapping'Access);
-      Reader.Add_Mapping ("web-app", Mapping'Access);
+      Mapper.Add_Mapping ("faces-config", Mapping'Access);
+      Mapper.Add_Mapping ("module", Mapping'Access);
+      Mapper.Add_Mapping ("web-app", Mapping'Access);
       Config.Handler := Handler;
       Config.Context := Context;
       Config.From_View := Empty;
       Reset (Config);
-      Navigation_Mapper.Set_Context (Reader, Config'Unchecked_Access);
+      Navigation_Mapper.Set_Context (Mapper, Config'Unchecked_Access);
    end Reader_Config;
 
 begin

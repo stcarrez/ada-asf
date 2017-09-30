@@ -141,12 +141,12 @@ package body ASF.Servlets.Mappers is
    --  ------------------------------
    package body Reader_Config is
    begin
-      Reader.Add_Mapping ("faces-config", SMapper'Access);
-      Reader.Add_Mapping ("module", SMapper'Access);
-      Reader.Add_Mapping ("web-app", SMapper'Access);
+      Mapper.Add_Mapping ("faces-config", SMapper'Access);
+      Mapper.Add_Mapping ("module", SMapper'Access);
+      Mapper.Add_Mapping ("web-app", SMapper'Access);
       Config.Handler := Handler;
       Config.Context := Context;
-      Servlet_Mapper.Set_Context (Reader, Config'Unchecked_Access);
+      Servlet_Mapper.Set_Context (Mapper, Config'Unchecked_Access);
    end Reader_Config;
 
 begin

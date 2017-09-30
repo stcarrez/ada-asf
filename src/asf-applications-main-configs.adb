@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications-main-configs -- Configuration support for ASF Applications
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -93,16 +93,16 @@ package body ASF.Applications.Main.Configs is
       Nav     : constant ASF.Navigations.Navigation_Handler_Access := App.Get_Navigation_Handler;
 
       package Bean_Config is
-        new ASF.Beans.Mappers.Reader_Config (Reader, App.Factory'Access,
+        new ASF.Beans.Mappers.Reader_Config (Mapper, App.Factory'Access,
                                              Context.all'Access);
       package Navigation_Config is
-        new ASF.Navigations.Mappers.Reader_Config (Reader, Nav, Context.all'Access);
+        new ASF.Navigations.Mappers.Reader_Config (Mapper, Nav, Context.all'Access);
 
       package Servlet_Config is
-        new ASF.Servlets.Mappers.Reader_Config (Reader, App.all'Access,
+        new ASF.Servlets.Mappers.Reader_Config (Mapper, App.all'Access,
                                                 Context.all'Access);
       package Faces_Config is
-        new ASF.Servlets.Faces.Mappers.Reader_Config (Reader, App.all'Access,
+        new ASF.Servlets.Faces.Mappers.Reader_Config (Mapper, App.all'Access,
                                                       Context.all'Access);
       pragma Warnings (Off, Bean_Config);
       pragma Warnings (Off, Navigation_Config);
@@ -128,12 +128,12 @@ package body ASF.Applications.Main.Configs is
       NS_Mapper.Set_Function_Mapper (App.Functions'Unchecked_Access);
       Context.Set_Function_Mapper (NS_Mapper'Unchecked_Access);
 
-      Reader.Add_Mapping ("faces-config", AMapper'Access);
-      Reader.Add_Mapping ("module", AMapper'Access);
-      Reader.Add_Mapping ("web-app", AMapper'Access);
+      Mapper.Add_Mapping ("faces-config", AMapper'Access);
+      Mapper.Add_Mapping ("module", AMapper'Access);
+      Mapper.Add_Mapping ("web-app", AMapper'Access);
       Config.App := App;
       Servlet_Config.Config.Override_Context := Override_Context;
-      Application_Mapper.Set_Context (Reader, Config'Unchecked_Access);
+      Application_Mapper.Set_Context (Mapper, Config'Unchecked_Access);
    end Reader_Config;
 
    --  ------------------------------
@@ -148,13 +148,14 @@ package body ASF.Applications.Main.Configs is
                                  File : in String) is
 
       Reader  : Util.Serialize.IO.XML.Parser;
+      Mapper  : Util.Serialize.Mappers.Processing;
       Context : aliased EL.Contexts.Default.Default_Context;
 
       --  Setup the <b>Reader</b> to parse and build the configuration for managed beans,
       --  navigation rules, servlet rules.  Each package instantiation creates a local variable
       --  used while parsing the XML file.
       package Config is
-        new Reader_Config (Reader, App'Unchecked_Access, Context'Unchecked_Access);
+        new Reader_Config (Mapper, App'Unchecked_Access, Context'Unchecked_Access);
 
       pragma Warnings (Off, Config);
    begin
@@ -163,7 +164,7 @@ package body ASF.Applications.Main.Configs is
       --        Util.Serialize.IO.Dump (Reader, AWA.Modules.Log);
 
       --  Read the configuration file and record managed beans, navigation rules.
-      Reader.Parse (File);
+      Reader.Parse (File, Mapper);
    end Read_Configuration;
 
    --  ------------------------------

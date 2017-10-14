@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -206,5 +206,29 @@ package body ASF.Requests.Web is
       AWS.Attachments.Iterate (Attachs, Process_Part'Access);
 --        ASF.Parts.Web.Process_Part (AWS.Attachments.Get (Attachs, Id), Process);
    end Process_Part;
+
+   --  ------------------------------
+   --  Read into the buffer as many bytes as possible and return in
+   --  <b>last</b> the position of the last byte read.
+   --  ------------------------------
+   overriding
+   procedure Read (Stream : in out Request;
+                   Into   : out Ada.Streams.Stream_Element_Array;
+                   Last   : out Ada.Streams.Stream_Element_Offset) is
+   begin
+      AWS.Status.Read_Body (D      => Stream.Data.all,
+                            Buffer => Into,
+                            Last   => Last);
+   end Read;
+
+   overriding
+   function Create_Input_Stream (Req : in Request) return ASF.Streams.Input_Stream_Access is
+      Result : constant ASF.Streams.Input_Stream_Access := new ASF.Streams.Input_Stream;
+   begin
+      Result.Initialize (Output => null,
+                         Input  => Req'Unrestricted_Access,
+                         Size   => 8192);
+      return Result;
+   end Create_Input_Stream;
 
 end ASF.Requests.Web;

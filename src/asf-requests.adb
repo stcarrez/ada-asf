@@ -872,6 +872,19 @@ package body ASF.Requests is
    end Get_Path_Parameter_Count;
 
    --  ------------------------------
+   --  Get a buffer stream to read the request body.
+   --  ------------------------------
+   function Get_Input_Stream (Req : in Request)
+                              return ASF.Streams.Input_Stream_Access is
+      use type ASF.Streams.Input_Stream_Access;
+   begin
+      if Req.Info.Stream = null then
+         Req.Info.Stream := Request'Class (Req).Create_Input_Stream;
+      end if;
+      return Req.Info.Stream;
+   end Get_Input_Stream;
+
+   --  ------------------------------
    --  Initialize the request object.
    --  ------------------------------
    overriding
@@ -888,7 +901,11 @@ package body ASF.Requests is
       procedure Free is new Ada.Unchecked_Deallocation (Request_Data, Request_Data_Access);
       procedure Free is new Ada.Unchecked_Deallocation (ASF.Cookies.Cookie_Array,
                                                         ASF.Cookies.Cookie_Array_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (ASF.Streams.Input_Stream'Class,
+                                        ASF.Streams.Input_Stream_Access);
    begin
+      Free (Req.Info.Stream);
       Free (Req.Info.Cookies);
       Free (Req.Info);
    end Finalize;

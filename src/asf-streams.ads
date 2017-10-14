@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-streams -- Print streams for servlets
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,12 @@ with Ada.Finalization;
 
 with Util.Streams;
 with Util.Streams.Texts;
+with Util.Streams.Buffered;
 with EL.Objects;
 package ASF.Streams is
 
---     pragma Preelaborate;
+   subtype Input_Stream is Util.Streams.Buffered.Buffered_Stream;
+   type Input_Stream_Access is access all Input_Stream'Class;
 
    --  -----------------------
    --  Print stream

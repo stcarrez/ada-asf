@@ -295,6 +295,36 @@ package body ASF.Routes is
                end if;
             end;
 
+         elsif Pattern (First) = '{' and First < Pos - 1 and Pattern (Pos) = '}' then
+            declare
+               Param    : Param_Node_Access;
+            begin
+               First := First + 1;
+               Found := False;
+
+               --  Find the Param_Node that have the same name.
+               while Node /= null loop
+                  if Node.all in Param_Node_Type'Class then
+                     Param := Param_Node_Type'Class (Node.all)'Access;
+                     if Param.Name = Pattern (First .. Pos - 1) then
+                        Parent := Node;
+                        Node := Node.Children;
+                        Found := True;
+                        exit;
+                     end if;
+                  end if;
+                  Node := Node.Next_Route;
+               end loop;
+
+               --  Append the param node for the component.
+               if not Found then
+                  Param := new Param_Node_Type (Len => Pos - 1 - First + 1);
+                  Param.Name := Pattern (First .. Pos - 1);
+                  Insert (Parent, Param.all'Access, MAYBE_MATCH);
+                  Parent := Param.all'Access;
+               end if;
+            end;
+
          elsif Pattern (First) = '*' and First = Pattern'Last then
             Found := False;
 

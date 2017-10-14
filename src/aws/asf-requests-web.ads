@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,14 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Streams;
 with AWS.Status;
 with AWS.Headers;
+with Util.Streams;
+with ASF.Streams;
 package ASF.Requests.Web is
 
-   type Request is new ASF.Requests.Request with private;
+   type Request is new ASF.Requests.Request and Util.Streams.Input_Stream with private;
    type Request_Access is access all Request'Class;
 
    function Get_Parameter (R : Request; Name : String) return String;
@@ -101,9 +104,20 @@ package ASF.Requests.Web is
                            Id       : in String;
                            Process  : not null access
                              procedure (Data : in ASF.Parts.Part'Class));
+
+   --  Read into the buffer as many bytes as possible and return in
+   --  <b>last</b> the position of the last byte read.
+   overriding
+   procedure Read (Stream : in out Request;
+                   Into   : out Ada.Streams.Stream_Element_Array;
+                   Last   : out Ada.Streams.Stream_Element_Offset);
+
+   overriding
+   function Create_Input_Stream (Req : in Request) return ASF.Streams.Input_Stream_Access;
+
 private
 
-   type Request is new ASF.Requests.Request with record
+   type Request is new ASF.Requests.Request and Util.Streams.Input_Stream with record
       Data    : access AWS.Status.Data;
       Headers : AWS.Headers.List;
    end record;

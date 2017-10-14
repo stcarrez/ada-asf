@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.requests -- ASF Requests
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ with EL.Contexts;
 
 with Util.Locales;
 with Util.Beans.Objects.Maps;
+with Util.Streams.Buffered;
 
 with Ada.Calendar;
 with Ada.Strings.Unbounded;
@@ -31,6 +32,7 @@ with ASF.Responses;
 with ASF.Principals;
 with ASF.Parts;
 with ASF.Routes;
+with ASF.Streams;
 
 --  The <b>ASF.Requests</b> package is an Ada implementation of
 --  the Java servlet request (JSR 315 3. The Request).
@@ -422,7 +424,15 @@ package ASF.Requests is
    --  Get the number of path parameters that were extracted for the route.
    function Get_Path_Parameter_Count (Req     : in Request) return Natural;
 
-      --  Initialize the request object.
+   --  Get a buffer stream to read the request body.
+   function Get_Input_Stream (Req : in Request)
+                              return ASF.Streams.Input_Stream_Access;
+
+   --  Create the buffer stream instance to read the request body.
+   function Create_Input_Stream (Req : in Request)
+                                 return ASF.Streams.Input_Stream_Access is (null);
+
+   --  Initialize the request object.
    overriding
    procedure Initialize (Req : in out Request);
 
@@ -450,6 +460,9 @@ private
 
       --  The request cookies.
       Cookies             : ASF.Cookies.Cookie_Array_Access := null;
+
+      --  The input stream.
+      Stream              : ASF.Streams.Input_Stream_Access;
    end record;
    type Request_Data_Access is access Request_Data;
 

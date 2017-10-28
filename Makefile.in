@@ -265,7 +265,7 @@ ifneq (${GPRINSTALL},)
 	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(GPRPATH)
 	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(ASF_GPRPATH)
 	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(ASF_UNIT_GPRPATH)
-	test T${HAVE_AWS} = Tno || \
+	-test T${HAVE_AWS} = Tno || \
 	 $(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(AWS_GPRPATH)
 else
 	rm -rf ${includedir}/ada-asf

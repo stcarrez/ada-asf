@@ -55,7 +55,7 @@ package body ASF.Servlets.Mappers is
          if Last = 0 then
             raise Util.Serialize.Mappers.Field_Error with Message;
          end if;
-         for I in 1 .. Last - 1 loop
+         for I in 1 .. Last loop
             N.URL_Patterns.Query_Element (Positive (I), Handler);
          end loop;
          N.URL_Patterns.Clear;

@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Exceptions;
+with Ada.Unchecked_Deallocation;
 
 with EL.Objects;
 
@@ -77,13 +78,22 @@ package body ASF.Components.Html.Text is
    --  ------------------------------
    overriding
    procedure Set_Converter (UI        : in out UIOutput;
-                            Converter : in ASF.Converters.Converter_Access) is
+                            Converter : in ASF.Converters.Converter_Access;
+                            Release   : in Boolean := False) is
       use type ASF.Converters.Converter_Access;
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => ASF.Converters.Converter'Class,
+                                        Name   => ASF.Converters.Converter_Access);
    begin
+      if UI.Release_Converter then
+         Free (UI.Converter);
+      end if;
       if Converter = null then
          UI.Converter := null;
+         UI.Release_Converter := False;
       else
          UI.Converter := Converter.all'Unchecked_Access;
+         UI.Release_Converter := Release;
       end if;
    end Set_Converter;
 
@@ -169,6 +179,12 @@ package body ASF.Components.Html.Text is
       when E : others =>
          Context.Queue_Exception (E);
    end Encode_Begin;
+
+   overriding
+   procedure Finalize (UI : in out UIOutput) is
+   begin
+      UI.Set_Converter (null);
+   end Finalize;
 
    --  ------------------------------
    --  Label Component

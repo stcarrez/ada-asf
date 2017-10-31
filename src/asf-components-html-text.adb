@@ -184,6 +184,7 @@ package body ASF.Components.Html.Text is
    procedure Finalize (UI : in out UIOutput) is
    begin
       UI.Set_Converter (null);
+      UIHtmlComponent (UI).Finalize;
    end Finalize;
 
    --  ------------------------------

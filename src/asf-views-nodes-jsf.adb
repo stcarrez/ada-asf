@@ -234,7 +234,8 @@ package body ASF.Views.Nodes.Jsf is
          VH : constant access Value_Holder'Class
            := Value_Holder'Class (Parent.all)'Access;
       begin
-         VH.Set_Converter (Converter => C.all'Access);
+         VH.Set_Converter (Converter => C.all'Access,
+                           Release => True);
       end;
    end Build_Components;
 

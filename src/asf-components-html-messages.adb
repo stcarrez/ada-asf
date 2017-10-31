@@ -173,7 +173,7 @@ package body ASF.Components.Html.Messages is
             begin
                --  If the component does not exist, report an error in the logs.
                if Target = null then
-                  UI.Log_Error ("Cannot find component {0}", Id);
+                  UI.Log_Error ("Cannot find component '{0}'", Id);
                else
                   Messages := Context.Get_Messages (Id);
                end if;
@@ -223,7 +223,7 @@ package body ASF.Components.Html.Messages is
                begin
                   --  If the component does not exist, report an error in the logs.
                   if Target = null then
-                     UI.Log_Error ("Cannot find component {0}", Id);
+                     UI.Log_Error ("Cannot find component '{0}'", Id);
                   else
                      Messages := Context.Get_Messages (Id);
                   end if;

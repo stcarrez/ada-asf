@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,7 +58,11 @@ package ASF.Components.Html.Text is
    --  Set the converter to be used on the component.
    overriding
    procedure Set_Converter (UI        : in out UIOutput;
-                            Converter : in ASF.Converters.Converter_Access);
+                            Converter : in ASF.Converters.Converter_Access;
+                            Release   : in Boolean := False);
+
+   overriding
+   procedure Finalize (UI : in out UIOutput);
 
    --  Get the value of the component and apply the To_String converter on it if there is one.
    function Get_Formatted_Value (UI      : in UIOutput;
@@ -99,8 +103,9 @@ package ASF.Components.Html.Text is
 private
 
    type UIOutput is new UIHtmlComponent and Holders.Value_Holder with record
-      Value     : EL.Objects.Object;
-      Converter : ASF.Converters.Converter_Access := null;
+      Value             : EL.Objects.Object;
+      Converter         : ASF.Converters.Converter_Access := null;
+      Release_Converter : Boolean := False;
    end record;
 
    type UIOutputLabel is new UIOutput with null record;

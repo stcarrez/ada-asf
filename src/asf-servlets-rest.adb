@@ -107,6 +107,7 @@ package body ASF.Servlets.Rest is
 --            return;
 --         end if;
          ASF.Streams.JSON.Initialize (Stream, Output);
+         Response.Set_Content_Type ("application/json; charset=utf-8");
          Api.Descriptors (Method).Dispatch (Request, Response, Stream);
       end;
    end Dispatch;

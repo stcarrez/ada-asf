@@ -225,8 +225,7 @@ package body ASF.Requests.Web is
    function Create_Input_Stream (Req : in Request) return ASF.Streams.Input_Stream_Access is
       Result : constant ASF.Streams.Input_Stream_Access := new ASF.Streams.Input_Stream;
    begin
-      Result.Initialize (Output => null,
-                         Input  => Req'Unrestricted_Access,
+      Result.Initialize (Input  => Req'Unrestricted_Access,
                          Size   => 8192);
       return Result;
    end Create_Input_Stream;

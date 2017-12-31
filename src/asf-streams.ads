@@ -26,7 +26,7 @@ with Util.Streams.Buffered;
 with EL.Objects;
 package ASF.Streams is
 
-   subtype Input_Stream is Util.Streams.Buffered.Buffered_Stream;
+   subtype Input_Stream is Util.Streams.Buffered.Input_Buffer_Stream;
    type Input_Stream_Access is access all Input_Stream'Class;
 
    --  -----------------------

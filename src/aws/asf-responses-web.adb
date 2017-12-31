@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.responses.web -- ASF Responses with AWS server
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,7 @@ package body ASF.Responses.Web is
    procedure Initialize (Resp : in out Response) is
    begin
       Resp.Content.Initialize (Size   => 256 * 1024,
-                               Output => Resp'Unchecked_Access,
-                               Input  => null);
+                               Output => Resp'Unchecked_Access);
       Resp.Stream := Resp.Content'Unchecked_Access;
    end Initialize;
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer.string -- A simple string writer
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
-with Util.Streams.Buffered;
 
 --  Implements a <b>ResponseWriter</b> that puts the result in a string.
 --  The response content can be retrieved after the response is rendered.
@@ -36,7 +34,7 @@ package body ASF.Contexts.Writer.String is
    function Get_Response (Stream : in String_Writer) return Unbounded_String is
       use Util.Streams;
    begin
-      return To_Unbounded_String (Texts.To_String (Buffered.Buffered_Stream (Stream.Content)));
+      return To_Unbounded_String (Texts.To_String (Stream.Content));
    end Get_Response;
 
 end ASF.Contexts.Writer.String;

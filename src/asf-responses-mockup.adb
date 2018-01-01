@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.responses -- ASF Requests
---  Copyright (C) 2010, 2011, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -104,7 +104,7 @@ package body ASF.Responses.Mockup is
                            Into : out Ada.Strings.Unbounded.Unbounded_String) is
    begin
       Resp.Headers.Include ("Content-Type", Resp.Get_Content_Type);
-      Resp.Content.Read (Into => Into);
+      Resp.Content.Flush (Into);
    end Read_Content;
 
    --  ------------------------------
@@ -113,9 +113,9 @@ package body ASF.Responses.Mockup is
    --  removes any header in the response.
    --  ------------------------------
    procedure Clear (Resp : in out Response) is
-      Content : Ada.Strings.Unbounded.Unbounded_String;
+      Into : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      Resp.Read_Content (Content);
+      Resp.Content.Flush (Into);
       Resp.Status := SC_OK;
       Resp.Headers.Clear;
    end Clear;

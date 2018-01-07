@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -743,10 +743,9 @@ package body ASF.Components.Base is
                                                                    Message_Id => Default,
                                                                    Args       => Args);
       else
-         Message := ASF.Applications.Messages.Factory.Get_Message
-           (Context    => Context,
-            Message_Id => EL.Objects.To_String (Msg),
-            Args       => Args);
+         --  The message is already localized, we just need to set and format it.
+         ASF.Applications.Messages.Set_Severity (Message, ASF.Applications.Messages.ERROR);
+         ASF.Applications.Messages.Format_Summary (Message, EL.Objects.To_String (Msg), Args);
       end if;
       Context.Add_Message (Client_Id => Id,
                            Message   => Message);

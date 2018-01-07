@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.messages -- Application Messages
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,6 +53,16 @@ package body ASF.Applications.Messages is
    begin
       Msg.Summary := To_Unbounded_String (Summary);
    end Set_Summary;
+
+   --  ------------------------------
+   --  Format the localized message with the arguments and set the message summary.
+   --  ------------------------------
+   procedure Format_Summary (Msg     : in out Message;
+                             Summary : in String;
+                             Args    : in ASF.Utils.Object_Array) is
+   begin
+      ASF.Utils.Formats.Format (Summary, Args, Msg.Summary);
+   end Format_Summary;
 
    --  ------------------------------
    --  Return the localized message detail.  If the message detail was

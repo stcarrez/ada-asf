@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.messages -- Application Messages
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
+with ASF.Utils;
 package ASF.Applications.Messages is
 
    type Severity is (NONE, INFO, WARN, ERROR, FATAL);
@@ -39,6 +40,11 @@ package ASF.Applications.Messages is
    --  Sets the localized message summary.
    procedure Set_Summary (Msg     : in out Message;
                           Summary : in String);
+
+   --  Format the localized message with the arguments and set the message summary.
+   procedure Format_Summary (Msg     : in out Message;
+                             Summary : in String;
+                             Args    : in ASF.Utils.Object_Array);
 
    --  Return the localized message detail.  If the message detail was
    --  not provided, returns the message summary.

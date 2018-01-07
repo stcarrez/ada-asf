@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.messages-factory -- Application Message Factory
---  Copyright (C) 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -115,7 +115,7 @@ package body ASF.Applications.Messages.Factory is
       Result : Message;
    begin
       Result.Kind := Severity;
-      ASF.Utils.Formats.Format (Msg, Args, Result.Summary);
+      Format_Summary (Result, Msg, Args);
       return Result;
    end Get_Message;
 

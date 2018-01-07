@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.messages-factory -- Application Message Factory
---  Copyright (C) 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with ASF.Contexts.Faces;
-with ASF.Utils;
 package ASF.Applications.Messages.Factory is
 
    --  Get a localized message.  The message identifier is composed of a resource bundle name

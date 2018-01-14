@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,6 +51,7 @@ package body ASF.Utils is
    MAXLENGTH_ATTR     : aliased constant String := "maxlength";
    ALT_ATTR           : aliased constant String := "alt";
    DISABLED_ATTR      : aliased constant String := "disabled";
+   DIRNAME_ATTR       : aliased constant String := "dirname";
    READONLY_ATTR      : aliased constant String := "readonly";
    PLACEHOLDER_ATTR   : aliased constant String := "placeholder";
    PATTERN_ATTR       : aliased constant String := "pattern";
@@ -60,6 +61,7 @@ package body ASF.Utils is
    FORMMETHOD_ATTR    : aliased constant String := "formmethod";
    FORMACTION_ATTR    : aliased constant String := "formaction";
    FORMTARGET_ATTR    : aliased constant String := "formtarget";
+   WRAP_ATTR          : aliased constant String := "wrap";
 
    ACCEPT_ATTR        : aliased constant String := "accept";
 
@@ -136,8 +138,15 @@ package body ASF.Utils is
    --  ------------------------------
    procedure Set_Textarea_Attributes (Names : in out Util.Strings.String_Set.Set) is
    begin
-      Names.Insert (ROWS_ATTR'Access);
+      Names.Insert (AUTOFOCUS_ATTR'Access);
       Names.Insert (COLS_ATTR'Access);
+      Names.Insert (DIRNAME_ATTR'Access);
+      Names.Insert (DISABLED_ATTR'Access);
+      Names.Insert (MAXLENGTH_ATTR'Access);
+      Names.Insert (PLACEHOLDER_ATTR'Access);
+      Names.Insert (READONLY_ATTR'Access);
+      Names.Insert (ROWS_ATTR'Access);
+      Names.Insert (WRAP_ATTR'Access);
    end Set_Textarea_Attributes;
 
    --  ------------------------------

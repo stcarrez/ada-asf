@@ -2,6 +2,7 @@ with "@UTIL_DIR@config";
 with "@UTIL_DIR@util";
 with "@UTIL_DIR@util_unit";
 with "@EL_DIR@el";
+with "@SERVLET_DIR@servlet";
 with "asf";
 with "asf_unit";
 
@@ -10,7 +11,7 @@ project Asf_Tests is
    Mains := ("asf_harness.adb");
 
    for Source_Dirs use ("regtests");
-   case Asf.Server is
+   case Servlet.Server is
       when "aws" =>
           for Source_Dirs use project'Source_Dirs & ("regtests/aws");
 

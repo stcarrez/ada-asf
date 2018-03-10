@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-faces-mappers -- Read faces specific configuration files
---  Copyright (C) 2015, 2016, 2017 Stephane Carrez
+--  Copyright (C) 2015, 2016, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,14 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Routes.Servlets.Faces;
+with Ada.Strings.Unbounded;
+with Servlet.Routes.Servlets;
+with Servlet.Core;
+with ASF.Routes;
 package body ASF.Servlets.Faces.Mappers is
 
    use type ASF.Routes.Route_Type_Access;
+   use type Servlet.Core.Servlet_Access;
 
    function Find_Servlet (Container : in Servlet_Registry_Access;
                           View      : in String)
@@ -27,16 +31,13 @@ package body ASF.Servlets.Faces.Mappers is
    function Find_Servlet (Container : in Servlet_Registry_Access;
                           View      : in String)
                           return ASF.Servlets.Servlet_Access is
-      Disp  : constant Request_Dispatcher := Container.Get_Request_Dispatcher (View);
-      Route : constant ASF.Routes.Route_Type_Access := Disp.Context.Get_Route;
+      Disp  : constant Servlet.Core.Request_Dispatcher := Container.Get_Request_Dispatcher (View);
+      Serv  : constant Servlet_Access := Servlet.Core.Get_Servlet (Disp);
    begin
-      if Route = null then
+      if Serv = null then
          raise Util.Serialize.Mappers.Field_Error with "No servlet mapped to view " & View;
       end if;
-      if not (Route.all in ASF.Routes.Servlets.Servlet_Route_Type'Class) then
-         raise Util.Serialize.Mappers.Field_Error with "View " & View & " not mapped to a servlet";
-      end if;
-      return ASF.Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet;
+      return Serv; --  Servlet.Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet;
    end Find_Servlet;
 
    --  ------------------------------
@@ -64,11 +65,11 @@ package body ASF.Servlets.Faces.Mappers is
                Servlet : constant ASF.Servlets.Servlet_Access := Find_Servlet (N.Handler, View);
 
                procedure Insert (Route : in out ASF.Routes.Route_Type_Ref) is
-                  To : ASF.Routes.Servlets.Faces.Faces_Route_Type_Access;
+                  To : ASF.Routes.Faces_Route_Type_Access;
                begin
                   if Route.Is_Null then
-                     To := new ASF.Routes.Servlets.Faces.Faces_Route_Type;
-                     To.View    := To_Unbounded_String (View);
+                     To := new ASF.Routes.Faces_Route_Type;
+                     To.View    := Ada.Strings.Unbounded.To_Unbounded_String (View);
                      To.Servlet := Servlet;
                      Route := ASF.Routes.Route_Type_Refs.Create (To.all'Access);
                   end if;

@@ -60,6 +60,7 @@ package body ASF.Tests is
       use type ASF.Applications.Main.Application_Access;
 
       C        : ASF.Applications.Config;
+      Empty    : Util.Properties.Manager;
    begin
       if Application /= null then
          App := Application;
@@ -83,7 +84,7 @@ package body ASF.Tests is
       App.Add_Mapping (Name => "faces", Pattern => "*.html");
       App.Add_Mapping (Name => "ajax", Pattern => "/ajax/*");
 
-      Servlet.Tests.Initialize (Props, CONTEXT_PATH, App.all'Access);
+      Servlet.Tests.Initialize (Empty, CONTEXT_PATH, App.all'Access);
 
    end Initialize;
 

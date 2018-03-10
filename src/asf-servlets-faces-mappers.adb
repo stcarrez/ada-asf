@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Strings.Unbounded;
-with Servlet.Routes.Servlets;
 with Servlet.Core;
 with ASF.Routes;
 package body ASF.Servlets.Faces.Mappers is

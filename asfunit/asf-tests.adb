@@ -21,6 +21,9 @@ with Ada.Unchecked_Deallocation;
 with Servlet.Core;
 with ASF.Servlets.Faces;
 with ASF.Servlets.Ajax;
+with Servlet.Filters;
+with Servlet.Core.Files;
+with Servlet.Core.Measures;
 with ASF.Responses;
 
 with ASF.Contexts.Faces;
@@ -36,6 +39,8 @@ package body ASF.Tests is
    App         : ASF.Applications.Main.Application_Access;
    Faces       : aliased ASF.Servlets.Faces.Faces_Servlet;
    Ajax        : aliased ASF.Servlets.Ajax.Ajax_Servlet;
+   Files       : aliased Servlet.Core.Files.File_Servlet;
+   Measures    : aliased Servlet.Core.Measures.Measure_Servlet;
 
    --  ------------------------------
    --  Initialize the awa test framework mockup.
@@ -65,13 +70,32 @@ package body ASF.Tests is
       --  Register the servlets and filters
       App.Add_Servlet (Name => "faces", Server => Faces'Access);
       App.Add_Servlet (Name => "ajax", Server => Ajax'Access);
+      App.Add_Servlet (Name => "files", Server => Files'Access);
+      App.Add_Servlet (Name => "measures", Server => Measures'Access);
+      App.Add_Filter (Name => "measures",
+                      Filter => Servlet.Filters.Filter'Class (Measures)'Access);
 
       --  Define servlet mappings
       App.Add_Mapping (Name => "faces", Pattern => "*.html");
       App.Add_Mapping (Name => "ajax", Pattern => "/ajax/*");
+      App.Add_Mapping (Name => "files", Pattern => "*.css");
+      App.Add_Mapping (Name => "files", Pattern => "*.js");
+      App.Add_Mapping (Name => "files", Pattern => "*.html");
+      App.Add_Mapping (Name => "files", Pattern => "*.txt");
+      App.Add_Mapping (Name => "files", Pattern => "*.png");
+      App.Add_Mapping (Name => "files", Pattern => "*.jpg");
+      App.Add_Mapping (Name => "files", Pattern => "*.gif");
+      App.Add_Mapping (Name => "files", Pattern => "*.pdf");
+      App.Add_Mapping (Name => "files", Pattern => "*.properties");
+      App.Add_Mapping (Name => "files", Pattern => "*.xhtml");
+      App.Add_Mapping (Name => "measures", Pattern => "stats.xml");
+
+      App.Add_Filter_Mapping (Name => "measures", Pattern => "*");
+      App.Add_Filter_Mapping (Name => "measures", Pattern => "/ajax/*");
+      App.Add_Filter_Mapping (Name => "measures", Pattern => "*.html");
+      App.Add_Filter_Mapping (Name => "measures", Pattern => "*.xhtml");
 
       Servlet.Tests.Initialize (Empty, CONTEXT_PATH, App.all'Access);
-
    end Initialize;
 
    --  ------------------------------

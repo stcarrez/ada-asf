@@ -16,40 +16,25 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with GNAT.Regpat;
-
-with Ada.Strings.Unbounded;
 with Ada.Unchecked_Deallocation;
 
-with Util.Files;
-
-with ASF.Streams;
 with ASF.Servlets.Faces;
-with Servlet.Core.Files;
 with ASF.Servlets.Ajax;
-with Servlet.Core.Measures;
 with ASF.Responses;
-with ASF.Responses.Tools;
 
-with ASF.Filters.Dump;
 with ASF.Contexts.Faces;
 with EL.Variables.Default;
 
 package body ASF.Tests is
 
-   use Ada.Strings.Unbounded;
    use Util.Tests;
 
    CONTEXT_PATH : constant String := "/asfunit";
-
-   type Container_Access is access ASF.Server.Container;
 
    App_Created : ASF.Applications.Main.Application_Access;
    App         : ASF.Applications.Main.Application_Access;
    Faces       : aliased ASF.Servlets.Faces.Faces_Servlet;
    Ajax        : aliased ASF.Servlets.Ajax.Ajax_Servlet;
-   Measures    : aliased Servlet.Core.Measures.Measure_Servlet;
-
 
    --  ------------------------------
    --  Initialize the awa test framework mockup.

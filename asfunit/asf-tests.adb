@@ -18,6 +18,7 @@
 
 with Ada.Unchecked_Deallocation;
 
+with Servlet.Core;
 with ASF.Servlets.Faces;
 with ASF.Servlets.Ajax;
 with ASF.Responses;
@@ -77,8 +78,16 @@ package body ASF.Tests is
    --  Get the test application.
    --  ------------------------------
    function Get_Application return ASF.Applications.Main.Application_Access is
+      use type Servlet.Core.Servlet_Registry_Access;
+      Result : constant Servlet.Core.Servlet_Registry_Access := Servlet.Tests.Get_Application;
    begin
-      return App;
+      if Result = null then
+         return App;
+      elsif Result.all in ASF.Applications.Main.Application'Class then
+         return ASF.Applications.Main.Application'Class (Result.all)'Access;
+      else
+         return App;
+      end if;
    end Get_Application;
 
    --  ------------------------------

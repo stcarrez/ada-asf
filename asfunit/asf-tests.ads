@@ -21,6 +21,7 @@ with ASF.Requests.Mockup;
 with ASF.Responses.Mockup;
 with ASF.Server;
 with ASF.Applications.Main;
+with Servlet.Tests;
 with Util.Tests;
 with Util.XUnit;
 
@@ -40,10 +41,10 @@ package ASF.Tests is
                          Factory     : in out ASF.Applications.Main.Application_Factory'Class);
 
    --  Called when the testsuite execution has finished.
-   procedure Finish (Status : in Util.XUnit.Status);
+   procedure Finish (Status : in Util.XUnit.Status) renames Servlet.Tests.Finish;
 
    --  Get the server
-   function Get_Server return access ASF.Server.Container;
+   function Get_Server return access ASF.Server.Container renames Servlet.Tests.Get_Server;
 
    --  Get the test application.
    function Get_Application return ASF.Applications.Main.Application_Access;
@@ -53,18 +54,19 @@ package ASF.Tests is
    procedure Do_Get (Request  : in out ASF.Requests.Mockup.Request;
                      Response : in out ASF.Responses.Mockup.Response;
                      URI      : in String;
-                     Save     : in String := "");
+                     Save     : in String := "") renames Servlet.Tests.Do_Get;
 
    --  Simulate a POST request on the given URI with the request parameters.
    --  Get the result in the response object.
    procedure Do_Post (Request  : in out ASF.Requests.Mockup.Request;
                       Response : in out ASF.Responses.Mockup.Response;
                       URI      : in String;
-                      Save     : in String := "");
+                      Save     : in String := "") renames Servlet.Tests.Do_Post;
 
    --  Simulate a raw request.  The URI and method must have been set on the Request object.
    procedure Do_Req (Request  : in out ASF.Requests.Mockup.Request;
-                     Response : in out ASF.Responses.Mockup.Response);
+                     Response : in out ASF.Responses.Mockup.Response)
+                     renames Servlet.Tests.Do_Req;
 
    --  Check that the response body contains the string
    procedure Assert_Contains (T       : in Util.Tests.Test'Class;
@@ -72,7 +74,8 @@ package ASF.Tests is
                               Reply   : in out ASF.Responses.Mockup.Response;
                               Message : in String := "Test failed";
                               Source  : String := GNAT.Source_Info.File;
-                              Line    : Natural := GNAT.Source_Info.Line);
+                              Line    : Natural := GNAT.Source_Info.Line)
+                              renames Servlet.Tests.Assert_Contains;
 
    --  Check that the response body matches the regular expression
    procedure Assert_Matches (T       : in Util.Tests.Test'Class;
@@ -81,7 +84,8 @@ package ASF.Tests is
                              Message : in String := "Test failed";
                              Status  : in Natural := ASF.Responses.SC_OK;
                              Source  : String := GNAT.Source_Info.File;
-                             Line    : Natural := GNAT.Source_Info.Line);
+                             Line    : Natural := GNAT.Source_Info.Line)
+                             renames Servlet.Tests.Assert_Matches;
 
    --  Check that the response body is a redirect to the given URI.
    procedure Assert_Redirect (T       : in Util.Tests.Test'Class;
@@ -89,7 +93,8 @@ package ASF.Tests is
                               Reply   : in out ASF.Responses.Mockup.Response;
                               Message : in String := "Test failed";
                               Source  : String := GNAT.Source_Info.File;
-                              Line    : Natural := GNAT.Source_Info.Line);
+                              Line    : Natural := GNAT.Source_Info.Line)
+                              renames Servlet.Tests.Assert_Redirect;
 
    --  Check that the response contains the given header.
    procedure Assert_Header (T       : in Util.Tests.Test'Class;
@@ -99,7 +104,8 @@ package ASF.Tests is
                             Message : in String := "Test failed";
                             Status  : in Natural := ASF.Responses.SC_OK;
                             Source  : String := GNAT.Source_Info.File;
-                            Line    : Natural := GNAT.Source_Info.Line);
+                            Line    : Natural := GNAT.Source_Info.Line)
+                            renames Servlet.Tests.Assert_Header;
 
    type EL_Test is new Util.Tests.Test with record
       --  The ELContext, Variables, Resolver, Form area controlled object.

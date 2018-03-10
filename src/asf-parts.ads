@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Ada.Finalization;
+with Servlet.Parts;
 
 --  The <b>ASF.Parts</b> package is an Ada implementation of the Java servlet part
 --  (JSR 315 3. The Request) provided by the <tt>javax.servlet.http.Part</tt> class.
@@ -28,7 +29,7 @@ package ASF.Parts is
    --  The <b>Part</b> type describes a mime part received in a request.
    --  The content is stored in a file and several operations are provided
    --  to manage the content.
-   type Part is abstract new Ada.Finalization.Limited_Controlled with private;
+   subtype Part is Servlet.Parts.Part;
 
    --  Get the size of the mime part.
    function Get_Size (Data : in Part) return Natural is abstract;
@@ -52,9 +53,5 @@ package ASF.Parts is
    --  Deletes the underlying storage for a file item, including deleting any associated
    --  temporary disk file.
    procedure Delete (Data : in out Part);
-
-private
-
-   type Part is abstract new Ada.Finalization.Limited_Controlled with null record;
 
 end ASF.Parts;

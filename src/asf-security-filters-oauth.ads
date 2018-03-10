@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-filters-oauth -- OAuth Security filter
---  Copyright (C) 2017 Stephane Carrez
+--  Copyright (C) 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Ada.Strings.Unbounded;
-
-with ASF.Filters;
-with ASF.Requests;
-with ASF.Responses;
-with ASF.Servlets;
-with Security.OAuth.Servers; use Security.OAuth;
-with Security.Policies;
 with Servlet.Security.Filters.OAuth;
 
 --  The <b>ASF.Security.Filters.OAuth</b> package provides a servlet filter that

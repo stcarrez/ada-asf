@@ -16,13 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Finalization;
 with Ada.Strings.Unbounded;
 
-with Util.Beans.Basic;
-with Util.Refs;
-with EL.Expressions;
-with EL.Contexts;
 with Servlet.Routes.Servlets;
 
 package ASF.Routes is
@@ -35,7 +30,6 @@ package ASF.Routes is
    subtype Route_Type is Servlet.Routes.Route_Type;
    subtype Route_Type_Access is Servlet.Routes.Route_Type_Access;
    subtype Route_Type_Ref is Servlet.Routes.Route_Type_Ref;
-   --  subtype Route_Type_Access is Route_Type_Refs.Element_Access;
 
    subtype Route_Context_Type is Servlet.Routes.Route_Context_Type;
 

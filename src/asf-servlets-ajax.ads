@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.ajax -- AJAX servlet
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,8 @@
 -----------------------------------------------------------------------
 
 with ASF.Applications.Main;
-
+with ASF.Requests;
+with ASF.Responses;
 package ASF.Servlets.Ajax is
 
    --  ------------------------------
@@ -28,7 +29,7 @@ package ASF.Servlets.Ajax is
    --  URI have the following format:
    --
    --   /<bean-name>/<method-name>[/<param-name>/<value>]
-   type Ajax_Servlet is new Servlet with private;
+   type Ajax_Servlet is new Servlet.Core.Servlet with private;
 
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
@@ -65,7 +66,7 @@ package ASF.Servlets.Ajax is
 
 private
 
-   type Ajax_Servlet is new Servlet with record
+   type Ajax_Servlet is new Servlet.Core.Servlet with record
       App    : ASF.Applications.Main.Application_Access;
    end record;
 

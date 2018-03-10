@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.faces -- Faces servlet
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,16 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Servlet.Core;
+with ASF.Requests;
+with ASF.Responses;
 with ASF.Applications.Main;
 
 package ASF.Servlets.Faces is
 
    --  The <b>Servlet</b> represents the component that will handle
    --  an HTTP request received by the server.
-   type Faces_Servlet is new Servlet with private;
+   type Faces_Servlet is new Servlet.Core.Servlet with private;
 
    --  Called by the servlet container to indicate to a servlet that the servlet
    --  is being placed into service.
@@ -105,7 +108,7 @@ package ASF.Servlets.Faces is
 
 private
 
-   type Faces_Servlet is new Servlet with record
+   type Faces_Servlet is new Servlet.Core.Servlet with record
       App    : ASF.Applications.Main.Application_Access;
    end record;
 

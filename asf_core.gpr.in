@@ -2,6 +2,7 @@ with "@UTIL_DIR@config";
 with "@UTIL_DIR@util";
 with "@EL_DIR@el";
 with "@SECURITY_DIR@security";
+with "@SERVLET_DIR@servlet";
 
 project Asf_Core is
 

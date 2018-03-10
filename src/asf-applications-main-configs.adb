@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications-main-configs -- Configuration support for ASF Applications
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ with EL.Functions.Namespaces;
 
 with ASF.Navigations;
 with ASF.Navigations.Mappers;
-with ASF.Servlets.Mappers;
+with Servlet.Core.Mappers;
 with ASF.Servlets.Faces.Mappers;
 with ASF.Beans.Mappers;
 with ASF.Views.Nodes.Core;
@@ -99,7 +99,7 @@ package body ASF.Applications.Main.Configs is
         new ASF.Navigations.Mappers.Reader_Config (Mapper, Nav, Context.all'Access);
 
       package Servlet_Config is
-        new ASF.Servlets.Mappers.Reader_Config (Mapper, App.all'Access,
+        new Servlet.Core.Mappers.Reader_Config (Mapper, App.all'Access,
                                                 Context.all'Access);
       package Faces_Config is
         new ASF.Servlets.Faces.Mappers.Reader_Config (Mapper, App.all'Access,

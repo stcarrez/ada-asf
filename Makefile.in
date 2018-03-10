@@ -5,7 +5,7 @@ ASF_LIBRARY_TYPE=static
 
 # You may edit this makefile as long as you keep these original 
 # target names defined.
-MODE=distrib
+MODE=debug
 GNATMAKE=@GNATMAKE@
 GNATCLEAN=gnatclean
 GPRINSTALL=@GPRINSTALL@
@@ -13,8 +13,8 @@ INSTALL=@INSTALL@
 DYNAMO=dynamo
 
 GPRPATH=asf.gpr
-ASF_GPRPATH=asf_core.gpr
-AWS_GPRPATH=asf_aws.gpr
+ASF_GPRPATH=asf.gpr
+#AWS_GPRPATH=asf_aws.gpr
 ASF_UNIT_GPRPATH=asf_unit.gpr
 
 BUILDS_SHARED=@BUILDS_SHARED@
@@ -94,8 +94,6 @@ endif
 # Build executables for all mains defined by the project.
 build: setup regtests/asf-testsuite.adb
 	$(GNATMAKE) -m -p -P "$(ASF_GPRPATH)" $(MAKE_ARGS)
-	test T${HAVE_AWS} = Tno || \
-		$(GNATMAKE) -m -p -P "$(AWS_GPRPATH)" $(MAKE_ARGS)
 	$(GNATMAKE) -m -p -Pasf_tests $(MAKE_ARGS)
 
 static:
@@ -192,9 +190,6 @@ ifneq (${GPRINSTALL},)
 		--build-name=$(ASF_LIBRARY_TYPE) $(ASF_GPRPATH)
 	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
 		--build-name=$(ASF_LIBRARY_TYPE) $(ASF_UNIT_GPRPATH)
-	test T${HAVE_AWS} = Tno || \
-	 $(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
-		--build-name=$(ASF_LIBRARY_TYPE) $(AWS_GPRPATH)
 else
 	-rm -rf ${includedir}/ada-asf ${includedir}/ada-asf-aws ${includedir}/ada-asf-unit
 	-rm -rf ${alidir}/ada-asf ${alidir}/ada-asf-aws ${alidir}/ada-asf-unit
@@ -265,11 +260,8 @@ ifneq (${GPRINSTALL},)
 	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(GPRPATH)
 	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(ASF_GPRPATH)
 	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(ASF_UNIT_GPRPATH)
-	-test T${HAVE_AWS} = Tno || \
-	 $(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(AWS_GPRPATH)
 else
 	rm -rf ${includedir}/ada-asf
-	rm -rf ${includedir}/ada-asf-aws
 	rm -rf ${includedir}/ada-asf-unit
 	rm -rf ${alidir}/ada-asf ${alidir}/ada-asf-aws ${alidir}/ada-asf-unit
 	rm -f ${libdir}/$(libname).a

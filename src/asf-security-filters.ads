@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  security-filters -- Security filter
---  Copyright (C) 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ASF.Filters;
-with ASF.Requests;
-with ASF.Responses;
-with ASF.Servlets;
-with ASF.Sessions;
-with ASF.Principals;
-with Security.Policies;  use Security;
 with Servlet.Security.Filters;
 
 --  The <b>Security.Filters</b> package defines a servlet filter that can be activated

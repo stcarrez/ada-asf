@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Render Tests - Unit tests for ASF.Applications.Views
---  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,6 +89,7 @@ package body ASF.Applications.Views.Tests is
       App.Set_Global ("function", "Test_Load_Facelet");
       App.Set_Global ("date", "2011-12-03 03:04:05.23");
       Container.Register_Application ("/asfunit", App'Unchecked_Access);
+      Container.Start;
       for I in 1 .. 2 loop
          declare
             S : Util.Measures.Stamp;

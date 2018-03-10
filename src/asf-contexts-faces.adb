@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ with ASF.Contexts.Flash;
 with ASF.Contexts.Exceptions.Iterate;
 with ASF.Applications.Main;
 with ASF.Applications.Messages.Utils;
-with ASF.Routes.Servlets.Faces;
+with ASF.Routes;
 package body ASF.Contexts.Faces is
 
    package Task_Context is new Ada.Task_Attributes
@@ -473,8 +473,8 @@ package body ASF.Contexts.Faces is
       if Route = null then
          return "";
       end if;
-      if Route.all in ASF.Routes.Servlets.Faces.Faces_Route_Type'Class then
-         return To_String (ASF.Routes.Servlets.Faces.Faces_Route_Type'Class (Route.all).View);
+      if Route.all in ASF.Routes.Faces_Route_Type'Class then
+         return To_String (ASF.Routes.Faces_Route_Type'Class (Route.all).View);
       else
          return Context.Request.Get_Path;
       end if;

@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 
 with Util.Log.Loggers;
+with Util.Serialize.IO.XML;
+
 with EL.Functions.Namespaces;
 
 with ASF.Navigations;

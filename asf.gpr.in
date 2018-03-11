@@ -1,10 +1,8 @@
 with "@UTIL_DIR@config";
---  with "asf_core";
 with "@UTIL_DIR@util";
 with "@EL_DIR@el";
 with "@SECURITY_DIR@security";
-with "@SERVLET_DIR@servlet";
---  @WITH_ASF_AWS@
+with "@SERVLET_DIR@servlet_core";
 
 library project Asf is
 
@@ -12,10 +10,6 @@ library project Asf is
    Library_Dir := "@ASF_LIBDIR@";
    Library_Type : Config.Library_Type_Type := external ("ASF_LIBRARY_TYPE", "static");
 
---   type Server_Type is ("none", "aws");
---   Server : ServletServer_Type := external ("SERVER", "@ASF_SERVER@");
-
---   for Source_Files use ();
    for Source_Dirs use ("src");
 
    for Library_Name use "ada_asf";

@@ -11,14 +11,6 @@ project Asf_Tests is
    Mains := ("asf_harness.adb");
 
    for Source_Dirs use ("regtests");
-   case Servlet.Server is
-      when "aws" =>
-          for Source_Dirs use project'Source_Dirs & ("regtests/aws");
-
-      when others =>
-
-   end case;
-
    for Main use Mains;
 
    for Object_Dir use "./" & Config'Object_Dir & "/obj";

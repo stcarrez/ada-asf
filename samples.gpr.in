@@ -1,12 +1,12 @@
 with "@UTIL_DIR@config";
 with "@UTIL_DIR@util";
 with "@EL_DIR@el";
+with "@SERVLET_DIR@servlet";
 with "asf";
 
 project Samples is
 
-   Mains := ("render.adb", "volume_server.adb", "demo_server.adb",
-   "asf_volume_server.adb", "openid.adb", "upload_server.adb", "api_server.adb");
+   Mains := ("render.adb", "demo_server.adb", "asf_volume_server.adb");
 
    for Main use Mains;
 
@@ -21,7 +21,7 @@ project Samples is
       end case;
    end Naming;
 
-   for Source_Dirs use ("samples", "samples/beans", "samples/rest");
+   for Source_Dirs use ("samples", "samples/beans");
 
    for Object_Dir use "./" & Config'Object_Dir & "/obj";
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";

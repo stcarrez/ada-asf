@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  demo_server -- Demo server for Ada Server Faces
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@ with Ada.IO_Exceptions;
 with ASF.Server.Web;
 with ASF.Servlets;
 with ASF.Servlets.Faces;
-with ASF.Servlets.Files;
-with ASF.Servlets.Measures;
+with Servlet.Core.Files;
+with Servlet.Core.Measures;
 with ASF.Filters.Dump;
 with ASF.Beans;
 with ASF.Applications;
@@ -34,7 +34,6 @@ with Util.Log.Loggers;
 
 with AWS.Net.SSL;
 
-with Upload_Servlet;
 with Countries;
 with Volume;
 with Messages;
@@ -53,11 +52,10 @@ procedure Demo_Server is
    --  Application servlets.
    App          : aliased ASF.Applications.Main.Application;
    Faces        : aliased ASF.Servlets.Faces.Faces_Servlet;
-   Files        : aliased ASF.Servlets.Files.File_Servlet;
+   Files        : aliased Servlet.Core.Files.File_Servlet;
    Auth         : aliased ASF.Security.Servlets.Request_Auth_Servlet;
    Verify_Auth  : aliased ASF.Security.Servlets.Verify_Auth_Servlet;
-   Perf         : aliased ASF.Servlets.Measures.Measure_Servlet;
-   Upload       : aliased Upload_Servlet.Servlet;
+   Perf         : aliased Servlet.Core.Measures.Measure_Servlet;
 
    --  Debug filters.
    Dump         : aliased ASF.Filters.Dump.Dump_Filter;
@@ -117,7 +115,6 @@ begin
    App.Add_Servlet (Name => "perf", Server => Perf'Unchecked_Access);
    App.Add_Filter (Name => "perf", Filter => Perf'Unchecked_Access);
    App.Add_Servlet (Name => "auth", Server => Auth'Unchecked_Access);
-   App.Add_Servlet (Name => "upload", Server => Upload'Unchecked_Access);
    App.Add_Servlet (Name => "verify-auth", Server => Verify_Auth'Unchecked_Access);
 
    --  Define servlet mappings
@@ -128,7 +125,6 @@ begin
    App.Add_Mapping (Name => "verify-auth", Pattern => "/auth/verify");
    App.Add_Mapping (Name => "auth", Pattern => "/auth/auth/*");
    App.Add_Mapping (Name => "perf", Pattern => "/statistics.xml");
-   App.Add_Mapping (Name => "upload", Pattern => "upload.html");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
    App.Add_Filter_Mapping (Name => "dump", Pattern => "*.js");
 

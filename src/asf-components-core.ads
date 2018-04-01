@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core -- ASF Core Components
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,10 @@
 with ASF.Views.Nodes;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
---  with ASF.Events.Faces;
---  with ASF.Lifecycles;
---  with Util.Beans.Objects;
---  private with Ada.Containers.Vectors;
 package ASF.Components.Core is
 
    use ASF.Contexts.Faces;
 
-   --     pragma Elaborate_Body;
 
    type UIComponentBase is new Base.UIComponent with null record;
 
@@ -69,15 +64,15 @@ package ASF.Components.Core is
 
    overriding
    procedure Encode_Children (UI      : in UILeaf;
-                              Context : in out Faces_Context'Class);
+                              Context : in out Faces_Context'Class) is null;
 
    overriding
    procedure Encode_Begin (UI      : in UILeaf;
-                           Context : in out Faces_Context'Class);
+                           Context : in out Faces_Context'Class) is null;
 
    overriding
    procedure Encode_End (UI      : in UILeaf;
-                         Context : in out Faces_Context'Class);
+                         Context : in out Faces_Context'Class) is null;
 
    --  ------------------------------
    --  Component Parameter

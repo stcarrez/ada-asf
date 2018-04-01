@@ -12,7 +12,10 @@ ChangeLog
 configure.lineno
 Makefile
 asf.gpr
-tests.gpr
+asf_aws.gpr
+asf_core.gpr
+asf_tests.gpr
+asf_unit.gpr
 tests.xml
 asf-tests.xml
 autom4te.cache

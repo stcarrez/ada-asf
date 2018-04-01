@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -368,9 +368,6 @@ package ASF.Components.Base is
    procedure Next (Pos : in out Cursor);
 
 private
-
-   --  Delete the component tree recursively.
-   procedure Delete (UI : in out UIComponent_Access);
 
    type UIComponent_List is record
       Child : UIComponent_Access := null;

@@ -39,9 +39,16 @@ package body ASF.Components.Base is
    --  The logger
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Components.Base");
 
+   procedure Free_Component is
+     new Ada.Unchecked_Deallocation (Object => UIComponent'Class,
+                                     Name   => UIComponent_Access);
+
+   procedure Free_Attribute is
+     new Ada.Unchecked_Deallocation (Object => UIAttribute,
+                                     Name   => UIAttribute_Access);
+
    --  Get the UIAttribute associated with the given name.
    --  Returns null if there is no UIAttribute with such name.
-   --  ------------------------------
    function Get_Attribute (UI   : in UIComponent;
                            Name : in String) return UIAttribute_Access;
 
@@ -240,7 +247,7 @@ package body ASF.Components.Base is
          declare
             Facet : UIComponent_Access := Component_Maps.Element (Pos);
          begin
-            Delete (Facet);
+            Free_Component (Facet);
          end;
          UI.Log_Error ("Facet {0} already part of the component tree.", Name);
          UI.Facets.Replace_Element (Pos, Facet);
@@ -944,12 +951,34 @@ package body ASF.Components.Base is
             begin
                exit when not Component_Maps.Has_Element (Iter);
                Item := Component_Maps.Element (Iter);
-               Delete (Item);
+               Free_Component (Item);
                UI.Facets.Delete (Iter);
             end;
          end loop;
          Free (UI.Facets);
       end if;
+
+      --  Release the dynamic attributes.
+      declare
+         A : UIAttribute_Access := UI.Attributes;
+      begin
+         while A /= null loop
+            UI.Attributes := A.Next_Attr;
+            Free_Attribute (A);
+            A := UI.Attributes;
+         end loop;
+      end;
+
+      --  And release the children of this component recursively.
+      declare
+         C : UIComponent_Access := UI.First_Child;
+      begin
+         while C /= null loop
+            UI.First_Child := C.Next;
+            Free_Component (C);
+            C := UI.First_Child;
+         end loop;
+      end;
    end Finalize;
 
    --  ------------------------------
@@ -1054,9 +1083,32 @@ package body ASF.Components.Base is
    --  ------------------------------
    procedure Steal_Root_Component (UI   : in out UIComponent'Class;
                                    Root : in out UIComponent_Access) is
+      procedure Move_Siblings (Tree : in UIComponent_Access);
+
+      --  Move siblings of the component at end of children list.
+      procedure Move_Siblings (Tree : in UIComponent_Access) is
+         Node, Prev : UIComponent_Access;
+      begin
+         Node := Tree.Next;
+         Tree.Next := null;
+         if Tree.Last_Child = null then
+            Tree.First_Child := Node;
+         else
+            Tree.Last_Child.Next := Node;
+         end if;
+
+         --  And reparent these left nodes.
+         while Node /= null loop
+            Prev := Node;
+            Node.Parent := Tree;
+            Node := Node.Next;
+         end loop;
+         Tree.Last_Child := Prev;
+      end Move_Siblings;
+
    begin
       if Root /= null then
-         Delete (Root);
+         Free_Component (Root);
       end if;
       if UI.First_Child = null then
          Root := null;
@@ -1070,7 +1122,8 @@ package body ASF.Components.Base is
       else
          declare
             View : Core.Views.UIView_Access;
-            Node : UIComponent_Access := UI.First_Child;
+            Tree : UIComponent_Access := UI.First_Child;
+            Node : UIComponent_Access := Tree;
             Prev : UIComponent_Access := null;
          begin
             while Node /= null and then not (Node.all in Core.Views.UIView'Class) loop
@@ -1083,30 +1136,29 @@ package body ASF.Components.Base is
                --  Move the left components below the <f:view> component.
                if Prev /= null then
                   Prev.Next := null;
-                  View.Set_Before_View (UI.First_Child);
 
-                  --  Reparent the left nodes to the real <f:view> root component.
-                  Node := UI.First_Child;
-                  loop
-                     Node.Parent := View.all'Access;
-                     Node := Node.Next;
-                     exit when Node = null;
-                  end loop;
+                  --  Reparent the first left node to the real <f:view> root component
+                  --  and make it the root of the left tree before the <f:view>.
+                  Tree.Parent := View.all'Access;
+                  View.Set_Before_View (Tree);
+
+                  --  Move other left nodes at end of children list of our new left tree.
+                  --  This is necessary to correctly release them.
+                  Move_Siblings (Tree);
                   Node := View.all'Access;
                end if;
 
                --  Move the right components below the <f:view> component.
                if Node.Next /= null then
-                  Node := Node.Next;
-                  View.Set_After_View (Node);
+                  Tree := Node.Next;
 
-                  loop
-                     Node.Parent := View.all'Access;
-                     Node := Node.Next;
-                     exit when Node = null;
-                  end loop;
+                  --  Reparent the first right node to the real <f:view> root component
+                  --  and make it the root of the right tree after the <f:view>.
+                  Tree.Parent := View.all'Access;
+                  View.Set_After_View (Tree);
+
+                  Move_Siblings (Tree);
                   Node := View.all'Access;
-                  Node.Next := null;
                end if;
 
             else
@@ -1132,42 +1184,6 @@ package body ASF.Components.Base is
          end;
       end if;
    end Steal_Root_Component;
-
-   procedure Free_Component is
-     new Ada.Unchecked_Deallocation (Object => UIComponent'Class,
-                                     Name   => UIComponent_Access);
-
-   procedure Free_Attribute is
-     new Ada.Unchecked_Deallocation (Object => UIAttribute,
-                                     Name   => UIAttribute_Access);
-
-   --  ------------------------------
-   --  Delete the component tree recursively.
-   --  ------------------------------
-   procedure Delete (UI : in out UIComponent_Access) is
-   begin
-      if UI /= null then
-         declare
-            C : UIComponent_Access := UI.First_Child;
-         begin
-            while C /= null loop
-               UI.First_Child := C.Next;
-               Delete (C);
-               C := UI.First_Child;
-            end loop;
-         end;
-         declare
-            A : UIAttribute_Access := UI.Attributes;
-         begin
-            while A /= null loop
-               UI.Attributes := A.Next_Attr;
-               Free_Attribute (A);
-               A := UI.Attributes;
-            end loop;
-         end;
-         Free_Component (UI);
-      end if;
-   end Delete;
 
    --  ------------------------------
    --  Get an iterator to scan the component children.

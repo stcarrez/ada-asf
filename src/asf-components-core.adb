@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core -- ASF Core Components
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,9 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
 with Ada.Unchecked_Deallocation;
 package body ASF.Components.Core is
 
-   use ASF;
    use EL.Objects;
 
    --  ------------------------------
@@ -53,6 +51,7 @@ package body ASF.Components.Core is
       use type ASF.Views.Nodes.Expression_Access_Array_Access;
    begin
       if UI.Expr_Table /= null then
+         UI.Log_Error ("Expression table already initialized");
          raise Program_Error with "Expression table already initialized";
       end if;
       UI.Expr_Table := Expr_Table;
@@ -78,6 +77,7 @@ package body ASF.Components.Core is
          end loop;
          Free (UI.Expr_Table);
       end if;
+      Base.UIComponent (UI).Finalize;
    end Finalize;
 
    function Create_UIText (Tag : ASF.Views.Nodes.Text_Tag_Node_Access)
@@ -87,34 +87,6 @@ package body ASF.Components.Core is
       Result.Text := Tag;
       return Result;
    end Create_UIText;
-
-   --  ------------------------------
-   --  Abstract Leaf component
-   --  ------------------------------
-   overriding
-   procedure Encode_Children (UI      : in UILeaf;
-                              Context : in out Faces_Context'Class) is
-   begin
-      null;
-   end Encode_Children;
-
-   overriding
-   procedure Encode_Begin (UI      : in UILeaf;
-                           Context : in out Faces_Context'Class) is
-   begin
-      null;
-   end Encode_Begin;
-
-   overriding
-   procedure Encode_End (UI      : in UILeaf;
-                         Context : in out Faces_Context'Class) is
-   begin
-      null;
-   end Encode_End;
-
-   --  ------------------------------
-   --  Component Parameter
-   --  ------------------------------
 
    --  ------------------------------
    --  Get the parameter name

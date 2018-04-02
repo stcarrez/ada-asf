@@ -264,7 +264,7 @@ package body Facebook is
             S      : constant ASF.Sessions.Session := F.Get_Session (True);
             Id     : constant String := S.Get_Id;
             State  : constant String := From.Get_State (Id);
-            Params : constant String := From.Get_Auth_Params (State, "read_stream");
+            Params : constant String := From.Get_Auth_Params (State, "user_posts");
          begin
             Log.Info ("OAuth params: {0}", Params);
 

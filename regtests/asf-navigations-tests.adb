@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-tests -  Tests for ASF navigation
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,6 +49,9 @@ package body ASF.Navigations.Tests is
       Caller.Add_Test (Suite, "Test navigation condition match (view, outcome)",
                        Test_Conditional_Navigation'Access);
 
+      Caller.Add_Test (Suite, "Test navigation with status",
+                       Test_Status_Navigation'Access);
+
    end Add_Tests;
 
    --  ------------------------------
@@ -69,10 +72,11 @@ package body ASF.Navigations.Tests is
    --  ------------------------------
    --  Check the navigation for an URI and expect the result to match the regular expression.
    --  ------------------------------
-   procedure Check_Navigation (T     : in out Test;
-                               Name  : in String;
-                               Match : in String;
-                               Raise_Flag : in Boolean := False) is
+   procedure Check_Navigation (T          : in out Test;
+                               Name       : in String;
+                               Match      : in String;
+                               Raise_Flag : in Boolean := False;
+                               Status     : in Natural := 200) is
       Request  : ASF.Requests.Mockup.Request;
       Reply    : ASF.Responses.Mockup.Response;
       Form     : aliased ASF.Applications.Tests.Form_Bean;
@@ -91,7 +95,7 @@ package body ASF.Navigations.Tests is
       Request.Set_Parameter ("ok", "1");
       Do_Post (Request, Reply, "/tests/" & Name & ".html", Name & "form-navigation-exact.txt");
       Assert_Matches (T, Match,
-                      Reply, "Wrong generated content");
+                      Reply, "Wrong generated content", Status);
    end Check_Navigation;
 
    --  ------------------------------
@@ -133,5 +137,13 @@ package body ASF.Navigations.Tests is
    begin
       T.Check_Navigation ("form-nav-condition", ".*success condition.*", False);
    end Test_Conditional_Navigation;
+
+   --  ------------------------------
+   --  Test a navigation rule with a status.
+   --  ------------------------------
+   procedure Test_Status_Navigation (T : in out Test) is
+   begin
+      T.Check_Navigation ("form-nav-status", ".*success status.*", False, 400);
+   end Test_Status_Navigation;
 
 end ASF.Navigations.Tests;

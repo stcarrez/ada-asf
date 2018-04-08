@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-restore -- Restore view phase
---  Copyright (C) 2010, 2011, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,10 @@ with Util.Log.Loggers;
 package body ASF.Lifecycles.Restore is
 
    use Ada.Exceptions;
-   use Util.Log;
    use ASF.Applications;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Lifecycles.Restore");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Lifecycles.Restore");
 
    --  ------------------------------
    --  Initialize the phase controller.
@@ -55,8 +54,13 @@ package body ASF.Lifecycles.Restore is
 
       Context.Set_View_Root (View);
 
-      --  If this is not a postback, check for view parameters.
-      if Req.Get_Method = "GET" then
+      --  If the view was not found, render the response immediately.
+      --  The missing page will be handled by the lifecycle response handler.
+      if Components.Root.Get_Root (View) = null then
+         Context.Render_Response;
+
+         --  If this is not a postback, check for view parameters.
+      elsif Req.Get_Method = "GET" then
          --  We need to process the ASF lifecycle towards the meta data component tree.
          --  This allows some Ada beans to be initialized from the request parameters
          --  and have some component actions called on the http GET (See <f:viewActions)).

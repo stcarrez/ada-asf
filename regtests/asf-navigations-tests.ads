@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-tests -  Tests for ASF navigation
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,10 +43,14 @@ package ASF.Navigations.Tests is
    --  Test a form navigation with a condition (view, outcome, condition).
    procedure Test_Conditional_Navigation (T : in out Test);
 
+   --  Test a navigation rule with a status.
+   procedure Test_Status_Navigation (T : in out Test);
+
    --  Check the navigation for an URI and expect the result to match the regular expression.
-   procedure Check_Navigation (T     : in out Test;
-                               Name  : in String;
-                               Match : in String;
-                               Raise_Flag : in Boolean := False);
+   procedure Check_Navigation (T          : in out Test;
+                               Name       : in String;
+                               Match      : in String;
+                               Raise_Flag : in Boolean := False;
+                               Status     : in Natural := 200);
 
 end ASF.Navigations.Tests;

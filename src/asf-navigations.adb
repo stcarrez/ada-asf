@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations -- Navigations
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -275,7 +275,7 @@ package body ASF.Navigations is
                                   Action    : in String := "";
                                   Condition : in String := "";
                                   Context   : in EL.Contexts.ELContext'Class) is
-      C : constant Navigation_Access := Render.Create_Render_Navigator (To);
+      C : constant Navigation_Access := Render.Create_Render_Navigator (To, 0);
    begin
       Handler.Add_Navigation_Case (C, From, Outcome, Action, Condition, Context);
    end Add_Navigation_Case;

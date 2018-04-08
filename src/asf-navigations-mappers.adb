@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-reader -- Read XML navigation files
---  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,11 +29,11 @@ package body ASF.Navigations.Mappers is
    --  ------------------------------
    procedure Reset (N : in out Nav_Config) is
    begin
-
       N.To_View   := Empty;
       N.Outcome   := Empty;
       N.Action    := Empty;
       N.Condition := Empty;
+      N.Status    := 0;
       N.Redirect  := False;
    end Reset;
 
@@ -74,6 +74,9 @@ package body ASF.Navigations.Mappers is
          when CONTENT_TYPE =>
             N.Content_Type := Value;
 
+         when STATUS =>
+            N.Status := Util.Beans.Objects.To_Integer (Value);
+
          when NAVIGATION_CASE =>
             declare
                Navigator : Navigation_Access;
@@ -81,7 +84,7 @@ package body ASF.Navigations.Mappers is
                if N.Redirect then
                   Navigator := Create_Redirect_Navigator (To_String (N.To_View), N.Context.all);
                else
-                  Navigator := Create_Render_Navigator (To_String (N.To_View));
+                  Navigator := Create_Render_Navigator (To_String (N.To_View), N.Status);
                end if;
                N.Handler.Add_Navigation_Case (Navigator => Navigator,
                                               From      => To_String (N.From_View),
@@ -128,6 +131,7 @@ begin
 --     Mapping.Add_Mapping ("navigation-case/redirect/include-view-params", INCLUDE_VIEW_PARAMS);
    Mapping.Add_Mapping ("navigation-rule/navigation-case/redirect", REDIRECT);
    Mapping.Add_Mapping ("navigation-rule/navigation-case/content", CONTENT);
+   Mapping.Add_Mapping ("navigation-rule/navigation-case/status", STATUS);
    Mapping.Add_Mapping ("navigation-rule/navigation-case/content/@type", CONTENT_TYPE);
    Mapping.Add_Mapping ("navigation-rule/navigation-case", NAVIGATION_CASE);
    Mapping.Add_Mapping ("navigation-rule", NAVIGATION_RULE);

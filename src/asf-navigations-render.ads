@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-render -- Navigator to render a page
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ package ASF.Navigations.Render is
    --  Render page navigator
    --  ------------------------------
    --  The <b>Render_Navigator</b> defines the page that must be rendered for the response.
-   type Render_Navigator is new Navigation_Case with private;
+   type Render_Navigator (Len : Natural) is new Navigation_Case with private;
    type Render_Navigator_Access is access all Render_Navigator'Class;
 
    --  Navigate to the next page or action according to the controller's navigator.
@@ -32,12 +32,14 @@ package ASF.Navigations.Render is
                        Context    : in out ASF.Contexts.Faces.Faces_Context'Class);
 
    --  Create a navigation case to render a view.
-   function Create_Render_Navigator (To_View : in String) return Navigation_Access;
+   function Create_Render_Navigator (To_View : in String;
+                                     Status  : in Natural) return Navigation_Access;
 
 private
 
-   type Render_Navigator is new Navigation_Case with record
-      View_Name    : Unbounded_String;
+   type Render_Navigator (Len : Natural) is new Navigation_Case with record
+      Status       : Natural := 0;
+      View_Name    : String (1 .. Len);
    end record;
 
 end ASF.Navigations.Render;

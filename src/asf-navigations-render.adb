@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-render -- Navigator to render a page
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,11 +22,10 @@ with ASF.Components.Root;
 package body ASF.Navigations.Render is
 
    use Ada.Exceptions;
-   use Util.Log;
    use ASF.Applications;
 
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Navigations.Render");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Navigations.Render");
 
    --  ------------------------------
    --  Navigate to the next page or action according to the controller's navigator.
@@ -36,18 +35,20 @@ package body ASF.Navigations.Render is
    overriding
    procedure Navigate (Controller : in Render_Navigator;
                        Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
-      Name : constant String := To_String (Controller.View_Name);
       View : Components.Root.UIViewRoot;
    begin
-      Log.Debug ("Navigate to view {0}", Name);
+      Log.Debug ("Navigate to view {0}", Controller.View_Name);
 
-      Controller.View_Handler.Create_View (Name, Context, View);
+      if Controller.Status /= 0 then
+         Context.Get_Response.Set_Status (Controller.Status);
+      end if;
+      Controller.View_Handler.Create_View (Controller.View_Name, Context, View);
 
       Context.Set_View_Root (View);
 
    exception
       when E : others =>
-         Log.Error ("Error when navigating to view {0}: {1}: {2}", Name,
+         Log.Error ("Error when navigating to view {0}: {1}: {2}", Controller.View_Name,
                     Exception_Name (E), Exception_Message (E));
          raise;
 
@@ -56,10 +57,14 @@ package body ASF.Navigations.Render is
    --  ------------------------------
    --  Create a navigation case to render a view.
    --  ------------------------------
-   function Create_Render_Navigator (To_View : in String) return Navigation_Access is
-      Result : constant Render_Navigator_Access := new Render_Navigator;
+   function Create_Render_Navigator (To_View : in String;
+                                     Status  : in Natural) return Navigation_Access is
+      Result : constant Render_Navigator_Access
+        := new Render_Navigator '(Len       => To_View'Length,
+                                  Status    => Status,
+                                  View_Name => To_View,
+                                  others    => <>);
    begin
-      Result.View_Name := To_Unbounded_String (To_View);
       return Result.all'Access;
    end Create_Render_Navigator;
 

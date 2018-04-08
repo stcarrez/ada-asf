@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-mappers -- Read XML navigation files
---  Copyright (C) 2010, 2011, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,8 @@ with EL.Contexts;
 package ASF.Navigations.Mappers is
 
    type Navigation_Case_Fields is (FROM_VIEW_ID, OUTCOME, ACTION, TO_VIEW, REDIRECT, CONDITION,
-                                   CONTENT, CONTENT_TYPE, NAVIGATION_CASE, NAVIGATION_RULE);
+                                   CONTENT, CONTENT_TYPE, NAVIGATION_CASE, NAVIGATION_RULE,
+                                   STATUS);
 
    --  ------------------------------
    --  Navigation Config Reader
@@ -44,6 +45,7 @@ package ASF.Navigations.Mappers is
       Condition    : Util.Beans.Objects.Object;
       Content      : Util.Beans.Objects.Object;
       Content_Type : Util.Beans.Objects.Object;
+      Status       : Natural := 0;
       Context      : EL.Contexts.ELContext_Access;
       Handler      : Navigation_Handler_Access;
    end record;

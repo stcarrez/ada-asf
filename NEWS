@@ -3,6 +3,7 @@ Version 1.2     -
   - New REST servlet with support for server API implementation
   - Provide pre-defined beans in ASF contexts: requestScope
   - Add support for servlet requests to retrieve the body content as a stream
+  - Improvement of navigation rules to allow setting the return status
 
 Version 1.1     - Dec 2015
   - New EL function util:formatDate

@@ -90,4 +90,19 @@
     </navigation-case>
   </navigation-rule>
 
+  <navigation-rule>
+    <from-view-id>/tests/form-nav-status.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>asf.applications.tests.test_exception</from-outcome>
+      <status>500</status>
+      <to-view-id>/tests/nav-status.xhtml</to-view-id>
+    </navigation-case>
+
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <status>400</status>
+      <to-view-id>/tests/nav-status.xhtml</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
 </faces-config>

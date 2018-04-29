@@ -36,6 +36,9 @@ package body ASF.Converters.Tests is
                                    Time_Style : in Dates.Style_Type;
                                    Expect     : in String);
 
+   procedure Test_Conversion_Error (T          : in out Test;
+                                    Value      : in String);
+
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 
    begin
@@ -56,6 +59,8 @@ package body ASF.Converters.Tests is
                        Test_Time_Medium_Converter'Access);
       Caller.Add_Test (Suite, "Test ASF.Converters.Dates.To_String (Time, Long)",
                        Test_Time_Long_Converter'Access);
+      Caller.Add_Test (Suite, "Test ASF.Converters.Dates.To_Object (Error)",
+                       Test_Date_Converter_Error'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -125,9 +130,9 @@ package body ASF.Converters.Tests is
          end if;
 
       exception
-         when E : others =>
-            --  T.Fail ("Exception when converting date string: " & R);
-            raise;
+         when others =>
+            T.Fail ("Exception when converting date string: " & R);
+
       end;
       Free (C);
    end Test_Date_Conversion;
@@ -194,5 +199,50 @@ package body ASF.Converters.Tests is
       Test_Date_Conversion (T, ASF.Converters.Dates.DEFAULT, ASF.Converters.Dates.LONG,
                             "03:04:05");
    end Test_Time_Long_Converter;
+
+   --  ------------------------------
+   --  Test getting an attribute from the faces context.
+   --  ------------------------------
+   procedure Test_Conversion_Error (T          : in out Test;
+                                    Value      : in String) is
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => ASF.Converters.Dates.Date_Converter'Class,
+                                        Name   => ASF.Converters.Dates.Date_Converter_Access);
+
+      Ctx   : aliased ASF.Contexts.Faces.Faces_Context;
+      UI    : ASF.Components.Html.Text.UIOutput;
+      C     : ASF.Converters.Dates.Date_Converter_Access;
+   begin
+      T.Setup (Ctx);
+      ASF.Contexts.Faces.Set_Current (Ctx'Unchecked_Access, ASF.Tests.Get_Application.all'Access);
+
+      C := ASF.Converters.Dates.Create_Date_Converter (Date    => ASF.Converters.Dates.LONG,
+                                                       Time    => ASF.Converters.Dates.LONG,
+                                                       Format  => ASF.Converters.Dates.BOTH,
+                                                       Locale  => "en",
+                                                       Pattern => "");
+      UI.Set_Converter (C.all'Access);
+      declare
+         V : Util.Beans.Objects.Object;
+         pragma Unreferenced (V);
+      begin
+         V := C.To_Object (Ctx, UI, Value);
+         T.Fail ("No exception raised for " & Value);
+
+      exception
+         when Invalid_Conversion =>
+            null;
+
+      end;
+      Free (C);
+   end Test_Conversion_Error;
+
+   --  ------------------------------
+   --  Test converter reporting conversion errors when converting a string back to a date.
+   --  ------------------------------
+   procedure Test_Date_Converter_Error (T : in out Test) is
+   begin
+      Test_Conversion_Error (T, "some invalid date");
+   end Test_Date_Converter_Error;
 
 end ASF.Converters.Tests;

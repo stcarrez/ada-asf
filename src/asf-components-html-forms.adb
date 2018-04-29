@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -163,6 +163,25 @@ package body ASF.Components.Html.Forms is
    begin
       return Context.Get_Parameter (To_String (Id));
    end Get_Parameter;
+
+   --  ------------------------------
+   --  Convert the string into a value.  If a converter is specified on the component,
+   --  use it to convert the value.
+   --  ------------------------------
+   function Convert_Value (UI      : in UIInput;
+                           Value   : in String;
+                           Context : in Faces_Context'Class) return EL.Objects.Object is
+      Convert : constant access ASF.Converters.Converter'Class
+        := UIInput'Class (UI).Get_Converter (Context);
+   begin
+      if Convert = null then
+         return EL.Objects.To_Object (Value);
+      else
+         return Convert.To_Object (Context   => Context,
+                                   Component => UI,
+                                   Value     => Value);
+      end if;
+   end Convert_Value;
 
    overriding
    procedure Process_Decodes (UI      : in out UIInput;

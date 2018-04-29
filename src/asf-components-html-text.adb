@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -106,6 +106,28 @@ package body ASF.Components.Html.Text is
    begin
       return UIOutput'Class (UI).Get_Formatted_Value (Value, Context);
    end Get_Formatted_Value;
+
+   --  ------------------------------
+   --  Get the converter associated with the component
+   --  ------------------------------
+   function Get_Converter (UI      : in UIOutput;
+                           Context : in Faces_Context'Class)
+                           return access ASF.Converters.Converter'Class is
+      use type ASF.Converters.Converter_Access;
+      Result : ASF.Converters.Converter_Access := UIOutput'Class (UI).Get_Converter;
+   begin
+      if Result /= null then
+         return Result;
+      else
+         declare
+            Name : constant EL.Objects.Object
+              := UIOutput'Class (UI).Get_Attribute (Name    => CONVERTER_NAME,
+                                                    Context => Context);
+         begin
+            return Context.Get_Converter (Name);
+         end;
+      end if;
+   end Get_Converter;
 
    --  ------------------------------
    --  Format the value by appling the To_String converter on it if there is one.

@@ -4,6 +4,7 @@ Version 1.2     -
   - Provide pre-defined beans in ASF contexts: requestScope
   - Add support for servlet requests to retrieve the body content as a stream
   - Improvement of navigation rules to allow setting the return status
+  - Moved the servlet support in a separate project: ada-servlet
 
 Version 1.1     - Dec 2015
   - New EL function util:formatDate

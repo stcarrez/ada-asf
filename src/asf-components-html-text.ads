@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,6 +60,11 @@ package ASF.Components.Html.Text is
    procedure Set_Converter (UI        : in out UIOutput;
                             Converter : in ASF.Converters.Converter_Access;
                             Release   : in Boolean := False);
+
+   --  Get the converter associated with the component
+   function Get_Converter (UI      : in UIOutput;
+                           Context : in Faces_Context'Class)
+                           return access ASF.Converters.Converter'Class;
 
    overriding
    procedure Finalize (UI : in out UIOutput);

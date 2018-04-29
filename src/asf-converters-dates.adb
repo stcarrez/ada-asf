@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-dates -- Date Converters
---  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -175,10 +175,37 @@ package body ASF.Converters.Dates is
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;
                        Value     : in String) return Util.Beans.Objects.Object is
-      pragma Unreferenced (Convert, Context, Component, Value);
+      Locale  : constant Util.Locales.Locale
+        := Date_Converter'Class (Convert).Get_Locale (Context);
+      Bundle  : ASF.Locales.Bundle;
    begin
-      Log.Error ("String to date conversion is not yet implemented");
-      return Util.Beans.Objects.Null_Object;
+      begin
+         ASF.Applications.Main.Load_Bundle (Context.Get_Application.all,
+                                            Name   => "asf",
+                                            Locale => Util.Locales.To_String (Locale),
+                                            Bundle => Bundle);
+
+      exception
+         when E : Util.Properties.Bundles.NO_BUNDLE =>
+            Log.Error ("Cannot localize dates: {0}", Ada.Exceptions.Exception_Message (E));
+      end;
+
+      --  Convert the string to a date here so that we can raise an Invalid_Conversion exception.
+      declare
+         Pattern : constant String
+           := Date_Converter'Class (Convert).Get_Pattern (Context, Bundle, Component);
+         Date    : Util.Dates.Date_Record;
+      begin
+         Log.Debug ("Date conversion '{0}' with pattern '{1}'", Value, Pattern);
+         Date := Util.Dates.Formats.Parse (Pattern => Pattern, Date => Value, Bundle => Bundle);
+         return Util.Beans.Objects.Time.To_Object (Date.Date);
+
+      exception
+         when E : others =>
+            Log.Error ("Date '{0}' does not match pattern '{1}'", Value, Pattern);
+            raise Invalid_Conversion with Ada.Exceptions.Exception_Message (E);
+
+      end;
    end To_Object;
 
    --  ------------------------------

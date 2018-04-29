@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-tests - Unit tests for ASF.Converters
---  Copyright (C) 2014 Stephane Carrez
+--  Copyright (C) 2014, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,5 +45,8 @@ package ASF.Converters.Tests is
 
    --  Test the time long converter.
    procedure Test_Time_Long_Converter (T : in out Test);
+
+   --  Test converter reporting conversion errors when converting a string back to a date.
+   procedure Test_Date_Converter_Error (T : in out Test);
 
 end ASF.Converters.Tests;

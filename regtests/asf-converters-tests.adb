@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ with Ada.Calendar.Formatting;
 with Ada.Unchecked_Deallocation;
 with Util.Beans.Objects.Time;
 with Util.Test_Caller;
+with Util.Dates;
 with ASF.Tests;
 with ASF.Components.Html.Text;
 with ASF.Converters.Dates;
@@ -98,9 +99,35 @@ package body ASF.Converters.Tests is
       end if;
       UI.Set_Converter (C.all'Access);
       declare
+         use type Ada.Calendar.Time;
+
          R : constant String := C.To_String (Ctx, UI, Util.Beans.Objects.Time.To_Object (D));
+         V : Util.Beans.Objects.Object;
+         S : Util.Dates.Date_Record;
       begin
          Util.Tests.Assert_Equals (T, Expect, R, "Invalid date conversion");
+
+         V := C.To_Object (Ctx, UI, R);
+         Util.Dates.Split (Into => S, Date => Util.Beans.Objects.Time.To_Time (V));
+
+         if Date_Style /= Dates.DEFAULT then
+            T.Assert (Util.Dates.Is_Same_Day (Util.Beans.Objects.Time.To_Time (V), D),
+                      "Invalid date");
+         else
+            Util.Tests.Assert_Equals (T, 3, Natural (S.Hour),
+                                      "Invalid date conversion: hour");
+            Util.Tests.Assert_Equals (T, 4, Natural (S.Minute),
+                                      "Invalid date conversion: minute");
+            if Time_Style = Dates.LONG then
+               Util.Tests.Assert_Equals (T, 5, Natural (S.Second),
+                                         "Invalid date conversion: second");
+            end if;
+         end if;
+
+      exception
+         when E : others =>
+            --  T.Fail ("Exception when converting date string: " & R);
+            raise;
       end;
       Free (C);
    end Test_Date_Conversion;

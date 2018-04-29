@@ -171,17 +171,6 @@ package ASF.Components.Base is
    function Get_Label (UI      : in UIComponent'Class;
                        Context : in Faces_Context'Class) return Util.Beans.Objects.Object;
 
-   --  Get the converter associated with the component
-   function Get_Converter (UI      : in UIComponent;
-                           Context : in Faces_Context'Class)
-                           return access ASF.Converters.Converter'Class;
-
-   --  Convert the string into a value.  If a converter is specified on the component,
-   --  use it to convert the value.
-   function Convert_Value (UI      : in UIComponent;
-                           Value   : in String;
-                           Context : in Faces_Context'Class) return EL.Objects.Object;
-
    --  Get the expression
    function Get_Expression (UI   : in UIComponent;
                             Name : in String) return EL.Expressions.Expression;

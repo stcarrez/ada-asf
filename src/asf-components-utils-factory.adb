@@ -144,6 +144,7 @@ package body ASF.Components.Utils.Factory is
    function Url_Encode (Value : in EL.Objects.Object) return EL.Objects.Object;
 
    --  Encode the object into a SHA256.
+   function SHA256 (Value : in EL.Objects.Object) return EL.Objects.Object;
    function SHA256_Base64 (Value : in EL.Objects.Object) return EL.Objects.Object;
 
    --  Format a date using the given date pattern.
@@ -183,6 +184,9 @@ package body ASF.Components.Utils.Factory is
       Mapper.Set_Function (Name      => "sha256base64",
                            Namespace => URI,
                            Func      => SHA256_Base64'Access);
+      Mapper.Set_Function (Name      => "sha256",
+                           Namespace => URI,
+                           Func      => SHA256'Access);
    end Set_Functions;
 
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object is
@@ -305,6 +309,19 @@ package body ASF.Components.Utils.Factory is
       Util.Encoders.SHA256.Finish_Base64 (Context, Result);
       return Util.Beans.Objects.To_Object (Result);
    end SHA256_Base64;
+
+   --  ------------------------------
+   --  Encode the object into a SHA256.
+   --  ------------------------------
+   function SHA256 (Value : in EL.Objects.Object) return EL.Objects.Object is
+      Content  : constant String := Util.Beans.Objects.To_String (Value);
+      Context  : Util.Encoders.SHA256.Context;
+      Result   : Util.Encoders.SHA256.Digest;
+   begin
+      Util.Encoders.SHA256.Update (Context, Content);
+      Util.Encoders.SHA256.Finish (Context, Result);
+      return Util.Beans.Objects.To_Object (Result);
+   end SHA256;
 
 end ASF.Components.Utils.Factory;
 

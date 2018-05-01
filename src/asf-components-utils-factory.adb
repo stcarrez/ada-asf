@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,7 @@ with Util.Dates.Formats;
 with Util.Dates.ISO8601;
 with Util.Beans.Objects.Time;
 with Util.Locales;
+with Util.Encoders.SHA256;
 with Util.Strings.Transforms; use Util.Strings;
 
 package body ASF.Components.Utils.Factory is
@@ -142,6 +143,9 @@ package body ASF.Components.Utils.Factory is
    --  Encode the string for URL.
    function Url_Encode (Value : in EL.Objects.Object) return EL.Objects.Object;
 
+   --  Encode the object into a SHA256.
+   function SHA256_Base64 (Value : in EL.Objects.Object) return EL.Objects.Object;
+
    --  Format a date using the given date pattern.
    function Format_Date (Date   : in EL.Objects.Object;
                          Format : in EL.Objects.Object) return EL.Objects.Object;
@@ -176,6 +180,9 @@ package body ASF.Components.Utils.Factory is
       Mapper.Set_Function (Name      => "translate",
                            Namespace => URI,
                            Func      => Translate'Access);
+      Mapper.Set_Function (Name      => "sha256base64",
+                           Namespace => URI,
+                           Func      => SHA256_Base64'Access);
    end Set_Functions;
 
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object is
@@ -285,6 +292,19 @@ package body ASF.Components.Utils.Factory is
       end loop;
       return Util.Beans.Objects.To_Object (T (1 .. Pos - 1));
    end Url_Encode;
+
+   --  ------------------------------
+   --  Encode the object into a SHA256.
+   --  ------------------------------
+   function SHA256_Base64 (Value : in EL.Objects.Object) return EL.Objects.Object is
+      Content  : constant String := Util.Beans.Objects.To_String (Value);
+      Context  : Util.Encoders.SHA256.Context;
+      Result   : Util.Encoders.SHA256.Base64_Digest;
+   begin
+      Util.Encoders.SHA256.Update (Context, Content);
+      Util.Encoders.SHA256.Finish_Base64 (Context, Result);
+      return Util.Beans.Objects.To_Object (Result);
+   end SHA256_Base64;
 
 end ASF.Components.Utils.Factory;
 

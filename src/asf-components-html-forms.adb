@@ -202,7 +202,9 @@ package body ASF.Components.Html.Forms is
             return;
          end if;
          if not UI.Is_Secret then
-            Log.Debug ("Set input parameter {0} -> {1}", Id, Val);
+            Log.Info ("Set input parameter {0} -> {1}", Id, Val);
+         else
+            Log.Info ("Set secret input parameter {0} -> XXXXXX", Id);
          end if;
          UI.Submitted_Value := UIInput'Class (UI).Convert_Value (Val, Context);
          UI.Is_Valid := True;
@@ -248,7 +250,7 @@ package body ASF.Components.Html.Forms is
                        Context : in out Faces_Context'Class) is
       Id : constant String := Ada.Strings.Unbounded.To_String (UI.Get_Client_Id);
    begin
-      Log.Debug ("validating input field {0}", Id);
+      Log.Debug ("Validating input field {0}", Id);
 
       if not EL.Objects.Is_Null (UI.Submitted_Value) then
          UIInput'Class (UI).Validate_Value (UI.Submitted_Value, Context);
@@ -469,7 +471,7 @@ package body ASF.Components.Html.Forms is
       Req : constant ASF.Requests.Request_Access := Context.Get_Request;
       Id  : constant String := To_String (UI.Get_Client_Id);
    begin
-      Log.Info ("validating input file {0}", Id);
+      Log.Debug ("Validating input file {0}", Id);
 
       UI.Is_Valid := False;
       Req.Process_Part (Id, Process_Part'Access);
@@ -564,15 +566,18 @@ package body ASF.Components.Html.Forms is
          Id  : constant Unbounded_String := UI.Get_Client_Id;
          Val : constant String := Context.Get_Parameter (To_String (Id));
       begin
-         Log.Info ("Check command input parameter {0} -> {1}", Id, Val);
          if Val /= "" then
+            Log.Info ("Command {0} was submitted with {1}", Id, Val);
             ASF.Events.Faces.Actions.Post_Event (UI     => UI,
                                                  Method => UI.Get_Action_Expression (Context));
+         else
+            Log.Debug ("Command {0} was not submitted", Id);
          end if;
 
       exception
-         when EL.Expressions.Invalid_Expression =>
-            null;
+         when E : EL.Expressions.Invalid_Expression =>
+            Log.Info ("{0}: Command action looks invalid: {1}",
+                      Utils.Get_Line_Info (UI), Ada.Exceptions.Exception_Message (E));
       end;
    end Process_Decodes;
 
@@ -726,6 +731,8 @@ package body ASF.Components.Html.Forms is
          Log.Info ("Decoding form {0}", UI.Get_Client_Id);
 
          UI.Decode_Children (Context);
+      else
+         Log.Debug ("Form {0} was not submitted", UI.Get_Client_Id);
       end if;
    end Process_Decodes;
 

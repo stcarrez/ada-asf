@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.faces -- Faces servlet
---  Copyright (C) 2010, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,13 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Log.Loggers;
 with ASF.Applications;
 
 package body ASF.Servlets.Faces is
+
+   --  The logger
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Servlets.Faces");
 
    --  ------------------------------
    --  Called by the servlet container to indicate to a servlet that the servlet
@@ -78,6 +82,7 @@ package body ASF.Servlets.Faces is
                      Response : in out Responses.Response'Class) is
       URI    : constant String := Request.Get_Servlet_Path;
    begin
+      Log.Info ("GET {0}", URI);
       Server.App.Dispatch (Page     => URI,
                            Request  => Request,
                            Response => Response);
@@ -119,6 +124,7 @@ package body ASF.Servlets.Faces is
                       Response : in out Responses.Response'Class) is
       URI    : constant String := Request.Get_Servlet_Path;
    begin
+      Log.Info ("POST {0}", URI);
       Server.App.Dispatch (Page     => URI,
                            Request  => Request,
                            Response => Response);

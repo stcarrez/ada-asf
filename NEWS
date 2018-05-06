@@ -5,6 +5,7 @@ Version 1.2     -
   - Add support for servlet requests to retrieve the body content as a stream
   - Improvement of navigation rules to allow setting the return status
   - Moved the servlet support in a separate project: ada-servlet
+  - Integrate jQuery datetime picker
 
 Version 1.1     - Dec 2015
   - New EL function util:formatDate

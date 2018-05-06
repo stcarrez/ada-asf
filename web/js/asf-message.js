@@ -1,6 +1,6 @@
 /*
  *  asf-message -- Message component
- *  Copyright (C) 2013 Stephane Carrez
+ *  Copyright (C) 2013, 2018 Stephane Carrez
  *  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,12 @@
 	    /**
 	     * @cfg {String} css The CSS to apply on the popup div.
 	     */
-            css: null
+            css: null,
+
+            /**
+             * @cfg {String} delay The delay in milliseconds before closing.
+             */
+            delay: 2000
         },
 
         _create: function() {
@@ -102,12 +107,12 @@
         autoClose: function() {
             var self = this;
 
-            this.element.delay(1000).fadeOut('slow', function() {
+            this.element.delay(self.options.delay).fadeOut('slow', function() {
                 self.element.remove();
             });
         }
     };
 
     $.widget("ui.message", proto);
-    
+
 })( jQuery );

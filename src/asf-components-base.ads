@@ -33,7 +33,6 @@ with Util.Beans.Objects;
 with EL.Expressions;
 with ASF.Contexts.Faces;
 with ASF.Utils;
-limited with ASF.Converters;
 limited with ASF.Events.Faces;
 package ASF.Components.Base is
 

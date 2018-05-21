@@ -114,7 +114,7 @@ package body ASF.Components.Html.Text is
                            Context : in Faces_Context'Class)
                            return access ASF.Converters.Converter'Class is
       use type ASF.Converters.Converter_Access;
-      Result : ASF.Converters.Converter_Access := UIOutput'Class (UI).Get_Converter;
+      Result : constant ASF.Converters.Converter_Access := UIOutput'Class (UI).Get_Converter;
    begin
       if Result /= null then
          return Result;

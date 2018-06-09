@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-ajax-factory -- Factory for AJAX Components
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,21 +36,17 @@ package body ASF.Components.Ajax.Factory is
    URI                     : aliased constant String := "http://code.google.com/p/ada-asf/ajax";
    INCLUDE_TAG             : aliased constant String := "include";
 
-   Ajax_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => INCLUDE_TAG'Access,
-               Component => Create_Include'Access,
-               Tag       => Create_Component_Node'Access)
-        );
-
-   Ajax_Factory : aliased constant ASF.Factory.Factory_Bindings
-     := (URI => URI'Access, Bindings => Ajax_Bindings'Access);
-
    --  ------------------------------
-   --  Get the Ajax component factory.
+   --  Register the Ajax component factory.
    --  ------------------------------
-   function Definition return ASF.Factory.Factory_Bindings_Access is
+   procedure Register (Factory : in out ASF.Factory.Component_Factory) is
    begin
-      return Ajax_Factory'Access;
-   end Definition;
+      null;
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INCLUDE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Include'Access);
+   end Register;
 
 end ASF.Components.Ajax.Factory;

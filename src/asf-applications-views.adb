@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,9 @@ with ASF.Applications.Main;
 with ASF.Components.Base;
 with ASF.Components.Core;
 with ASF.Components.Core.Views;
+with ASF.Converters;
+with ASF.Validators;
+with EL.Objects;
 package body ASF.Applications.Views is
 
    use ASF.Components;
@@ -37,10 +40,15 @@ package body ASF.Applications.Views is
                               Source  : in String;
                               Parent  : in Base.UIComponent_Access);
 
-   --  Get the application associated with this facelet context.
    overriding
-   function Get_Application (Context : in Facelet_Context)
-                             return access ASF.Applications.Main.Application'Class;
+   function Get_Converter (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                            return ASF.Converters.Converter_Access;
+
+   overriding
+   function Get_Validator (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return ASF.Validators.Validator_Access;
 
    --  Compose a URI path with two components.  Unlike the Ada.Directories.Compose,
    --  and Util.Files.Compose the path separator must be a URL path separator (ie, '/').
@@ -72,14 +80,26 @@ package body ASF.Applications.Views is
    end Include_Facelet;
 
    --  ------------------------------
-   --  Get the application associated with this facelet context.
+   --  Get a converter from a name.
+   --  Returns the converter object or null if there is no converter.
    --  ------------------------------
-   overriding
-   function Get_Application (Context : in Facelet_Context)
-                             return access ASF.Applications.Main.Application'Class is
+   function Get_Converter (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                            return ASF.Converters.Converter_Access is
    begin
-      return Context.Application;
-   end Get_Application;
+      return Context.Application.Find (Name);
+   end Get_Converter;
+
+   --  ------------------------------
+   --  Get a validator from a name.
+   --  Returns the validator object or null if there is no validator.
+   --  ------------------------------
+   function Get_Validator (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return ASF.Validators.Validator_Access is
+   begin
+      return Context.Application.Find_Validator (Name);
+   end Get_Validator;
 
    --  ------------------------------
    --  Get the facelet name from the view name.

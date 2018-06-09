@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Facelet Tests - Unit tests for ASF.Views.Facelet
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,30 +17,55 @@
 -----------------------------------------------------------------------
 
 with Util.Test_Caller;
+with EL.Objects;
+with ASF.Converters;
+with ASF.Validators;
 with ASF.Contexts.Facelets;
-with ASF.Applications.Main;
 package body ASF.Views.Facelets.Tests is
 
    use ASF.Contexts.Facelets;
 
    type Facelet_Context is new ASF.Contexts.Facelets.Facelet_Context with null record;
 
-   --  Get the application associated with this facelet context.
+   --  Get a converter from a name.
+   --  Returns the converter object or null if there is no converter.
    overriding
-   function Get_Application (Context : in Facelet_Context)
-                             return access ASF.Applications.Main.Application'Class;
+   function Get_Converter (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return ASF.Converters.Converter_Access;
 
+   --  Get a validator from a name.
+   --  Returns the validator object or null if there is no validator.
+   overriding
+   function Get_Validator (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return ASF.Validators.Validator_Access;
 
    --  ------------------------------
-   --  Get the application associated with this facelet context.
+   --  Get a converter from a name.
+   --  Returns the converter object or null if there is no converter.
    --  ------------------------------
    overriding
-   function Get_Application (Context : in Facelet_Context)
-                             return access ASF.Applications.Main.Application'Class is
-      pragma Unreferenced (Context);
+   function Get_Converter (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return ASF.Converters.Converter_Access is
+      pragma Unreferenced (Context, Name);
    begin
       return null;
-   end Get_Application;
+   end Get_Converter;
+
+   --  ------------------------------
+   --  Get a validator from a name.
+   --  Returns the validator object or null if there is no validator.
+   --  ------------------------------
+   overriding
+   function Get_Validator (Context : in Facelet_Context;
+                           Name    : in EL.Objects.Object)
+                           return ASF.Validators.Validator_Access is
+      pragma Unreferenced (Context, Name);
+   begin
+      return null;
+   end Get_Validator;
 
    --  ------------------------------
    --  Set up performed before each test case

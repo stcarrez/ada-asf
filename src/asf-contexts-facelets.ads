@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  contexts-facelets -- Contexts for facelets
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,6 @@ with ASF.Converters;
 with ASF.Validators;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
-limited with ASF.Applications.Main;
 limited with ASF.Views.Nodes.Facelets;
 package ASF.Contexts.Facelets is
 
@@ -112,17 +111,13 @@ package ASF.Contexts.Facelets is
    --  Returns the converter object or null if there is no converter.
    function Get_Converter (Context : in Facelet_Context;
                            Name    : in EL.Objects.Object)
-                           return ASF.Converters.Converter_Access;
+                           return ASF.Converters.Converter_Access is abstract;
 
    --  Get a validator from a name.
    --  Returns the validator object or null if there is no validator.
    function Get_Validator (Context : in Facelet_Context;
                            Name    : in EL.Objects.Object)
-                           return ASF.Validators.Validator_Access;
-
-   --  Get the application associated with this facelet context.
-   function Get_Application (Context : in Facelet_Context)
-                             return access ASF.Applications.Main.Application'Class is abstract;
+                           return ASF.Validators.Validator_Access is abstract;
 
 private
 
@@ -138,9 +133,6 @@ private
       Defines : Defines_Vector.Vector;
       Path    : Unbounded_String;
       Inserts : Util.Strings.String_Set.Set;
-
-      --  The application
-      Application : access ASF.Applications.Main.Application'Class;
    end record;
 
 end ASF.Contexts.Facelets;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  widgets-factory -- Factory for widget Components
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ with ASF.Factory;
 
 package ASF.Components.Widgets.Factory is
 
-   --  Get the widget component factory.
-   function Definition return ASF.Factory.Factory_Bindings_Access;
+   --  Register the widget component factory.
+   procedure Register (Factory : in out ASF.Factory.Component_Factory);
 
 end ASF.Components.Widgets.Factory;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-core -- Core nodes
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    --  Create the Set Tag
    --  ------------------------------
-   function Create_Set_Tag_Node (Binding    : in Binding_Access;
+   function Create_Set_Tag_Node (Binding    : in Binding_Type;
                                  Line       : in Line_Info;
                                  Parent     : in Tag_Node_Access;
                                  Attributes : in Tag_Attribute_Array_Access)
@@ -76,7 +76,7 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    --  Create the If Tag
    --  ------------------------------
-   function Create_If_Tag_Node (Binding    : in Binding_Access;
+   function Create_If_Tag_Node (Binding    : in Binding_Type;
                                 Line       : in Line_Info;
                                 Parent     : in Tag_Node_Access;
                                 Attributes : in Tag_Attribute_Array_Access)
@@ -123,7 +123,7 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    --  Create the Choose Tag
    --  ------------------------------
-   function Create_Choose_Tag_Node (Binding    : in Binding_Access;
+   function Create_Choose_Tag_Node (Binding    : in Binding_Type;
                                     Line       : in Line_Info;
                                     Parent     : in Tag_Node_Access;
                                     Attributes : in Tag_Attribute_Array_Access)
@@ -195,7 +195,7 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    --  Create the When Tag
    --  ------------------------------
-   function Create_When_Tag_Node (Binding    : in Binding_Access;
+   function Create_When_Tag_Node (Binding    : in Binding_Type;
                                   Line       : in Line_Info;
                                   Parent     : in Tag_Node_Access;
                                   Attributes : in Tag_Attribute_Array_Access)
@@ -232,7 +232,7 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    --  Create the Otherwise Tag
    --  ------------------------------
-   function Create_Otherwise_Tag_Node (Binding    : in Binding_Access;
+   function Create_Otherwise_Tag_Node (Binding    : in Binding_Type;
                                        Line       : in Line_Info;
                                        Parent     : in Tag_Node_Access;
                                        Attributes : in Tag_Attribute_Array_Access)
@@ -254,34 +254,38 @@ package body ASF.Views.Nodes.Core is
    --  the JSF.
    URI           : aliased constant String := "http://java.sun.com/jstl/core";
 
-   --  Tag library definition.  Names must be sorted.
-   Tag_Bindings  : aliased constant ASF.Factory.Binding_Array
-     := ((Name => CHOOSE_TAG'Access,
-          Component => null,
-          Tag => Create_Choose_Tag_Node'Access),
-       (Name => IF_TAG'Access,
-        Component => null,
-        Tag => Create_If_Tag_Node'Access),
-       (Name => OTHERWISE_TAG'Access,
-        Component => null,
-        Tag => Create_Otherwise_Tag_Node'Access),
-       (Name => SET_TAG'Access,
-        Component => null,
-        Tag => Create_Set_Tag_Node'Access),
-       (Name => WHEN_TAG'Access,
-        Component => null,
-        Tag => Create_When_Tag_Node'Access));
-
-   Tag_Factory   : aliased constant ASF.Factory.Factory_Bindings
-     := (URI => URI'Access, Bindings => Tag_Bindings'Access);
-
    --  ------------------------------
    --  Tag factory for nodes defined in this package.
    --  ------------------------------
-   function Definition return ASF.Factory.Factory_Bindings_Access is
+   --  Register the facelets component factory.
+   procedure Register (Factory : in out ASF.Factory.Component_Factory) is
    begin
-      return Tag_Factory'Access;
-   end Definition;
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => CHOOSE_TAG'Access,
+                            Tag    => Create_Choose_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => IF_TAG'Access,
+                            Tag    => Create_If_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => OTHERWISE_TAG'Access,
+                            Tag    => Create_Otherwise_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => SET_TAG'Access,
+                            Tag    => Create_Set_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => WHEN_TAG'Access,
+                            Tag    => Create_When_Tag_Node'Access,
+                            Create => null);
+   end Register;
 
    --  Function names
    CAPITALIZE_FN       : aliased constant String := "capitalize";
@@ -342,8 +346,6 @@ package body ASF.Views.Nodes.Core is
    --  Escapes characters that could be interpreted as XML markup.
    --  ------------------------------
    function Escape_Xml (Value : in EL.Objects.Object) return EL.Objects.Object is
-      use Ada.Strings;
-
       Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
    begin
       case Of_Type is
@@ -374,8 +376,6 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    function Index (Value  : in EL.Objects.Object;
                    Search : in EL.Objects.Object) return Natural is
-      use Ada.Strings;
-
       Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
    begin
       case Of_Type is
@@ -429,8 +429,6 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    function Starts_With (Value  : in EL.Objects.Object;
                          Search : in EL.Objects.Object) return EL.Objects.Object is
-      use Ada.Strings;
-
       Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
    begin
       case Of_Type is
@@ -462,8 +460,6 @@ package body ASF.Views.Nodes.Core is
    --  ------------------------------
    function Ends_With (Value  : in EL.Objects.Object;
                        Search : in EL.Objects.Object) return EL.Objects.Object is
-      use Ada.Strings;
-
       Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
    begin
       case Of_Type is
@@ -498,8 +494,6 @@ package body ASF.Views.Nodes.Core is
    function Substring (Value  : in EL.Objects.Object;
                        Start  : in EL.Objects.Object;
                        Finish : in EL.Objects.Object) return EL.Objects.Object is
-      use Ada.Strings;
-
       Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
    begin
       case Of_Type is
@@ -565,8 +559,6 @@ package body ASF.Views.Nodes.Core is
    --  Trim the white spaces at beginning and end of the string.
    --  ------------------------------
    function Trim (Value : in EL.Objects.Object) return EL.Objects.Object is
-      use Ada.Strings;
-
       Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (Value);
    begin
       case Of_Type is
@@ -574,14 +566,15 @@ package body ASF.Views.Nodes.Core is
             declare
                S : constant String := EL.Objects.To_String (Value);
             begin
-               return EL.Objects.To_Object (Ada.Strings.Fixed.Trim (S, Both));
+               return EL.Objects.To_Object (Ada.Strings.Fixed.Trim (S, Ada.Strings.Both));
             end;
 
          when EL.Objects.TYPE_WIDE_STRING =>
             declare
                S : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Value);
             begin
-               return EL.Objects.To_Object (Ada.Strings.Wide_Wide_Fixed.Trim (S, Both));
+               return EL.Objects.To_Object
+                 (Ada.Strings.Wide_Wide_Fixed.Trim (S, Ada.Strings.Both));
             end;
 
          when others =>
@@ -594,8 +587,6 @@ package body ASF.Views.Nodes.Core is
    --  all occurrences of a "before" string into an "after" substring.
    --  ------------------------------
    function Replace (From, Before, After : in EL.Objects.Object) return EL.Objects.Object is
-      use Ada.Strings;
-
       Of_Type : constant EL.Objects.Data_Type := EL.Objects.Get_Type (From);
    begin
       case Of_Type is

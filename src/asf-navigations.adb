@@ -21,7 +21,6 @@ with Util.Beans.Objects;
 with Util.Log.Loggers;
 
 with Ada.Unchecked_Deallocation;
-with ASF.Applications.Main;
 with ASF.Navigations.Render;
 package body ASF.Navigations is
 
@@ -146,24 +145,19 @@ package body ASF.Navigations is
                                         Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
       Pos          : constant Natural := Util.Strings.Rindex (View, '/');
       Root         : Components.Root.UIViewRoot;
-      View_Handler : access ASF.Applications.Views.View_Handler'Class := Handler.View_Handler;
    begin
-      if View_Handler = null then
-         View_Handler := Handler.Application.Get_View_Handler;
-      end if;
-
       if Pos > 0 then
          declare
             Name : constant String := View (View'First .. Pos) & Outcome;
          begin
             Log.Debug ("Using default navigation from view {0} to {1}", View, Name);
 
-            View_Handler.Create_View (Name, Context, Root);
+            Handler.View_Handler.Create_View (Name, Context, Root);
          end;
       else
          Log.Debug ("Using default navigation from view {0} to {1}", View, View);
 
-         View_Handler.Create_View (Outcome, Context, Root);
+         Handler.View_Handler.Create_View (Outcome, Context, Root);
       end if;
 
       --  If the 'outcome' refers to a real view, use it.  Otherwise keep the current view.
@@ -242,10 +236,10 @@ package body ASF.Navigations is
    --  Initialize the the lifecycle handler.
    --  ------------------------------
    procedure Initialize (Handler : in out Navigation_Handler;
-                         App     : access ASF.Applications.Main.Application'Class) is
+                         Views      : access ASF.Applications.Views.View_Handler'Class) is
    begin
       Handler.Rules := new Navigation_Rules;
-      Handler.Application := App;
+      Handler.View_Handler := Views;
    end Initialize;
 
    --  ------------------------------
@@ -305,9 +299,9 @@ package body ASF.Navigations is
          Navigator.Action := new String '(Action);
       end if;
 
-      if Handler.View_Handler = null then
-         Handler.View_Handler := Handler.Application.Get_View_Handler;
-      end if;
+      --  if Handler.View_Handler = null then
+      --   Handler.View_Handler := Handler.Application.Get_View_Handler;
+      --  end if;
 
       if Condition'Length > 0 then
          Navigator.Condition := EL.Expressions.Create_Expression (Condition, Context);

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -213,26 +213,25 @@ package ASF.Views.Nodes is
    function Element (Position : Cursor) return Tag_Node_Access;
    procedure Next (Position : in out Cursor);
 
-   type Binding;
-   type Binding_Access is access constant Binding;
+   type Binding_Type;
+   type Binding_Access is access constant Binding_Type;
 
    --  Create function to build a UIComponent
    type Create_Access is access function return ASF.Components.Base.UIComponent_Access;
 
    --  Create function to build a tag node
    type Tag_Node_Create_Access is access
-     function (Binding    : in Binding_Access;
+     function (Binding    : in Binding_Type;
                Line       : in Line_Info;
                Parent     : in Tag_Node_Access;
                Attributes : in Tag_Attribute_Array_Access) return Tag_Node_Access;
 
    --  Create the When Tag
-   function Create_Component_Node (Binding    : in Binding_Access;
+   function Create_Component_Node (Binding    : in Binding_Type;
                                    Line       : in Line_Info;
                                    Parent     : in Tag_Node_Access;
                                    Attributes : in Tag_Attribute_Array_Access)
                                    return Tag_Node_Access;
-   pragma Suppress (Elaboration_Check, On => Create_Component_Node);
 
    --  Binding name
    type Name_Access is new Util.Strings.Name_Access;
@@ -244,11 +243,13 @@ package ASF.Views.Nodes is
    --  and a component creation handler.  When the XHTML entity is found,
    --  the associated binding is searched and when found the node is created
    --  by using the <b>Tag</b> create function.
-   type Binding is limited record
+   type Binding_Type is record
       Name      : Name_Access;
       Component : ASF.Views.Nodes.Create_Access;
       Tag       : ASF.Views.Nodes.Tag_Node_Create_Access;
    end record;
+
+   Null_Binding : constant Binding_Type := Binding_Type '(null, null, null);
 
 private
 
@@ -283,7 +284,7 @@ private
 
    --  Initialize the node
    procedure Initialize (Node       : in Tag_Node_Access;
-                         Binding    : in Binding_Access;
+                         Binding    : in Binding_Type;
                          Line       : in Line_Info;
                          Parent     : in Tag_Node_Access;
                          Attributes : in Tag_Attribute_Array_Access);

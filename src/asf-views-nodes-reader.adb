@@ -115,7 +115,7 @@ package body ASF.Views.Nodes.Reader is
    --  ------------------------------
    function Find (Mapper    : NS_Function_Mapper;
                   Namespace : String;
-                  Name      : String) return ASF.Views.Nodes.Binding_Access is
+                  Name      : String) return ASF.Views.Nodes.Binding_Type is
       use NS_Mapping;
    begin
       return ASF.Factory.Find (Mapper.Factory.all, Namespace, Name);
@@ -327,7 +327,7 @@ package body ASF.Views.Nodes.Reader is
             when HAS_CONTENT =>
                if Handler.Text = null then
                   Handler.Text := new Text_Tag_Node;
-                  Initialize (Handler.Text.all'Access, null,
+                  Initialize (Handler.Text.all'Access, Null_Binding,
                               Handler.Line, Handler.Current.Parent, null);
                   Handler.Text.Last := Handler.Text.Content'Access;
 
@@ -421,7 +421,7 @@ package body ASF.Views.Nodes.Reader is
       Attr_Count : Natural;
       Attributes : Tag_Attribute_Array_Access;
       Node       : Tag_Node_Access;
-      Factory    : ASF.Views.Nodes.Binding_Access;
+      Factory    : ASF.Views.Nodes.Binding_Type;
    begin
       Handler.Line.Line := Sax.Locators.Get_Line_Number (Handler.Locator);
       Handler.Line.Column := Sax.Locators.Get_Column_Number (Handler.Locator);
@@ -435,7 +435,7 @@ package body ASF.Views.Nodes.Reader is
       Attr_Count := Get_Length (Atts);
       Factory := Handler.Functions.Find (Namespace => Namespace_URI,
                                          Name      => Local_Name);
-      if Factory /= null then
+      if Factory.Name /= null then
          if Length (Handler.Add_NS) > 0 then
             Attributes := new Tag_Attribute_Array (0 .. Attr_Count);
             Attributes (0).Name  := To_Unbounded_String ("xmlns");
@@ -699,7 +699,7 @@ package body ASF.Views.Nodes.Reader is
    begin
       if Handler.Text = null then
          Handler.Text := new Text_Tag_Node;
-         Initialize (Handler.Text.all'Access, null,
+         Initialize (Handler.Text.all'Access, Null_Binding,
                      Handler.Line, Handler.Current.Parent, null);
          Handler.Text.Last := Handler.Text.Content'Access;
       end if;

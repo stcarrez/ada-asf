@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-factory -- Factory for HTML UI Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,7 @@
 with ASF.Factory;
 package ASF.Components.Html.Factory is
 
-   use ASF;
-
-   --  Get the HTML component factory.
-   function Definition return ASF.Factory.Factory_Bindings_Access;
+   --  Register the HTML component factory.
+   procedure Register (Factory : in out ASF.Factory.Component_Factory);
 
 end ASF.Components.Html.Factory;

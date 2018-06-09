@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-ajax-factory -- Factory for AJAX Components
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,7 @@
 with ASF.Factory;
 package ASF.Components.Ajax.Factory is
 
-   use ASF;
-
-   --  Get the Ajax component factory.
-   function Definition return ASF.Factory.Factory_Bindings_Access;
+   --  Register the Ajax component factory.
+   procedure Register (Factory : in out ASF.Factory.Component_Factory);
 
 end ASF.Components.Ajax.Factory;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-response -- Response phase
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ package ASF.Lifecycles.Response is
    --  Initialize the phase controller.
    overriding
    procedure Initialize (Controller : in out Response_Controller;
-                         App        : access ASF.Applications.Main.Application'Class);
+                         Views      : access ASF.Applications.Views.View_Handler'Class);
 
    --  Execute the restore view phase.
    overriding

@@ -16,14 +16,12 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Exceptions;
-with ASF.Applications.Main;
 with ASF.Components.Root;
 with ASF.Requests;
 with Util.Log.Loggers;
 package body ASF.Lifecycles.Restore is
 
    use Ada.Exceptions;
-   use ASF.Applications;
 
    --  The logger
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Lifecycles.Restore");

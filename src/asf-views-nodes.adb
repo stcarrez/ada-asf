@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -318,16 +318,12 @@ package body ASF.Views.Nodes is
    --  Initialize the node
    --  ------------------------------
    procedure Initialize (Node       : in Tag_Node_Access;
-                         Binding    : in Binding_Access;
+                         Binding    : in Binding_Type;
                          Line       : in Line_Info;
                          Parent     : in Tag_Node_Access;
                          Attributes : in Tag_Attribute_Array_Access) is
    begin
-      if Binding /= null then
-         Node.Factory := Binding.Component;
-      else
-         Node.Factory := null;
-      end if;
+      Node.Factory := Binding.Component;
       Node.Line    := Line;
       Node.Parent  := Parent;
       Node.Attributes := Attributes;
@@ -631,7 +627,7 @@ package body ASF.Views.Nodes is
 
    --  Create a tag node
    --  Create the text Tag
-   function Create_Component_Node (Binding    : in Binding_Access;
+   function Create_Component_Node (Binding    : in Binding_Type;
                                    Line       : in Line_Info;
                                    Parent     : in Tag_Node_Access;
                                    Attributes : in Tag_Attribute_Array_Access)

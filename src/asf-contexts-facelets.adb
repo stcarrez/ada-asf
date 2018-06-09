@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  contexts-facelets -- Contexts for facelets
---  Copyright (C) 2009, 2010, 2011, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,10 +26,8 @@ with ASF.Applications.Main;
 with ASF.Views.Nodes.Facelets;
 package body ASF.Contexts.Facelets is
 
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Contexts.Facelets");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Contexts.Facelets");
 
    --  ------------------------------
    --  Get the EL context for evaluating expressions.
@@ -207,27 +205,5 @@ package body ASF.Contexts.Facelets is
          return Util.Files.Compose (To_String (Context.Path), Path);
       end if;
    end Resolve_Path;
-
-   --  ------------------------------
-   --  Get a converter from a name.
-   --  Returns the converter object or null if there is no converter.
-   --  ------------------------------
-   function Get_Converter (Context : in Facelet_Context;
-                           Name    : in EL.Objects.Object)
-                           return ASF.Converters.Converter_Access is
-   begin
-      return Facelet_Context'Class (Context).Get_Application.Find (Name);
-   end Get_Converter;
-
-   --  ------------------------------
-   --  Get a validator from a name.
-   --  Returns the validator object or null if there is no validator.
-   --  ------------------------------
-   function Get_Validator (Context : in Facelet_Context;
-                           Name    : in EL.Objects.Object)
-                           return ASF.Validators.Validator_Access is
-   begin
-      return Facelet_Context'Class (Context).Get_Application.Find_Validator (Name);
-   end Get_Validator;
 
 end ASF.Contexts.Facelets;

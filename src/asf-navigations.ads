@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations -- Navigations
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ with EL.Contexts;
 with Ada.Finalization;
 with ASF.Applications.Views;
 with Ada.Strings.Unbounded;
-limited with ASF.Applications.Main;
 
 private with Ada.Containers.Vectors;
 private with Ada.Containers.Hashed_Maps;
@@ -59,7 +58,7 @@ package ASF.Navigations is
 
    --  Initialize the the lifecycle handler.
    procedure Initialize (Handler : in out Navigation_Handler;
-                         App     : access ASF.Applications.Main.Application'Class);
+                         Views   : access ASF.Applications.Views.View_Handler'Class);
 
    --  Free the storage used by the navigation handler.
    overriding
@@ -164,7 +163,6 @@ private
 
    type Navigation_Handler is new Ada.Finalization.Limited_Controlled with record
       Rules        : Navigation_Rules_Access;
-      Application  : access ASF.Applications.Main.Application'Class;
       View_Handler : access ASF.Applications.Views.View_Handler'Class;
    end record;
 

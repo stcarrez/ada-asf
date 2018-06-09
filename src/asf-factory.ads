@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,8 +32,6 @@ private with Ada.Containers.Hashed_Maps;
 --  associated with create functions).
 package ASF.Factory is
 
-   use ASF;
-
    --  ------------------------------
    --  List of bindings
    --  ------------------------------
@@ -41,7 +39,7 @@ package ASF.Factory is
    --  a library accessible through a XML name-space.  The binding array
    --  must be sorted on the binding name.  The <b>Check</b> procedure will
    --  verify this assumption when the bindings are registered in the factory.
-   type Binding_Array is array (Natural range <>) of aliased ASF.Views.Nodes.Binding;
+   type Binding_Array is array (Natural range <>) of aliased ASF.Views.Nodes.Binding_Type;
    type Binding_Array_Access is access constant Binding_Array;
 
    type Factory_Bindings is limited record
@@ -61,11 +59,17 @@ package ASF.Factory is
    procedure Register (Factory  : in out Component_Factory;
                        Bindings : in Factory_Bindings_Access);
 
+   procedure Register (Factory   : in out Component_Factory;
+                       URI       : in ASF.Views.Nodes.Name_Access;
+                       Name      : in ASF.Views.Nodes.Name_Access;
+                       Tag       : in ASF.Views.Nodes.Tag_Node_Create_Access;
+                       Create    : in ASF.Views.Nodes.Create_Access);
+
    --  Find the create function in bound to the name in the given URI name-space.
    --  Returns null if no such binding exist.
    function Find (Factory : in Component_Factory;
                   URI     : in String;
-                  Name    : in String) return ASF.Views.Nodes.Binding_Access;
+                  Name    : in String) return ASF.Views.Nodes.Binding_Type;
 
    --  ------------------------------
    --  Converter Factory
@@ -118,7 +122,7 @@ private
    --  Tag library map indexed on the library namespace.
    package Factory_Maps is new
      Ada.Containers.Hashed_Maps (Key_Type        => Tag_Name,
-                                 Element_Type    => Binding_Access,
+                                 Element_Type    => Binding_Type,
                                  Hash            => Hash,
                                  Equivalent_Keys => "=");
 

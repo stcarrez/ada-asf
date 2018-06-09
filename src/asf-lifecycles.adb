@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles -- Lifecycle
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,14 +26,14 @@ package body ASF.Lifecycles is
    --  Initialize the the lifecycle handler.
    --  ------------------------------
    procedure Initialize (Controller : in out Lifecycle;
-                         App        : access ASF.Applications.Main.Application'Class) is
+                         Views      : access ASF.Applications.Views.View_Handler'Class) is
    begin
       --  Create the phase controllers.
       Lifecycle'Class (Controller).Create_Phase_Controllers;
 
       --  Initialize the phase controllers.
       for Phase in Controller.Controllers'Range loop
-         Controller.Controllers (Phase).Initialize (App);
+         Controller.Controllers (Phase).Initialize (Views);
       end loop;
    end Initialize;
 

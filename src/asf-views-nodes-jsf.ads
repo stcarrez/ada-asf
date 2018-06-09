@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ASF.Views.Nodes;
 with ASF.Contexts.Facelets;
 with ASF.Validators;
 
@@ -45,7 +44,7 @@ package ASF.Views.Nodes.Jsf is
    type Converter_Tag_Node_Access is access all Converter_Tag_Node'Class;
 
    --  Create the Converter Tag
-   function Create_Converter_Tag_Node (Binding    : in Binding_Access;
+   function Create_Converter_Tag_Node (Binding    : in Binding_Type;
                                        Line       : in Views.Line_Info;
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -73,7 +72,7 @@ package ASF.Views.Nodes.Jsf is
    type Convert_Date_Time_Tag_Node_Access is access all Convert_Date_Time_Tag_Node'Class;
 
    --  Create the Converter Tag
-   function Create_Convert_Date_Time_Tag_Node (Binding    : in Binding_Access;
+   function Create_Convert_Date_Time_Tag_Node (Binding    : in Binding_Type;
                                                Line       : in Views.Line_Info;
                                                Parent     : in Views.Nodes.Tag_Node_Access;
                                                Attributes : in Nodes.Tag_Attribute_Array_Access)
@@ -101,7 +100,7 @@ package ASF.Views.Nodes.Jsf is
    type Validator_Tag_Node_Access is access all Validator_Tag_Node'Class;
 
    --  Create the Validator Tag
-   function Create_Validator_Tag_Node (Binding    : in Binding_Access;
+   function Create_Validator_Tag_Node (Binding    : in Binding_Type;
                                        Line       : in Views.Line_Info;
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -133,7 +132,7 @@ package ASF.Views.Nodes.Jsf is
    type Range_Validator_Tag_Node_Access is access all Range_Validator_Tag_Node'Class;
 
    --  Create the Range_Validator Tag
-   function Create_Range_Validator_Tag_Node (Binding    : in Binding_Access;
+   function Create_Range_Validator_Tag_Node (Binding    : in Binding_Type;
                                              Line       : in Views.Line_Info;
                                              Parent     : in Views.Nodes.Tag_Node_Access;
                                              Attributes : in Nodes.Tag_Attribute_Array_Access)
@@ -161,7 +160,7 @@ package ASF.Views.Nodes.Jsf is
 
    --  Create the Length_Validator Tag.  Verifies that the XML node defines
    --  the <b>minimum</b> or the <b>maximum</b> or both attributes.
-   function Create_Length_Validator_Tag_Node (Binding    : in Binding_Access;
+   function Create_Length_Validator_Tag_Node (Binding    : in Binding_Type;
                                               Line       : in Views.Line_Info;
                                               Parent     : in Views.Nodes.Tag_Node_Access;
                                               Attributes : in Nodes.Tag_Attribute_Array_Access)
@@ -186,7 +185,7 @@ package ASF.Views.Nodes.Jsf is
    type Attribute_Tag_Node_Access is access all Attribute_Tag_Node'Class;
 
    --  Create the Attribute Tag
-   function Create_Attribute_Tag_Node (Binding    : in Binding_Access;
+   function Create_Attribute_Tag_Node (Binding    : in Binding_Type;
                                        Line       : in Views.Line_Info;
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -213,7 +212,7 @@ package ASF.Views.Nodes.Jsf is
    type Facet_Tag_Node_Access is access all Facet_Tag_Node'Class;
 
    --  Create the Facet Tag
-   function Create_Facet_Tag_Node (Binding    : in Binding_Access;
+   function Create_Facet_Tag_Node (Binding    : in Binding_Type;
                                    Line       : in Views.Line_Info;
                                    Parent     : in Views.Nodes.Tag_Node_Access;
                                    Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -237,7 +236,7 @@ package ASF.Views.Nodes.Jsf is
    type Metadata_Tag_Node_Access is access all Metadata_Tag_Node'Class;
 
    --  Create the Metadata Tag
-   function Create_Metadata_Tag_Node (Binding    : in Binding_Access;
+   function Create_Metadata_Tag_Node (Binding    : in Binding_Type;
                                       Line       : in Views.Line_Info;
                                       Parent     : in Views.Nodes.Tag_Node_Access;
                                       Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -249,21 +248,6 @@ package ASF.Views.Nodes.Jsf is
    procedure Build_Components (Node    : access Metadata_Tag_Node;
                                Parent  : in UIComponent_Access;
                                Context : in out Contexts.Facelets.Facelet_Context'Class);
-
-   --  The elaboration check is disabled on the Create_XXX operation because they
-   --  are referenced by the Components.Core.Factory to define a static UI binding.
-   --  This reference triggers the implicit Elaborate_All for the Nodes.JSF package.
-   --  At the end, we obtain a circular dependency that cannot be resolved.
-   --  It is safe to suppress the elaboration check because these Create_XXX operation
-   --  are not invoked before the application is initialized and a view is rendered.
-   pragma Suppress (Elaboration_Check, On => Create_Attribute_Tag_Node);
-   pragma Suppress (Elaboration_Check, On => Create_Converter_Tag_Node);
-   pragma Suppress (Elaboration_Check, On => Create_Convert_Date_Time_Tag_Node);
-   pragma Suppress (Elaboration_Check, On => Create_Facet_Tag_Node);
-   pragma Suppress (Elaboration_Check, On => Create_Metadata_Tag_Node);
-   pragma Suppress (Elaboration_Check, On => Create_Length_Validator_Tag_Node);
-   pragma Suppress (Elaboration_Check, On => Create_Range_Validator_Tag_Node);
-   pragma Suppress (Elaboration_Check, On => Create_Validator_Tag_Node);
 
 private
 

@@ -101,34 +101,37 @@ package body ASF.Components.Utils.Factory is
    SCRIPT_TAG : aliased constant String := "script";
    SET_TAG    : aliased constant String := "set";
 
-   Core_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => ESCAPE_TAG'Access,
-               Component => Create_Escape'Access,
-               Tag       => Create_Component_Node'Access),
-         2 => (Name      => FILE_TAG'Access,
-               Component => Create_File'Access,
-               Tag       => Create_Component_Node'Access),
-         3 => (Name      => FLUSH_TAG'Access,
-               Component => Create_Flush'Access,
-               Tag       => Create_Component_Node'Access),
-         4 => (Name      => SCRIPT_TAG'Access,
-               Component => Create_Script'Access,
-               Tag       => Create_Component_Node'Access),
-         5 => (Name      => SET_TAG'Access,
-               Component => Create_Set'Access,
-               Tag       => Create_Component_Node'Access)
-        );
-
-   Core_Factory : aliased constant ASF.Factory.Factory_Bindings
-     := (URI => URI'Access, Bindings => Core_Bindings'Access);
-
    --  ------------------------------
-   --  Get the HTML component factory.
+   --  Register the HTML component factory.
    --  ------------------------------
-   function Definition return ASF.Factory.Factory_Bindings_Access is
+   procedure Register (Factory : in out ASF.Factory.Component_Factory) is
    begin
-      return Core_Factory'Access;
-   end Definition;
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => ESCAPE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Escape'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => FILE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_File'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => FLUSH_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Flush'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => SCRIPT_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Script'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => SET_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Set'Access);
+   end Register;
 
    --  Truncate the string representation represented by <b>Value</b> to
    --  the length specified by <b>Size</b>.

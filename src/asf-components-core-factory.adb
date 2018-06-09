@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,73 +105,87 @@ package body ASF.Components.Core.Factory is
    VIEW_ACTION_TAG         : aliased constant String := "viewAction";
    VIEW_PARAM_TAG          : aliased constant String := "viewParam";
 
-   Core_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => ATTRIBUTE_TAG'Access,
-               Component => null,
-               Tag       => ASF.Views.Nodes.Jsf.Create_Attribute_Tag_Node'Access),
-
-         2 => (Name      => CONVERT_DATE_TIME_TAG'Access,
-               Component => null,
-               Tag       => ASF.Views.Nodes.Jsf.Create_Convert_Date_Time_Tag_Node'Access),
-
-         3 => (Name      => CONVERTER_TAG'Access,
-               Component => null,
-               Tag       => ASF.Views.Nodes.Jsf.Create_Converter_Tag_Node'Access),
-
-         4 => (Name      => FACET_TAG'Access,
-               Component => null,
-               Tag       => ASF.Views.Nodes.Jsf.Create_Facet_Tag_Node'Access),
-
-         5 => (Name      => METADATA_TAG'Access,
-               Component => Create_ViewMetaData'Access,
-               Tag       => ASF.Views.Nodes.Jsf.Create_Metadata_Tag_Node'Access),
-
-         6 => (Name      => PARAM_TAG'Access,
-               Component => Create_Parameter'Access,
-               Tag       => Create_Component_Node'Access),
-
-         7 => (Name      => SELECT_ITEM_TAG'Access,
-               Component => Create_SelectItem'Access,
-               Tag       => Create_Component_Node'Access),
-
-         8 => (Name      => SELECT_ITEMS_TAG'Access,
-               Component => Create_SelectItems'Access,
-               Tag       => Create_Component_Node'Access),
-
-         9 => (Name      => VALIDATE_LENGTH_TAG'Access,
-               Component => null,
-               Tag       => ASF.Views.Nodes.Jsf.Create_Length_Validator_Tag_Node'Access),
-
-        10 => (Name      => VALIDATE_LONG_RANGE_TAG'Access,
-               Component => null,
-               Tag       => ASF.Views.Nodes.Jsf.Create_Range_Validator_Tag_Node'Access),
-
-        11 => (Name      => VALIDATOR_TAG'Access,
-               Component => null,
-               Tag       => ASF.Views.Nodes.Jsf.Create_Validator_Tag_Node'Access),
-
-        12 => (Name      => VIEW_TAG'Access,
-               Component => Create_View'Access,
-               Tag       => Create_Component_Node'Access),
-
-        13 => (Name      => VIEW_ACTION_TAG'Access,
-                Component => Create_ViewAction'Access,
-                Tag       => Create_Component_Node'Access),
-
-        14 => (Name      => VIEW_PARAM_TAG'Access,
-               Component => Create_ViewParameter'Access,
-               Tag       => Create_Component_Node'Access)
-        );
-
-   Core_Factory : aliased constant ASF.Factory.Factory_Bindings
-     := (URI => URI'Access, Bindings => Core_Bindings'Access);
-
    --  ------------------------------
    --  Get the HTML component factory.
    --  ------------------------------
-   function Definition return ASF.Factory.Factory_Bindings_Access is
+   procedure Register (Factory : in out ASF.Factory.Component_Factory) is
    begin
-      return Core_Factory'Access;
-   end Definition;
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => ATTRIBUTE_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Attribute_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => CONVERT_DATE_TIME_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Convert_Date_Time_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => CONVERTER_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Converter_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => FACET_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Facet_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => METADATA_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Metadata_Tag_Node'Access,
+                            Create => Create_ViewMetaData'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => PARAM_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Parameter'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => SELECT_ITEM_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_SelectItem'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => SELECT_ITEMS_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_SelectItems'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => VALIDATE_LENGTH_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Length_Validator_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => VALIDATE_LONG_RANGE_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Range_Validator_Tag_Node'Access,
+                            Create => null);
+
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => VALIDATOR_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Validator_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => VIEW_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Validator_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => VIEW_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_View'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => VIEW_ACTION_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_ViewAction'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => VIEW_PARAM_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_ViewParameter'Access);
+   end Register;
 
 end ASF.Components.Core.Factory;

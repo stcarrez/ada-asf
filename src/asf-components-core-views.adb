@@ -24,7 +24,6 @@ with ASF.Applications.Main;
 
 package body ASF.Components.Core.Views is
 
-   use ASF;
    use EL.Objects;
    use type Base.UIComponent_Access;
 

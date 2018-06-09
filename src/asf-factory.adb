@@ -48,7 +48,7 @@ package body ASF.Factory is
    --  ------------------------------
    function Find (Factory : in Component_Factory;
                   URI     : in String;
-                  Name    : in String) return Binding_Access is
+                  Name    : in String) return Binding_Type is
       Key : constant Tag_Name := Tag_Name '(URI  => URI'Unrestricted_Access,
                                             Name => Name'Unrestricted_Access);
       Pos : constant Factory_Maps.Cursor := Factory.Map.Find (Key);
@@ -56,7 +56,7 @@ package body ASF.Factory is
       if Factory_Maps.Has_Element (Pos) then
          return Factory_Maps.Element (Pos);
       else
-         return null;
+         return Null_Binding;
       end if;
    end Find;
 
@@ -73,9 +73,22 @@ package body ASF.Factory is
             Key : constant Tag_Name := Tag_Name '(URI  => Bindings.URI,
                                                   Name => Bindings.Bindings (I).Name);
          begin
-            Factory.Map.Include (Key, Bindings.Bindings (I)'Access);
+            Factory.Map.Include (Key, Bindings.Bindings (I));
          end;
       end loop;
+   end Register;
+
+   procedure Register (Factory   : in out Component_Factory;
+                       URI       : in ASF.Views.Nodes.Name_Access;
+                       Name      : in ASF.Views.Nodes.Name_Access;
+                       Tag       : in ASF.Views.Nodes.Tag_Node_Create_Access;
+                       Create    : in ASF.Views.Nodes.Create_Access) is
+      Key  : constant Tag_Name := Tag_Name '(URI  => URI, Name => Name);
+      Bind : constant Binding_Type := Binding_Type '(Name      => Name,
+                                                     Tag       => Tag,
+                                                     Component => Create);
+   begin
+      Factory.Map.Include (Key, Bind);
    end Register;
 
    --  ------------------------------

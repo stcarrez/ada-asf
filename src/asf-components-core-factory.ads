@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for UI Core Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,7 @@
 with ASF.Factory;
 package ASF.Components.Core.Factory is
 
-   use ASF;
-
-   --  Get the Core component factory.
-   function Definition return ASF.Factory.Factory_Bindings_Access;
+   --  Register the Core component factory.
+   procedure Register (Factory : in out ASF.Factory.Component_Factory);
 
 end ASF.Components.Core.Factory;

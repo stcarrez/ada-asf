@@ -25,7 +25,6 @@ with Util.Log.Loggers;
 package body ASF.Lifecycles.Response is
 
    use Ada.Exceptions;
-   use ASF.Applications;
 
    --  The logger
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Lifecycles.Response");

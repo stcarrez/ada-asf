@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-default -- Default Lifecycle handler
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,6 @@ package ASF.Lifecycles.Default is
    --  Initialize the the lifecycle handler.
    overriding
    procedure Initialize (Controller : in out Lifecycle;
-                         App        : access ASF.Applications.Main.Application'Class);
+                         Views      : access ASF.Applications.Views.View_Handler'Class);
 
 end ASF.Lifecycles.Default;

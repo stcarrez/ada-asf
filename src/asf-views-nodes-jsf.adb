@@ -44,7 +44,7 @@ package body ASF.Views.Nodes.Jsf is
    --  ------------------------------
    --  Create the Converter Tag
    --  ------------------------------
-   function Create_Converter_Tag_Node (Binding    : in Binding_Access;
+   function Create_Converter_Tag_Node (Binding    : in Binding_Type;
                                        Line       : in Views.Line_Info;
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -106,7 +106,7 @@ package body ASF.Views.Nodes.Jsf is
    --  ------------------------------
    --  Create the Converter Tag
    --  ------------------------------
-   function Create_Convert_Date_Time_Tag_Node (Binding    : in Binding_Access;
+   function Create_Convert_Date_Time_Tag_Node (Binding    : in Binding_Type;
                                                Line       : in Views.Line_Info;
                                                Parent     : in Views.Nodes.Tag_Node_Access;
                                                Attributes : in Nodes.Tag_Attribute_Array_Access)
@@ -246,7 +246,7 @@ package body ASF.Views.Nodes.Jsf is
    --  ------------------------------
    --  Create the Validator Tag
    --  ------------------------------
-   function Create_Validator_Tag_Node (Binding    : in Binding_Access;
+   function Create_Validator_Tag_Node (Binding    : in Binding_Type;
                                        Line       : in Views.Line_Info;
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -319,7 +319,7 @@ package body ASF.Views.Nodes.Jsf is
    --  ------------------------------
 
    --  Create the Range_Validator Tag
-   function Create_Range_Validator_Tag_Node (Binding    : in Binding_Access;
+   function Create_Range_Validator_Tag_Node (Binding    : in Binding_Type;
                                              Line       : in Views.Line_Info;
                                              Parent     : in Views.Nodes.Tag_Node_Access;
                                              Attributes : in Nodes.Tag_Attribute_Array_Access)
@@ -383,7 +383,7 @@ package body ASF.Views.Nodes.Jsf is
    --  Create the Length_Validator Tag.  Verifies that the XML node defines
    --  the <b>minimum</b> or the <b>maximum</b> or both attributes.
    --  ------------------------------
-   function Create_Length_Validator_Tag_Node (Binding    : in Binding_Access;
+   function Create_Length_Validator_Tag_Node (Binding    : in Binding_Type;
                                               Line       : in Views.Line_Info;
                                               Parent     : in Views.Nodes.Tag_Node_Access;
                                               Attributes : in Nodes.Tag_Attribute_Array_Access)
@@ -448,7 +448,7 @@ package body ASF.Views.Nodes.Jsf is
    --  ------------------------------
    --  Create the Attribute Tag
    --  ------------------------------
-   function Create_Attribute_Tag_Node (Binding    : in Binding_Access;
+   function Create_Attribute_Tag_Node (Binding    : in Binding_Type;
                                        Line       : in Views.Line_Info;
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -509,7 +509,7 @@ package body ASF.Views.Nodes.Jsf is
    --  ------------------------------
    --  Create the Facet Tag
    --  ------------------------------
-   function Create_Facet_Tag_Node (Binding    : in Binding_Access;
+   function Create_Facet_Tag_Node (Binding    : in Binding_Type;
                                    Line       : in Views.Line_Info;
                                    Parent     : in Views.Nodes.Tag_Node_Access;
                                    Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
@@ -555,7 +555,7 @@ package body ASF.Views.Nodes.Jsf is
    --  ------------------------------
    --  Create the Metadata Tag
    --  ------------------------------
-   function Create_Metadata_Tag_Node (Binding    : in Binding_Access;
+   function Create_Metadata_Tag_Node (Binding    : in Binding_Type;
                                       Line       : in Views.Line_Info;
                                       Parent     : in Views.Nodes.Tag_Node_Access;
                                       Attributes : in Views.Nodes.Tag_Attribute_Array_Access)

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-response -- Response phase
---  Copyright (C) 2010, 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Exceptions;
-with ASF.Applications.Main;
 with ASF.Components.Root;
 with ASF.Responses;
 with Util.Log.Loggers;
@@ -36,9 +35,9 @@ package body ASF.Lifecycles.Response is
    --  ------------------------------
    overriding
    procedure Initialize (Controller : in out Response_Controller;
-                         App        : access ASF.Applications.Main.Application'Class) is
+                         Views      : access ASF.Applications.Views.View_Handler'Class) is
    begin
-      Controller.View_Handler := App.Get_View_Handler;
+      Controller.View_Handler := Views;
    end Initialize;
 
    --  ------------------------------

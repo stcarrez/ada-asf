@@ -22,7 +22,6 @@ with Util.Files;
 with Util.Log.Loggers;
 
 with EL.Variables;
-with ASF.Applications.Main;
 with ASF.Views.Nodes.Facelets;
 package body ASF.Contexts.Facelets is
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-factory -- Factory for HTML UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -249,81 +249,116 @@ package body ASF.Components.Html.Factory is
    SELECT_ONE_MENU_TAG : aliased constant String := "selectOneMenu";
    SELECT_ONE_RADIO_TAG : aliased constant String := "selectOneRadio";
 
-   Html_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => BODY_TAG'Access,
-               Component => Create_Body'Access,
-               Tag       => Create_Component_Node'Access),
-         2 => (Name      => COMMAND_BUTTON_TAG'Access,
-               Component => Create_Command'Access,
-               Tag       => Create_Component_Node'Access),
-         3 => (Name      => DOCTYPE_TAG'Access,
-               Component => Create_Doctype'Access,
-               Tag       => Create_Component_Node'Access),
-         4 => (Name      => FORM_TAG'Access,
-               Component => Create_Form'Access,
-               Tag       => Create_Component_Node'Access),
-         5 => (Name      => HEAD_TAG'Access,
-               Component => Create_Head'Access,
-               Tag       => Create_Component_Node'Access),
-         6 => (Name      => INPUT_FILE_TAG'Access,
-               Component => Create_Input_File'Access,
-               Tag       => Create_Component_Node'Access),
-         7 => (Name      => INPUT_HIDDEN_TAG'Access,
-               Component => Create_Input_Hidden'Access,
-               Tag       => Create_Component_Node'Access),
-         8 => (Name      => INPUT_SECRET_TAG'Access,
-               Component => Create_Input_Secret'Access,
-               Tag       => Create_Component_Node'Access),
-         9 => (Name      => INPUT_TEXT_TAG'Access,
-               Component => Create_Input_Text'Access,
-               Tag       => Create_Component_Node'Access),
-        10 => (Name      => INPUT_TEXTAREA_TAG'Access,
-               Component => Create_Input_Textarea'Access,
-               Tag       => Create_Component_Node'Access),
-        11 => (Name      => LIST_TAG'Access,
-               Component => Create_List'Access,
-               Tag       => Create_Component_Node'Access),
-        12 => (Name      => MESSAGE_TAG'Access,
-               Component => Create_Message'Access,
-               Tag       => Create_Component_Node'Access),
-        13 => (Name      => MESSAGES_TAG'Access,
-               Component => Create_Messages'Access,
-               Tag       => Create_Component_Node'Access),
-        14 => (Name      => OUTPUT_FORMAT_TAG'Access,
-               Component => Create_Output_Format'Access,
-               Tag       => Create_Component_Node'Access),
-        15 => (Name      => OUTPUT_LABEL_TAG'Access,
-               Component => Create_Output_Label'Access,
-               Tag       => Create_Component_Node'Access),
-        16 => (Name      => OUTPUT_LINK_TAG'Access,
-               Component => Create_Output_Link'Access,
-               Tag       => Create_Component_Node'Access),
-        17 => (Name      => OUTPUT_TEXT_TAG'Access,
-               Component => Create_Output'Access,
-               Tag       => Create_Component_Node'Access),
-        18 => (Name      => PANEL_GROUP_TAG'Access,
-               Component => Create_PanelGroup'Access,
-               Tag       => Create_Component_Node'Access),
-        19 => (Name      => SELECT_BOOLEAN_TAG'Access,
-               Component => Create_SelectBooleanCheckbox'Access,
-               Tag       => Create_Component_Node'Access),
-        20 => (Name      => SELECT_ONE_MENU_TAG'Access,
-               Component => Create_SelectOne'Access,
-               Tag       => Create_Component_Node'Access),
-        21 => (Name      => SELECT_ONE_RADIO_TAG'Access,
-               Component => Create_SelectOneRadio'Access,
-               Tag       => Create_Component_Node'Access)
-        );
-
-   Html_Factory : aliased constant ASF.Factory.Factory_Bindings
-     := (URI => URI'Access, Bindings => Html_Bindings'Access);
-
    --  ------------------------------
    --  Get the HTML component factory.
    --  ------------------------------
-   function Definition return ASF.Factory.Factory_Bindings_Access is
+   procedure Register (Factory : in out ASF.Factory.Component_Factory) is
    begin
-      return Html_Factory'Access;
-   end Definition;
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => BODY_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Body'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => COMMAND_BUTTON_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Command'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => DOCTYPE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Doctype'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => FORM_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Form'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => HEAD_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Head'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INPUT_FILE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Input_File'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INPUT_HIDDEN_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Input_Hidden'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INPUT_SECRET_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Input_Secret'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INPUT_TEXT_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Input_Text'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INPUT_TEXTAREA_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Input_Textarea'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => LIST_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_List'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => MESSAGE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Message'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => MESSAGES_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Messages'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => OUTPUT_FORMAT_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Output_Format'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => OUTPUT_LABEL_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Output_Label'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => OUTPUT_LINK_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Output_Link'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => OUTPUT_TEXT_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Output'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => PANEL_GROUP_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_PanelGroup'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => SELECT_BOOLEAN_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_SelectBooleanCheckbox'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => SELECT_ONE_MENU_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_SelectOne'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => SELECT_ONE_RADIO_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_SelectOneRadio'Access);
+   end Register;
 
 end ASF.Components.Html.Factory;

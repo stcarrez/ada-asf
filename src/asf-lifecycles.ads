@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles -- Lifecycle
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ with Ada.Finalization;
 with ASF.Events.Phases;
 with ASF.Contexts.Faces;
 with Util.Concurrent.Arrays;
-limited with ASF.Applications.Main;
+with ASF.Applications.Views;
 package ASF.Lifecycles is
 
    subtype Phase_Type is
@@ -37,7 +37,7 @@ package ASF.Lifecycles is
 
    --  Initialize the phase controller.
    procedure Initialize (Controller : in out Phase_Controller;
-                         App        : access ASF.Applications.Main.Application'Class) is null;
+                         Views      : access ASF.Applications.Views.View_Handler'Class) is null;
 
    type Lifecycle is abstract new Ada.Finalization.Limited_Controlled with private;
    type Lifecycle_Access is access all Lifecycle'Class;
@@ -49,7 +49,7 @@ package ASF.Lifecycles is
 
    --  Initialize the the lifecycle handler.
    procedure Initialize (Controller : in out Lifecycle;
-                         App        : access ASF.Applications.Main.Application'Class);
+                         Views      : access ASF.Applications.Views.View_Handler'Class);
 
    --  Finalize the lifecycle handler, freeing the allocated storage.
    overriding

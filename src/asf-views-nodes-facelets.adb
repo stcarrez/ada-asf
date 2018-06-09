@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-facelets -- Facelets composition nodes
---  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,12 +37,8 @@ with EL.Contexts;
 with EL.Variables.Default;
 package body ASF.Views.Nodes.Facelets is
 
-   use ASF.Factory;
-
-   use Util.Log;
-
    --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ASF.Views.Nodes.Facelets");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Views.Nodes.Facelets");
 
    COMPOSITION_TAG  : aliased constant String := "composition";
    DECORATE_TAG     : aliased constant String := "decorate";
@@ -55,51 +51,52 @@ package body ASF.Views.Nodes.Facelets is
 
    URI           : aliased constant String := "http://java.sun.com/jsf/facelets";
 
-   Tag_Bindings  : aliased constant ASF.Factory.Binding_Array
-     := (
-       (Name      => COMMENT_TAG'Access,
-        Component => null,
-        Tag       => Create_Comment_Tag_Node'Access),
-
-       (Name      => COMPOSITION_TAG'Access,
-        Component => null,
-        Tag       => Create_Composition_Tag_Node'Access),
-
-       (Name      => DEBUG_TAG'Access,
-        Component => null,
-        Tag       => Create_Debug_Tag_Node'Access),
-
-       (Name      => DECORATE_TAG'Access,
-        Component => null,
-        Tag       => Create_Decorate_Tag_Node'Access),
-
-       (Name      => DEFINE_TAG'Access,
-        Component => null,
-        Tag       => Create_Define_Tag_Node'Access),
-
-       (Name      => INCLUDE_TAG'Access,
-        Component => null,
-        Tag       => Create_Include_Tag_Node'Access),
-
-       (Name      => INSERT_TAG'Access,
-        Component => null,
-        Tag       => Create_Insert_Tag_Node'Access),
-
-       (Name      => PARAM_TAG'Access,
-        Component => null,
-        Tag       => Create_Param_Tag_Node'Access)
-      );
-
-   Tag_Factory   : aliased constant ASF.Factory.Factory_Bindings
-     := (URI => URI'Access, Bindings => Tag_Bindings'Access);
-
    --  ------------------------------
-   --  Tag factory for nodes defined in this package.
+   --  Register the facelets component factory.
    --  ------------------------------
-   function Definition return ASF.Factory.Factory_Bindings_Access is
+   procedure Register (Factory : in out ASF.Factory.Component_Factory) is
    begin
-      return Tag_Factory'Access;
-   end Definition;
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => COMMENT_TAG'Access,
+                            Tag    => Create_Comment_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => COMPOSITION_TAG'Access,
+                            Tag    => Create_Composition_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => DEBUG_TAG'Access,
+                            Tag    => Create_Debug_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => DECORATE_TAG'Access,
+                            Tag    => Create_Decorate_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => DEFINE_TAG'Access,
+                            Tag    => Create_Define_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INCLUDE_TAG'Access,
+                            Tag    => Create_Include_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INSERT_TAG'Access,
+                            Tag    => Create_Insert_Tag_Node'Access,
+                            Create => null);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => PARAM_TAG'Access,
+                            Tag    => Create_Param_Tag_Node'Access,
+                            Create => null);
+   end Register;
 
    --  ------------------------------
    --  Include Tag
@@ -109,7 +106,7 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Include Tag
    --  ------------------------------
-   function Create_Include_Tag_Node (Binding    : in Binding_Access;
+   function Create_Include_Tag_Node (Binding    : in Binding_Type;
                                      Line       : in Line_Info;
                                      Parent     : in Tag_Node_Access;
                                      Attributes : in Tag_Attribute_Array_Access)
@@ -176,7 +173,7 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Composition Tag
    --  ------------------------------
-   function Create_Composition_Tag_Node (Binding    : in Binding_Access;
+   function Create_Composition_Tag_Node (Binding    : in Binding_Type;
                                          Line       : in Line_Info;
                                          Parent     : in Tag_Node_Access;
                                          Attributes : in Tag_Attribute_Array_Access)
@@ -291,7 +288,7 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Debug Tag
    --  ------------------------------
-   function Create_Debug_Tag_Node (Binding    : in Binding_Access;
+   function Create_Debug_Tag_Node (Binding    : in Binding_Type;
                                    Line       : in Line_Info;
                                    Parent     : in Tag_Node_Access;
                                    Attributes : in Tag_Attribute_Array_Access)
@@ -320,7 +317,7 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
 
    --  Create the Decorate Tag
-   function Create_Decorate_Tag_Node (Binding    : in Binding_Access;
+   function Create_Decorate_Tag_Node (Binding    : in Binding_Type;
                                       Line       : in Line_Info;
                                       Parent     : in Tag_Node_Access;
                                       Attributes : in Tag_Attribute_Array_Access)
@@ -338,7 +335,7 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Define Tag
    --  ------------------------------
-   function Create_Define_Tag_Node (Binding    : in Binding_Access;
+   function Create_Define_Tag_Node (Binding    : in Binding_Type;
                                     Line       : in Line_Info;
                                     Parent     : in Tag_Node_Access;
                                     Attributes : in Tag_Attribute_Array_Access)
@@ -374,7 +371,7 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Insert Tag
    --  ------------------------------
-   function Create_Insert_Tag_Node (Binding    : in Binding_Access;
+   function Create_Insert_Tag_Node (Binding    : in Binding_Type;
                                     Line       : in Line_Info;
                                     Parent     : in Tag_Node_Access;
                                     Attributes : in Tag_Attribute_Array_Access)
@@ -418,7 +415,7 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
    --  Create the Param Tag
    --  ------------------------------
-   function Create_Param_Tag_Node (Binding    : in Binding_Access;
+   function Create_Param_Tag_Node (Binding    : in Binding_Type;
                                    Line       : in Line_Info;
                                    Parent     : in Tag_Node_Access;
                                    Attributes : in Tag_Attribute_Array_Access)
@@ -463,7 +460,7 @@ package body ASF.Views.Nodes.Facelets is
    --  ------------------------------
 
    --  Create the Comment Tag
-   function Create_Comment_Tag_Node (Binding    : in Binding_Access;
+   function Create_Comment_Tag_Node (Binding    : in Binding_Type;
                                      Line       : in Line_Info;
                                      Parent     : in Tag_Node_Access;
                                      Attributes : in Tag_Attribute_Array_Access)

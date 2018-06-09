@@ -23,10 +23,11 @@ with ASF.Streams;
 with ASF.Contexts.Writer;
 with ASF.Contexts.Flash;
 with ASF.Components.Core;
+with ASF.Components.Utils;
+with ASF.Components.Ajax.Factory;
 with ASF.Components.Core.Factory;
 with ASF.Components.Html.Factory;
 with ASF.Components.Utils.Factory;
-with ASF.Components.Ajax.Factory;
 with ASF.Components.Widgets.Factory;
 with ASF.Components.Root;
 with ASF.Components.Core.Views;
@@ -42,7 +43,6 @@ with EL.Utils;
 
 with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
-
 package body ASF.Applications.Main is
 
    use Ada.Strings.Unbounded;
@@ -250,7 +250,6 @@ package body ASF.Applications.Main is
    procedure Initialize (App     : in out Application;
                          Conf    : in Config;
                          Factory : in out Application_Factory'Class) is
-      App_Access : constant Application_Access := App'Unchecked_Access;
       Params     : Config := Conf;
    begin
       App.Action_Listener := App'Unchecked_Access;
@@ -279,10 +278,10 @@ package body ASF.Applications.Main is
       ASF.Locales.Initialize (App.Locales, App.Factory, Params);
 
       --  Initialize the lifecycle handler.
-      App.Lifecycle.Initialize (App_Access);
+      App.Lifecycle.Initialize (App.Get_View_Handler);
 
       --  Initialize the navigation handler.
-      App.Navigation.Initialize (App_Access);
+      App.Navigation.Initialize (App.Get_View_Handler);
 
       Application'Class (App).Initialize_Servlets;
       Application'Class (App).Initialize_Filters;
@@ -314,24 +313,14 @@ package body ASF.Applications.Main is
    --  It should register the component factories used by the application.
    --  ------------------------------
    procedure Initialize_Components (App : in out Application) is
-      use ASF.Components;
-      use ASF.Views;
    begin
-      ASF.Factory.Register (Factory  => App.Components,
-                            Bindings => Core.Factory.Definition);
-      ASF.Factory.Register (Factory  => App.Components,
-                            Bindings => Html.Factory.Definition);
-      ASF.Factory.Register (Factory  => App.Components,
-                            Bindings => Nodes.Core.Definition);
-      ASF.Factory.Register (Factory  => App.Components,
-                            Bindings => Nodes.Facelets.Definition);
-      ASF.Factory.Register (Factory  => App.Components,
-                            Bindings => Utils.Factory.Definition);
-      ASF.Factory.Register (Factory  => App.Components,
-                            Bindings => Ajax.Factory.Definition);
-      ASF.Factory.Register (Factory  => App.Components,
-                            Bindings => Widgets.Factory.Definition);
-
+      ASF.Components.Core.Factory.Register (App.Components);
+      ASF.Components.Html.Factory.Register (App.Components);
+      ASF.Components.Ajax.Factory.Register (App.Components);
+      ASF.Components.Utils.Factory.Register (App.Components);
+      ASF.Components.Widgets.Factory.Register (App.Components);
+      ASF.Views.Nodes.Facelets.Register (App.Components);
+      ASF.Views.Nodes.Core.Register (App.Components);
       ASF.Components.Utils.Factory.Set_Functions (App.Functions);
       ASF.Views.Nodes.Core.Set_Functions (App.Functions);
       ASF.Security.Set_Functions (App.Functions);
@@ -564,9 +553,7 @@ package body ASF.Applications.Main is
       use EL.Variables;
       use EL.Variables.Default;
       use EL.Contexts;
-      use EL.Objects;
       use Util.Beans.Basic;
-      use ASF.Applications.Views;
       use Ada.Exceptions;
 
       Writer         : aliased ASF.Contexts.Writer.Response_Writer;
@@ -635,8 +622,6 @@ package body ASF.Applications.Main is
       use EL.Variables.Default;
       use EL.Contexts;
       use EL.Objects;
-      use Util.Beans.Basic;
-      use ASF.Applications.Views;
       use Ada.Exceptions;
 
       Writer         : aliased ASF.Contexts.Writer.Response_Writer;

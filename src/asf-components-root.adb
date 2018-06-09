@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-root -- ASF Root View Component
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,6 @@ with Ada.Unchecked_Deallocation;
 with ASF.Components.Base;
 with ASF.Components.Core.Views;
 package body ASF.Components.Root is
-
-   use ASF;
-   use EL.Objects;
 
    --  ------------------------------
    --  Get the root node of the view.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  widgets-factory -- Factory for widget Components
---  Copyright (C) 2013, 2015 Stephane Carrez
+--  Copyright (C) 2013, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -133,48 +133,61 @@ package body ASF.Components.Widgets.Factory is
    TAB_TAG          : aliased constant String := "tab";
    TAB_VIEW_TAG     : aliased constant String := "tabView";
 
-   Widget_Bindings : aliased constant ASF.Factory.Binding_Array
-     := (1 => (Name      => ACCORDION_TAG'Access,
-               Component => Create_Accordion'Access,
-               Tag       => Create_Component_Node'Access),
-         2 => (Name      => AUTOCOMPLETE_TAG'Access,
-               Component => Create_Complete'Access,
-               Tag       => Create_Component_Node'Access),
-         3 => (Name      => CHOSEN_TAG'Access,
-               Component => Create_Chosen'Access,
-               Tag       => Create_Component_Node'Access),
-         4 => (Name      => INPUT_DATE_TAG'Access,
-               Component => Create_Input_Date'Access,
-               Tag       => Create_Component_Node'Access),
-         5 => (Name      => INPUT_TEXT_TAG'Access,
-               Component => Create_Input'Access,
-               Tag       => Create_Component_Node'Access),
-         6 => (Name      => GRAVATAR_TAG'Access,
-               Component => Create_Gravatar'Access,
-               Tag       => Create_Component_Node'Access),
-         7 => (Name      => LIKE_TAG'Access,
-               Component => Create_Like'Access,
-               Tag       => Create_Component_Node'Access),
-         8 => (Name      => PANEL_TAG'Access,
-               Component => Create_Panel'Access,
-               Tag       => Create_Component_Node'Access),
-         9 => (Name      => TAB_TAG'Access,
-               Component => Create_Tab'Access,
-               Tag       => Create_Component_Node'Access),
-        10 => (Name      => TAB_VIEW_TAG'Access,
-               Component => Create_TabView'Access,
-               Tag       => Create_Component_Node'Access)
-        );
-
-   Core_Factory : aliased constant ASF.Factory.Factory_Bindings
-     := (URI => URI'Access, Bindings => Widget_Bindings'Access);
-
    --  ------------------------------
    --  Get the widget component factory.
    --  ------------------------------
-   function Definition return ASF.Factory.Factory_Bindings_Access is
+   procedure Register (Factory : in out ASF.Factory.Component_Factory) is
    begin
-      return Core_Factory'Access;
-   end Definition;
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => ACCORDION_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Accordion'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => AUTOCOMPLETE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Complete'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => CHOSEN_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Chosen'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INPUT_DATE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Input_Date'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => INPUT_TEXT_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Input'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => GRAVATAR_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Gravatar'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => LIKE_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Like'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => PANEL_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Panel'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => TAB_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Tab'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => TAB_VIEW_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_TabView'Access);
+   end Register;
 
 end ASF.Components.Widgets.Factory;

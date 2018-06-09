@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  util-factory -- Factory for UI Util Components
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,10 +21,8 @@ with ASF.Factory;
 
 package ASF.Components.Utils.Factory is
 
-   use ASF;
-
-   --  Get the Util component factory.
-   function Definition return ASF.Factory.Factory_Bindings_Access;
+   --  Register the Util component factory.
+   procedure Register (Factory : in out ASF.Factory.Component_Factory);
 
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class);
 

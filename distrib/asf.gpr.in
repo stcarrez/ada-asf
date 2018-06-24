@@ -1,12 +1,17 @@
 with "util";
-with "util_http";
+with "util_config";
 with "el";
 with "security";
-with "asf_core";
-@WITH_SERVER@
-@WITH_ASF_AWS@
+with "servlet_core";
 
-abstract project Asf is
-   Version := Asf_Core.Version;
+library project Asf is
+   Version := "@ASF_VERSION@";
 
+   for Library_Name use "ada_asf";
+   for Library_Dir use Util_Config.Libdir;
+   for Library_Kind use "LIBRARY_TYPE";
+
+   for Source_Dirs use (Util_Config.Includedir & "/asf");
+   for Library_ALI_Dir use Util_Config.Alidir & "/asf/";
+   for Externally_Built use "true";
 end Asf;

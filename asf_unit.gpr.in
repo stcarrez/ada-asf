@@ -16,8 +16,8 @@ project Asf_Unit is
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Asf.Version;
 
-   for Library_Dir use Library_Dir & "/asfunit/" & Project'Library_Kind;
-   for Object_Dir use "./" & Config'Object_Dir & "/obj/asfunit/" & Project'Library_Kind;
+   for Library_Dir use Library_Dir & "/asf_unit/" & Project'Library_Kind;
+   for Object_Dir use "./" & Config'Object_Dir & "/obj/asf_unit/" & Project'Library_Kind;
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
 
    package Binder   renames Config.Binder;

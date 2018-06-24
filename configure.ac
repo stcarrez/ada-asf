@@ -125,6 +125,7 @@ AC_SUBST(WITH_ASF_AWS)
 AM_UTIL_CHECK_INSTALL
 
 AC_OUTPUT(
-Makefile asf.gpr asf_core.gpr asf_aws.gpr asf_tests.gpr samples.gpr asf_unit.gpr distrib/asf.gpr distrib/asf_unit.gpr distrib/asf_core.gpr distrib/asf_aws.gpr
+Makefile asf.gpr asf_core.gpr asf_aws.gpr asf_tests.gpr samples.gpr asf_unit.gpr
+distrib/asf.gpr distrib/asf_unit.gpr
 )
 

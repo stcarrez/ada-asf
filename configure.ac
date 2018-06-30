@@ -27,14 +27,6 @@ ASF_MINOR_VERSION=2
 ASF_MICRO_VERSION=0
 ASF_VERSION=$ASF_MAJOR_VERSION.$ASF_MINOR_VERSION.$ASF_MICRO_VERSION
 
-AM_GNAT_CHECK_GPRBUILD
-
-# checking for local tools
-AC_PROG_CC
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
-AC_PROG_LN_S
-
 # Set the version number of Ada Server Faces
 AC_SUBST(ASF_VERSION)
 AC_SUBST(ASF_MAJOR_VERSION)
@@ -47,17 +39,10 @@ AC_SUBST(EXEC_PREFIX)
 ASF_LIBDIR="lib"
 AC_SUBST(ASF_LIBDIR)
 
-AC_MSG_CHECKING([number of processors])
-NR_CPUS=`getconf _NPROCESSORS_CONF 2>/dev/null || getconf NPROCESSORS_CONF 2>/dev/null || echo 1`
-AC_MSG_RESULT($NR_CPUS)
-AC_SUBST(NR_CPUS)
-
 ##########################################
 # Check to enable/disable shared library
 ##########################################
-AM_SHARED_LIBRARY_SUPPORT
-AM_DISTRIB_SUPPORT
-AM_COVERAGE_SUPPORT
+AM_GNAT_LIBRARY_PROJECT(asf)
 
 ##########################################
 # Ada Util library
@@ -95,11 +80,11 @@ AC_SUBST(SECURITY_DIR)
 ##########################################
 # Ada Servlet library
 ##########################################
-AM_GNAT_FIND_PROJECT([ada-servlet],[Ada Servlet Library],[servlet],
+AM_GNAT_FIND_PROJECT([ada-servlet],[Ada Servlet Library],[servlet_core],
   [git@github.com:stcarrez/ada-servlet.git],
   [Building Ada Server Faces requires the Ada Servlet Library.],
   [
-    SERVLET_DIR=${gnat_project_dir_servlet}
+    SERVLET_DIR=${gnat_project_dir_servlet_core}
   ])
 AC_SUBST(SERVLET_DIR)
 
@@ -121,8 +106,6 @@ AC_SUBST(ASF_SERVER)
 AC_SUBST(ASF_HAVE_AWS)
 AC_SUBST(WITH_SERVER)
 AC_SUBST(WITH_ASF_AWS)
-
-AM_UTIL_CHECK_INSTALL
 
 AC_OUTPUT(
 Makefile asf.gpr asf_core.gpr asf_aws.gpr asf_tests.gpr samples.gpr asf_unit.gpr

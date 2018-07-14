@@ -1,4 +1,4 @@
-Version 1.2     -
+Version 1.2     - Jul 2018
   - New EL function util:translate for translation with a resource bundle
   - New REST servlet with support for server API implementation
   - Provide pre-defined beans in ASF contexts: requestScope

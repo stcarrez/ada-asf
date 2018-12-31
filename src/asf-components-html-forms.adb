@@ -521,6 +521,7 @@ package body ASF.Components.Html.Forms is
                    & ": Exception raised when updating value {0} for component {1}: {2}",
                    EL.Objects.To_String (UI.Submitted_Value),
                    To_String (UI.Get_Client_Id), Ada.Exceptions.Exception_Name (E));
+         Context.Queue_Exception (E);
    end Process_Updates;
 
    --  ------------------------------

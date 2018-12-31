@@ -186,6 +186,15 @@ package body ASF.Applications.Main is
    end Get_Action_Listener;
 
    --  ------------------------------
+   --  Get the exception handler configured for this application.
+   --  ------------------------------
+   function Get_Exception_Handler (App : in Application)
+                                   return ASF.Contexts.Exceptions.Exception_Handler_Access is
+   begin
+      return App.Exceptions;
+   end Get_Exception_Handler;
+
+   --  ------------------------------
    --  Process the action associated with the action event.  The action returns
    --  and outcome which is then passed to the navigation handler to navigate to
    --  the next view.

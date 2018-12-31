@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts-exceptions -- Exception handlers in faces context
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,8 +50,13 @@ package body ASF.Contexts.Exceptions is
                             return ASF.Applications.Messages.Message is
          Name : constant String := Event.Get_Exception_Name;
          Msg  : constant String := Event.Get_Exception_Message;
+         Pos  : constant Util.Strings.Maps.Cursor := Handler.Mapping.Find (Name);
       begin
-         if Msg'Length = 0 then
+         if Util.Strings.Maps.Has_Element (Pos) then
+            return Messages.Factory.Get_Message (Context    => Context,
+                                                 Message_Id => Util.Strings.Maps.Element (Pos),
+                                                 Param1     => Msg);
+         elsif Msg'Length = 0 then
             return Messages.Factory.Get_Message (Context    => Context,
                                                  Message_Id => EXCEPTION_MESSAGE_BASIC_ID,
                                                  Param1     => Name);
@@ -88,6 +93,16 @@ package body ASF.Contexts.Exceptions is
       end if;
       Context.Iterate_Exception (Process'Access);
    end Handle;
+
+   --  ------------------------------
+   --  Set the message id to be used when a given exception name is raised.
+   --  ------------------------------
+   procedure Set_Message (Handler    : in out Exception_Handler;
+                          Name       : in String;
+                          Message_Id : in String) is
+   begin
+      Handler.Mapping.Insert (Name, Message_Id);
+   end Set_Message;
 
    --  ------------------------------
    --  Queue an exception event to the exception handler.  The exception event will be

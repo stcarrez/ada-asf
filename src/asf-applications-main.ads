@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -338,6 +338,9 @@ private
 
       --  The OAuth application manager.
       OAuth           : Security.OAuth.Servers.Auth_Manager_Access;
+
+      --  Exception handler
+      Exceptions      : ASF.Contexts.Exceptions.Exception_Handler_Access;
    end record;
 
 end ASF.Applications.Main;

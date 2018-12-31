@@ -266,6 +266,9 @@ package body ASF.Applications.Main is
       --  Create the OAuth manager.
       App.OAuth := Factory.Create_OAuth_Manager;
 
+      --  Create the exceptions manager.
+      App.Exceptions := Factory.Create_Exception_Handler;
+
       Application'Class (App).Initialize_Components;
 
       ASF.Beans.Register_Class (App.Factory, "ASF.Beans.Map_Bean",
@@ -581,6 +584,7 @@ package body ASF.Applications.Main is
       Context.Set_Request (Request'Unchecked_Access);
       Context.Set_Response (Response'Unchecked_Access);
       Context.Set_Flash (Flash'Unchecked_Access);
+      Context.Set_Exception_Handler (App.Exceptions);
       App.Set_Context (Context'Unchecked_Access);
 
       begin
@@ -770,11 +774,15 @@ package body ASF.Applications.Main is
       procedure Free is
         new Ada.Unchecked_Deallocation (OAuth.Servers.Auth_Manager'Class,
                                         OAuth.Servers.Auth_Manager_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (ASF.Contexts.Exceptions.Exception_Handler'Class,
+                                        ASF.Contexts.Exceptions.Exception_Handler_Access);
    begin
       Free (App.Navigation);
       Free (App.Lifecycle);
       Free (App.Permissions);
       Free (App.OAuth);
+      Free (App.Exceptions);
       ASF.Servlets.Servlet_Registry (App).Finalize;
    end Finalize;
 

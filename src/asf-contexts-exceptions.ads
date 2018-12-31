@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts-exceptions -- Exception handlers in faces context
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ with Ada.Finalization;
 with Ada.Exceptions;
 
 with ASF.Events.Exceptions;
+private with Util.Strings.Maps;
 
 --  The <b>ASF.Contexts.Exceptions</b> package holds the exception handler framework which
 --  allows an application to handle unexpected exceptions and perform specific actions to
@@ -48,6 +49,11 @@ package ASF.Contexts.Exceptions is
    --
    --  This operation is called after each ASF phase by the life cycle manager.
    procedure Handle (Handler : in out Exception_Handler);
+
+   --  Set the message id to be used when a given exception name is raised.
+   procedure Set_Message (Handler    : in out Exception_Handler;
+                          Name       : in String;
+                          Message_Id : in String);
 
    --  ------------------------------
    --  Exception Queue
@@ -78,6 +84,8 @@ private
       Handled_Events   : ASF.Events.Exceptions.Exception_Event_Vector;
    end record;
 
-   type Exception_Handler is new Ada.Finalization.Limited_Controlled with null record;
+   type Exception_Handler is new Ada.Finalization.Limited_Controlled with record
+      Mapping : Util.Strings.Maps.Map;
+   end record;
 
 end ASF.Contexts.Exceptions;

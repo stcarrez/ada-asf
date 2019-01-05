@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts-exceptions -- Exception handlers in faces context
---  Copyright (C) 2011, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,6 @@ package body ASF.Contexts.Exceptions is
    --  This operation is called after each ASF phase by the life cycle manager.
    --  ------------------------------
    procedure Handle (Handler : in out Exception_Handler) is
-      pragma Unreferenced (Handler);
       use ASF.Applications;
       use type ASF.Contexts.Faces.Faces_Context_Access;
 

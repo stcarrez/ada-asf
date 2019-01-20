@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ with Util.Dates;
 with ASF.Tests;
 with ASF.Components.Html.Text;
 with ASF.Converters.Dates;
+with ASF.Converters.Numbers;
 package body ASF.Converters.Tests is
 
    use Util.Tests;
@@ -38,6 +39,11 @@ package body ASF.Converters.Tests is
 
    procedure Test_Conversion_Error (T          : in out Test;
                                     Value      : in String);
+
+   procedure Test_Number_Conversion (T       : in out Test;
+                                     Picture : in String;
+                                     Value   : in Float;
+                                     Expect  : in String);
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 
@@ -61,6 +67,8 @@ package body ASF.Converters.Tests is
                        Test_Time_Long_Converter'Access);
       Caller.Add_Test (Suite, "Test ASF.Converters.Dates.To_Object (Error)",
                        Test_Date_Converter_Error'Access);
+      Caller.Add_Test (Suite, "Test ASF.Converters.Numbers.To_String (Float)",
+                       Test_Number_Converter'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -244,5 +252,50 @@ package body ASF.Converters.Tests is
    begin
       Test_Conversion_Error (T, "some invalid date");
    end Test_Date_Converter_Error;
+
+   --  Test number converter.
+   procedure Test_Number_Conversion (T       : in out Test;
+                                     Picture : in String;
+                                     Value   : in Float;
+                                     Expect  : in String) is
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => ASF.Converters.Numbers.Number_Converter'Class,
+                                        Name   => ASF.Converters.Numbers.Number_Converter_Access);
+
+      Ctx   : aliased ASF.Contexts.Faces.Faces_Context;
+      UI    : ASF.Components.Html.Text.UIOutput;
+      C     : ASF.Converters.Numbers.Number_Converter_Access;
+      D     : Util.Beans.Objects.Object := Util.Beans.Objects.To_Object (Value);
+   begin
+      T.Setup (Ctx);
+      ASF.Contexts.Faces.Set_Current (Ctx'Unchecked_Access, ASF.Tests.Get_Application.all'Access);
+
+      C := new ASF.Converters.Numbers.Number_Converter;
+      UI.Set_Converter (C.all'Access);
+      C.Set_Picture (Picture);
+      declare
+         use type Ada.Calendar.Time;
+
+         R : constant String := C.To_String (Ctx, UI, D);
+      begin
+         Util.Tests.Assert_Equals (T, Expect, R,
+                                   "Invalid number conversion with picture " & Picture);
+      end;
+      Free (C);
+
+   end Test_Number_Conversion;
+
+   --  ------------------------------
+   --  Test converter reporting conversion errors when converting a string back to a date.
+   --  ------------------------------
+   procedure Test_Number_Converter (T : in out Test) is
+   begin
+      Test_Number_Conversion (T, "Z9.99", 12.345323, "12.35");
+      Test_Number_Conversion (T, "Z9.99", 2.334323, " 2.33");
+      Test_Number_Conversion (T, "<$Z_ZZ9.99>", 2.334323, " €    2.33 ");
+      Test_Number_Conversion (T, "Z_ZZ9.99B$", 2.334323, "    2.33 €");
+      Test_Number_Conversion (T, "Z_ZZ9.99B$", 2342.334323, "2,342.33 €");
+      Test_Number_Conversion (T, "Z_ZZ9.99B$", 21342.334323, "2,342.33 €");
+   end Test_Number_Converter;
 
 end ASF.Converters.Tests;

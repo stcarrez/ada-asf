@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-tests - Unit tests for ASF.Converters
---  Copyright (C) 2014, 2018 Stephane Carrez
+--  Copyright (C) 2014, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,5 +48,8 @@ package ASF.Converters.Tests is
 
    --  Test converter reporting conversion errors when converting a string back to a date.
    procedure Test_Date_Converter_Error (T : in out Test);
+
+   --  Test number converter.
+   procedure Test_Number_Converter (T : in out Test);
 
 end ASF.Converters.Tests;

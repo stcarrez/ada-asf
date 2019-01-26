@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  asf-lifecycles-apply -- Validation phase
---  Copyright (C) 2010 Stephane Carrez
+--  asf-lifecycles-validation -- Validation phase
+--  Copyright (C) 2010, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,6 @@ package body ASF.Lifecycles.Validation is
 
    use Ada.Exceptions;
    use Util.Log;
-   use ASF.Components;
 
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Lifecycles.Validation");

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-widgets-inputs -- Input widget components
---  Copyright (C) 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2013, 2015, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -273,7 +273,6 @@ package body ASF.Components.Widgets.Inputs is
    overriding
    procedure Encode_End (UI      : in UIInputDate;
                          Context : in out Faces_Context'Class) is
-      use ASF.Components.Html.Messages;
    begin
       if not UI.Is_Rendered (Context) then
          return;

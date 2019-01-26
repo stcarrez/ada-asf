@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2012 Stephane Carrez
+--  asf-components-html-links -- ASF HTML Components
+--  Copyright (C) 2009, 2010, 2012, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,6 @@ with EL.Objects;
 with Util.Strings;
 with ASF.Utils;
 package body ASF.Components.Html.Links is
-
-   use EL.Objects;
 
    LINK_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
 

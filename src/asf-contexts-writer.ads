@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  asf-contexts-writer -- Response stream writer
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -202,8 +202,6 @@ package ASF.Contexts.Writer is
    procedure Flush (Stream : in out Response_Writer);
 
 private
-
-   use Ada.Streams;
 
    --  Flush the response stream and release the buffer.
    overriding

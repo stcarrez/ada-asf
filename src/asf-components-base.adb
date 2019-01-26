@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  components -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018 Stephane Carrez
+--  asf-components-base -- Component tree
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -353,8 +353,6 @@ package body ASF.Components.Base is
    function Get_Attribute (UI      : UIComponent;
                            Context : Faces_Context'Class;
                            Name    : String) return EL.Objects.Object is
-      use type ASF.Views.Nodes.Tag_Attribute;
-
       Attribute : constant UIAttribute_Access := Get_Attribute (UI, Name);
    begin
       if Attribute /= null then
@@ -549,8 +547,6 @@ package body ASF.Components.Base is
       else
          --  Then, look in the static attributes
          declare
-            use type ASF.Views.Nodes.Tag_Attribute;
-
             Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
          begin
             if Value /= null then
@@ -589,8 +585,6 @@ package body ASF.Components.Base is
       else
          --  Then, look in the static attributes
          declare
-            use type ASF.Views.Nodes.Tag_Attribute;
-
             Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
          begin
             if Value /= null then
@@ -630,8 +624,6 @@ package body ASF.Components.Base is
       else
          --  Then, look in the static attributes
          declare
-            use type ASF.Views.Nodes.Tag_Attribute;
-
             Value : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute (Name);
          begin
             if Value /= null then

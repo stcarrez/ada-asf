@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  contexts-facelets-flash -- Flash context
---  Copyright (C) 2012, 2015 Stephane Carrez
+--  asf-contexts-flash -- Flash context
+--  Copyright (C) 2012, 2015, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -119,7 +119,6 @@ package body ASF.Contexts.Flash is
                                    Phase   : in ASF.Events.Phases.Phase_Type;
                                    Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
       use type ASF.Events.Phases.Phase_Type;
-      use type Util.Beans.Basic.Readonly_Bean_Access;
    begin
       --  Restore the flash bean instance from the session if there is one.
       if Phase = ASF.Events.Phases.RESTORE_VIEW then

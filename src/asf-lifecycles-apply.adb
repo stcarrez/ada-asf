@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-apply -- Apply values phase
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,6 @@ package body ASF.Lifecycles.Apply is
 
    use Ada.Exceptions;
    use Util.Log;
-   use ASF.Components;
 
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Lifecycles.Response");

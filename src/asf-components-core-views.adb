@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core-views -- ASF View Components
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,6 @@ with ASF.Applications.Main;
 
 package body ASF.Components.Core.Views is
 
-   use EL.Objects;
    use type Base.UIComponent_Access;
 
    procedure Free is

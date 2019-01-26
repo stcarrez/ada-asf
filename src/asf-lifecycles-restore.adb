@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-restore -- Restore view phase
---  Copyright (C) 2010, 2011, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,12 +42,11 @@ package body ASF.Lifecycles.Restore is
    overriding
    procedure Execute (Controller : in Restore_Controller;
                       Context    : in out ASF.Contexts.Faces.Faces_Context'Class) is
-      use ASF.Components;
-
       Req     : constant ASF.Requests.Request_Access := Context.Get_Request;
       Page    : constant String := Context.Get_View_Name;
       View    : Components.Root.UIViewRoot;
    begin
+      Req.Inject_Parameters (Context.Get_ELContext.all);
       Controller.View_Handler.Restore_View (Page, Context, View);
 
       Context.Set_View_Root (View);

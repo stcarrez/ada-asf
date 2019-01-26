@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -565,7 +565,6 @@ package body ASF.Applications.Main is
       use EL.Variables;
       use EL.Variables.Default;
       use EL.Contexts;
-      use Util.Beans.Basic;
       use Ada.Exceptions;
 
       Writer         : aliased ASF.Contexts.Writer.Response_Writer;
@@ -597,7 +596,6 @@ package body ASF.Applications.Main is
       App.Set_Context (Context'Unchecked_Access);
 
       begin
-         Request.Inject_Parameters (ELContext);
          Application'Class (App).Execute_Lifecycle (Context);
 
       exception
@@ -634,7 +632,6 @@ package body ASF.Applications.Main is
       use EL.Variables;
       use EL.Variables.Default;
       use EL.Contexts;
-      use EL.Objects;
       use Ada.Exceptions;
 
       Writer         : aliased ASF.Contexts.Writer.Response_Writer;

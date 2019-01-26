@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-invoke -- Invoke application phase
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,6 @@ package body ASF.Lifecycles.Invoke is
 
    use Ada.Exceptions;
    use Util.Log;
-   use ASF.Components;
 
    --  The logger
    Log : constant Loggers.Logger := Loggers.Create ("ASF.Lifecycles.Invoke");

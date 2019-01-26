@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
+--  asf-views-nodes-jsf -- JSF Core Tag Library
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,9 +49,6 @@ package body ASF.Views.Nodes.Jsf is
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access is
-
-      use ASF.Views.Nodes;
-
       Node : constant Converter_Tag_Node_Access := new Converter_Tag_Node;
       Conv : constant Tag_Attribute_Access := Find_Attribute (Attributes,
                                                               "converterId");
@@ -111,8 +108,6 @@ package body ASF.Views.Nodes.Jsf is
                                                Parent     : in Views.Nodes.Tag_Node_Access;
                                                Attributes : in Nodes.Tag_Attribute_Array_Access)
                                                return Views.Nodes.Tag_Node_Access is
-      use ASF.Views.Nodes;
-
       Node : constant Convert_Date_Time_Tag_Node_Access := new Convert_Date_Time_Tag_Node;
    begin
       Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
@@ -251,9 +246,6 @@ package body ASF.Views.Nodes.Jsf is
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access is
-
-      use ASF.Views.Nodes;
-
       Node : constant Validator_Tag_Node_Access := new Validator_Tag_Node;
       Vid  : constant Tag_Attribute_Access := Find_Attribute (Attributes,
                                                               "validatorId");
@@ -324,9 +316,6 @@ package body ASF.Views.Nodes.Jsf is
                                              Parent     : in Views.Nodes.Tag_Node_Access;
                                              Attributes : in Nodes.Tag_Attribute_Array_Access)
                                              return Views.Nodes.Tag_Node_Access is
-
-      use ASF.Views.Nodes;
-
       Node : constant Range_Validator_Tag_Node_Access := new Range_Validator_Tag_Node;
    begin
       Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
@@ -346,8 +335,6 @@ package body ASF.Views.Nodes.Jsf is
                             Context   : in out Contexts.Facelets.Facelet_Context'Class;
                             Validator : out Validators.Validator_Access;
                             Shared    : out Boolean) is
-      use type ASF.Validators.Validator_Access;
-
       Min : Long_Long_Integer := Long_Long_Integer'First;
       Max : Long_Long_Integer := Long_Long_Integer'Last;
    begin
@@ -388,9 +375,6 @@ package body ASF.Views.Nodes.Jsf is
                                               Parent     : in Views.Nodes.Tag_Node_Access;
                                               Attributes : in Nodes.Tag_Attribute_Array_Access)
                                               return Views.Nodes.Tag_Node_Access is
-
-      use ASF.Views.Nodes;
-
       Node : constant Length_Validator_Tag_Node_Access := new Length_Validator_Tag_Node;
    begin
       Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
@@ -412,8 +396,6 @@ package body ASF.Views.Nodes.Jsf is
                             Context   : in out Contexts.Facelets.Facelet_Context'Class;
                             Validator : out Validators.Validator_Access;
                             Shared    : out Boolean) is
-      use type ASF.Validators.Validator_Access;
-
       Min : Natural := 0;
       Max : Natural := Natural'Last;
    begin
@@ -453,9 +435,6 @@ package body ASF.Views.Nodes.Jsf is
                                        Parent     : in Views.Nodes.Tag_Node_Access;
                                        Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                        return Views.Nodes.Tag_Node_Access is
-
-      use ASF.Views.Nodes;
-
       Attr : constant Tag_Attribute_Access := Find_Attribute (Attributes, "name");
       Node : Attribute_Tag_Node_Access;
    begin
@@ -514,8 +493,6 @@ package body ASF.Views.Nodes.Jsf is
                                    Parent     : in Views.Nodes.Tag_Node_Access;
                                    Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                    return Views.Nodes.Tag_Node_Access is
-      use ASF.Views.Nodes;
-
       Node : constant Facet_Tag_Node_Access := new Facet_Tag_Node;
    begin
       Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
@@ -560,8 +537,6 @@ package body ASF.Views.Nodes.Jsf is
                                       Parent     : in Views.Nodes.Tag_Node_Access;
                                       Attributes : in Views.Nodes.Tag_Attribute_Array_Access)
                                       return Views.Nodes.Tag_Node_Access is
-      use ASF.Views.Nodes;
-
       Node : constant Metadata_Tag_Node_Access := new Metadata_Tag_Node;
    begin
       Initialize (Node.all'Access, Binding, Line, Parent, Attributes);

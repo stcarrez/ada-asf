@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations-render -- Navigator to render a page
---  Copyright (C) 2010, 2011, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ with ASF.Components.Root;
 package body ASF.Navigations.Render is
 
    use Ada.Exceptions;
-   use ASF.Applications;
 
    --  The logger
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ASF.Navigations.Render");

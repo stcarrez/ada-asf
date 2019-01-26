@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ASF tests - ASF Tests Framework
---  Copyright (C) 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
+--  asf-tests - ASF Tests Framework
+--  Copyright (C) 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,8 +30,6 @@ with ASF.Contexts.Faces;
 with EL.Variables.Default;
 
 package body ASF.Tests is
-
-   use Util.Tests;
 
    CONTEXT_PATH : constant String := "/asfunit";
 

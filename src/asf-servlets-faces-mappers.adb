@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-servlets-faces-mappers -- Read faces specific configuration files
---  Copyright (C) 2015, 2016, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2015, 2016, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ with Servlet.Core;
 with ASF.Routes;
 package body ASF.Servlets.Faces.Mappers is
 
-   use type ASF.Routes.Route_Type_Access;
    use type Servlet.Core.Servlet_Access;
 
    function Find_Servlet (Container : in Servlet_Registry_Access;
@@ -36,7 +35,7 @@ package body ASF.Servlets.Faces.Mappers is
       if Serv = null then
          raise Util.Serialize.Mappers.Field_Error with "No servlet mapped to view " & View;
       end if;
-      return Serv; --  Servlet.Routes.Servlets.Servlet_Route_Type'Class (Route.all).Servlet;
+      return Serv;
    end Find_Servlet;
 
    --  ------------------------------

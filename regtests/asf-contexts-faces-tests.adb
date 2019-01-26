@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
+--  asf-contexts-faces-tests - Unit tests for ASF.Contexts.Faces
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -288,8 +288,6 @@ package body ASF.Contexts.Faces.Tests is
    --  Test the flash instance.
    --  ------------------------------
    procedure Test_Flash_Context (T : in out Test) is
-      use type ASF.Contexts.Faces.Flash_Context_Access;
-
       Ctx   : Faces_Context;
       Flash : aliased ASF.Contexts.Flash.Flash_Context;
    begin

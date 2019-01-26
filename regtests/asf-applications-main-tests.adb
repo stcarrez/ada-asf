@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-main-tests - Unit tests for Applications
---  Copyright (C) 2011, 2012, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2014, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -139,8 +139,6 @@ package body ASF.Applications.Main.Tests is
    --  Test loading a resource bundle through the application.
    --  ------------------------------
    procedure Test_Load_Bundle (T : in out Test) is
-      use type Util.Beans.Basic.Readonly_Bean_Access;
-
       Path   : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-bundle.xml");
       Bundle : ASF.Locales.Bundle;
    begin

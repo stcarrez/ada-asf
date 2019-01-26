@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  Render Tests - Unit tests for ASF.Applications.Views
---  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015, 2018 Stephane Carrez
+--  asf-applications-views-tests - Unit tests for ASF.Applications.Views
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,6 @@ package body ASF.Applications.Views.Tests is
    --  Test loading of facelet file
    --  ------------------------------
    procedure Test_Load_Facelet (T : in out Test) is
-      use ASF.Contexts.Faces;
 
       procedure Free is
         new Ada.Unchecked_Deallocation (Object => ASF.Converters.Dates.Date_Converter'Class,

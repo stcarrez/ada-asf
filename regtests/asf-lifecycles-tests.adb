@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-tests -  Tests for ASF lifecycles
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,8 +59,6 @@ package body ASF.Lifecycles.Tests is
    --  Test a GET request and the lifecycles that this implies.
    --  ------------------------------
    procedure Test_Get_Lifecycle (T : in out Test) is
-      use ASF.Events.Phases;
-
       Request  : ASF.Requests.Mockup.Request;
       Reply    : ASF.Responses.Mockup.Response;
       Form     : aliased ASF.Applications.Tests.Form_Bean;

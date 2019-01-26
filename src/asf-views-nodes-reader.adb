@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  asf -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  asf-views-nodes-reader -- XHTML Reader
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,8 +29,6 @@ package body ASF.Views.Nodes.Reader is
    use Sax.Exceptions;
    use Sax.Locators;
    use Sax.Attributes;
-   use Unicode;
-   use Unicode.CES;
    use Ada.Strings.Fixed;
 
    --  The logger
@@ -116,7 +114,6 @@ package body ASF.Views.Nodes.Reader is
    function Find (Mapper    : NS_Function_Mapper;
                   Namespace : String;
                   Name      : String) return ASF.Views.Nodes.Binding_Type is
-      use NS_Mapping;
    begin
       return ASF.Factory.Find (Mapper.Factory.all, Namespace, Name);
    end Find;
@@ -415,7 +412,6 @@ package body ASF.Views.Nodes.Reader is
                             Qname         : in Unicode.CES.Byte_Sequence := "";
                             Atts          : in Sax.Attributes.Attributes'Class) is
 
-      use ASF.Factory;
       use Ada.Exceptions;
 
       Attr_Count : Natural;

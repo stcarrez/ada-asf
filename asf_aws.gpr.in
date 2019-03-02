@@ -1,12 +1,12 @@
 with "@UTIL_DIR@config";
 with "asf_core";
-with "@UTIL_DIR@util_http_aws";
+with "@UTIL_DIR@utilada_aws";
 @WITH_SERVER@
 
 project Asf_Aws is
 
    Version := "@ASF_VERSION@";
-   Library_Dir := "@ASF_LIBDIR@";
+   Library_Dir := "lib";
    Library_Type : Config.Library_Type_Type := external ("ASF_LIBRARY_TYPE", "static");
 
    Has_Aws     : Config.Yes_No := "@ASF_HAVE_AWS@";
@@ -23,12 +23,12 @@ project Asf_Aws is
 
    end case;
 
-   for Library_Name use "ada_asf_aws";
+   for Library_Name use "asf_aws";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
 
-   for Library_Dir use Library_Dir & "/asf-aws/" & Project'Library_Kind;
-   for Object_Dir use "./" & Config'Object_Dir & "/obj/asf-aws/" & Project'Library_Kind;
+   for Library_Dir use Library_Dir & "/asf_aws/" & Project'Library_Kind;
+   for Object_Dir use "./" & Config'Object_Dir & "/obj/asf_aws/" & Project'Library_Kind;
 
    package Binder renames Config.Binder;
    package Builder renames Config.Builder;

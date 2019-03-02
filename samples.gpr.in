@@ -1,7 +1,7 @@
 with "@UTIL_DIR@config";
-with "@UTIL_DIR@util";
-with "@EL_DIR@el";
-with "@SERVLET_DIR@servlet";
+with "@UTIL_DIR@utilada_sys";
+with "@EL_DIR@elada";
+with "@SERVLET_DIR@servletada";
 with "asf";
 
 project Samples is
@@ -11,7 +11,7 @@ project Samples is
    for Main use Mains;
 
    package Naming is
-      case Util.Has_Vector_Mappers is
+      case UtilAda_Sys.Has_Vector_Mappers is
            when "yes" =>
                 for Implementation ("Facebook") use "facebook-with_feeds.adb";
 

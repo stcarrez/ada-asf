@@ -1,5 +1,5 @@
 dnl Autoconf configure script for Ada Server Faces
-dnl Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2016, 2018 Stephane Carrez
+dnl Copyright (C) 2009 - 2019 Stephane Carrez
 dnl Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 dnl
 dnl  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,6 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(src/asf.ads)
 
-AC_CANONICAL_SYSTEM
-dnl AM_MAINTAINER_MODE
-
 # Current release settings
 ASF_MAJOR_VERSION=1
 ASF_MINOR_VERSION=2
@@ -36,33 +33,29 @@ AC_SUBST(ASF_MICRO_VERSION)
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
-ASF_LIBDIR="lib"
-AC_SUBST(ASF_LIBDIR)
-
-##########################################
-# Check to enable/disable shared library
-##########################################
 AM_GNAT_LIBRARY_PROJECT(asf)
+AM_GNAT_LIBRARY_SETUP(asf_core)
+AM_GNAT_LIBRARY_SETUP(asf_aws)
 
 ##########################################
 # Ada Util library
 ##########################################
-AM_GNAT_FIND_PROJECT([ada-util],[Ada Utility Library],[util],
+AM_GNAT_FIND_PROJECT([ada-util],[Ada Utility Library],[utilada_base],
   [git@github.com:stcarrez/ada-util.git],
   [Building Ada EL requires the Ada Utility Library.],
   [
-    UTIL_DIR=${gnat_project_dir_util}
+    UTIL_DIR=${gnat_project_dir_utilada_base}
   ])
 AC_SUBST(UTIL_DIR)
 
 ##########################################
 # Ada Expression Language library
 ##########################################
-AM_GNAT_FIND_PROJECT([ada-el],[Ada Expression Language Library],[el],
+AM_GNAT_FIND_PROJECT([ada-el],[Ada Expression Language Library],[elada],
   [git@github.com:stcarrez/ada-el.git],
   [Building Ada Server Faces requires the Ada EL Library.],
   [
-    EL_DIR=${gnat_project_dir_el}
+    EL_DIR=${gnat_project_dir_elada}
   ])
 AC_SUBST(EL_DIR)
 
@@ -80,11 +73,11 @@ AC_SUBST(SECURITY_DIR)
 ##########################################
 # Ada Servlet library
 ##########################################
-AM_GNAT_FIND_PROJECT([ada-servlet],[Ada Servlet Library],[servlet_core],
+AM_GNAT_FIND_PROJECT([ada-servlet],[Ada Servlet Library],[servletada_core],
   [git@github.com:stcarrez/ada-servlet.git],
   [Building Ada Server Faces requires the Ada Servlet Library.],
   [
-    SERVLET_DIR=${gnat_project_dir_servlet_core}
+    SERVLET_DIR=${gnat_project_dir_servletada_core}
   ])
 AC_SUBST(SERVLET_DIR)
 
@@ -108,7 +101,12 @@ AC_SUBST(WITH_SERVER)
 AC_SUBST(WITH_ASF_AWS)
 
 AC_OUTPUT(
-Makefile asf.gpr asf_core.gpr asf_aws.gpr asf_tests.gpr samples.gpr asf_unit.gpr
-distrib/asf.gpr distrib/asf_unit.gpr
+Makefile.conf
+asf.gpr
+asf_core.gpr
+asf_aws.gpr
+asf_tests.gpr
+samples.gpr
+asf_unit.gpr
 )
 

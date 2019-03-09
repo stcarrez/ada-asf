@@ -2,7 +2,7 @@ with "@UTIL_DIR@config";
 with "@UTIL_DIR@utilada_sys";
 with "@EL_DIR@elada";
 with "@SECURITY_DIR@security";
-with "@SERVLET_DIR@servletada_core";
+with "@SERVLET_DIR@servletada";
 
 library project Asf is
 

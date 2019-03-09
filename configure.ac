@@ -103,7 +103,6 @@ AC_SUBST(WITH_ASF_AWS)
 AC_OUTPUT(
 Makefile.conf
 asf.gpr
-asf_core.gpr
 asf_tests.gpr
 samples.gpr
 asf_unit.gpr

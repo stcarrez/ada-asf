@@ -104,7 +104,6 @@ AC_OUTPUT(
 Makefile.conf
 asf.gpr
 asf_core.gpr
-asf_aws.gpr
 asf_tests.gpr
 samples.gpr
 asf_unit.gpr

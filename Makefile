@@ -21,7 +21,7 @@ SHARED_MAKE_ARGS += -XLIBRARY_TYPE=relocatable
 include Makefile.defaults
 
 # Build and run the unit tests
-check test:	build-test runtest
+check test:	build runtest
 
 runtest:
 	DIR=`pwd`; \
@@ -30,35 +30,10 @@ runtest:
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
 
 build-test::	setup regtests/asf-testsuite.adb
-	$(GNATMAKE) -p -Pasf_tests $(MAKE_ARGS)
+	$(GNATMAKE) $(GPRFLAGS) -p -Pasf_tests $(MAKE_ARGS)
 
 regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile
 	gnatprep -DASF_SERVER=$(ASF_SERVER) regtests/asf-testsuite.gpb $@
-
-# Clean the files produced by the unit tests
-clean_test:
-	rm -rf regtests/result/*
-
-# Build the coverage data and make a report using lcov and genhtml
-coverage:  coverage-init runtest coverage-capture coverage-report
-
-COVERAGE_OPTIONS= \
-		 --directory src --directory asfunit --directory regtests \
-		 --directory obj --directory obj/asf/static --directory obj/asfunit/static
-
-coverage-init:
-	lcov --no-external --initial --capture $(COVERAGE_OPTIONS) \
-		 --output-file asf-coverage.info
-
-coverage-capture:
-	lcov --no-external --capture $(COVERAGE_OPTIONS) \
-		 --output-file asf-coverage.info
-	lcov --remove asf-coverage.info '*.ads' -o asf-coverage-body.info
-
-coverage-report:
-	mkdir -p cov
-	genhtml --ignore-errors source asf-coverage-body.info --legend --title "Ada Server Faces" \
-			--output-directory cov
 
 install::
 	${MKDIR} -p ${dynamodir}/asf/bundles

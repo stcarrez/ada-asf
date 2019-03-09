@@ -3240,7 +3240,7 @@ $as_echo "no" >&6; }
 
 
 
-ac_config_files="$ac_config_files Makefile.conf asf.gpr asf_core.gpr asf_aws.gpr asf_tests.gpr samples.gpr asf_unit.gpr"
+ac_config_files="$ac_config_files Makefile.conf asf.gpr asf_tests.gpr samples.gpr asf_unit.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -3950,8 +3950,6 @@ do
   case $ac_config_target in
     "Makefile.conf") CONFIG_FILES="$CONFIG_FILES Makefile.conf" ;;
     "asf.gpr") CONFIG_FILES="$CONFIG_FILES asf.gpr" ;;
-    "asf_core.gpr") CONFIG_FILES="$CONFIG_FILES asf_core.gpr" ;;
-    "asf_aws.gpr") CONFIG_FILES="$CONFIG_FILES asf_aws.gpr" ;;
     "asf_tests.gpr") CONFIG_FILES="$CONFIG_FILES asf_tests.gpr" ;;
     "samples.gpr") CONFIG_FILES="$CONFIG_FILES samples.gpr" ;;
     "asf_unit.gpr") CONFIG_FILES="$CONFIG_FILES asf_unit.gpr" ;;

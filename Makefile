@@ -36,16 +36,16 @@ regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile
 	gnatprep -DASF_SERVER=$(ASF_SERVER) regtests/asf-testsuite.gpb $@
 
 install::
-	${MKDIR} -p ${dynamodir}/asf/bundles
-	${MKDIR} -p ${dynamodir}/asf/web
-	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd ${dynamodir}/asf/web && tar xf -)
-	${CP} bundles/*.properties ${dynamodir}/asf/bundles/
-	${CP} dynamo.xml ${dynamodir}/asf/
-	${CP} NOTICE.txt ${dynamodir}/asf/
-	${CP} LICENSE.txt ${dynamodir}/asf/
+	${MKDIR} -p $(DESTDIR)${dynamodir}/asf/bundles
+	${MKDIR} -p $(DESTDIR)${dynamodir}/asf/web
+	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd $(DESTDIR)${dynamodir}/asf/web && tar xf -)
+	${CP} bundles/*.properties $(DESTDIR)${dynamodir}/asf/bundles/
+	${CP} dynamo.xml $(DESTDIR)${dynamodir}/asf/
+	${CP} NOTICE.txt $(DESTDIR)${dynamodir}/asf/
+	${CP} LICENSE.txt $(DESTDIR)${dynamodir}/asf/
 
 uninstall::
-	rm -rf ${dynamodir}/asf
+	rm -rf $(DESTDIR)${dynamodir}/asf
 
 $(eval $(call ada_library,asf))
 $(eval $(call ada_library,asf_unit))

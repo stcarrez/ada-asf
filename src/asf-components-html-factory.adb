@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-factory -- Factory for HTML UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,7 @@ package body ASF.Components.Html.Factory is
    function Create_Body return UIComponent_Access;
    function Create_Doctype return UIComponent_Access;
    function Create_Head return UIComponent_Access;
+   function Create_Output_Stylesheet return UIComponent_Access;
    function Create_Output return UIComponent_Access;
    function Create_Output_Label return UIComponent_Access;
    function Create_Output_Link return UIComponent_Access;
@@ -76,6 +77,14 @@ package body ASF.Components.Html.Factory is
    begin
       return new ASF.Components.Html.Pages.UIHead;
    end Create_Head;
+
+   --  ------------------------------
+   --  Create an UIOutputStylesheet component
+   --  ------------------------------
+   function Create_Output_Stylesheet return UIComponent_Access is
+   begin
+      return new ASF.Components.Html.Pages.UIOutputStylesheet;
+   end Create_Output_Stylesheet;
 
    --  ------------------------------
    --  Create an UIOutput component
@@ -243,6 +252,7 @@ package body ASF.Components.Html.Factory is
    OUTPUT_FORMAT_TAG  : aliased constant String := "outputFormat";
    OUTPUT_LABEL_TAG   : aliased constant String := "outputLabel";
    OUTPUT_LINK_TAG    : aliased constant String := "outputLink";
+   OUTPUT_STYLESHEET_TAG : aliased constant String := "outputStylesheet";
    OUTPUT_TEXT_TAG    : aliased constant String := "outputText";
    PANEL_GROUP_TAG    : aliased constant String := "panelGroup";
    SELECT_BOOLEAN_TAG  : aliased constant String := "selectBooleanCheckbox";
@@ -334,6 +344,11 @@ package body ASF.Components.Html.Factory is
                             Name   => OUTPUT_LINK_TAG'Access,
                             Tag    => Create_Component_Node'Access,
                             Create => Create_Output_Link'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => OUTPUT_STYLESHEET_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Output_Stylesheet'Access);
       ASF.Factory.Register (Factory,
                             URI    => URI'Access,
                             Name   => OUTPUT_TEXT_TAG'Access,

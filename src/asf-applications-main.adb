@@ -352,7 +352,7 @@ package body ASF.Applications.Main is
       NS_Mapper.Set_Namespace (Prefix => "fn",
                                URI    => ASF.Views.Nodes.Core.FN_URI);
       NS_Mapper.Set_Function_Mapper (App.Functions'Unchecked_Access);
-      Context.Set_Function_Mapper (NS_Mapper'Unchecked_Access);
+      Context.Set_Function_Mapper (NS_Mapper'Access);
       EL.Utils.Expand (Source => Conf,
                        Into   => Conf,
                        Context => Context);

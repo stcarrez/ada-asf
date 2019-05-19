@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-pages -- HTML Page Components
---  Copyright (C) 2011, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2014, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,6 +53,19 @@ package ASF.Components.Html.Pages is
                          Context : in out Contexts.Faces.Faces_Context'Class);
 
    --  ------------------------------
+   --  Stylesheet Component
+   --  ------------------------------
+   type UIOutputStylesheet is new UIHtmlComponent with private;
+
+   --  Encode the HTML link element.
+   overriding
+   procedure Encode_End (UI      : in UIOutputStylesheet;
+                         Context : in out Contexts.Faces.Faces_Context'Class);
+
+   function Get_Link (UI      : in UIOutputStylesheet;
+                      Context : in Faces_Context'Class) return String;
+
+   --  ------------------------------
    --  Doctype Component
    --  ------------------------------
    type UIDoctype is new UIHtmlComponent with private;
@@ -69,6 +82,8 @@ private
    type UIBody is new UIHtmlComponent with record
       Value     : EL.Objects.Object;
    end record;
+
+   type UIOutputStylesheet is new UIHtmlComponent with null record;
 
    type UIDoctype is new UIHtmlComponent with null record;
 

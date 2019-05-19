@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-pages -- HTML Page Components
---  Copyright (C) 2011, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2014, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ with Util.Strings;
 with Util.Beans.Objects;
 
 with ASF.Utils;
+with ASF.Requests;
 
 --  The <b>Pages</b> package implements various components used when building an HTML page.
 --
@@ -85,6 +86,42 @@ package body ASF.Components.Html.Pages is
    begin
       Writer.Write_Scripts;
       Writer.End_Element ("body");
+   end Encode_End;
+
+   --  ------------------------------
+   --  Get the link to be rendered in the <b>href</b> attribute.
+   --  ------------------------------
+   function Get_Link (UI      : in UIOutputStylesheet;
+                      Context : in Faces_Context'Class) return String is
+      Req   : constant ASF.Requests.Request_Access := Context.Get_Request;
+      Name  : constant String := UI.Get_Attribute ("name", Context,  "");
+      Lib   : constant String := UI.Get_Attribute ("library", Context,  "");
+      Ctx   : constant String := Req.Get_Context_Path;
+   begin
+      if Lib'Length > 0 then
+         return Ctx & "/resources/" & Lib & "/" & Name;
+      else
+         return Ctx & "/resources/" & Name;
+      end if;
+   end Get_Link;
+
+   --  ------------------------------
+   --  Terminate the HTML body element.  Before closing the body, generate the inclusion
+   --  of differed resources (pending javascript, inclusion of javascript files)
+   --  ------------------------------
+   overriding
+   procedure Encode_End (UI      : in UIOutputStylesheet;
+                         Context : in out Contexts.Faces.Faces_Context'Class) is
+      Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+      end if;
+      Writer.Start_Element ("link");
+      Writer.Write_Attribute ("type", "text/css");
+      Writer.Write_Attribute ("rel", "stylesheet");
+      Writer.Write_Attribute ("href", UI.Get_Link (Context));
+      Writer.End_Element ("link");
    end Encode_End;
 
    --  ------------------------------

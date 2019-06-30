@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-widgets-likes -- Social Likes Components
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -74,17 +74,6 @@ package ASF.Components.Widgets.Likes is
    --  The application configuration parameter that defines which Facebook client ID must be used.
    package P_Facebook_App_Id is
      new ASF.Applications.Parameter ("facebook.client_id", "");
-
-   --  ------------------------------
-   --  Google like generator
-   --  ------------------------------
-   type Google_Like_Generator is new Like_Generator with null record;
-
-   overriding
-   procedure Render_Like (Generator : in Google_Like_Generator;
-                          UI        : in UILike'Class;
-                          Href      : in String;
-                          Context   : in out ASF.Contexts.Faces.Faces_Context'Class);
 
    --  ------------------------------
    --  Twitter like generator

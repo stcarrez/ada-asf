@@ -1,5 +1,5 @@
 <!-- Template for the TLD example and documentation
-  -  Copyright (C) 2012, 2013 Stephane Carrez
+  -  Copyright (C) 2012, 2013, 2019 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
   -  limitations under the License.
   -->
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:w="http://code.google.com/p/ada-asf/widget"
                 xmlns:util="http://code.google.com/p/ada-asf/util">
     <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
         <ul class='selector ui-tabs-nav ui-widget-header ui-corner-all'>
@@ -43,15 +42,6 @@
             <h2>Generated HTML</h2>
             <div id='code-html' class="code ui-widget asf-container ui-corner-all">
                 <ui:insert name="html"/>
-            </div>
-            <div class='likes'>
-                <w:like styleClass='like-facebook' type="facebook" data-width="400" data-show-faces="true"
-                        data-layout="button_count"
-                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
-                <w:like styleClass='like-google' type='google+' data-size="tall" data-annotation="none"
-                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
-                <w:like styleClass='like-twitter' type='twitter' data-count="none"
-                        href="http://demo.vacs.fr/demo/#{basename}/view.html"/>
             </div>
         </div>
     </div>

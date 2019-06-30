@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -740,6 +740,7 @@ package body ASF.Components.Html.Forms is
 begin
    ASF.Utils.Set_Text_Attributes (FORM_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Text_Attributes (INPUT_ATTRIBUTE_NAMES);
+   ASF.Utils.Set_Text_Attributes (TEXTAREA_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Interactive_Attributes (INPUT_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Interactive_Attributes (FORM_ATTRIBUTE_NAMES);
    ASF.Utils.Set_Form_Attributes (FORM_ATTRIBUTE_NAMES);

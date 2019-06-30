@@ -2,6 +2,7 @@ with "@UTIL_DIR@config";
 with "@UTIL_DIR@utilada_sys";
 with "@EL_DIR@elada";
 with "@SERVLET_DIR@servletada";
+with "@SERVLET_DIR@servletada_aws";
 with "asf";
 
 project Samples is

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-widgets-likes -- Social Likes Components
---  Copyright (C) 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2013, 2014, 2015, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,14 +47,8 @@ package body ASF.Components.Widgets.Likes is
    TW_LANG_ATTR        : aliased constant String := "data-lang";
    TW_HASHTAGS_ATTR    : aliased constant String := "data-hashtags";
 
-   G_ANNOTATION_ATTR   : aliased constant String := "data-annotation";
-   G_WIDTH_ATTR        : aliased constant String := "data-width";
-
    FACEBOOK_ATTRIBUTE_NAMES  : Util.Strings.String_Set.Set;
    FACEBOOK_SCRIPT_ATTRIBUTE : constant String := "asf.widgets.facebook.script";
-
-   GOOGLE_ATTRIBUTE_NAMES    : Util.Strings.String_Set.Set;
-   GOOGLE_SCRIPT_ATTRIBUTE   : constant String := "asf.widgets.google.script";
 
    TWITTER_ATTRIBUTE_NAMES    : Util.Strings.String_Set.Set;
    TWITTER_SCRIPT_ATTRIBUTE   : constant String := "asf.widgets.twitter.script";
@@ -69,15 +63,11 @@ package body ASF.Components.Widgets.Likes is
    FB_NAME      : aliased constant String := "facebook";
    FB_GENERATOR : aliased Facebook_Like_Generator;
 
-   G_NAME       : aliased constant String := "google+";
-   G_GENERATOR  : aliased Google_Like_Generator;
-
    TWITTER_NAME       : aliased constant String := "twitter";
    TWITTER_GENERATOR  : aliased Twitter_Like_Generator;
 
    Generators : Like_Generator_Array := (1 => (FB_NAME'Access, FB_GENERATOR'Access),
-                                         2 => (G_NAME'Access, G_GENERATOR'Access),
-                                         3 => (TWITTER_NAME'Access, TWITTER_GENERATOR'Access),
+                                         2 => (TWITTER_NAME'Access, TWITTER_GENERATOR'Access),
                                          others => (null, null));
 
    --  ------------------------------
@@ -125,32 +115,6 @@ package body ASF.Components.Widgets.Likes is
       Writer.Write_Attribute ("class", "fb-like");
       Writer.Write_Attribute ("data-href", Href);
       UI.Render_Attributes (Context, FACEBOOK_ATTRIBUTE_NAMES, Writer);
-      Writer.End_Element ("div");
-   end Render_Like;
-
-   --  ------------------------------
-   --  Google like generator
-   --  ------------------------------
-   overriding
-   procedure Render_Like (Generator : in Google_Like_Generator;
-                          UI        : in UILike'Class;
-                          Href      : in String;
-                          Context   : in out ASF.Contexts.Faces.Faces_Context'Class) is
-      pragma Unreferenced (Generator);
-
-      Writer  : constant Contexts.Writer.Response_Writer_Access := Context.Get_Response_Writer;
-      Request : constant ASF.Requests.Request_Access := Context.Get_Request;
-   begin
-      if not Context.Is_Ajax_Request and then
-        Util.Beans.Objects.Is_Null (Request.Get_Attribute (GOOGLE_SCRIPT_ATTRIBUTE))
-      then
-         Request.Set_Attribute (GOOGLE_SCRIPT_ATTRIBUTE, Util.Beans.Objects.To_Object (True));
-         Writer.Queue_Include_Script ("https://apis.google.com/js/plusone.js");
-      end if;
-      Writer.Start_Element ("div");
-      Writer.Write_Attribute ("class", "g-plusone");
-      Writer.Write_Attribute ("data-href", Href);
-      UI.Render_Attributes (Context, GOOGLE_ATTRIBUTE_NAMES, Writer);
       Writer.End_Element ("div");
    end Render_Like;
 
@@ -290,7 +254,4 @@ begin
    TWITTER_ATTRIBUTE_NAMES.Insert (TW_RELATED_ATTR'Access);
    TWITTER_ATTRIBUTE_NAMES.Insert (TW_LANG_ATTR'Access);
    TWITTER_ATTRIBUTE_NAMES.Insert (TW_HASHTAGS_ATTR'Access);
-
-   GOOGLE_ATTRIBUTE_NAMES.Insert (G_ANNOTATION_ATTR'Access);
-   GOOGLE_ATTRIBUTE_NAMES.Insert (G_WIDTH_ATTR'Access);
 end ASF.Components.Widgets.Likes;

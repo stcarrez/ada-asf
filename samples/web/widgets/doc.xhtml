@@ -1,5 +1,5 @@
 <!-- ASF Widget tag library documentation
-  -  Copyright (C) 2013, 2014 Stephane Carrez
+  -  Copyright (C) 2013, 2014, 2019 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -184,7 +184,7 @@
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="w:like"/>
             <ui:define name="description">
-                This component renders a like button for Facebook, Twitter or Google+ (more like implementations
+                This component renders a like button for Facebook or Twitter (more like implementations
                 can be added programatically in Ada).  The like button code is rendered within a <b>div</b> element
                 whose style and class can be customized.
 
@@ -206,12 +206,6 @@
                     The like component will use the configuration property <b>facebook.client_id</b> to retrieve
                     this client ID.
                 </p>
-                <h3>Google+</h3>
-                <p>
-                    The Google <a href="https://developers.google.com/+/web/+1button/" rel="nofollow">+1 Button</a>
-                    is generated with the <b>google+</b> kind attribute value.  You may pass several attributes
-                    managed by the button such as data-annotation, data-width.
-                </p>
                 <h3>Twitter</h3>
                 <p>
                     The <a href="https://dev.twitter.com/docs/tweet-button" rel="nofollow">Tweet Button</a> is
@@ -226,7 +220,7 @@
                 <li class="attr-required">
                     <b>kind</b>
                     <i>String</i>
-                    <span>The type of like button to generate: "facebook", "google+", "twitter".</span>
+                    <span>The type of like button to generate: "facebook", "twitter".</span>
                 </li>
                 <li class="attr-optional">
                     <b>rendered</b>

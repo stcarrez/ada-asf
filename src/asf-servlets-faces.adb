@@ -80,7 +80,7 @@ package body ASF.Servlets.Faces is
    procedure Do_Get (Server   : in Faces_Servlet;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class) is
-      URI    : constant String := Request.Get_Servlet_Path;
+      URI    : constant String := Request.Get_Path;
    begin
       Log.Info ("GET {0}", URI);
       Server.App.Dispatch (Page     => URI,
@@ -122,7 +122,7 @@ package body ASF.Servlets.Faces is
    procedure Do_Post (Server   : in Faces_Servlet;
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class) is
-      URI    : constant String := Request.Get_Servlet_Path;
+      URI    : constant String := Request.Get_Path;
    begin
       Log.Info ("POST {0}", URI);
       Server.App.Dispatch (Page     => URI,

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010, 2011, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -464,20 +464,19 @@ package body ASF.Contexts.Faces is
       use type ASF.Routes.Route_Type_Access;
       use type ASF.Requests.Request_Access;
 
-      Route : ASF.Routes.Route_Type_Access;
    begin
-      if Context.Request = null then
+      if Context.Request = null or else not Context.Request.Has_Route then
          return "";
       end if;
-      Route := Context.Request.Get_Route;
-      if Route = null then
-         return "";
-      end if;
-      if Route.all in ASF.Routes.Faces_Route_Type'Class then
-         return To_String (ASF.Routes.Faces_Route_Type'Class (Route.all).View);
-      else
-         return Context.Request.Get_Path;
-      end if;
+      declare
+         Route : constant ASF.Routes.Route_Type_Accessor := Context.Request.Get_Route;
+      begin
+         if Route in ASF.Routes.Faces_Route_Type'Class then
+            return To_String (ASF.Routes.Faces_Route_Type'Class (Route.Element.all).View);
+         else
+            return Context.Request.Get_Path;
+         end if;
+      end;
    end Get_View_Name;
 
    --  ------------------------------

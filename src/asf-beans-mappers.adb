@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-beans-mappers -- Read XML managed bean declaratiosn
---  Copyright (C) 2010, 2011, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,7 +67,7 @@ package body ASF.Beans.Mappers is
             end if;
 
             --  Add the parameter.  The property value is parsed as an EL expression.
-            EL.Beans.Add_Parameter (MBean.Params.Value.all.Params,
+            EL.Beans.Add_Parameter (MBean.Params.Value.Params,
                                     Util.Beans.Objects.To_String (MBean.Prop_Name),
                                     Util.Beans.Objects.To_String (MBean.Prop_Value),
                                     MBean.Context.all);

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-models-selects -- Data model for UISelectOne and UISelectMany
---  Copyright (C) 2011, 2012, 2013, 2017 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,7 +71,7 @@ package body ASF.Models.Selects is
    begin
       Result.Item := Select_Item_Refs.Create;
       declare
-         Item : constant Select_Item_Record_Access := Result.Item.Value;
+         Item : constant Select_Item_Record_Accessor := Result.Item.Value;
       begin
          Item.Label       := To_Unbounded_Wide_Wide_String (UTF8_Decode (Label));
          Item.Value       := To_Unbounded_Wide_Wide_String (UTF8_Decode (Value));
@@ -94,7 +94,7 @@ package body ASF.Models.Selects is
    begin
       Result.Item := Select_Item_Refs.Create;
       declare
-         Item : constant Select_Item_Record_Access := Result.Item.Value;
+         Item : constant Select_Item_Record_Accessor := Result.Item.Value;
       begin
          Item.Label       := To_Unbounded_Wide_Wide_String (Label);
          Item.Value       := To_Unbounded_Wide_Wide_String (Value);
@@ -121,7 +121,7 @@ package body ASF.Models.Selects is
    begin
       Result.Item := Select_Item_Refs.Create;
       declare
-         Item : constant Select_Item_Record_Access := Result.Item.Value;
+         Item : constant Select_Item_Record_Accessor := Result.Item.Value;
       begin
          if not Is_Null (Label) then
             Item.Label       := To_Unbounded_Wide_Wide_String (Label);
@@ -218,7 +218,7 @@ package body ASF.Models.Selects is
          return Util.Beans.Objects.Null_Object;
       end if;
       declare
-         Item : constant Select_Item_Record_Access := From.Item.Value;
+         Item : constant Select_Item_Record_Accessor := From.Item.Value;
       begin
          if Name = "name" then
             return Util.Beans.Objects.To_Object (Item.Label);
@@ -340,7 +340,7 @@ package body ASF.Models.Selects is
       if List.List.Is_Null then
          List.List := Select_Item_Vector_Refs.Create;
       end if;
-      List.List.Value.all.List.Append (Select_Item (Item));
+      List.List.Value.List.Append (Select_Item (Item));
    end Append;
 
    --  ------------------------------

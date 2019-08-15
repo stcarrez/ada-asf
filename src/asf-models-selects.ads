@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-models-selects -- Data model for UISelectOne and UISelectMany
---  Copyright (C) 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ with Ada.Strings.Wide_Wide_Unbounded;
 
 with Util.Beans.Basic;
 with Util.Beans.Objects;
-with Util.Refs;
+private with Util.Refs;
 
 package ASF.Models.Selects is
 
@@ -149,7 +149,7 @@ private
 
    use Ada.Strings.Wide_Wide_Unbounded;
 
-   type Select_Item_Record is new Util.Refs.Ref_Entity with record
+   type Select_Item_Record is limited record
       Label       : Unbounded_Wide_Wide_String;
       Value       : Unbounded_Wide_Wide_String;
       Description : Unbounded_Wide_Wide_String;
@@ -159,8 +159,8 @@ private
    type Select_Item_Record_Access is access all Select_Item_Record;
 
    package Select_Item_Refs is
-      new Util.Refs.References (Element_Type   => Select_Item_Record,
-                                Element_Access => Select_Item_Record_Access);
+      new Util.Refs.General_References (Element_Type   => Select_Item_Record);
+   subtype Select_Item_Record_Accessor is Select_Item_Refs.Element_Accessor;
 
    type Select_Item is new Util.Beans.Basic.Readonly_Bean with record
       Item : Select_Item_Refs.Ref;

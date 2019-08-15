@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-routes -- Request routing
---  Copyright (C) 2015, 2016, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2015, 2016, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,7 @@ package ASF.Routes is
 
    subtype Route_Type is Servlet.Routes.Route_Type;
    subtype Route_Type_Access is Servlet.Routes.Route_Type_Access;
+   subtype Route_Type_Accessor is Servlet.Routes.Route_Type_Accessor;
    subtype Route_Type_Ref is Servlet.Routes.Route_Type_Ref;
 
    subtype Route_Context_Type is Servlet.Routes.Route_Context_Type;

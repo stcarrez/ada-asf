@@ -29,11 +29,8 @@ runtest:
 	export PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$PATH"; \
 	bin/asf_harness -xml asf-aunit.xml -config test.properties
 
-build-test::	setup regtests/asf-testsuite.adb
+build-test::	setup
 	$(GNATMAKE) $(GPRFLAGS) -p -Pasf_tests $(MAKE_ARGS)
-
-regtests/asf-testsuite.adb: regtests/asf-testsuite.gpb Makefile
-	gnatprep -DASF_SERVER=$(ASF_SERVER) regtests/asf-testsuite.gpb $@
 
 install::
 	${MKDIR} -p $(DESTDIR)${dynamodir}/asf/bundles

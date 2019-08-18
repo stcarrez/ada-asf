@@ -24,4 +24,4 @@ lib/
 asf-aunit.xml
 distrib/asf.gpr
 regtests/result/
-regtests/asf-testsuite.adb
+

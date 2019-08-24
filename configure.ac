@@ -30,60 +30,15 @@ AC_SUBST(ASF_MAJOR_VERSION)
 AC_SUBST(ASF_MINOR_VERSION)
 AC_SUBST(ASF_MICRO_VERSION)
 
-EXEC_PREFIX="$prefix"
-AC_SUBST(EXEC_PREFIX)
-
 AM_GNAT_LIBRARY_PROJECT(asf)
 AM_GNAT_LIBRARY_SETUP(asf_core)
 AM_GNAT_LIBRARY_SETUP(asf_aws)
 
-##########################################
-# Ada Util library
-##########################################
-AM_GNAT_FIND_PROJECT([ada-util],[Ada Utility Library],[utilada_base],
-  [git@github.com:stcarrez/ada-util.git],
-  [Building Ada EL requires the Ada Utility Library.],
-  [
-    UTIL_DIR=${gnat_project_dir_utilada_base}
-  ])
-AC_SUBST(UTIL_DIR)
+AM_GNAT_FIND_ADA_UTIL([Ada Server Faces])
+AM_GNAT_FIND_ADA_EL([Ada Server Faces])
+AM_GNAT_FIND_ADA_SECURITY([Ada Server Faces])
+AM_GNAT_FIND_ADA_SERVLET([Ada Server Faces])
 
-##########################################
-# Ada Expression Language library
-##########################################
-AM_GNAT_FIND_PROJECT([ada-el],[Ada Expression Language Library],[elada],
-  [git@github.com:stcarrez/ada-el.git],
-  [Building Ada Server Faces requires the Ada EL Library.],
-  [
-    EL_DIR=${gnat_project_dir_elada}
-  ])
-AC_SUBST(EL_DIR)
-
-##########################################
-# Ada Security library
-##########################################
-AM_GNAT_FIND_PROJECT([ada-security],[Ada Security Library],[security],
-  [git@github.com:stcarrez/ada-security.git],
-  [Building Ada Server Faces requires the Ada Security Library.],
-  [
-    SECURITY_DIR=${gnat_project_dir_security}
-  ])
-AC_SUBST(SECURITY_DIR)
-
-##########################################
-# Ada Servlet library
-##########################################
-AM_GNAT_FIND_PROJECT([ada-servlet],[Ada Servlet Library],[servletada],
-  [git@github.com:stcarrez/ada-servlet.git],
-  [Building Ada Server Faces requires the Ada Servlet Library.],
-  [
-    SERVLET_DIR=${gnat_project_dir_servletada}
-  ])
-AC_SUBST(SERVLET_DIR)
-
-##########################################
-# Ada Web Server
-##########################################
 AM_GNAT_CHECK_AWS(
   [
     ASF_HAVE_AWS=no
@@ -92,7 +47,7 @@ AM_GNAT_CHECK_AWS(
   ], [
     ASF_SERVER=aws
     ASF_HAVE_AWS=yes
-    WITH_SERVER="with \"${gnat_project_name}\";";
+    WITH_SERVER=$ac_cv_gnat_project_with_aws
     WITH_ASF_AWS="with \"asf_aws\";";
   ])
 AC_SUBST(ASF_SERVER)

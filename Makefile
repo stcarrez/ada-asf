@@ -1,3 +1,4 @@
+NAME=asf
 
 -include Makefile.conf
 
@@ -27,7 +28,7 @@ runtest:
 	DIR=`pwd`; \
 	export LD_LIBRARY_PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$LD_LIBRARY_PATH"; \
 	export PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$PATH"; \
-	bin/asf_harness -xml asf-aunit.xml -config test.properties
+	bin/asf_harness -l $(NAME): -xml asf-aunit.xml -config test.properties
 
 build-test::	setup
 	$(GNATMAKE) $(GPRFLAGS) -p -Pasf_tests $(MAKE_ARGS)

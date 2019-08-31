@@ -9,13 +9,17 @@
 Ada Server Faces allows to create web applications using the same pattern
 as the Java Server Faces (See JSR 252, JSR 314 and JSR 344). 
 
+It is part of [Ada Web Application](https://github.com/stcarrez/ada-awa/)
+framework.
+
 To build ASF, you will need:
 
-* Ada Util     (https://github.com/stcarrez/ada-util          1.9.0)
-* Ada EL       (https://github.com/stcarrez/ada-el            1.6.1)
-* Ada Security (https://github.com/stcarrez/ada-security      1.2.0)
-* AWS          (https://libre.adacore.com/libre/tools/aws/     3.3)
-* XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.3)
+* Ada Util     (https://github.com/stcarrez/ada-util          2.0.0)
+* Ada EL       (https://github.com/stcarrez/ada-el            1.7.0)
+* Ada Security (https://github.com/stcarrez/ada-security      1.2.1)
+* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.3.0)
+* AWS          (https://libre.adacore.com/libre/tools/aws/     2018 or 20)
+* XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.4)
 
 Build with the following commands:
 ```

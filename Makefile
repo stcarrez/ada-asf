@@ -33,10 +33,12 @@ runtest:
 build-test::	setup
 	$(GNATMAKE) $(GPRFLAGS) -p -Pasf_tests $(MAKE_ARGS)
 
-install::
+install:: install-data
+
+install-data::
 	${MKDIR} -p $(DESTDIR)${dynamodir}/asf/bundles
 	${MKDIR} -p $(DESTDIR)${dynamodir}/asf/web
-	(cd web && tar --exclude=.svn --exclude='*~' -cf - . )| (cd $(DESTDIR)${dynamodir}/asf/web && tar xf -)
+	(cd web && tar --exclude='*~' -cf - . )| (cd $(DESTDIR)${dynamodir}/asf/web && tar xf -)
 	${CP} bundles/*.properties $(DESTDIR)${dynamodir}/asf/bundles/
 	${CP} dynamo.xml $(DESTDIR)${dynamodir}/asf/
 	${CP} NOTICE.txt $(DESTDIR)${dynamodir}/asf/

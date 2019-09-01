@@ -12,7 +12,7 @@ library project Asf is
 
    for Source_Dirs use ("src");
 
-   for Library_Name use "ada_asf";
+   for Library_Name use "asf";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
 

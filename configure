@@ -584,10 +584,6 @@ PACKAGE_URL=
 ac_unique_file="src/asf.ads"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-WITH_ASF_AWS
-WITH_SERVER
-ASF_HAVE_AWS
-ASF_SERVER
 SERVLET_DIR
 SECURITY_DIR
 EL_DIR
@@ -677,8 +673,6 @@ with_ada_util
 with_ada_el
 with_ada_security
 with_ada_servlet
-enable_aws
-with_aws
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1310,7 +1304,6 @@ Optional Features:
   --enable-default-shared Use shared libraries by default (disabled)
   --enable-distrib        build for distribution, optimized and strip symbols (enabled)
   --enable-coverage       build with coverage support -fprofile-arcs -ftest-coverage (disabled)
-  --enable-aws            Enable the AWS support (enabled)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1320,8 +1313,6 @@ Optional Packages:
   --with-ada-el=x         Path for Ada Expression Language Library
   --with-ada-security=x   Path for Ada Security Library
   --with-ada-servlet=x    Path for Ada Servlet Library
-  --with-aws=x            Path for the Ada Web Server library
-                          (http://libre.adacore.com/libre/tools/aws/)
 
 Report bugs to the package provider.
 _ACEOF
@@ -2446,16 +2437,9 @@ $as_echo "done" >&6; }
 
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking preparing for GNAT project asf_core" >&5
-$as_echo_n "checking preparing for GNAT project asf_core... " >&6; }
-  mkdir -p obj/asf_core/static obj/asf_core/relocatable lib/asf_core/static lib/asf_core/relocatable
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: done" >&5
-$as_echo "done" >&6; }
-
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking preparing for GNAT project asf_aws" >&5
-$as_echo_n "checking preparing for GNAT project asf_aws... " >&6; }
-  mkdir -p obj/asf_aws/static obj/asf_aws/relocatable lib/asf_aws/static lib/asf_aws/relocatable
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking preparing for GNAT project asf_unit" >&5
+$as_echo_n "checking preparing for GNAT project asf_unit... " >&6; }
+  mkdir -p obj/asf_unit/static obj/asf_unit/relocatable lib/asf_unit/static lib/asf_unit/relocatable
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: done" >&5
 $as_echo "done" >&6; }
 
@@ -2877,87 +2861,6 @@ $as_echo "no" >&6; }
 " "$LINENO" 5
     fi
   fi
-
-
-
-
-
-    gnat_enable_aws=yes
-  gnat_project_aws=no
-  gnat_project_name_aws=
-  # Check whether --enable-aws was given.
-if test "${enable_aws+set}" = set; then :
-  enableval=$enable_aws; case "${enableval}" in
-      no|none)  gnat_enable_aws=no ;;
-      *)        gnat_enable_aws=yes ;;
-    esac
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking AWS support is enabled" >&5
-$as_echo_n "checking AWS support is enabled... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${gnat_enable_aws}" >&5
-$as_echo "${gnat_enable_aws}" >&6; }
-
-  if test T$gnat_enable_aws = Tyes; then
-
-# Check whether --with-aws was given.
-if test "${with_aws+set}" = set; then :
-  withval=$with_aws;
-      gnat_project_name=${withval}
-
-else
-
-      gnat_project_name=aws
-
-fi
-
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether aws project exists" >&5
-$as_echo_n "checking whether aws project exists... " >&6; }
-if ${ac_cv_gnat_project_aws+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-    echo "with \"${gnat_project_name}\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
-    if { ac_try='gnat ls -Pconftest.gpr system.ads > /dev/null 2>conftest.out'
-  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }
-    then
-      ac_cv_gnat_project_aws=yes
-      ac_cv_gnat_project_with_aws="with \"${gnat_project_name}\";";
-    else
-      ac_cv_gnat_project_aws=no
-    fi
-    rm -f conftest.gpr
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_gnat_project_aws" >&5
-$as_echo "$ac_cv_gnat_project_aws" >&6; }
-
-    if test x$ac_cv_gnat_project_aws = xno; then
-      gnat_enable_aws=no
-    else
-      gnat_project_aws=aws
-    fi
-  fi
-  if test T$gnat_enable_aws = Tno; then
-
-    ASF_HAVE_AWS=no
-    ASF_SERVER=none
-    WITH_SERVER=
-
-  else
-
-    ASF_SERVER=aws
-    ASF_HAVE_AWS=yes
-    WITH_SERVER=$ac_cv_gnat_project_with_aws
-    WITH_ASF_AWS="with \"asf_aws\";";
-
-  fi
-
-
 
 
 

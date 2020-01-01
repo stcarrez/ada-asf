@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,14 +17,15 @@
 -----------------------------------------------------------------------
 
 with Ada.Calendar;
-with Ada.Strings.Unbounded;
-with Ada.Containers.Hashed_Maps;
-with Ada.Strings.Unbounded.Hash;
 with ASF.Views.Nodes;
 with ASF.Contexts.Facelets;
 with ASF.Factory;
 with ASF.Components.Base;
 with Ada.Finalization;
+private with Ada.Strings.Unbounded;
+private with Ada.Containers.Hashed_Sets;
+private with Util.Refs;
+private with Ada.Strings.Hash;
 
 --  The <b>ASF.Views.Facelets</b> package contains the facelet factory
 --  responsible for getting the facelet tree from a facelet name.
@@ -34,7 +35,6 @@ with Ada.Finalization;
 package ASF.Views.Facelets is
 
    type Facelet is private;
-   type Facelet_Access is access all Facelet;
 
    --  Returns True if the facelet is null/empty.
    function Is_Null (F : Facelet) return Boolean;
@@ -85,35 +85,51 @@ private
 
    use Ada.Strings.Unbounded;
 
-   type Facelet is record
+   CHECK_FILE_DELAY : constant := 10.0;
+
+   type Facelet_Type (Len : Natural) is limited new Util.Refs.Ref_Entity with record
       Root        : ASF.Views.Nodes.Tag_Node_Access;
       File        : ASF.Views.File_Info_Access;
       Modify_Time : Ada.Calendar.Time;
+      Check_Time  : Ada.Calendar.Time;
+      Name        : String (1 .. Len);
+   end record;
+   type Facelet_Access is access all Facelet_Type;
+
+   package Ref is
+      new Util.Refs.Indefinite_References (Facelet_Type, Facelet_Access);
+
+   type Facelet is record
+      Facelet : Facelet_Access;
    end record;
 
    Empty : constant Facelet := (others => <>);
 
-   --  Tag library map indexed on the library namespace.
-   package Facelet_Maps is new
-     Ada.Containers.Hashed_Maps (Key_Type        => Unbounded_String,
-                                 Element_Type    => Facelet,
-                                 Hash            => Ada.Strings.Unbounded.Hash,
-                                 Equivalent_Keys => "=");
+   function Hash (Item : in Facelet_Access) return Ada.Containers.Hash_Type is
+      (Ada.Strings.Hash (Item.Name));
 
-   use Facelet_Maps;
+   function Compare (Left, Right : in Facelet_Access) return Boolean is
+      (Left.Name = Right.Name);
+
+   --  Tag library map indexed on the library namespace.
+   package Facelet_Sets is new
+     Ada.Containers.Hashed_Sets (Element_Type        => Facelet_Access,
+                                 Hash                => Hash,
+                                 Equivalent_Elements => Compare);
+
+   use Facelet_Sets;
 
    protected type Facelet_Cache is
       --  Find the facelet entry associated with the given name.
-      function Find (Name : in Unbounded_String) return Facelet;
+      function Find (Name : in String) return Facelet_Access;
 
       --  Insert or replace the facelet entry associated with the given name.
-      procedure Insert (Name : in Unbounded_String;
-                        Item : in Facelet);
+      procedure Insert (Facelet : in Facelet_Access);
 
       --  Clear the cache.
       procedure Clear;
    private
-      Map     : Facelet_Maps.Map;
+      Map     : Facelet_Sets.Set;
    end Facelet_Cache;
 
    type Facelet_Factory is new Ada.Finalization.Limited_Controlled with record

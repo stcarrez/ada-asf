@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,9 +37,13 @@ package body ASF.Views.Facelets is
       new Ada.Unchecked_Deallocation (Object => ASF.Views.File_Info,
                                       Name   => ASF.Views.File_Info_Access);
 
+   procedure Free is
+      new Ada.Unchecked_Deallocation (Object => Facelet_Type,
+                                      Name   => Facelet_Access);
+
    --  Find in the factory for the facelet with the given name.
    procedure Find (Factory : in out Facelet_Factory;
-                   Name    : in Unbounded_String;
+                   Name    : in String;
                    Result  : out Facelet);
 
    --  Load the facelet node tree by reading the facelet XHTML file.
@@ -50,15 +54,14 @@ package body ASF.Views.Facelets is
 
    --  Update the factory to store the facelet node tree
    procedure Update (Factory : in out Facelet_Factory;
-                     Name    : in Unbounded_String;
-                     Item    : in Facelet);
+                     Facelet : in Facelet_Access);
 
    --  ------------------------------
    --  Returns True if the facelet is null/empty.
    --  ------------------------------
    function Is_Null (F : Facelet) return Boolean is
    begin
-      return F.Root = null;
+      return F.Facelet = null;
    end Is_Null;
 
    --  ------------------------------
@@ -70,22 +73,17 @@ package body ASF.Views.Facelets is
                            Name    : in String;
                            Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
                            Result  : out Facelet) is
-      Res   : Facelet;
-      Fname : constant Unbounded_String := To_Unbounded_String (Name);
    begin
       Log.Debug ("Find facelet {0}", Name);
 
-      Find (Factory, Fname, Res);
-      if Res.Root = null then
-         Load (Factory, Name, Context, Res);
-         if Res.Root = null then
-            Result.Root := null;
+      Find (Factory, Name, Result);
+      if Result.Facelet = null then
+         Load (Factory, Name, Context, Result);
+         if Result.Facelet = null then
             return;
          end if;
-         Update (Factory, Fname, Res);
+         Update (Factory, Result.Facelet);
       end if;
-      Result.Root := Res.Root;
-      Result.File := Res.File;
    end Find_Facelet;
 
    --  ------------------------------
@@ -96,10 +94,10 @@ package body ASF.Views.Facelets is
                          Root    : in ASF.Components.Base.UIComponent_Access) is
       Old : Unbounded_String;
    begin
-      if View.Root /= null then
-         Context.Set_Relative_Path (Path     => ASF.Views.Relative_Path (View.File.all),
+      if View.Facelet /= null then
+         Context.Set_Relative_Path (Path     => ASF.Views.Relative_Path (View.Facelet.File.all),
                                     Previous => Old);
-         View.Root.Build_Children (Parent => Root, Context => Context);
+         View.Facelet.Root.Build_Children (Parent => Root, Context => Context);
          Context.Set_Relative_Path (Path => Old);
       end if;
    end Build_View;
@@ -141,19 +139,26 @@ package body ASF.Views.Facelets is
    --  Find in the factory for the facelet with the given name.
    --  ------------------------------
    procedure Find (Factory : in out Facelet_Factory;
-                   Name    : in Unbounded_String;
+                   Name    : in String;
                    Result  : out Facelet) is
       use Ada.Directories;
       use Ada.Calendar;
    begin
-      Result.Root := null;
-      Result := Factory.Map.Find (Name);
-      if Result.Root /= null and then
-        Modification_Time (Result.File.Path) > Result.Modify_Time
-      then
-            Result.Root := null;
-            Log.Info ("Ignoring cache because file '{0}' was modified",
-                      Result.File.Path);
+      Result.Facelet := Factory.Map.Find (Name);
+      if Result.Facelet /= null then
+         declare
+            Now : constant Ada.Calendar.Time := Ada.Calendar.Clock;
+         begin
+            if Result.Facelet.Check_Time < Now then
+               if Modification_Time (Result.Facelet.File.Path) > Result.Facelet.Modify_Time then
+                  Result.Facelet := null;
+                  Log.Info ("Ignoring cache because file '{0}' was modified",
+                            Result.Facelet.File.Path);
+               else
+                  Result.Facelet.Check_Time := Now + CHECK_FILE_DELAY;
+               end if;
+            end if;
+         end;
       end if;
    end Find;
 
@@ -168,17 +173,20 @@ package body ASF.Views.Facelets is
    begin
       if Path = "" or else not Ada.Directories.Exists (Path) then
          Log.Warn ("Cannot read '{0}': file does not exist", Path);
-         Result.Root := null;
+         Result.Facelet := null;
          return;
       end if;
 
       declare
+         use type Ada.Calendar.Time;
          Pos    : constant Integer := Path'Last - Name'Length + 1;
+         Now    : constant Ada.Calendar.Time := Ada.Calendar.Clock + CHECK_FILE_DELAY;
          File   : File_Info_Access;
          Reader : ASF.Views.Nodes.Reader.Xhtml_Reader;
          Read   : Input_Sources.File.File_Input;
          Mtime  : Ada.Calendar.Time;
          Ctx    : aliased EL.Contexts.Default.Default_Context;
+         Root   : ASF.Views.Nodes.Tag_Node_Access;
       begin
          if Pos <= Path'First then
             File := Create_File_Info (Path, Path'First);
@@ -211,15 +219,21 @@ package body ASF.Views.Facelets is
                Log.Error ("Unexpected exception while reading: '{0}': {1}: {2}", Path,
                           Ada.Exceptions.Exception_Name (E), Ada.Exceptions.Exception_Message (E));
          end;
-         Result.Root := Reader.Get_Root;
-         Result.File := File;
+         Root := Reader.Get_Root;
+
          if File = null then
-            if Result.Root /= null then
-               Result.Root.Delete;
+            if Root /= null then
+               Root.Delete;
             end if;
-            Result.Root := null;
+            Result.Facelet := null;
          else
-            Result.Modify_Time := Mtime;
+            Result.Facelet := new Facelet_Type '(Util.Refs.Ref_Entity with
+                                                 Len         => Name'Length,
+                                                 Root        => Root,
+                                                 File        => File,
+                                                 Modify_Time => Mtime,
+                                                 Check_Time  => Now,
+                                                 Name        => Name);
          end if;
          Input_Sources.File.Close (Read);
       end;
@@ -229,10 +243,9 @@ package body ASF.Views.Facelets is
    --  Update the factory to store the facelet node tree
    --  ------------------------------
    procedure Update (Factory : in out Facelet_Factory;
-                     Name    : in Unbounded_String;
-                     Item    : in Facelet) is
+                     Facelet : in Facelet_Access) is
    begin
-      Factory.Map.Insert (Name, Item);
+      Factory.Map.Insert (Facelet);
    end Update;
 
    --  ------------------------------
@@ -250,23 +263,26 @@ package body ASF.Views.Facelets is
       --  ------------------------------
       --  Find the facelet entry associated with the given name.
       --  ------------------------------
-      function Find (Name : in Unbounded_String) return Facelet is
-         Pos    : constant Facelet_Maps.Cursor := Map.Find (Name);
+      function Find (Name : in String) return Facelet_Access is
+         Key    : aliased Facelet_Type := Facelet_Type '(Util.Refs.Ref_Entity with
+                                                         Len    => Name'Length,
+                                                         Name   => Name,
+                                                         others => <>);
+         Pos    : constant Facelet_Sets.Cursor := Map.Find (Key'Unchecked_Access);
       begin
-         if Facelet_Maps.Has_Element (Pos) then
+         if Facelet_Sets.Has_Element (Pos) then
             return Element (Pos);
          else
-            return Empty;
+            return null;
          end if;
       end Find;
 
       --  ------------------------------
       --  Insert or replace the facelet entry associated with the given name.
       --  ------------------------------
-      procedure Insert (Name : in Unbounded_String;
-                        Item : in Facelet) is
+      procedure Insert (Facelet : in Facelet_Access) is
       begin
-         Map.Include (Name, Item);
+         Map.Include (Facelet);
       end Insert;
 
       --  ------------------------------
@@ -276,14 +292,15 @@ package body ASF.Views.Facelets is
       begin
          loop
             declare
-               Pos  : Facelet_Maps.Cursor := Map.First;
-               Node : Facelet;
+               Pos  : Facelet_Sets.Cursor := Map.First;
+               Node : Facelet_Access;
             begin
                exit when not Has_Element (Pos);
                Node := Element (Pos);
                Map.Delete (Pos);
                Free (Node.File);
                ASF.Views.Nodes.Destroy (Node.Root);
+               Free (Node);
             end;
          end loop;
       end Clear;

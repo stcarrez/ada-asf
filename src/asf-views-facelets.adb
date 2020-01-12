@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2017, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2017, 2019, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -151,9 +151,9 @@ package body ASF.Views.Facelets is
          begin
             if Result.Facelet.Check_Time < Now then
                if Modification_Time (Result.Facelet.File.Path) > Result.Facelet.Modify_Time then
-                  Result.Facelet := null;
                   Log.Info ("Ignoring cache because file '{0}' was modified",
                             Result.Facelet.File.Path);
+                  Result.Facelet := null;
                else
                   Result.Facelet.Check_Time := Now + CHECK_FILE_DELAY;
                end if;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013, 2015, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -88,6 +88,9 @@ package ASF.Applications is
    --  Get the configuration parameter;
    function Get (Self  : Config;
                  Param : Config_Param) return Boolean;
+
+   function Get (Self  : Config;
+                 Param : Config_Param) return Integer;
 
    --  Create the configuration parameter definition instance.
    generic

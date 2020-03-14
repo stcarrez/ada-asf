@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013, 2015, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,6 +48,13 @@ package body ASF.Applications is
       use Util.Properties.Basic.Boolean_Property;
    begin
       return Get (Self, Param.Name.all, Boolean'Value (Param.Default.all));
+   end Get;
+
+   function Get (Self  : Config;
+                 Param : Config_Param) return Integer is
+      use Util.Properties.Basic.Integer_Property;
+   begin
+      return Get (Self, Param.Name.all, Integer'Value (Param.Default.all));
    end Get;
 
    --  ------------------------------

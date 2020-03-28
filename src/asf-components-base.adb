@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-base -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009 - 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -744,6 +744,43 @@ package body ASF.Components.Base is
    --  the <b>Process</b> procedure with the generated content.
    --  If this component is not rendered, do nothing.
    --  ------------------------------
+   procedure Wrap_Encode_Children (UI      : in UIComponent;
+                                   Context : in out ASF.Contexts.Faces.Faces_Context'Class;
+                                   Process : not null
+                                   access procedure (Content : in Unbounded_String)) is
+      Child : UIComponent_Access := UI.First_Child;
+   begin
+      if not UI.Is_Rendered (Context) then
+         return;
+
+      elsif Child = null then
+         Process (Null_Unbounded_String);
+
+      else
+         --  Replace temporarily the response writer by a local buffer.
+         --  Make sure that if an exception is raised, the original response writer is restored.
+         declare
+            Writer : constant Contexts.Writer.Response_Writer_Access
+              := Context.Get_Response_Writer;
+            Buffer : aliased ASF.Contexts.Writer.String.String_Writer;
+         begin
+            Context.Set_Response_Writer (Buffer'Unchecked_Access);
+            while Child /= null loop
+               Child.Encode_All (Context);
+               Child := Child.Next;
+            end loop;
+            Context.Set_Response_Writer (Writer);
+
+            Process (Buffer.Get_Response);
+
+         exception
+            when others =>
+               Context.Set_Response_Writer (Writer);
+               raise;
+         end;
+      end if;
+   end Wrap_Encode_Children;
+
    procedure Wrap_Encode_Children (UI      : in UIComponent;
                                    Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                                    Process : not null access procedure (Content : in String)) is

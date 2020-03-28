@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -233,6 +233,10 @@ package ASF.Components.Base is
    --  Encode the children components in a local buffer and after the rendering execute
    --  the <b>Process</b> procedure with the generated content.
    --  If this component is not rendered, do nothing.
+   procedure Wrap_Encode_Children (UI      : in UIComponent;
+                                   Context : in out ASF.Contexts.Faces.Faces_Context'Class;
+                                   Process : not null
+                                   access procedure (Content : in Unbounded_String));
    procedure Wrap_Encode_Children (UI      : in UIComponent;
                                    Context : in out ASF.Contexts.Faces.Faces_Context'Class;
                                    Process : not null access procedure (Content : in String));

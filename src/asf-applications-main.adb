@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009 - 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -353,8 +353,7 @@ package body ASF.Applications.Main is
                                URI    => ASF.Views.Nodes.Core.FN_URI);
       NS_Mapper.Set_Function_Mapper (App.Functions'Unchecked_Access);
       Context.Set_Function_Mapper (NS_Mapper'Access);
-      EL.Utils.Expand (Source => Conf,
-                       Into   => Conf,
+      EL.Utils.Expand (Config => Conf,
                        Context => Context);
    end Initialize_Config;
 

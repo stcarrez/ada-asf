@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-validators-texts -- ASF Texts Validators
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with GNAT.Regpat;
 with EL.Objects;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
@@ -24,6 +25,7 @@ package ASF.Validators.Texts is
 
    MAXIMUM_MESSAGE_ID : constant String := "asf.validators.length.maximum";
    MINIMUM_MESSAGE_ID : constant String := "asf.validators.length.minimum";
+   REGEX_MESSAGE_ID   : constant String := "asf.validators.regex";
 
    --  ------------------------------
    --  Length_Validator
@@ -48,11 +50,37 @@ package ASF.Validators.Texts is
                        Component : in out ASF.Components.Base.UIComponent'Class;
                        Value     : in EL.Objects.Object);
 
+   --  ------------------------------
+   --  Regex_Validator
+   --  ------------------------------
+   --  The <b>Regex_Validator</b> implements the regular expression validator
+   --  whereby the given value must match a regular expression.
+   type Regex_Validator (Size : GNAT.Regpat.Program_Size) is new Validator with private;
+   type Regex_Validator_Access is access all Regex_Validator'Class;
+
+   --  Create a regex validator.
+   function Create_Regex_Validator (Pattern : in GNAT.Regpat.Pattern_Matcher)
+                                   return Validator_Access;
+
+   --  Verify that the value matches the regular expression.
+   --  If some error are found, the procedure should create a <b>FacesMessage</b>
+   --  describing the problem and add that message to the current faces context.
+   --  The procedure can examine the state and modify the component tree.
+   --  It must raise the <b>Invalid_Value</b> exception if the value is not valid.
+   procedure Validate (Valid     : in Regex_Validator;
+                       Context   : in out ASF.Contexts.Faces.Faces_Context'Class;
+                       Component : in out ASF.Components.Base.UIComponent'Class;
+                       Value     : in EL.Objects.Object);
+
 private
 
    type Length_Validator is new Validator with record
       Minimum : Natural;
       Maximum : Natural;
+   end record;
+
+   type Regex_Validator (Size : GNAT.Regpat.Program_Size) is new Validator with record
+      Pattern : GNAT.Regpat.Pattern_Matcher (Size);
    end record;
 
 end ASF.Validators.Texts;

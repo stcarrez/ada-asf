@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2018, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -100,6 +100,7 @@ package body ASF.Components.Core.Factory is
    SELECT_ITEMS_TAG        : aliased constant String := "selectItems";
    VALIDATE_LENGTH_TAG     : aliased constant String := "validateLength";
    VALIDATE_LONG_RANGE_TAG : aliased constant String := "validateLongRange";
+   VALIDATE_REGEX_TAG      : aliased constant String := "validateRegex";
    VALIDATOR_TAG           : aliased constant String := "validator";
    VIEW_TAG                : aliased constant String := "view";
    VIEW_ACTION_TAG         : aliased constant String := "viewAction";
@@ -160,7 +161,11 @@ package body ASF.Components.Core.Factory is
                             Name   => VALIDATE_LONG_RANGE_TAG'Access,
                             Tag    => ASF.Views.Nodes.Jsf.Create_Range_Validator_Tag_Node'Access,
                             Create => null);
-
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => VALIDATE_REGEX_TAG'Access,
+                            Tag    => ASF.Views.Nodes.Jsf.Create_Regex_Validator_Tag_Node'Access,
+                            Create => null);
       ASF.Factory.Register (Factory,
                             URI    => URI'Access,
                             Name   => VALIDATOR_TAG'Access,

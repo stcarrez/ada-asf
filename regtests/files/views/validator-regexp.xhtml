@@ -1,0 +1,15 @@
+<p xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:c="http://java.sun.com/jstl/core"
+  id="testOutput" styleClass="test" style="color: red;">
+  <h:form>
+    <f:attribute name="id" value='something'/>
+    <h:inputText id='count' value='testing'>
+	   <f:validateRegex/>
+	</h:inputText>    
+
+    <h:inputText id='count' value='testing'>
+	   <f:validateRegex pattern="(a[0-9]*b"/>
+	</h:inputText>
+  </h:form>
+</p>

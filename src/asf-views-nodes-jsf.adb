@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes-jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2019 Stephane Carrez
+--  Copyright (C) 2010 - 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with GNAT.Regpat;
+with Ada.Exceptions;
 with Util.Beans.Objects;
 with ASF.Converters;
 with ASF.Converters.Dates;
@@ -421,6 +422,60 @@ package body ASF.Views.Nodes.Jsf is
 
       Validator := Validators.Texts.Create_Length_Validator (Minimum => Min,
                                                              Maximum => Max);
+   end Get_Validator;
+
+   --  ------------------------------
+   --  Regex Validator Tag
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create the Regex_Validator Tag.  Verifies that the XML node defines
+   --  the <b>pattern</b> and that it is a valid regular expression.
+   --  ------------------------------
+   function Create_Regex_Validator_Tag_Node (Binding    : in Binding_Type;
+                                             Line       : in Views.Line_Info;
+                                             Parent     : in Views.Nodes.Tag_Node_Access;
+                                             Attributes : in Nodes.Tag_Attribute_Array_Access)
+                                            return Views.Nodes.Tag_Node_Access is
+      Node : constant Regex_Validator_Tag_Node_Access := new Regex_Validator_Tag_Node;
+   begin
+      Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
+      Node.Pattern := Find_Attribute (Attributes, "pattern");
+      if Node.Pattern = null then
+         Node.Error ("Missing 'pattern' attribute");
+      end if;
+      return Node.all'Access;
+   end Create_Regex_Validator_Tag_Node;
+
+   --  ------------------------------
+   --  Get the validator instance that corresponds to the validator tag.
+   --  Returns in <b>Validator</b> the instance if it exists and indicate
+   --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
+   --  ------------------------------
+   overriding
+   procedure Get_Validator (Node      : in Regex_Validator_Tag_Node;
+                            Context   : in out Contexts.Facelets.Facelet_Context'Class;
+                            Validator : out Validators.Validator_Access;
+                            Shared    : out Boolean) is
+   begin
+      Shared := False;
+      if Node.Pattern /= null then
+         declare
+            Regexp  : constant String := EL.Objects.To_String (Get_Value (Node.Pattern.all, Context));
+            Pattern : constant GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile (Regexp);
+         begin
+            Validator := Validators.Texts.Create_Regex_Validator (Pattern => Pattern);
+            return;
+         end;
+      end if;
+      Validator := Validators.Texts.Create_Regex_Validator
+        (Pattern => GNAT.Regpat.Compile ("[^.]*"));
+
+   exception
+      when E : GNAT.Regpat.Expression_Error =>
+         Node.Error ("Invalid pattern: " & Ada.Exceptions.Exception_Message (E));
+         Validator := Validators.Texts.Create_Regex_Validator
+           (Pattern => GNAT.Regpat.Compile ("[^.]*"));
    end Get_Validator;
 
    --  ------------------------------

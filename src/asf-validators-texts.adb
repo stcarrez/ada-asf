@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-validators-texts -- ASF Texts Validators
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,6 +70,51 @@ package body ASF.Validators.Texts is
                                    Default => MINIMUM_MESSAGE_ID,
                                    Arg1    => Util.Beans.Objects.To_Object (Valid.Minimum),
                                    Arg2    => Component.Get_Label (Context),
+                                   Context => Context);
+            raise Invalid_Value;
+         end if;
+      end;
+   end Validate;
+
+   --  ------------------------------
+   --  Regex_Validator
+   --  ------------------------------
+
+   --  ------------------------------
+   --  Create a regex validator.
+   --  ------------------------------
+   function Create_Regex_Validator (Pattern : in GNAT.Regpat.Pattern_Matcher)
+                                   return Validator_Access is
+      Result : constant Regex_Validator_Access := new Regex_Validator (Pattern.Size);
+   begin
+      Result.Pattern := Pattern;
+      return Result.all'Access;
+   end Create_Regex_Validator;
+
+   --  ------------------------------
+   --  Verify that the value's length is between the validator minimum and maximum
+   --  boundaries.
+   --  If some error are found, the procedure should create a <b>FacesMessage</b>
+   --  describing the problem and add that message to the current faces context.
+   --  The procedure can examine the state and modify the component tree.
+   --  It must raise the <b>Invalid_Value</b> exception if the value is not valid.
+   --  ------------------------------
+   procedure Validate (Valid     : in Regex_Validator;
+                       Context   : in out ASF.Contexts.Faces.Faces_Context'Class;
+                       Component : in out ASF.Components.Base.UIComponent'Class;
+                       Value     : in EL.Objects.Object) is
+   begin
+      if EL.Objects.Is_Null (Value) then
+         return;
+      end if;
+
+      declare
+         S : constant String := EL.Objects.To_String (Value);
+      begin
+         if not GNAT.Regpat.Match (Valid.Pattern, S) then
+            Component.Add_Message (Name    => ASF.Components.VALIDATOR_MESSAGE_NAME,
+                                   Default => REGEX_MESSAGE_ID,
+                                   Arg1    => Component.Get_Label (Context),
                                    Context => Context);
             raise Invalid_Value;
          end if;

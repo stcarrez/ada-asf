@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  views.nodes.jsf -- JSF Core Tag Library
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2018 Stephane Carrez
+--  asf-views-nodes-jsf -- JSF Core Tag Library
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2018, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -176,6 +176,34 @@ package ASF.Views.Nodes.Jsf is
                             Shared    : out Boolean);
 
    --  ------------------------------
+   --  Regex Validator Tag
+   --  ------------------------------
+   --  The <b>Regex_Validator_Tag_Node</b> is created in the facelet tree when
+   --  the <f:validateRegex> element is found.  When building the component tree,
+   --  we have to find the <b>Validator</b> object and attach it to the
+   --  parent component.  The parent component must implement the <b>Editable_Value_Holder</b>
+   --  interface.
+   type Regex_Validator_Tag_Node is new Validator_Tag_Node with private;
+   type Regex_Validator_Tag_Node_Access is access all Regex_Validator_Tag_Node'Class;
+
+   --  Create the Regex_Validator Tag.  Verifies that the XML node defines
+   --  the <b>pattern</b> and that it is a valid regular expression.
+   function Create_Regex_Validator_Tag_Node (Binding    : in Binding_Type;
+                                             Line       : in Views.Line_Info;
+                                             Parent     : in Views.Nodes.Tag_Node_Access;
+                                             Attributes : in Nodes.Tag_Attribute_Array_Access)
+                                            return Views.Nodes.Tag_Node_Access;
+
+   --  Get the validator instance that corresponds to the validator tag.
+   --  Returns in <b>Validator</b> the instance if it exists and indicate
+   --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
+   overriding
+   procedure Get_Validator (Node      : in Regex_Validator_Tag_Node;
+                            Context   : in out Contexts.Facelets.Facelet_Context'Class;
+                            Validator : out Validators.Validator_Access;
+                            Shared    : out Boolean);
+
+   --  ------------------------------
    --  Attribute Tag
    --  ------------------------------
    --  The <b>Attribute_Tag_Node</b> is created in the facelet tree when
@@ -270,6 +298,10 @@ private
    type Length_Validator_Tag_Node is new Validator_Tag_Node with record
       Minimum : Tag_Attribute_Access;
       Maximum : Tag_Attribute_Access;
+   end record;
+
+   type Regex_Validator_Tag_Node is new Validator_Tag_Node with record
+      Pattern : Tag_Attribute_Access;
    end record;
 
    type Range_Validator_Tag_Node is new Validator_Tag_Node with record

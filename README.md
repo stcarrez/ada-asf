@@ -63,14 +63,14 @@ The Ada Server Faces sources as well as a wiki documentation is provided on:
 
 The following tags are supported:
 
-| Tag | Namespace | Documentation |
-|-----|-----------|-------------- |
-| JSTL | `xmlns:c="http://java.sun.com/jstl/core"` | https://demo.vacs.fr/demo/jstl/view.html |
-| Facelets | xmlns:ui="http://java.sun.com/jsf/facelets" | https://demo.vacs.fr/demo/facelet/view.html |
-| JSF Core | xmlns:f="http://java.sun.com/jsf/core" | https://demo.vacs.fr/demo/jsf/core/view.html |
-| JSF HTML | xmlns:h="http://java.sun.com/jsf/html" | https://demo.vacs.fr/demo/jsf/html/view.html |
-| Widget | xmlns:w="http://code.google.com/p/ada-asf/widget" | https://demo.vacs.fr/demo/widgets/view.html |
-| Util   | xmlns:util="http://code.google.com/p/ada-asf/util" | https://demo.vacs.fr/demo/util/view.html |
+| Name     | Namespace                                            | Documentation |
+|----------|------------------------------------------------------|-------------- |
+| JSTL     | `xmlns:c="http://java.sun.com/jstl/core"`            | c:set, c:if, c:choose, c:when, c:otherwise https://demo.vacs.fr/demo/jstl/view.html |
+| Facelets | `xmlns:ui="http://java.sun.com/jsf/facelets"`        | https://demo.vacs.fr/demo/facelet/view.html |
+| JSF Core | `xmlns:f="http://java.sun.com/jsf/core"`             | https://demo.vacs.fr/demo/jsf/core/view.html |
+| JSF HTML | `xmlns:h="http://java.sun.com/jsf/html"`             | https://demo.vacs.fr/demo/jsf/html/view.html |
+| Widget   | `xmlns:w="http://code.google.com/p/ada-asf/widget"`  | https://demo.vacs.fr/demo/widgets/view.html |
+| Util     | `xmlns:util="http://code.google.com/p/ada-asf/util"` | https://demo.vacs.fr/demo/util/view.html |
 
 
 # Licenses

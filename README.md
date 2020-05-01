@@ -63,9 +63,9 @@ The Ada Server Faces sources as well as a wiki documentation is provided on:
 
 The following tags are supported:
 
-| Name     | Namespace                                            | Documentation |
+| Name     | Namespace                                            | Tags |
 |----------|------------------------------------------------------|-------------- |
-| JSTL     | `xmlns:c="http://java.sun.com/jstl/core"`            | <c:set>, <c:if>, <c:choose>, <c:when>, <c:otherwise> https://demo.vacs.fr/demo/jstl/view.html |
+| [JSTL]( https://demo.vacs.fr/demo/jstl/view.html) | `xmlns:c="http://java.sun.com/jstl/core"`            | <c:set>, <c:if>, <c:choose>, <c:when>, <c:otherwise> |
 | Facelets | `xmlns:ui="http://java.sun.com/jsf/facelets"`        | <ui:composition>, <ui:define>, <ui:decorate>, <ui:include>, <ui:insert>, <ui:param> https://demo.vacs.fr/demo/facelet/view.html |
 | JSF Core | `xmlns:f="http://java.sun.com/jsf/core"`             | <f:attribute>, <f:convertDateTime>, <f:converter>, <f:facet>, <f:metadata>, <f:param>, <f:selectItem>, <f:selectItems>, <f:validateLength>, <f:validateLongRange>, <f:validateRegex>, <f:validator>, <f:view>, <f:viewAction>, <f:viewParam> https://demo.vacs.fr/demo/jsf/core/view.html |
 | JSF HTML | `xmlns:h="http://java.sun.com/jsf/html"`             | https://demo.vacs.fr/demo/jsf/html/view.html |

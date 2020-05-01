@@ -65,9 +65,9 @@ The following tags are supported:
 
 | Name     | Namespace                                            | Documentation |
 |----------|------------------------------------------------------|-------------- |
-| JSTL     | `xmlns:c="http://java.sun.com/jstl/core"`            | c:set, c:if, c:choose, c:when, c:otherwise https://demo.vacs.fr/demo/jstl/view.html |
-| Facelets | `xmlns:ui="http://java.sun.com/jsf/facelets"`        | https://demo.vacs.fr/demo/facelet/view.html |
-| JSF Core | `xmlns:f="http://java.sun.com/jsf/core"`             | https://demo.vacs.fr/demo/jsf/core/view.html |
+| JSTL     | `xmlns:c="http://java.sun.com/jstl/core"`            | <c:set>, <c:if>, <c:choose>, <c:when>, <c:otherwise> https://demo.vacs.fr/demo/jstl/view.html |
+| Facelets | `xmlns:ui="http://java.sun.com/jsf/facelets"`        | <ui:composition>, <ui:define>, <ui:decorate>, <ui:include>, <ui:insert>, <ui:param> https://demo.vacs.fr/demo/facelet/view.html |
+| JSF Core | `xmlns:f="http://java.sun.com/jsf/core"`             | <f:attribute>, <f:convertDateTime>, <f:converter>, <f:facet>, <f:metadata>, <f:param>, <f:selectItem>, <f:selectItems>, <f:validateLength>, <f:validateLongRange>, <f:validateRegex>, <f:validator>, <f:view>, <f:viewAction>, <f:viewParam> https://demo.vacs.fr/demo/jsf/core/view.html |
 | JSF HTML | `xmlns:h="http://java.sun.com/jsf/html"`             | https://demo.vacs.fr/demo/jsf/html/view.html |
 | Widget   | `xmlns:w="http://code.google.com/p/ada-asf/widget"`  | https://demo.vacs.fr/demo/widgets/view.html |
 | Util     | `xmlns:util="http://code.google.com/p/ada-asf/util"` | https://demo.vacs.fr/demo/util/view.html |

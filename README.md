@@ -63,7 +63,7 @@ The Ada Server Faces sources as well as a wiki documentation is provided on:
 
 The following tags are supported:
 
-| Name     | Namespace                                            | Tags                                                                  |
+| Documentation    | Namespace                                            | Tags                                                                  |
 |----------|------------------------------------------------------|---------------------------------------------------------------------- |
 | [JSTL]( https://demo.vacs.fr/demo/jstl/view.html) | `xmlns:c="http://java.sun.com/jstl/core"`            | <c:set>, <c:if>, <c:choose>, <c:when>, <c:otherwise> |
 | [Facelets](https://demo.vacs.fr/demo/facelet/view.html) | `xmlns:ui="http://java.sun.com/jsf/facelets"`        | <ui:composition>, <ui:define>, <ui:decorate>, <ui:include>, <ui:insert>, <ui:param> |

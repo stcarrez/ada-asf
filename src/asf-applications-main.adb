@@ -40,6 +40,7 @@ with ASF.Security;
 with EL.Contexts.Default;
 with EL.Functions.Namespaces;
 with EL.Utils;
+with Util.Beans.Objects;
 
 with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
@@ -682,8 +683,15 @@ package body ASF.Applications.Main is
 
          --  If we have a prepare method and the bean provides a Set_Value method,
          --  call the preparation method to fill the bean with some values.
-         if Prepare /= null and (Method.Object.all in Util.Beans.Basic.Bean'Class) then
-            Prepare (Bean => Util.Beans.Basic.Bean'Class (Method.Object.all)'Access);
+         if Prepare /= null then
+            declare
+               Bean : constant access Util.Beans.Basic.Readonly_Bean'Class
+                 := Util.Beans.Objects.To_Bean (Method.Object);
+            begin
+               if Bean /= null and then Bean.all in Util.Beans.Basic.Bean'Class then
+                  Prepare (Bean => Util.Beans.Basic.Bean'Class (Bean.all)'Access);
+               end if;
+            end;
          end if;
 
          --  Execute the specified method on the bean and get the outcome result string.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.beans -- Bean Registration and Factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -90,7 +90,7 @@ package body ASF.Beans is
                        Scope   : in Scope_Type := REQUEST_SCOPE) is
       Binding : Bean_Binding;
    begin
-      Log.Info ("Register bean '{0}' in scope {2}",
+      Log.Info ("Register bean '{0}' in scope {1}",
                 Name, Scope_Type'Image (Scope));
 
       Binding.Create := Class_Binding_Ref.Create (Class);

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ASF tests - ASF Tests Framework
---  Copyright (C) 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,14 +58,14 @@ package ASF.Tests is
 
    --  Simulate a POST request on the given URI with the request parameters.
    --  Get the result in the response object.
-   procedure Do_Post (Request  : in out ASF.Requests.Mockup.Request;
-                      Response : in out ASF.Responses.Mockup.Response;
+   procedure Do_Post (Request  : in out ASF.Requests.Mockup.Request'Class;
+                      Response : in out ASF.Responses.Mockup.Response'Class;
                       URI      : in String;
                       Save     : in String := "") renames Servlet.Tests.Do_Post;
 
    --  Simulate a raw request.  The URI and method must have been set on the Request object.
-   procedure Do_Req (Request  : in out ASF.Requests.Mockup.Request;
-                     Response : in out ASF.Responses.Mockup.Response)
+   procedure Do_Req (Request  : in out ASF.Requests.Mockup.Request'Class;
+                     Response : in out ASF.Responses.Mockup.Response'Class)
                      renames Servlet.Tests.Do_Req;
 
    --  Check that the response body contains the string

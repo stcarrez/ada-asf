@@ -51,8 +51,8 @@ package ASF.Tests is
 
    --  Simulate a GET request on the given URI with the request parameters.
    --  Get the result in the response object.
-   procedure Do_Get (Request  : in out ASF.Requests.Mockup.Request;
-                     Response : in out ASF.Responses.Mockup.Response;
+   procedure Do_Get (Request  : in out ASF.Requests.Mockup.Request'Class;
+                     Response : in out ASF.Responses.Mockup.Response'Class;
                      URI      : in String;
                      Save     : in String := "") renames Servlet.Tests.Do_Get;
 

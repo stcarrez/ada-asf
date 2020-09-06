@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2019, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -461,7 +461,6 @@ package body ASF.Contexts.Faces is
    --  to the servlet's path.
    --  ------------------------------
    function Get_View_Name (Context : in Faces_Context) return String is
-      use type ASF.Routes.Route_Type_Access;
       use type ASF.Requests.Request_Access;
 
    begin

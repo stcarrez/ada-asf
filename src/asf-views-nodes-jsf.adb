@@ -461,7 +461,8 @@ package body ASF.Views.Nodes.Jsf is
       Shared := False;
       if Node.Pattern /= null then
          declare
-            Regexp  : constant String := EL.Objects.To_String (Get_Value (Node.Pattern.all, Context));
+            Value   : constant EL.Objects.Object := Get_Value (Node.Pattern.all, Context);
+            Regexp  : constant String := EL.Objects.To_String (Value);
             Pattern : constant GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile (Regexp);
          begin
             Validator := Validators.Texts.Create_Regex_Validator (Pattern => Pattern);

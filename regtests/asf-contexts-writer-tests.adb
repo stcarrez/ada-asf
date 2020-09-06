@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Writer Tests - Unit tests for ASF.Contexts.Writer
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,7 +81,7 @@ package body ASF.Contexts.Writer.Tests is
       T.Writer.Write_Element ("i", "italic within a bold");
       T.Writer.End_Element ("b");
       T.Writer.End_Element ("p");
-      T.Writer.Flush;
+      --  T.Writer.Flush;
 
       Assert_Equals (T, "<p><b><i>italic within a bold</i></b></p>",
                      T.Writer.Response);
@@ -91,7 +91,7 @@ package body ASF.Contexts.Writer.Tests is
       T.Writer.Write_Attribute ("title", "A ""S&'%^&<>");
       T.Writer.Write_Attribute ("id", "23");
       T.Writer.End_Element ("div");
-      T.Writer.Flush;
+      --  T.Writer.Flush;
 
       Assert_Equals (T, "<div title=""A &quot;S&amp;'%^&amp;&lt;&gt;"" id=""23""></div>",
                      T.Writer.Response);
@@ -112,7 +112,7 @@ package body ASF.Contexts.Writer.Tests is
       T.Writer.Write_Text ("""A' <>&");
       T.Writer.End_Element ("i");
       T.Writer.End_Element ("p");
-      T.Writer.Flush;
+      --  T.Writer.Flush;
       D := Ada.Calendar.Clock - Start;
       Ada.Text_IO.Put_Line ("Write text: " & Duration'Image (D));
 

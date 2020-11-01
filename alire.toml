@@ -7,6 +7,7 @@ authors = ["Stephane.Carrez@gmail.com"]
 maintainers = ["Stephane.Carrez@gmail.com"]
 maintainers-logins = ["stcarrez"]
 project-files = [".alire/asf.gpr"]
+website = "https://gitlab.com/stcarrez/ada-asf"
 long-description = """
 
 [![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-Servlet.svg)](https://jenkins.vacs.fr/job/Ada-Servlet/)

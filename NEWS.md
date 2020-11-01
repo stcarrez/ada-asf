@@ -1,3 +1,6 @@
+Version 1.4.1   - May 2020
+  - Fix translations, compilation warnings
+
 Version 1.4.0   - May 2020
   - Performance improvement for the Facelet cache
   - Integrate jQuery 3.4.1, jQuery UI 1.12.1, jQuery Chosen 1.8.7

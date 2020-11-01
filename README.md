@@ -5,9 +5,9 @@
 [![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
 [![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
 [![codecov](https://codecov.io/gh/stcarrez/ada-asf/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-asf)
-[![Download](https://img.shields.io/badge/download-1.4.0-brightgreen.svg)](http://download.vacs.fr/ada-asf/ada-asf-1.4.0.tar.gz)
+[![Download](https://img.shields.io/badge/download-1.4.1-brightgreen.svg)](http://download.vacs.fr/ada-asf/ada-asf-1.4.1.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.4.0.svg)
+![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.4.1.svg)
 
 Ada Server Faces allows to create web applications using the same pattern
 as the Java Server Faces (See JSR 252, JSR 314 and JSR 344). 
@@ -17,18 +17,16 @@ framework.
 
 To build ASF, you will need:
 
-* Ada Util     (https://github.com/stcarrez/ada-util          2.1.0)
-* Ada EL       (https://github.com/stcarrez/ada-el            1.8.0)
+* Ada Util     (https://github.com/stcarrez/ada-util          2.3.0)
+* Ada EL       (https://github.com/stcarrez/ada-el            1.8.1)
 * Ada Security (https://github.com/stcarrez/ada-security      1.3.0)
-* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.4.0)
+* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.5.0)
 * AWS          (https://libre.adacore.com/libre/tools/aws/     2018 or 20)
 * XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.4)
 
-## Version 1.4.0 - May 2020
+## Version 1.4.1   - May 2020
 
-- Performance improvement for the Facelet cache
-- Integrate jQuery 3.4.1, jQuery UI 1.12.1, jQuery Chosen 1.8.7
-- New <f:validateRegex> to validate an input field with a regular expression
+- Fix translations, compilation warnings
 
 [List all versions](https://github.com/stcarrez/ada-asf/blob/master/NEWS.md)
 

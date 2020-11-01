@@ -1,14 +1,14 @@
-with "config";
+with "asf_config";
 with "utilada_sys";
 with "utilada_unit";
 with "elada";
 with "servletada_unit";
 with "asf";
 
-project Asf_Unit is
+library project Asf_Unit is
 
    Library_Dir := "lib";
-   Library_Type : Config.Library_Type_Type := external ("ASF_LIBRARY_TYPE", "static");
+   Library_Type : Asf_Config.Library_Type_Type := external ("ASF_LIBRARY_TYPE", "static");
 
    for Source_Dirs use ("../../asfunit");
 
@@ -16,13 +16,12 @@ project Asf_Unit is
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Asf.Version;
 
-   for Library_Dir use Library_Dir & "/asf_unit/" & Project'Library_Kind;
-   for Object_Dir use "./" & Config'Object_Dir & "/obj/asf_unit/" & Project'Library_Kind;
-   for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
+   for Library_Dir use "../../lib/asf_unit/" & Project'Library_Kind;
+   for Object_Dir use "../../obj/asf_unit/" & Project'Library_Kind;
 
-   package Binder   renames Config.Binder;
-   package Builder  renames Config.Builder;
-   package Compiler renames Config.Compiler;
-   package Ide      renames Config.Ide;
+   package Binder   renames Asf_Config.Binder;
+   package Builder  renames Asf_Config.Builder;
+   package Compiler renames Asf_Config.Compiler;
+   package Ide      renames Asf_Config.Ide;
 
 end Asf_Unit;

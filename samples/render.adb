@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  render -- XHTML Rendering example
---  Copyright (C) 2010, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2017, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,7 +92,7 @@ begin
 
       Req.Set_Method ("GET");
       Req.Set_Request_URI ("/render/" & View_Name); --  View_Name (View_Name'First .. Pos - 1) & ".html");
-      Container.Service (Req, Reply);
+      App.Dispatch (View_Name, Req, Reply);
 
       Reply.Read_Content (Content);
       Ada.Text_IO.Put_Line (Ada.Strings.Unbounded.To_String (Content));

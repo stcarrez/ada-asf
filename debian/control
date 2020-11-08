@@ -1,71 +1,64 @@
-Source: libada-asf
-Priority: extra
+Source: libasf
+Priority: optional
+Section: libdevel
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
-Build-Depends: debhelper (>= 8.0.0), autotools-dev, gnat, gnat-4.6,
- libada-util1.7-dev, libada-util1.7-unit-dev, libada-el1.5-dev, libada-security1.1-dev
-Standards-Version: 3.9.2
-Section: libs
-Homepage: http://code.google.com/p/ada-asf/
-#Vcs-Git: git://git.debian.org/collab-maint/libada-asf.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/libada-asf.git;a=summary
+Build-Depends: debhelper (>= 10), autotools-dev,
+ dh-ada-library,
+ gnat, gnat-7,
+# This line is parsed by debian/rules.
+ gprbuild (>= 2015-2),
+# 2015-2 is compatible with gnat-6
+ libservletada1-dev,
+ libservletada-unit1-dev,
+ libutilada-xml1-dev
+Standards-Version: 4.1.4
+Homepage: https://github.com/stcarrez/ada-asf/
+Vcs-Git: https://github.com/stcarrez/ada-asf.git -b debian-gnat-7
+Vcs-Browser: https://github.com/stcarrez/ada-asf/tree/debian-gnat-7
 
-Package: libada-asf1.0
+Package: libasf1.4.1
 Section: libs
 Architecture: any
-Pre-Depends: multiarch-support
-Depends: ${shlibs:Depends}, libada-util1.7, libada-el1.5, libada-security1.1, ${misc:Depends}
-Description: Ada Server Faces for web applications
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Ada Server Faces for web applications (runtime)
  Ada Server Faces is a web framework which follows the Java Server Faces
  specification (JSR 252, JSR 314 and JSR 344).  It defines a component
  driven framework which provides a powerful mechanism for Web application.
  .
  This package contains the runtime libraries.
 
-Package: libada-asf1.0-aws
+Package: libasf-unit1.4.1
 Section: libs
 Architecture: any
-Pre-Depends: multiarch-support
-Depends: ${shlibs:Depends}, libada-asf1.0, libaws2.10.2, libada-util1.7, libada-el1.5, libada-security1.1, ${misc:Depends}
-Description: Ada Server Faces for web applications (Ada Web Server support)
- This package provides the integration support of the Ada Web Server
- for Ada Server Faces component.
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Ada Server Faces unit test framework (runtime)
+ Ada Server Faces is a web framework which follows the Java Server Faces
+ specification (JSR 252, JSR 314 and JSR 344).  It defines a component
+ driven framework which provides a powerful mechanism for Web application.
  .
- The package provides the runtime libraries for AWS support.
+ The package provides an Ada unit test framework to help in testing
+ an Ada web application.
+ .
+ This package contains the runtime libraries.
 
-Package: libada-asf1.0-dev
+Package: libasf1-dev
 Section: libdevel
 Architecture: any
-Depends: libada-asf1.0 (= ${binary:Version}), libada-util1.7-dev, libada-el1.5-dev,
- libada-security1.1-dev, ${misc:Depends}
+Depends: ${misc:Depends}, ${ada:Depends}
 Description: Ada Server Faces for web applications (Development files)
+ Ada Server Faces is a web framework which follows the Java Server Faces
+ specification (JSR 252, JSR 314 and JSR 344).  It defines a component
+ driven framework which provides a powerful mechanism for Web application.
+ .
  The package contains the Ada development files to develop web applications
  using the Ada Server Faces component driven framework.
 
-Package: libada-asf1.0-aws-dev
+Package: libasf-unit1-dev
 Section: libdevel
 Architecture: any
-Depends: libada-asf1.0 (= ${binary:Version}), libada-asf1.0-dev, libaws2.10.2-dev, libada-util1.7-dev, libada-el1.5-dev,
- libada-security1.1-dev, ${misc:Depends}
-Description: Ada Server Faces for web applications (Ada Web Server development files)
- The package contains the Ada development files to develop application
- using the libada-security library.
-
-Package: libada-asf1.0-unit-dev
-Section: libdevel
-Architecture: any
-Pre-Depends: multiarch-support
-Depends: ${shlibs:Depends}, libada-asf1.0 (= ${binary:Version}), libada-asf1.0-dev, libada-util1.7-dev, libada-el1.5-dev,
- libada-security1.1-dev, libada-util1.7-unit-dev, ${misc:Depends}
+Depends: ${misc:Depends}, ${ada:Depends}
 Description: Ada Server Faces unit test framework (Development files)
  The package provides an Ada unit test framework to help in testing
  an Ada web application.
-
-Package: libada-asf1.0-dbg
-Section: debug
-Architecture: any
-Depends: libada-asf1.0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
-Description: Debugging symbols for the Ada Server Faces Library
  .
- This is the library containing debugging symbols for the Ada Server
- Faces library.
-
+ This package contains the development files for the Ada Web Server.

@@ -1,9 +1,14 @@
-Format: http://dep.debian.net/deps/dep5
-Upstream-Name: libada-asf
-Source: http://code.google.com/p/ada-asf/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Ada Server Faces
+Source: https://github.com/stcarrez/ada-asf/
+Files-Excluded:
+ config.guess
+ config.sub
+ configure
+ install-sh
 
 Files: *
-Copyright: 2010, 2011, 2012, 2013, 2014 Stephane Carrez <Stephane.Carrez@gmail.com>
+Copyright: 2010-2020 Stephane Carrez <Stephane.Carrez@gmail.com>
 License: Apache-2.0
 
 Files: web/js/jquery-*.js
@@ -12,6 +17,18 @@ License: MIT
 
 Files: web/js/jquery-ui-*/*
 Copyright (c) 2011 Paul Bakaus, http://jqueryui.com/
+License: MIT
+
+Files: web/js/jquery-chosen-*/*
+Copyright (c) 2011-2015 Harvest, http://getharvest.com
+License: MIT
+
+Files: web/js/jquery.datetimepicker.js
+Copyright (c) 2013 http://xdsoft.net
+License: MIT
+
+Files: web/js/dropzone.js
+Copyright (c) 2012 Matias Meno, http://www.dropzonejs.com
 License: MIT
 
 Files: web/css/redmond/*
@@ -27,8 +44,8 @@ Copyright (C) 2011 Google Inc.
 License: Apache-2.0
 
 Files: debian/*
-Copyright: 2013, 2014 Stephane Carrez <Stephane.Carrez@gmail.com>
-License: Apache-2.0
+Copyright: 2013-2020 Stephane Carrez <Stephane.Carrez@gmail.com>
+License: GPL-3.0+
 
 License: Apache-2.0
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,3 +87,4 @@ License: MIT
  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+

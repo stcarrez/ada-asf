@@ -1,10 +1,22 @@
-libada-asf (1.0.1) testing; urgency=low
+libasf (1.4.1) unstable; urgency=low
+
+  * Update for Ada Server Faces 1.4.1
+
+ -- Stephane Carrez <Stephane.Carrez@gmail.com>  Sun, 8 Nov 2020 17:52:17 +0100
+
+libasf (1.2.0) unstable; urgency=low
+
+  * Update for Ada Server Faces 1.2.0
+
+ -- Stephane Carrez <Stephane.Carrez@gmail.com>  Sun, 24 Jun 2018 10:58:07 +0200
+
+libasf (1.0.1) testing; urgency=low
 
   * Fix build for XmlAda 2014
 
  -- Stephane Carrez <Stephane.Carrez@gmail.com>  Sat, 17 May 2014 17:41:17 +0200
 
-libada-asf (1.0.0) unstable; urgency=low
+libasf (1.0.0) unstable; urgency=low
 
   * Initial release to setup a debian library and development package
 

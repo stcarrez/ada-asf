@@ -6,172 +6,55 @@
 # dh-make output file, you may use that output file without restriction.
 # This special exception was added by Craig Small in version 0.37 of dh-make.
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+$(foreach line,$(shell sed -n '\
+  s/^ gnat, gnat-\([0-9.]\+\),$$/ \
+    GNAT_VERSION:=\1 \
+  /p;\
+  s/^Package: libasf\([0-9.]\+\)$$/ \
+    soname:=libasf.so.\1 \
+  /p;\
+  ' debian/control),$(eval $(line)))
 
-# gnatmake can do parallel builds; we don't want make to interfere.
-.NOTPARALLEL:
+DH_VERBOSE=1
+export DH_OPTIONS=-v
 
-aliversion := $(shell sed -n -r 's/^Package: libada-asf([0-9\.]*)-dev$$/\1/p' debian/control)
-soversion := $(shell sed -n -r 's/^Package: libada-asf([0-9\.]+)$$/\1/p' debian/control).1
-
-CPUS := $(shell getconf _NPROCESSORS_ONLN)
-DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
-
-# Force static for now, see configure note below
-LIBRARY_TYPE=dynamic
-package=libada-asf-dev
-pkgname=libada-asf
-libname=libada_asf
-libprefix=$(libname)_
+DEB_BUILD_MAINT_OPTIONS := hardening=+all
+include /usr/share/dpkg/buildflags.mk
+include /usr/share/ada/debian_packaging-$(GNAT_VERSION).mk
+ADAFLAGS += -gnatafno -gnatVa -gnatwa
 
 %:
-	dh $@ 
+	dh $@ --with ada-library
 
-.PHONY: binary-arch build-arch
-.PHONY: $(pkgname)$(aliversion)-dev $(pkgname)$(soversion) $(pkgname)$(aliversion)-unit-dev
-.PHONY: $(pkgname)$(aliversion)-aws-dev $(pkgname)$(soversion)-aws
+override_dh_auto_configure:
+	dh_auto_configure -- --enable-shared --enable-default-shared
 
-binary-arch: build-arch $(pkgname)$(aliversion)-dev $(pkgname)$(soversion)
-	: # Common to all architecture-dependent packages
-	echo "ALI V=$(aliversion)"
-	dh_installchangelogs -a
-	dh_installdocs -a
-	dh_lintian -a
-	dh_compress -a
-	dh_fixperms -a
-	dh_makeshlibs -a
-	dh_installdeb -a
-	dh_shlibdeps -a -L$(libname)$(soversion) -ldebian/$(libname)$(soversion)/usr/lib
-	dh_shlibdeps -a -L$(libname)$(soversion)-aws -ldebian/$(libname)$(soversion)-aws/usr/lib
-	dh_gencontrol -a
-	dh_md5sums -a
-	dh_builddeb -a
+override_dh_auto_build:
+	make GPRFLAGS="-R -m -q"
 
-$(pkgname)$(aliversion):
+override_dh_auto_test::
+
+override_dh_auto_install::
+
+
+override_dh_auto_build-arch:
+	make all
+
+asf_LIB_PKG = libasf1.2.0
+
+override_dh_install::
+	# Files installed in the dynamo/asf directory are part of the binary
+	# because they are used by servers.
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
-	dh_installdirs -p$@ \
-		usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/$(libname).so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
-
-$(pkgname)$(aliversion)-aws:
-	dh_installdirs -p$@ \
-		usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/$(libprefix)aws.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
-
-WEB_DIRS := samples/web samples/web/WEB-INF samples/web/WEB-INF/layouts \
-    samples/web/css samples/web/images samples/web/facelet samples/web/js \
-    samples/web/js/google-code-prettify samples/web/auth samples/web/forms \
-    samples/web/widgets samples/web/util samples/web/jstl samples/web/jsf \
-    samples/web/jsf/core samples/web/jsf/html
-
-$(pkgname)$(aliversion)-dev:	$(pkgname)$(aliversion)
-	: # The development package
-	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
-		< $(CURDIR)/distrib/asf.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf.gpr
-	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
-		< $(CURDIR)/distrib/asf_core.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf_core.gpr
-	dh_installdirs -p$@ \
-		usr/lib/$(DEB_HOST_MULTIARCH) \
-		usr/share/ada/adainclude/ada-asf \
-		usr/lib/ada/adalib/ada-asf \
-		usr/share/dynamo/asf
-	dh_install -p$@ usr/lib/$(libname).a /usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/ada/adalib/ada-asf/*.ali /usr/lib/ada/adalib/ada-asf
-	dh_install -p$@ usr/share/ada/adainclude/asf.gpr /usr/share/ada/adainclude
-	dh_install -p$@ usr/share/ada/adainclude/asf_core.gpr /usr/share/ada/adainclude
-	dh_install -p$@ usr/share/ada/adainclude/ada-asf/*.ad[bs] /usr/share/ada/adainclude/ada-asf
+	dh_installdirs --package=$(asf_LIB_PKG) \
+	   usr/share/dynamo/asf
 	dirs=`cd $(CURDIR)/debian/tmp/usr/share/dynamo && find asf -type d`; \
 	for i in $$dirs; do \
-		dh_installdirs -p$@ usr/share/doc/dynamo/$$i ; \
+		dh_installdirs -p$(asf_LIB_PKG) usr/share/dynamo/$$i ; \
 	done
 	files=`cd $(CURDIR)/debian/tmp/usr/share/dynamo && find asf -type f`; \
 	for i in $$files; do \
 		dir=`dirname $$i`; \
-		dh_install -p$@ usr/share/dynamo/$$i usr/share/dynamo/$$dir ; \
+		dh_install -p$(asf_LIB_PKG) usr/share/dynamo/$$i usr/share/dynamo/$$dir ; \
 	done
-	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/$(libname).so.$(soversion) \
-	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libname).so
-	dh_strip -p$@ -X.a
-
-$(pkgname)$(aliversion)-aws-dev:
-	: # The development package
-	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
-		< $(CURDIR)/distrib/asf_aws.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf_aws.gpr
-	dh_installdirs -p$@ \
-		usr/lib/$(DEB_HOST_MULTIARCH) \
-		usr/share/ada/adainclude/ada-asf-aws \
-		usr/lib/ada/adalib/ada-asf-aws
-	dh_install -p$@ usr/lib/$(libprefix)aws.a /usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/ada/adalib/ada-asf-aws/*.ali /usr/lib/ada/adalib/ada-asf-aws
-	dh_install -p$@ usr/share/ada/adainclude/asf_aws.gpr /usr/share/ada/adainclude
-	dh_install -p$@ usr/share/ada/adainclude/ada-asf-aws/*.ad[bs] /usr/share/ada/adainclude/ada-asf-aws
-	dh_install -p$@ bundles/*.properties usr/share/doc/$@/bundles
-	dh_install -p$@ samples/*.ad[sb] usr/share/doc/$@/samples
-	dh_install -p$@ samples/beans/*.ad[sb] usr/share/doc/$@/samples/beans
-	dh_install -p$@ samples.gpr usr/share/doc/$@/
-	dh_install -p$@ config.gpr usr/share/doc/$@/
-	dh_install -p$@ samples.properties usr/share/doc/$@/
-	for i in $(WEB_DIRS); do \
-		dh_installdirs -p$@ usr/share/doc/$@/$$i ; \
-		for j in $$i/*.xhtml; do \
-			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
-		done; \
-		for j in $$i/*.css; do \
-			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
-		done; \
-		for j in $$i/*.js; do \
-			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
-		done; \
-		for j in $$i/*.xml; do \
-			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
-		done; \
-		for j in $$i/*.png; do \
-			test -f $$j && dh_install -p$@ $$j usr/share/doc/$@/$$i ; \
-		done; \
-		echo "Done for $$i"; \
-    done
-	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)aws.so.$(soversion) \
-	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)aws.so
-	dh_strip -p$@ -X.a
-
-$(pkgname)$(aliversion)-unit-dev:
-	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
-		< $(CURDIR)/distrib/asf_unit.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/asf_unit.gpr
-	dh_installdirs -p$@ \
-		usr/lib/$(DEB_HOST_MULTIARCH) \
-		usr/share/ada/adainclude/ada-asf-unit \
-		usr/lib/ada/adalib/ada-asf-unit
-	dh_install -p$@ usr/lib/$(libprefix)unit.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_link -p$@ usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)unit.so.$(soversion) \
-	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)unit.so
-	dh_install -p$@ usr/lib/$(libprefix)unit.a /usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/ada/adalib/ada-asf-unit/*.ali /usr/lib/ada/adalib/ada-asf-unit
-	dh_install -p$@ usr/share/ada/adainclude/ada-asf-unit/*.ad[bs] /usr/share/ada/adainclude/ada-asf-unit
-	dh_install -p$@ usr/share/ada/adainclude/asf_unit.gpr /usr/share/ada/adainclude
-
-# SCz 2013-10-19: the compilation of shared library fails when linking
-# the asf_harness unit test with libaws.so. Some 'inflate' and 'crc32' symbols
-# provided by libz are not seen although the -lz is present.  The option
-# --trace-symbol=inflate shows that the symbol is found in libz.so and
-# required by libaws.so but the undefine remains.  Disable the shared lib for now.
-override_dh_auto_configure:
-	dh_auto_configure -- --enable-shared
-
-override_dh_auto_build:
-	dh_auto_build
-
-override_dh_auto_install: $(pkgname)$(aliversion) \
-						  $(pkgname)$(aliversion)-aws \
-						  $(pkgname)$(aliversion)-dev \
-						  $(pkgname)$(aliversion)-aws-dev \
-						  $(pkgname)$(aliversion)-unit-dev
-
-override_dh_compress:
-	dh_compress -X.ads -X.adb -X.xhtml -X.xml -XMakefile
-
-override_dh_strip:
-	dh_strip --dbg-package=$(pkgname)$(aliversion)-dbg
-
-override_dh_auto_clean:
-	dh_auto_clean
+	rm -rf $(CURDIR)/debian/tmp

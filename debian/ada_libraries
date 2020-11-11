@@ -2,7 +2,4 @@ MODE=distrib ASF_LIBRARY_TYPE=relocatable
 asf.gpr
 
 MODE=distrib ASF_LIBRARY_TYPE=relocatable
-asf_aws.gpr
-
-MODE=distrib ASF_LIBRARY_TYPE=relocatable
 asf_unit.gpr

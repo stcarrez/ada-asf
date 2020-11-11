@@ -4,17 +4,17 @@ Section: libdevel
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
 Build-Depends: debhelper (>= 10), autotools-dev,
  dh-ada-library,
- gnat, gnat-7,
+ gnat, gnat-9,
 # This line is parsed by debian/rules.
  gprbuild (>= 2015-2),
 # 2015-2 is compatible with gnat-6
- libservletada1-dev,
- libservletada-unit1-dev,
- libutilada-xml1-dev
+ libservletada2-dev,
+ libservletada-unit2-dev,
+ libutilada-xml2-dev
 Standards-Version: 4.1.4
 Homepage: https://github.com/stcarrez/ada-asf/
-Vcs-Git: https://github.com/stcarrez/ada-asf.git -b debian-gnat-7
-Vcs-Browser: https://github.com/stcarrez/ada-asf/tree/debian-gnat-7
+Vcs-Git: https://github.com/stcarrez/ada-asf.git -b debian-gnat-9
+Vcs-Browser: https://github.com/stcarrez/ada-asf/tree/debian-gnat-9
 
 Package: libasf1.4.1
 Section: libs
@@ -41,7 +41,7 @@ Description: Ada Server Faces unit test framework (runtime)
  .
  This package contains the runtime libraries.
 
-Package: libasf1-dev
+Package: libasf2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -53,7 +53,7 @@ Description: Ada Server Faces for web applications (Development files)
  The package contains the Ada development files to develop web applications
  using the Ada Server Faces component driven framework.
 
-Package: libasf-unit1-dev
+Package: libasf-unit2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}

@@ -58,7 +58,7 @@ package ASF.Navigations is
 
    --  Initialize the the lifecycle handler.
    procedure Initialize (Handler : in out Navigation_Handler;
-                         Views   : access ASF.Applications.Views.View_Handler'Class);
+                         Views   : ASF.Applications.Views.View_Handler_Access);
 
    --  Free the storage used by the navigation handler.
    overriding

@@ -236,7 +236,7 @@ package body ASF.Navigations is
    --  Initialize the the lifecycle handler.
    --  ------------------------------
    procedure Initialize (Handler : in out Navigation_Handler;
-                         Views      : access ASF.Applications.Views.View_Handler'Class) is
+                         Views      : ASF.Applications.Views.View_Handler_Access) is
    begin
       Handler.Rules := new Navigation_Rules;
       Handler.View_Handler := Views;

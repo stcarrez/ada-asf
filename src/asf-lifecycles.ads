@@ -37,7 +37,7 @@ package ASF.Lifecycles is
 
    --  Initialize the phase controller.
    procedure Initialize (Controller : in out Phase_Controller;
-                         Views      : access ASF.Applications.Views.View_Handler'Class) is null;
+                         Views      : ASF.Applications.Views.View_Handler_Access) is null;
 
    type Lifecycle is abstract new Ada.Finalization.Limited_Controlled with private;
    type Lifecycle_Access is access all Lifecycle'Class;
@@ -49,7 +49,7 @@ package ASF.Lifecycles is
 
    --  Initialize the the lifecycle handler.
    procedure Initialize (Controller : in out Lifecycle;
-                         Views      : access ASF.Applications.Views.View_Handler'Class);
+                         Views      : ASF.Applications.Views.View_Handler_Access);
 
    --  Finalize the lifecycle handler, freeing the allocated storage.
    overriding

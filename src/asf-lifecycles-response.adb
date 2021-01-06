@@ -34,7 +34,7 @@ package body ASF.Lifecycles.Response is
    --  ------------------------------
    overriding
    procedure Initialize (Controller : in out Response_Controller;
-                         Views      : access ASF.Applications.Views.View_Handler'Class) is
+                         Views      : ASF.Applications.Views.View_Handler_Access) is
    begin
       Controller.View_Handler := Views;
    end Initialize;

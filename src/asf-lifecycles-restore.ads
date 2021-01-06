@@ -29,7 +29,7 @@ package ASF.Lifecycles.Restore is
    --  Initialize the phase controller.
    overriding
    procedure Initialize (Controller : in out Restore_Controller;
-                         Views      : access ASF.Applications.Views.View_Handler'Class);
+                         Views      : ASF.Applications.Views.View_Handler_Access);
 
    --  Execute the restore view phase.
    overriding
@@ -39,7 +39,7 @@ package ASF.Lifecycles.Restore is
 private
 
    type Restore_Controller is new Phase_Controller with record
-      View_Handler : access ASF.Applications.Views.View_Handler'Class;
+      View_Handler : ASF.Applications.Views.View_Handler_Access;
    end record;
 
 end ASF.Lifecycles.Restore;

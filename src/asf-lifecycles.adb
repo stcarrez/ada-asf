@@ -26,7 +26,7 @@ package body ASF.Lifecycles is
    --  Initialize the the lifecycle handler.
    --  ------------------------------
    procedure Initialize (Controller : in out Lifecycle;
-                         Views      : access ASF.Applications.Views.View_Handler'Class) is
+                         Views      : ASF.Applications.Views.View_Handler_Access) is
    begin
       --  Create the phase controllers.
       Lifecycle'Class (Controller).Create_Phase_Controllers;

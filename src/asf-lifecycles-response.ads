@@ -29,7 +29,7 @@ package ASF.Lifecycles.Response is
    --  Initialize the phase controller.
    overriding
    procedure Initialize (Controller : in out Response_Controller;
-                         Views      : access ASF.Applications.Views.View_Handler'Class);
+                         Views      : ASF.Applications.Views.View_Handler_Access);
 
    --  Execute the restore view phase.
    overriding
@@ -39,7 +39,7 @@ package ASF.Lifecycles.Response is
 private
 
    type Response_Controller is new Phase_Controller with record
-      View_Handler : access ASF.Applications.Views.View_Handler'Class;
+      View_Handler : ASF.Applications.Views.View_Handler_Access;
    end record;
 
 end ASF.Lifecycles.Response;

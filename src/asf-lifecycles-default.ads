@@ -28,6 +28,6 @@ package ASF.Lifecycles.Default is
    --  Initialize the the lifecycle handler.
    overriding
    procedure Initialize (Controller : in out Lifecycle;
-                         Views      : access ASF.Applications.Views.View_Handler'Class);
+                         Views      : ASF.Applications.Views.View_Handler_Access);
 
 end ASF.Lifecycles.Default;

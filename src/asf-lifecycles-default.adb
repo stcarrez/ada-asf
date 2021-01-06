@@ -56,7 +56,7 @@ package body ASF.Lifecycles.Default is
    --  ------------------------------
    overriding
    procedure Initialize (Controller : in out Lifecycle;
-                         Views      : access ASF.Applications.Views.View_Handler'Class) is
+                         Views      : ASF.Applications.Views.View_Handler_Access) is
    begin
       Lifecycle'Class (Controller).Create_Phase_Controllers;
       for Phase in Controller.Controllers'Range loop

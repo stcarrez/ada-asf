@@ -31,7 +31,7 @@ package body ASF.Lifecycles.Restore is
    --  ------------------------------
    overriding
    procedure Initialize (Controller : in out Restore_Controller;
-                         Views      : access ASF.Applications.Views.View_Handler'Class) is
+                         Views      : ASF.Applications.Views.View_Handler_Access) is
    begin
       Controller.View_Handler := Views;
    end Initialize;

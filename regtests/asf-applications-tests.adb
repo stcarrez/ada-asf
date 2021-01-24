@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-tests -  ASF Application tests using ASFUnit
---  Copyright (C) 2011, 2012, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2017, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -505,7 +505,7 @@ package body ASF.Applications.Tests is
       Request : ASF.Requests.Mockup.Request;
       Reply   : ASF.Responses.Mockup.Response;
       Form    : aliased Form_Bean;
-      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-config.xml");
+      Path    : constant String := Util.Tests.Get_Path ("regtests/config/test-config.xml");
       App     : constant ASF.Applications.Main.Application_Access := ASF.Tests.Get_Application;
    begin
       ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);
@@ -585,7 +585,7 @@ package body ASF.Applications.Tests is
       Request : ASF.Requests.Mockup.Request;
       Reply   : ASF.Responses.Mockup.Response;
       Form    : aliased Form_Bean;
-      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-config.xml");
+      Path    : constant String := Util.Tests.Get_Path ("regtests/config/test-config.xml");
       App     : constant ASF.Applications.Main.Application_Access := ASF.Tests.Get_Application;
    begin
       ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);
@@ -612,7 +612,7 @@ package body ASF.Applications.Tests is
       Request : ASF.Requests.Mockup.Request;
       Reply   : ASF.Responses.Mockup.Response;
       Form    : aliased Form_Bean;
-      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-config.xml");
+      Path    : constant String := Util.Tests.Get_Path ("regtests/config/test-config.xml");
       App     : constant ASF.Applications.Main.Application_Access := ASF.Tests.Get_Application;
    begin
       ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);
@@ -640,7 +640,7 @@ package body ASF.Applications.Tests is
       Request : ASF.Requests.Mockup.Request;
       Reply   : ASF.Responses.Mockup.Response;
       Form    : aliased Form_Bean;
-      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-inject.xml");
+      Path    : constant String := Util.Tests.Get_Path ("regtests/config/test-inject.xml");
       App     : constant ASF.Applications.Main.Application_Access := ASF.Tests.Get_Application;
    begin
       ASF.Applications.Main.Configs.Read_Configuration (App.all, Path);

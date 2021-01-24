@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-main-tests - Unit tests for Applications
---  Copyright (C) 2011, 2012, 2014, 2019 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2014, 2019, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -84,7 +84,7 @@ package body ASF.Applications.Main.Tests is
    --  Test creation of module
    --  ------------------------------
    procedure Test_Read_Configuration (T : in out Test) is
-      Path : constant String := Util.Tests.Get_Test_Path ("config/empty.xml");
+      Path : constant String := Util.Tests.Get_Path ("config/empty.xml");
    begin
       ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
 
@@ -123,7 +123,7 @@ package body ASF.Applications.Main.Tests is
          end if;
       end Check;
 
-      Path : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-module.xml");
+      Path : constant String := Util.Tests.Get_Path ("regtests/config/test-module.xml");
 
    begin
       T.App.Register_Class ("ASF.Applications.Tests.Form_Bean", Create_Form_Bean'Access);
@@ -139,7 +139,7 @@ package body ASF.Applications.Main.Tests is
    --  Test loading a resource bundle through the application.
    --  ------------------------------
    procedure Test_Load_Bundle (T : in out Test) is
-      Path   : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-bundle.xml");
+      Path   : constant String := Util.Tests.Get_Path ("regtests/config/test-bundle.xml");
       Bundle : ASF.Locales.Bundle;
    begin
       ASF.Applications.Main.Configs.Read_Configuration (T.App.all, Path);
@@ -164,7 +164,7 @@ package body ASF.Applications.Main.Tests is
    procedure Test_Bundle_Configuration (T : in out Test) is
       use type Util.Beans.Basic.Readonly_Bean_Access;
 
-      Path    : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-bundle.xml");
+      Path    : constant String := Util.Tests.Get_Path ("regtests/config/test-bundle.xml");
       Result  : Util.Beans.Basic.Readonly_Bean_Access;
       Context : aliased ASF.Contexts.Faces.Faces_Context;
       Ctx     : aliased EL.Contexts.Default.Default_Context;
@@ -193,7 +193,7 @@ package body ASF.Applications.Main.Tests is
    procedure Test_Locales (T : in out Test) is
       use Util.Locales;
 
-      Path      : constant String := Util.Tests.Get_Test_Path ("regtests/config/test-locales.xml");
+      Path      : constant String := Util.Tests.Get_Path ("regtests/config/test-locales.xml");
       Req       : aliased ASF.Requests.Mockup.Request;
       View      : constant access Applications.Views.View_Handler'Class := T.App.Get_View_Handler;
       Context   : aliased ASF.Contexts.Faces.Faces_Context;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-locales -- Locale support
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -184,16 +184,5 @@ package body ASF.Locales is
       end if;
       Result := B.all'Access;
    end Create;
-
-   --  ------------------------------
-   --  Get the value identified by the name.
-   --  If the name cannot be found, the method should return the Null object.
-   --  ------------------------------
-   function Get_Value (From : Bundle;
-                       Name : String) return Util.Beans.Objects.Object is
-      Value : constant String := From.Get (Name, Name);
-   begin
-      return Util.Beans.Objects.To_Object (Value);
-   end Get_Value;
 
 end ASF.Locales;

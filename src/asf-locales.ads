@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-locales -- Locale support
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,11 +36,6 @@ package ASF.Locales is
    type Bundle is new Util.Properties.Bundles.Manager
      and Util.Beans.Basic.Readonly_Bean with null record;
    type Bundle_Access is access all Bundle;
-
-   --  Get the value identified by the name.
-   --  If the name cannot be found, the method should return the Null object.
-   function Get_Value (From : in Bundle;
-                       Name : in String) return Util.Beans.Objects.Object;
 
    type Factory is limited private;
 

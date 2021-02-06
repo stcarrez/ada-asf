@@ -25,3 +25,7 @@ asf-aunit.xml
 distrib/asf.gpr
 regtests/results/
 /samples.gpr
+wiki
+cover
+alire
+asf.cov

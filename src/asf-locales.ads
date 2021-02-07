@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Beans.Objects;
 with Util.Beans.Basic;
 with Util.Strings.Maps;
 with Util.Properties.Bundles;

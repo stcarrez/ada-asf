@@ -1,4 +1,8 @@
-Version 1.4.1   - May 2020
+Version 1.4.2   - Feb 2021
+  - Fix compilation warnings
+  - Cleanup build and examples
+
+Version 1.4.1   - Nov 2020
   - Fix translations, compilation warnings
 
 Version 1.4.0   - May 2020

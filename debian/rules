@@ -41,20 +41,21 @@ override_dh_auto_build-arch:
 	make all
 
 asf_LIB_PKG = libasf1.4.2
+asf_DEV_PKG = libasf1-dev
 
 override_dh_install::
 	# Files installed in the dynamo/asf directory are part of the binary
 	# because they are used by servers.
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
-	dh_installdirs --package=$(asf_LIB_PKG) \
+	dh_installdirs --package=$(asf_DEV_PKG) \
 	   usr/share/dynamo/asf
 	dirs=`cd $(CURDIR)/debian/tmp/usr/share/dynamo && find asf -type d`; \
 	for i in $$dirs; do \
-		dh_installdirs -p$(asf_LIB_PKG) usr/share/dynamo/$$i ; \
+		dh_installdirs -p$(asf_DEV_PKG) usr/share/dynamo/$$i ; \
 	done
 	files=`cd $(CURDIR)/debian/tmp/usr/share/dynamo && find asf -type f`; \
 	for i in $$files; do \
 		dir=`dirname $$i`; \
-		dh_install -p$(asf_LIB_PKG) usr/share/dynamo/$$i usr/share/dynamo/$$dir ; \
+		dh_install -p$(asf_DEV_PKG) usr/share/dynamo/$$i usr/share/dynamo/$$dir ; \
 	done
 	rm -rf $(CURDIR)/debian/tmp

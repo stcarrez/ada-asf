@@ -6,7 +6,7 @@ with "servletada";
 
 library project Asf is
 
-   Version := "1.4.1";
+   Version := "1.4.2";
    Library_Dir := "lib";
    Library_Type : Asf_Config.Library_Type_Type := external ("ASF_LIBRARY_TYPE", "static");
 

@@ -4,7 +4,7 @@ Section: libdevel
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
 Build-Depends: debhelper (>= 10), autotools-dev,
  dh-ada-library,
- gnat, gnat-9,
+ gnat, gnat-8,
 # This line is parsed by debian/rules.
  gprbuild (>= 2015-2),
 # 2015-2 is compatible with gnat-6
@@ -13,8 +13,8 @@ Build-Depends: debhelper (>= 10), autotools-dev,
  libutilada-xml2-dev
 Standards-Version: 4.1.4
 Homepage: https://github.com/stcarrez/ada-asf/
-Vcs-Git: https://github.com/stcarrez/ada-asf.git -b debian-gnat-9
-Vcs-Browser: https://github.com/stcarrez/ada-asf/tree/debian-gnat-9
+Vcs-Git: https://github.com/stcarrez/ada-asf.git -b debian-gnat-8
+Vcs-Browser: https://github.com/stcarrez/ada-asf/tree/debian-gnat-8
 
 Package: libasf1.4.2
 Section: libs

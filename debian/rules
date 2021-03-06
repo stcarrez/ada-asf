@@ -40,8 +40,7 @@ override_dh_auto_install::
 override_dh_auto_build-arch:
 	make all
 
-asf_LIB_PKG = libasf1.4.2
-asf_DEV_PKG = libasf2-dev
+asf_DEV_PKG = libasf3-dev
 
 override_dh_install::
 	# Files installed in the dynamo/asf directory are part of the binary

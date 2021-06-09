@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core-views -- ASF View Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ package ASF.Components.Core.Views is
    --  (we use the same name as JSF 2 specification).
    METADATA_FACET_NAME : constant String := "javax_faces_metadata";
 
-   type UIViewMetaData;
+   type UIViewMetaData is tagged;
    type UIViewMetaData_Access is access all UIViewMetaData'Class;
 
    --  ------------------------------

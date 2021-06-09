@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  asf-contexts-exceptions -- Exception handlers in faces context
---  Copyright (C) 2011 Stephane Carrez
+--  asf-contexts-exceptions-iterator -- Exception handlers in faces context
+--  Copyright (C) 2011, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +24,13 @@ with ASF.Contexts.Faces;
 --
 --  Notes: this procedure should not be called directly (use ASF.Contexts.Faces.Iterate).
 --  This procedure is separate to avoid circular dependency.
-procedure ASF.Contexts.Exceptions.Iterate
-  (Queue   : in out Exception_Queue;
-   Context : in out ASF.Contexts.Faces.Faces_Context'Class;
-   Process : not null access procedure (Event   : in ASF.Events.Exceptions.Exception_Event'Class;
-                                        Remove  : out Boolean;
-                                        Context : in out ASF.Contexts.Faces.Faces_Context'Class));
+package ASF.Contexts.Exceptions.Iterator is
+   
+   procedure Iterate
+     (Queue   : in out Exception_Queue;
+      Context : in out ASF.Contexts.Faces.Faces_Context'Class;
+      Process : not null access procedure (Event   : in ASF.Events.Exceptions.Exception_Event'Class;
+                                           Remove  : out Boolean;
+                                           Context : in out ASF.Contexts.Faces.Faces_Context'Class));
+
+end ASF.Contexts.Exceptions.Iterator;

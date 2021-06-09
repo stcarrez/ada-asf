@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2019, 2020 Stephane Carrez
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ with Ada.Unchecked_Deallocation;
 
 with ASF.Converters;
 with ASF.Contexts.Flash;
-with ASF.Contexts.Exceptions.Iterate;
+with ASF.Contexts.Exceptions.Iterator;
 with ASF.Applications.Main;
 with ASF.Applications.Messages.Utils;
 with ASF.Routes;
@@ -534,7 +534,7 @@ package body ASF.Contexts.Faces is
                                              Context : in out Faces_Context'Class)) is
    begin
       if Context.Except_Queue /= null then
-         ASF.Contexts.Exceptions.Iterate (Context.Except_Queue.all, Context, Process);
+         ASF.Contexts.Exceptions.Iterator.Iterate (Context.Except_Queue.all, Context, Process);
       end if;
    end Iterate_Exception;
 

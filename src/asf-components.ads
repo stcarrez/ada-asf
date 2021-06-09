@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  components -- Component tree
+--  asf-components -- Component tree
 --  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+--  == Components ==
 --  The <bASF.Components</b> describes the components that form the
 --  tree view.  Each component has attributes and children.  Children
 --  represent sub-components and attributes control the rendering and
@@ -23,6 +24,7 @@
 --
 --  The component tree is created from the <b>ASF.Views</b> tag nodes
 --  for each request.  Unlike tag nodes, the component tree is not shared.
+--
 with Ada.Strings.Unbounded;
 with EL.Objects;
 with EL.Expressions;

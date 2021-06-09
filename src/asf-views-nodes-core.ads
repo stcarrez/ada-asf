@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  nodes-core -- Core nodes
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018 Stephane Carrez
+--  asf-views-nodes-core -- Core nodes
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,19 +16,26 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+--  = JSTL Components =
+--  The JSTL components are defined in the following namespace:
+--  ```
+--  xmlns:c="http://java.sun.com/jstl/core"
+--  ```
+--
+--  The facelet components are implemented by the `ASF.Views.Nodes.Facelets`
+--  package which defines the pre-defined tags for composing a view.  Nodes of
+--  this package are instantiated when the facelet XML tag is found when reading
+--  the XHTML view description.
+--
+--  @include-doc docs/comp-jstl/*.txt
+--
+--  @notes
 --  The <b>ASF.Views.Nodes.Core</b> package defines some pre-defined
 --  core tag nodes which are mapped in the following namespaces:
 --
 --    xmlns:c="http://java.sun.com/jstl/core"
 --    xmlns:ui="http://java.sun.com/jsf/facelets"
 --    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
---
---  The following JSTL core elements are defined:
---    <c:set var="name" value="#{expr}"/>
---    <c:if test="#{expr}"> ...</c:if>
---    <c:choose><c:when test="#{expr}"></c:when><c:otherwise/</c:choose>
---
---
 with ASF.Factory;
 with EL.Functions;
 package ASF.Views.Nodes.Core is

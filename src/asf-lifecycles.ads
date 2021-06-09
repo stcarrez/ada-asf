@@ -22,6 +22,12 @@ with ASF.Events.Phases;
 with ASF.Contexts.Faces;
 with Util.Concurrent.Arrays;
 with ASF.Applications.Views;
+
+
+--  = Request Processing Lifecycle =
+--
+--  [images/asf-lifecycle.png]
+--  
 package ASF.Lifecycles is
 
    subtype Phase_Type is

@@ -1,0 +1,46 @@
+## f:viewAction
+
+The viewAction element is used in a medata facet.  It allows to execute an Ada bean action
+method when a request is processed. The Ada bean method is executed before rendering the page.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| itemDisabled     | false    | Boolean         | Determine whether this item can be chosen by the user. When true, this item cannot be chosen by the user. If this method is ever called, then any EL-binding for the disabled property will be ignored. |
+| escape           | false    | Boolean         | The escape setting for the label of this selection item. |
+| itemDescription  | false    | String          | The item description. |
+| itemLabel        | false    | String          | The string which will be presented to the user for this option. |
+| itemValue        | false    | String          | The value for this item. |
+| value            | false    | ValueExpression | The initial value of this component. |
+
+
+### Example
+
+```
+<f:view xmlns:f="http://java.sun.com/jsf/core">
+    <f:metadata>
+        <f:viewParam id='height' value='#{compute.height}'>
+            <f:converter converterId="float" />
+        </f:viewParam>
+        <f:viewParam id='radius' value='#{compute.radius}'>
+            <f:converter converterId="float" />
+        </f:viewParam>
+        <f:viewAction action="#{compute.run}"/>
+    </f:metadata>
+    <dl>
+        <dt>Height</dt>
+        <dd>
+            #{compute.height}
+        </dd>
+         <dt>Radius</dt>
+        <dd>
+            #{compute.radius}
+        </dd>
+        <dt>Volume</dt>
+        <dd>
+            #{compute.volume}
+        </dd>
+    </dl>
+</f:view>
+```

@@ -1,0 +1,33 @@
+## ui:include
+
+Use this tag—which is very similar to JSP's jsp:include to encapsulate and reuse
+content among multiple XHTML pages. There are three things this tag can include:
+plain XHTML, and XHTML pages that have either a composition tag or a component tag.
+
+You supply a filename, through `ui:include`'s src attribute for JSF to include.
+That filename is relative to the XHTML file that was rendered as a result of the
+last request. So, for example, if JSF loaded the view `login.xhtml`, and that file
+included `pageDecorations/header.xhtml`, and `pageDecorations/header.xhtml` included
+`companyLogo.xhtml`, then `companyLogo.xhtml` will not be found if it's in the
+`pageDecorations` directory, because `companyLogo.xhtml` has to be in the same
+directory as `login.xhtml`.
+
+
+### Attributes
+
+| Name  | Required | Type            | Description                                        |
+| ----- | -------- | --------------- | -------------------------------------------------- |
+| src   | true     | String          | The filename of an XHTML page to include. The filename is relative to the XHTML page that was originally loaded. |
+
+
+### Example
+
+```
+<div xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:include src="composition.xhtml">
+        <ui:param name="name" value="include"/>
+    </ui:include>
+    <ui:include src="../jstl/if.xhtml"/>
+</div>
+```
+

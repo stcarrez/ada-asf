@@ -1,0 +1,26 @@
+## c:if
+
+Simple conditional tag, which evalutes its body if the supplied condition is true
+and optionally exposes a Boolean scripting variable representing the evaluation of
+this condition.
+
+### Attributes
+
+| Name  | Type            | Description                                        |
+| ----- | --------------- | -------------------------------------------------- |
+| test  | Boolean         | The test condition that determines whether or not the body content should be processed. |
+| var   | String          | Name of the exported scoped variable for the resulting value of the test condition. The type of the scoped variable is Boolean. |
+
+
+### Example
+
+```
+<c:if test="#{not empty compute.radius}">
+  Radius is not empty: #{compute.radius}.
+</c:if>
+<c:if test="#{empty compute.radius}">
+  Radius is empty
+</c:if>
+```
+
+

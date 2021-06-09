@@ -1,0 +1,22 @@
+## c:set
+
+Sets the result of an expression evaluation based on the value of the attributes.
+
+### Attributes
+
+| Name  | Type            | Description                                        |
+| ----- | --------------- | -------------------------------------------------- |
+| var   | String          | Name of the variable.                              |
+| value | ValueExpression | Expression to be evaluated.                        |
+
+
+### Example
+
+```
+<c:set var="name" value="23"/>
+#{name}
+<c:set var="name" value="#{23 + 1}"/>
+#{name}
+```
+
+

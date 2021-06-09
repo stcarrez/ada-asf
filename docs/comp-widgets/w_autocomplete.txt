@@ -1,0 +1,47 @@
+## w:autocomplete
+
+The `w:autocomplete` component combines the `h:inputText` and `h:message`
+components and provides autocomplete functionality on the input field.  It renders the title
+and the input form field.  The error message associated
+with the input field is rendered if there is one.  The title, input field and message
+are combined within an HTML `dl`, `dt` and `dd` elements.
+
+When the user enters some text, the form is submitted for autocompletion.
+The `w:autocomplete` component handles the form submission and uses the
+`autocompleteList` attribute to find out possible completions.  It then returns
+that list that is then displayed by the client.
+
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| title            | false    | String          | The title to display for the input field. |
+| autocompleteList | false    | String          | The list of values for the autocompletion. |
+| rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:w="http://code.google.com/p/ada-asf/widget"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <div class="ui-widget ui-widget-header">
+        Compute the volume of a cylinder
+    </div>
+    <h:form id='text-form'>
+        <w:autocomplete title="Country" id='country' size='30' autocompleteList="#{countries}"
+                        value='#{messages.email}'
+                        styleClass="ui-corner-all">
+        </w:autocomplete>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>
+```
+

@@ -1,0 +1,36 @@
+## f:selectItems
+
+This tag associates a list of `SelectItem` with the nearest parent UIComponent.
+The list of items is retrieved via a value-binding.
+See also component `f:selectItem`.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+UISelectItem should be nested inside a `UISelectMany` or
+`UISelectOne` component, and results in the addition of one or more `SelectItem`
+instance to the list of available options for the parent component.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| itemDisabled     | false    | Boolean         | Determine whether this item can be chosen by the user. When true, this item cannot be chosen by the user. If this method is ever called, then any EL-binding for the disabled property will be ignored. |
+| escape           | false    | Boolean         | The escape setting for the label of this selection item. |
+| itemDescription  | false    | String          | The item description. |
+| itemLabel        | false    | String          | The string which will be presented to the user for this option. |
+| itemValue        | false    | String          | The value for this item. |
+| value            | false    | ValueExpression | The initial value of this component. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:selectOneMenu id='height' size='10' value='#{compute.height}'
+                     styleClass="ui-state-default ui-corner-all">
+        <f:selectItems value="#{countries}"/>
+    </h:selectOneMenu>
+</div>
+```
+

@@ -1,0 +1,32 @@
+## ui:param
+
+Use this tag to pass parameters to an included file (using `ui:include`),
+or a template (linked to either a composition or decorator). Embed `ui:param` tags
+in either `ui:include`, `ui:composition`, or `ui:decorate` to pass the parameters.
+
+### Attributes
+
+| Name  | Required | Type            | Description                                        |
+| ----- | -------- | --------------- | -------------------------------------------------- |
+| name  | true     | String          | The name of the parameter. |
+| value | true     | String          | The value of the parameter. Notice that this attribute's value can be an EL expression, which means that you can pass objects to either an included file or a template. |
+
+
+### Example
+
+```
+<ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
+             template="/facelet/composition.xhtml">
+    <ui:param name="name" value="decorate"/>
+    <ui:define name="description">
+        The decorate tag allows to use a template and insert data
+        at various places.
+    </ui:define>
+    <ui:define name="list">
+        <li>The decorate tag uses a template</li>
+        <li>It includes optional ui:param elements</li>
+        <li>It fills the template by using the ui:define element.</li>
+    </ui:define>
+</ui:decorate>
+```
+

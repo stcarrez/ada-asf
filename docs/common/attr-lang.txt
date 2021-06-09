@@ -1,0 +1,2 @@
+| dir               | false    | String          | Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right) and "RTL" (right-to-left). |
+| lang              | false    | String          | Code describing the language used in the generated markup for this component. |

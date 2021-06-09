@@ -47,5 +47,38 @@ install-data::
 uninstall::
 	rm -rf $(DESTDIR)${dynamodir}/asf
 
+ASF_DOC= \
+  title.md \
+  pagebreak.tex \
+  index.md \
+  pagebreak.tex \
+  Installation.md \
+  pagebreak.tex \
+  Tutorial.md \
+  pagebreak.tex \
+  ASF_Lifecycles.md \
+  pagebreak.tex \
+  ASF_Components.md \
+  pagebreak.tex \
+  ASF_Views_Nodes_Core.md \
+  pagebreak.tex \
+  ASF_Components_Core.md \
+  pagebreak.tex \
+  ASF_Components_Html.md \
+  pagebreak.tex \
+  ASF_Components_Utils.md \
+  pagebreak.tex \
+  ASF_Views_Nodes_Facelets.md \
+  pagebreak.tex \
+  ASF_Components_Widgets.md \
+  pagebreak.tex
+
+DOC_OPTIONS=-f markdown --listings --number-sections --toc
+HTML_OPTIONS=-f markdown --listings --number-sections --toc --css pandoc.css
+
+$(eval $(call pandoc_build,asf-book,$(ASF_DOC),\
+	rm -f docs/user-list.md docs/alloc-sequence.md docs/user_hbm.md; \
+	cat docs/ASF_Components.md > docs/ADO_Model.md))
+
 $(eval $(call ada_library,asf))
 $(eval $(call ada_library,asf_unit))

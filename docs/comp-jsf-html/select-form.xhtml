@@ -1,0 +1,44 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+
+    <div class="ui-widget ui-widget-header">
+        Compute the volume of a cylinder
+    </div>
+    <h:form id='select-form'>
+        <div class='container_12'>
+            <dl>
+                <dt><label for='height'>Height</label></dt>
+                <dd>
+                    <h:selectOneMenu id='height' size='10' value='#{compute.height}'
+                            styleClass="ui-state-default ui-corner-all">
+                        <f:selectItem itemLabel="1 inch" itemValue="25.4"/>
+                        <f:selectItem itemLabel="1 feet" itemValue="304.8"/>
+                        <f:selectItem itemLabel="1 yard" itemValue="914.4"/>
+                        <f:converter converterId="float" />
+                    </h:selectOneMenu>
+                    <h:message for='height'/>
+                </dd>
+                <dt><label for='radius'>Radius</label></dt>
+                <dd>
+                    <h:selectOneMenu id='radius' size='10' value='#{compute.radius}'
+                            styleClass="ui-state-default ui-corner-all">
+                        <f:selectItem itemLabel="1 inch" itemValue="25.4"/>
+                        <f:selectItem itemLabel="1 feet" itemValue="304.8"/>
+                        <f:selectItem itemLabel="1 yard" itemValue="914.4"/>
+                        <f:converter converterId="float"/>
+                    </h:selectOneMenu>
+                    <h:message for='radius'/>
+                </dd>
+            </dl>
+        </div>
+        <div class='container_12'>
+            <ul class='buttons'>
+                <li>
+                    <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                            styleClass="ui-button ui-state-default ui-corner-all"/>
+                </li>
+            </ul>
+        </div>
+    </h:form>
+
+</div>

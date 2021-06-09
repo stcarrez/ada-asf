@@ -1,0 +1,37 @@
+## f:view
+
+Creates a JSF View, which is a container that holds all of the components
+that are part of the view.  The `UIView` represents the root of
+the component tree.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| locale           | false    | String          | The locale of this view. Default: the default locale from the configuration file. |
+| contentType      | false    | String          | The content type to be placed in the response header. The default content type is `text/html`. |
+
+
+### Example
+
+```
+<f:view contentType="application/json"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:util="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html">
+[
+ { "action": "update", "id": "#result", "data": "<util:escape>
+     <h:panelGroup rendered="#{not empty compute.volume}">
+         <h2>The cylinder volume is
+             <h:outputText value="#{compute.volume}">
+                <f:converter converterId="float"/>
+             </h:outputText>
+         </h2>
+     </h:panelGroup>
+    </util:escape>" }
+]
+</f:view>
+```
+

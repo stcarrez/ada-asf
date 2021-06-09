@@ -1,0 +1,50 @@
+## f:attribute
+
+This tag associates an attribute with the nearest parent `UIComponent`.
+When the value is not an EL expression, this tag has the same effect as calling
+`Component.Set_Attribute (Name, Value)`. When the attribute name specified
+matches a standard property of the component, that property is set.
+However it is also valid to assign attributes to components using any
+arbitrary name; the component itself won't make any use of these but
+other objects such as custom renderers, validators or action listeners
+can later retrieve the attribute from the component by name.
+
+When the value is an EL expression, this tag has the same effect as
+calling `Component.Set_Attribute (Tag, Value)` A call to method
+`Component.Get_Attribute (Name)` will then cause that expression to
+be evaluated and the result of the expression is returned,
+not the original EL expression string.
+
+See the `ASF.Components.Base` package for more details.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| name             | false    | String          | The name of the attribute. |
+| value            | false    | String          | The attribute's value. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:panelGroup layout="block">
+        <h:outputText value="Hello world!">
+            <!-- The 'styleClass' attribute is applied
+                 on the h:outputText -->
+            <f:attribute name="styleClass" value="left"/>
+        </h:outputText>
+        <p>
+            <!-- The 'styleClass' attribute is applied
+                 on the h:panelGroup -->
+            <f:attribute name="styleClass"
+                         value="ui-widget asf-container ui-corner-all"/>
+        </p>
+    </h:panelGroup>
+</div>
+```
+

@@ -1,0 +1,24 @@
+## c:when
+
+Subtag of `choose` that includes its body if its condition evalutes to 'true'.
+
+### Attributes
+
+| Name  | Type    | Description                                        |
+| ----- | --------| -------------------------------------------------- |
+| test  | Boolean | The test condition that determines whether or not the body content should be processed. |
+
+
+### Example
+
+```
+<c:choose>
+  <c:when test="#{not empty compute.radius}">
+    Radius is not empty: #{compute.radius}.
+  </c:when>
+  <c:when test="#{empty compute.radius}">
+    Radius is empty
+  </c:when>
+</c:choose>
+```
+

@@ -55,7 +55,7 @@ And unit tests are executed with:
 
 # Documentation
 
-* [Ada Server Faces Programmer's Guide](https://ada-asf.readthedocs.io/en/latest/)
+* [Ada Server Faces Programmer's Guide](https://ada-asf.readthedocs.io/en/latest/) [PDF](https://github.com/stcarrez/ada-asf/blob/master/docs/asf-book.pdf)
 * [Ada Server Faces wiki (old documentation)](https://github.com/stcarrez/ada-asf/wiki)
 
 ## Tutorial

@@ -12,7 +12,7 @@ Sets the result of an expression evaluation based on the value of the attributes
 
 ### Example
 
-```
+```XML
 <c:set var="name" value="23"/>
 #{name}
 <c:set var="name" value="#{23 + 1}"/>

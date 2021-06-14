@@ -5,11 +5,12 @@ nav:
   - Installation: Installation.md
   - Tutorial: Tutorial.md
   - Lifecycles: ASF_Lifecycles.md
+  - Validators: ASF_Validators.md
   - Components: ASF_Components.md
+  - Facelet Components: ASF_Views_Nodes_Facelets.md
   - JSTL Components: ASF_Views_Nodes_Core.md
   - Core Components: ASF_Components_Core.md
   - HTML Components: ASF_Components_Html.md
   - Util Components: ASF_Components_Utils.md
-  - Facelet Components: ASF_Views_Nodes_Facelets.md
   - Widget Components: ASF_Components_Widgets.md
 theme: readthedocs

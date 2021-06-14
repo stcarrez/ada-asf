@@ -31,7 +31,7 @@ such as Dreamweaver or a browser, without including extraneous elements such as 
 
 ### Example
 
-```
+```XML
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <h2>Title #{empty name ? '?' : name}</h2>
@@ -67,7 +67,7 @@ you might want to decorate a list of items.
 
 ### Example
 
-```
+```XML
 <ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
              template="/facelet/composition.xhtml">
     <ui:param name="name" value="decorate"/>
@@ -97,7 +97,7 @@ and `ui:fragment` tags.
 
 ### Example
 
-```
+```XML
 <ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
              template="/facelet/composition.xhtml">
     <ui:param name="name" value="decorate"/>
@@ -136,7 +136,7 @@ directory as `login.xhtml`.
 
 ### Example
 
-```
+```XML
 <div xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:include src="composition.xhtml">
         <ui:param name="name" value="include"/>
@@ -158,7 +158,7 @@ in either a `ui:composition`, `ui:component`, `ui:decorate`, or `ui:fragment`.
 
 ### Example
 
-```
+```XML
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <h2>Title #{empty name ? '?' : name}</h2>
@@ -193,7 +193,7 @@ in either `ui:include`, `ui:composition`, or `ui:decorate` to pass the parameter
 
 ### Example
 
-```
+```XML
 <ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
              template="/facelet/composition.xhtml">
     <ui:param name="name" value="decorate"/>

@@ -16,7 +16,7 @@ such as Dreamweaver or a browser, without including extraneous elements such as 
 
 ### Example
 
-```
+```XML
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <h2>Title #{empty name ? '?' : name}</h2>

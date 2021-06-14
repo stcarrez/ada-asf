@@ -15,7 +15,7 @@ you might want to decorate a list of items.
 
 ### Example
 
-```
+```XML
 <ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
              template="/facelet/composition.xhtml">
     <ui:param name="name" value="decorate"/>

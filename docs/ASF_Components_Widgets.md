@@ -20,7 +20,7 @@ The `w:accordion` component provides a vertical tab component.
 
 ### Example
 
-```
+```XML
 <div xmlns:w="http://code.google.com/p/ada-asf/widget"
      style='overflow: auto; padding: 10px'>
     <w:accordion id="people" collapsible="true">
@@ -392,7 +392,7 @@ The `w:tab` component defines a tab content to be displayed within a tab selecti
 
 ### Example
 
-```
+```XML
 <div xmlns:f="http://java.sun.com/jsf/core"
      xmlns:w="http://code.google.com/p/ada-asf/widget"
      style='overflow: auto; padding: 10px'>

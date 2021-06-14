@@ -10,7 +10,7 @@ This tag has no attribute.
 
 ### Example
 
-```
+```XML
 <c:choose>
   <c:when test="#{not empty compute.radius}">
     Radius is not empty: #{compute.radius}.

@@ -24,7 +24,7 @@ At the root of the XML file is an `f:view` component which represents the root o
 The typical page layout looks as follows. Note the `#{contextPath}` notation in the link reference.
 This is an EL expression that will be evaluated when the view is displayed (rendered in JSF terminology).
 
-```
+```XML
 <f:view contentType="text/html"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
@@ -58,7 +58,7 @@ from the named bean.  On form submission, JSF/ASF will populate the bean with th
 The `h:input` component can contain a `f:converter` element which indicates a conversion operation to call
 when displaying or before populating the bean value.
 
-```
+```XML
 <h:form id='compute'>
   <dl>
     <dt>Height</dt>
@@ -137,7 +137,7 @@ Basically the getter is called when the view is rendered and the setter is calle
 The `Bean` interface defines the two operations that
 must be implemented by the Ada type:
 
-```
+```Ada
 with Util.Beans.Basic;
 with Util.Beans.Objects;
 ...
@@ -163,7 +163,7 @@ type that can hold several data types (boolean, integer, floats,
 strings, dates, ...).  The getter looks for the name and returns the corresponding value in an `Object` record.
 Several `To_Object` functions helps in creating the result value.
 
-```
+```Ada
 function Get_Value (From : Compute_Bean;
                     Name : String) return Util.Beans.Objects.Object is
 begin
@@ -180,7 +180,8 @@ end Get_Value;
 ```
 
 The setter is similar.
-```
+
+```Ada
 procedure Set_Value (From  : in out Compute_Bean;
                      Name  : in String;
                      Value : in Util.Beans.Objects.Object) is
@@ -200,14 +201,14 @@ The next step is to register the cylinder bean and associate it with the @@compu
 There are several ways to do that but for the purpose of this example, there will be a global instance of the bean.
 That instance must be @@aliased@@ so that we can use the @@Access@@ attributes.
 
-```
+```Ada
  Bean  : aliased Compute_Bean;
 ```
 
 The Ada bean is registered on the application object by using the @@Set_Global@@ procedure.  This creates
 a global binding between a name and an @@Object@@ record. In our case, the object will hold a reference to the Ada bean.
 
-```
+```Ada
 App : aliased ASF.Applications.Main.Application;
 ...
    App.Set_Global ("compute", Util.Beans.Objects.To_Object (Bean'Unchecked_Access));
@@ -221,7 +222,7 @@ between the XHTML presentation page and the component implemented in Java or Ada
 
 A typical use is on the __h:commandButton__ component where we can specify an action to invoke when the button is pressed. This is written as:
 
-```
+```XML
 <h:commandButton id='run' value='Compute'
        action="#{compute.run}"/>
 ```
@@ -239,7 +240,7 @@ If we take the `Compute_Bean` type, we just have
 to extend that interface and implement the `Get_Method_Bindings` function.
 This function will indicate the methods which are available for an EL expression and somehow how they can be called.
 
-```[ada]
+```Ada
 with Util.Beans.Methods;
 ...
    type Compute_Bean is new Util.Beans.Basic.Bean
@@ -258,7 +259,7 @@ Our Ada type can now define a method that can be invoked through a method expres
 The action bean always receives the bean object as an __in out__ first parameter and it must return
 the action outcome as an `Unbounded_String` also as __in out__.
 
-```[ada]
+```Ada
  procedure Run (From    : in out Compute_Bean;
                 Outcome : in out Unbounded_String);
 ```
@@ -268,7 +269,7 @@ the action outcome as an `Unbounded_String` also as __in out__.
 The implementation of our action is quite simple. The `Radius` and `Height` parameters submitted in the form
 have been set on the bean before the action is called. We can use them to compute the cylinder volume.
 
-```[ada]
+```Ada
 procedure Run (From    : in out Compute_Bean;
                Outcome : in out Unbounded_String) is
    V : My_Float;
@@ -287,7 +288,7 @@ a binding object. This binding object will hold the method name as well as a sma
 stub that will somehow tie the method expression to the procedure.
 This step is easily done by instantiating the `ASF.Events.Actions.Action_Method.Bind` package.
 
-```[ada]
+```Ada
 with ASF.Events.Actions;
 ...
    package Run_Binding is
@@ -303,7 +304,7 @@ with ASF.Events.Actions;
 The last step is to implement the `Get_Method_Bindings` function. Basically it has to return an array
 of method bindings which indicate the methods provided by the Ada bean. 
 
-```[ada]
+```Ada
 Binding_Array : aliased constant Util.Beans.Methods.Method_Binding_Array
   := (Run_Binding.Proxy'Unchecked_Access, Run_Binding.Proxy'Unchecked_Access);
 
@@ -335,7 +336,7 @@ our application.
 
 ''Note: for the purpose of this article, we will assume that every variable is declared at some package level scope. If those variables are declared in another scope, the @@Access@@ attribute should be replaced by @@Unchecked_Access@@.''
 
-```[ada]
+```Ada
 with ASF.Applications.Main;
 ...
    App : aliased ASF.Applications.Main.Application;
@@ -346,7 +347,7 @@ The configuration properties are used to configure the various components used b
 The factory allows to customize some behavior of [Ada Server Faces](https://github.com/stcarrez/ada-asf/).  For now, we will use the
 default factory.
 
-```[ada]
+```Ada
 with ASF.Applications;
 ...
    C        : ASF.Applications.Config;
@@ -359,7 +360,7 @@ to associate an XHTML file (the @@compute.html@@ corresponds to the XHTML file @
 The @@VIEW_DIR@@ property defines the root directory where the XHTML
 files are stored.
 
-```[ada]
+```Ada
 C.Set (ASF.Applications.VIEW_EXT, ".html");
 C.Set (ASF.Applications.VIEW_DIR, "samples/web");
 C.Set ("web.dir", "samples/web");
@@ -374,7 +375,7 @@ This servlet is the entry point for ASF to process incoming requests. We will al
 the static files. Note that these servlets are implemented using tagged records and you can easily override the entry
 points (`Do_Get` or `Do_Post`) to implement specific behaviors.
 
-```[ada]
+```Ada
 with ASF.Servlets.Faces;
 with ASF.Servlets.Files;
 ...
@@ -384,14 +385,14 @@ with ASF.Servlets.Files;
 
 The servlet instances are registered in the application.
 
-```[ada]
+```Ada
 App.Add_Servlet (Name => "faces", Server => Faces'Access);
 App.Add_Servlet (Name => "files", Server => Files'Access);
 ```
 
 Once registered, we have to define a mapping that tells which URI path is mapped to the servlet. 
 
-```[ada]
+```Ada
 App.Add_Mapping (Name => "faces", Pattern => "*.html");
 App.Add_Mapping (Name => "files", Pattern => "*.css");
 ```
@@ -400,7 +401,7 @@ App.Add_Mapping (Name => "files", Pattern => "*.css");
 For the purpose of debugging, ASF provides a servlet filter that can be plugged in the request processing flow.
 The `Dump_Filter` will produce a dump of the request with the headers and parameters.
 
-```[ada]
+```Ada
 with ASF.Filters.Dump;
 ...
    Dump    : aliased ASF.Filters.Dump.Dump_Filter;
@@ -408,13 +409,13 @@ with ASF.Filters.Dump;
 
 The filter instance is registered as follows:
 
-```[ada]
+```Ada
 App.Add_Filter (Name => "dump", Filter => Dump'Access);
 ```
 
 And a mapping is defined to tell which URL will trigger the filter.
 
-```[ada]
+```Ada
 App.Add_Filter_Mapping (Name => "dump", Pattern => "*.html");
 ```
 
@@ -427,7 +428,7 @@ needs a Web container. By default, ASF provides a web container based on the exc
 [Ada Web Server|http://libre.adacore.com/libre/tools/aws/] implementation (other web containers could be provided in the future
 based on other web servers).
 
-```[ada]
+```Ada
 with ASF.Server.Web;
 ...
    WS : ASF.Server.Web.AWS_Container;
@@ -436,7 +437,7 @@ with ASF.Server.Web;
 To register the application, we indicate the URI context path to which the application is associated.
 Several applications can be registered, each of them having a unique URI context path.
 
-```[ada]
+```Ada
 CONTEXT_PATH : constant String := "/volume";
 ...
 WS.Register_Application (CONTEXT_PATH, App'Access);
@@ -450,13 +451,13 @@ the [EL expression|http://blog.vacs.fr/index.php?post/2010/04/28/Ada-EL-The-JSR-
 First, we will expose the application context path which allows to write links in the XHTML page that match the URI used for
 registering the application in the web container.
 
-```[ada]
+```Ada
 App.Set_Global ("contextPath", CONTEXT_PATH);
 ```
 
 Below is an example of use of this @@contextPath@@ variable:
 
-```
+```XML
 <link media="screen" type="text/css" rel="stylesheet"
       href="#{contextPath}/themes/main.css"/>
 ```
@@ -464,7 +465,7 @@ Below is an example of use of this @@contextPath@@ variable:
 Now, we will register the bean that we created for our application! This was explained in the
 [Ada beans|http://blog.vacs.fr/index.php?post/2011/04/10/Ada-Server-Faces-Application-Example-part-2%3A-the-Ada-beans] previous article.
 
-```[ada]
+```Ada
 with Volume;
 ...
    Bean    : aliased Volume.Compute_Bean;
@@ -481,7 +482,7 @@ Once the application is registered, we can start our server.  Note that since [A
 the @@Start@@ procedure does not block and returns as soon as the server is started. The delay is necessary
 to let the server wait for requests during some time.
 
-```[ada]
+```Ada
 WS.Start;
 delay 1000.0;
 ```

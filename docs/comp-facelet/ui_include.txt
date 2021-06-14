@@ -22,7 +22,7 @@ directory as `login.xhtml`.
 
 ### Example
 
-```
+```XML
 <div xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:include src="composition.xhtml">
         <ui:param name="name" value="include"/>

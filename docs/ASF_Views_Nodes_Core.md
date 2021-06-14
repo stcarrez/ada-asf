@@ -25,7 +25,7 @@ No attributes are defined.
 
 ### Example
 
-```
+```XML
 <c:choose>
   <c:when test="#{not empty compute.radius}">
     Radius is not empty: #{compute.radius}.
@@ -51,7 +51,7 @@ this condition.
 
 ### Example
 
-```
+```XML
 <c:if test="#{not empty compute.radius}">
   Radius is not empty: #{compute.radius}.
 </c:if>
@@ -72,7 +72,7 @@ This tag has no attribute.
 
 ### Example
 
-```
+```XML
 <c:choose>
   <c:when test="#{not empty compute.radius}">
     Radius is not empty: #{compute.radius}.
@@ -96,7 +96,7 @@ Sets the result of an expression evaluation based on the value of the attributes
 
 ### Example
 
-```
+```XML
 <c:set var="name" value="23"/>
 #{name}
 <c:set var="name" value="#{23 + 1}"/>
@@ -116,7 +116,7 @@ Subtag of `choose` that includes its body if its condition evalutes to 'true'.
 
 ### Example
 
-```
+```XML
 <c:choose>
   <c:when test="#{not empty compute.radius}">
     Radius is not empty: #{compute.radius}.

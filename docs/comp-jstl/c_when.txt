@@ -11,7 +11,7 @@ Subtag of `choose` that includes its body if its condition evalutes to 'true'.
 
 ### Example
 
-```
+```XML
 <c:choose>
   <c:when test="#{not empty compute.radius}">
     Radius is not empty: #{compute.radius}.

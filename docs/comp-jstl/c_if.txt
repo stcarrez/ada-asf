@@ -14,7 +14,7 @@ this condition.
 
 ### Example
 
-```
+```XML
 <c:if test="#{not empty compute.radius}">
   Radius is not empty: #{compute.radius}.
 </c:if>

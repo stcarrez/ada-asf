@@ -12,7 +12,7 @@ in either a `ui:composition`, `ui:component`, `ui:decorate`, or `ui:fragment`.
 
 ### Example
 
-```
+```XML
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <h2>Title #{empty name ? '?' : name}</h2>

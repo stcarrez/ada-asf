@@ -58,7 +58,11 @@ ASF_DOC= \
   pagebreak.tex \
   ASF_Lifecycles.md \
   pagebreak.tex \
+  ASF_Validators.md \
+  pagebreak.tex \
   ASF_Components.md \
+  pagebreak.tex \
+  ASF_Views_Nodes_Facelets.md \
   pagebreak.tex \
   ASF_Views_Nodes_Core.md \
   pagebreak.tex \
@@ -67,8 +71,6 @@ ASF_DOC= \
   ASF_Components_Html.md \
   pagebreak.tex \
   ASF_Components_Utils.md \
-  pagebreak.tex \
-  ASF_Views_Nodes_Facelets.md \
   pagebreak.tex \
   ASF_Components_Widgets.md \
   pagebreak.tex

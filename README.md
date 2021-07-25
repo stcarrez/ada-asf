@@ -17,16 +17,17 @@ framework.
 
 To build ASF, you will need:
 
-* Ada Util     (https://github.com/stcarrez/ada-util          2.4.0)
-* Ada EL       (https://github.com/stcarrez/ada-el            1.8.1)
+* Ada Util     (https://github.com/stcarrez/ada-util          2.4.1)
+* Ada EL       (https://github.com/stcarrez/ada-el            1.8.3)
 * Ada Security (https://github.com/stcarrez/ada-security      1.4.0)
-* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.5.1)
+* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.5.2)
 * AWS          (https://libre.adacore.com/libre/tools/aws/     2018 or 20)
 * XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.4)
 
-## Version 1.4.2   - Feb 2021
-- Fix compilation warnings
-- Cleanup build and examples
+## Version 1.4.3   - Jul 2021
+- Add jQuery 3.6.0
+- Add a programmer's guide
+- Remove very old jQuery 1.11.3, jQuery UI 1.11.4, jQuery Chosen 1.4.2
 
 [List all versions](https://github.com/stcarrez/ada-asf/blob/master/NEWS.md)
 

@@ -1,4 +1,4 @@
-Version 1.4.3   -
+Version 1.4.3   - Jul 2021
   - Add jQuery 3.6.0
   - Add a programmer's guide
   - Remove very old jQuery 1.11.3, jQuery UI 1.11.4, jQuery Chosen 1.4.2

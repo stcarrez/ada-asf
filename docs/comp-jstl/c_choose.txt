@@ -1,0 +1,27 @@
+## c:choose
+
+This tag associates a parameter name-value pair with the nearest parent UIComponent.
+A UIComponent is created to represent this name-value pair, and stored as a child
+of the parent component; what effect this has depends upon the renderer of that
+parent component.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+### Attributes
+
+No attributes are defined.
+
+
+### Example
+
+```XML
+<c:choose>
+  <c:when test="#{not empty compute.radius}">
+    Radius is not empty: #{compute.radius}.
+  </c:when>
+  <c:when test="#{empty compute.radius}">
+    Radius is empty
+  </c:when>
+</c:choose>
+```
+

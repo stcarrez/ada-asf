@@ -1,0 +1,47 @@
+## w:inputDate
+
+The `w:inputDate` component combines the `h:inputText` and `h:message`
+components and a date picker to select a date.  It renders the title and the input form field with
+the Javascript support to activate the date picker.  The error message associated
+with the input field is rendered if there is one.  The title, input field and message
+are combined within an HTML `dl`, `dt` and `dd` elements.
+
+The date picker is based on the jQuery date picker.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| title            | false    | String          | The title to display for the input field. |
+| rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:w="http://code.google.com/p/ada-asf/widget"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <div class="ui-widget ui-widget-header">
+        Select a date
+    </div>
+    <h:form id='text-form'>
+        <w:inputDate title="Message date" id='date' size='20'
+                     value='#{message.text}'
+                     dateFormat="yy-dd-mm"
+                     styleClass="ui-corner-all">
+        </w:inputDate>
+        <w:inputText title="Email" id='email' size='10'
+                     value='#{message.email}'
+                     styleClass="ui-corner-all">
+        </w:inputText>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='run' value='Post' action="#{message.post}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>
+```
+

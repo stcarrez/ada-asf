@@ -1,0 +1,31 @@
+## h:outputText
+
+Renders the value of the associated UIOutput component.
+If this element has an ID or CSS style properties, the text is wrapped in a span element.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+@include-doc docs/common/attr-common.txt
+@include-doc docs/common/attr-style.txt
+@include-doc docs/common/attr-lang.txt
+| value            | false    | String          | The current value of this component. |
+| escape           | false    | Boolean         | Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag is set to "true" by default. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <!-- Write a text string escaping special characters -->
+    <p><h:outputText value="The application name is: #{sampleName}"/></p>
+    <!-- Write a text with a style.  Generate a <span> element.  -->
+    <p><h:outputText value="The context path is: #{contextPath}"
+                     style="font-weight: bold;"/></p>
+    <!-- Write a text without escaping -->
+    <p><h:outputText escape="false" value="&lt;i&gt;This string is not escaped.&lt;/i&gt;"/></p>
+</div>
+```
+

@@ -1,0 +1,34 @@
+## ui:insert
+
+Inserts content into a template. That content is defined with the `ui:define` tag
+in either a `ui:composition`, `ui:component`, `ui:decorate`, or `ui:fragment`.
+
+### Attributes
+
+| Name  | Required | Type            | Description                                        |
+| ----- | -------- | --------------- | -------------------------------------------------- |
+| name  | true     | String          | The fragment name to insert. |
+
+
+### Example
+
+```XML
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h2>Title #{empty name ? '?' : name}</h2>
+    <p>
+        <ui:insert name="description">
+            There is no description
+        </ui:insert>
+    </p>
+    <h2>List</h2>
+    <ul style='padding-left: 20px;'>
+        <ui:insert name="list">
+            <li>
+                There is no list.
+            </li>
+        </ui:insert>
+    </ul>
+</ui:composition>
+```
+

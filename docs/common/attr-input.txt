@@ -1,0 +1,4 @@
+| required               | false    | Boolean          | Flag indicating that the user is required to provide a submitted value for this input component. |
+| requiredMessage        | false    | String           | A ValueExpression enabled attribute that, if present, will be used as the text of the validation message for the "required" facility, if the "required" facility is used. |
+| validatorMessage       | false    | String           | A ValueExpression enabled attribute that, if present, will be used as the text of the validator message, replacing any message that comes from the validator. |
+| value                  | false    | ValueExpression  | The current value of this component. |

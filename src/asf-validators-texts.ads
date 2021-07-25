@@ -20,7 +20,14 @@ with EL.Objects;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
 
---  The <b>ASF.Validators.Texts</b> defines various text oriented validators.
+--  == Length validator ==
+--  The `ASF.Validators.Texts.Length_Validator` implements the validator for the
+--  `<f:validateLength>` XHTML validator.
+--
+--  == Regex validator ==
+--  The `ASF.Validators.Texts.Regex_Validator` implements the validator for the
+--  `<f:validateRegex>` XHTML validator.
+--
 package ASF.Validators.Texts is
 
    MAXIMUM_MESSAGE_ID : constant String := "asf.validators.length.maximum";

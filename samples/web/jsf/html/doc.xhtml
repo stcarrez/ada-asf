@@ -662,6 +662,44 @@
         </ui:decorate>
     </c:when>
 
+
+    <c:when test="#{param['code'] eq 'selectOneRadio'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:selectOneRadio"/>
+            <ui:define name="description">
+              Render a set of html "input" elements of type "radio".
+
+              
+
+              Render a "table" element. If the "styleClass" is specified, render the value of the "styleClass" attribute as the value of the "class" attribute on the "table" element. If the "style", "border" attributes are specified, pass them thru. If the "layout" attribute is specified, and its value is "pageDirection", render the children elements vertically, otherwise horizontally, in the table. If any of the children are an instance of SelectItemGroup, render them as a nested table. Each of the children are ultimately rendered as follows. Render an "input" element of "type" "radio" for each child component. Render the "name" attribute on the "input" element with the value of the clientId of the component. Render an "id" attribute on the "input" element. Each "id" value must be unique. If the current SelectItem.isDisabled() returns true, render "disabled" as the value of the "disabled" attribute. Close out the "input" element. Render a "label" element. Render the "for" attribute of the "label" element whose value is the corresponding "input" element's "id" value. Render any "style" as the "class" attribute on the "label" element. Close out the starting "label" element and render the label value from SelectItem.getLabel(). Close out the "label" element. As an exception to the general rules about how to handle the "id" attribute, render it as an attribute on the outer "table" element, the value of which is the clientId of the component per the rules at the beginning of this specification. If the value of the currently rendered child is equal to the value of the parent UISelectOne, render an appropriate HTML boolean value indicating "checked" for the enclosing "input". See the "Rendering the option elements" specification for ListboxRenderer for more detail on how to render the "option" elements in this renderer.
+
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-converter.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+                <li class="attr-optional">
+                    <b>enabledClass</b>
+                    <i>String</i>
+                    <span>CSS style class to apply to the rendered label on enabled options.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>disabledClass</b>
+                    <i>String</i>
+                    <span>CSS style class to apply to the rendered label on disabled options.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>layout</b>
+                    <i>String</i>
+                    <span>Orientation of the options list to be created. Valid values are "pageDirection" (list is laid out vertically), or "lineDirection" (list is laid out horizontally). If not specified, the default value is "lineDirection".</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
     <c:when test="#{param['code'] eq 'validateLongRange'}">
         <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
             <ui:param name="name" value="f:validateLongRange"/>
@@ -682,67 +720,6 @@
                     <b>minimum</b>
                     <i>Long</i>
                     <span>The smallest value that should be considered valid.</span>
-                </li>
-            </ui:define>
-        </ui:decorate>
-    </c:when>
-
-    <c:when test="#{param['code'] eq 'view-example'}">
-        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
-            <ui:param name="name" value="f:view"/>
-            <ui:define name="description">
-                Creates a JSF View, which is a container that holds all of the components
-                that are part of the view.  The <tt>UIView</tt> represents the root of
-                the component tree.
-
-                <br></br>
-                Unless otherwise specified, all attributes accept static values or EL expressions.
-            </ui:define>
-            <ui:define name="attributes">
-                <li class="attr-optional">
-                    <b>locale</b>
-                    <i>String</i>
-                    <span>The locale of this view. Default: the default locale from the configuration file.</span>
-                </li>
-                <li class="attr-optional">
-                    <b>contentType</b>
-                    <i>String</i>
-                    <span>The content type to be placed in the response header.
-                    The default content type is <tt>text/html</tt>.</span>
-                </li>
-            </ui:define>
-        </ui:decorate>
-    </c:when>
-
-    <c:when test="#{param['code'] eq 'script'}">
-        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
-            <ui:param name="name" value="util:script"/>
-            <ui:define name="description">
-                In the render response phase, queue some javascript code in the response stream.
-                The javascript code is automatically flushed before sending the response stream.
-                It can be flushed explicitly by using the <b>util:flush</b> component.
-            </ui:define>
-            <ui:define name="attributes">
-                <li class="attr-optional">
-                    <b>rendered</b>
-                    <i>Boolean</i>
-                    <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
-                        or processed on any subsequent form submit. The default value for this property is true.</span>
-                </li>
-            </ui:define>
-        </ui:decorate>
-    </c:when>
-    <c:when test="#{param['code'] eq 'view'}">
-        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
-            <ui:param name="name" value="util:view"/>
-            <ui:define name="description">
-                Create a root view component.
-            </ui:define>
-            <ui:define name="attributes">
-                <li class="attr-required">
-                    <b></b>
-                    <i></i>
-                    <span>No attributes defined</span>
                 </li>
             </ui:define>
         </ui:decorate>

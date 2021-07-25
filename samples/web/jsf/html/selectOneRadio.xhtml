@@ -1,0 +1,40 @@
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <div class="ui-widget ui-widget-header">
+        Compute the volume of a cylinder
+    </div>
+    <h:form id='text-form'>
+        <dl>
+            <dt><label for='radius'>Height</label></dt>
+            <dd>
+              <h:selectOneRadio id='height' value='#{compute.height}'
+                                styleClass="ui-corner-all">
+                <f:selectItem itemLabel="1 inch" itemValue="25.4"/>
+                <f:selectItem itemLabel="1 feet" itemValue="304.8"/>
+                <f:selectItem itemLabel="1 yard" itemValue="914.4"/>
+                <f:converter converterId="float" />
+              </h:selectOneRadio>
+              <h:message for='height'/>
+            </dd>
+        </dl>
+        <dl>
+            <dt><label for='radius'>Radius</label></dt>
+            <dd>
+              <h:selectOneRadio id='radius' value='#{compute.radius}'
+                                styleClass="ui-corner-all">
+                <f:selectItem itemLabel="one" itemValue="1.0"/>
+                <f:selectItem itemLabel="two" itemValue="2.0"/>
+                <f:selectItem itemLabel="three" itemValue="3.0"/>
+                <f:converter converterId="float" />
+              </h:selectOneRadio>
+              <h:message for='radius'/>
+            </dd>
+        </dl>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  nodes-facelets -- Facelets composition nodes
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018 Stephane Carrez
+--  asf-views-nodes-facelets -- Facelets composition nodes
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,19 +16,22 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
---  The <b>ASF.Views.Nodes.Facelets</b> package defines some pre-defined
---  tags for composing a view.
+--  = Facelet Components =
+--  The facelets is the default view declaration language that uses XML and XHTML.
+--  It is a composition and templating framework that allows to create the component
+--  tree.
 --
---    xmlns:ui="http://java.sun.com/jsf/facelets"
+--  The facelet components are defined in the following namespace:
+--  ```
+--  xmlns:ui="http://java.sun.com/jsf/facelets"
+--  ```
 --
---  The following Facelets core elements are defined:
---    <ui:include src="..."/>
---    <ui:decorate view="..."/>
---    <ui:define name="..."/>
---    <ui:insert name="..."/>
---    <ui:param name="..." value="..."/>
---    <ui:composition .../>
+--  The facelet components are implemented by the `ASF.Views.Nodes.Facelets`
+--  package which defines the pre-defined tags for composing a view.  Nodes of
+--  this package are instantiated when the facelet XML tag is found when reading
+--  the XHTML view description.
 --
+--  @include-doc docs/comp-facelet/*.txt
 with Ada.Strings.Hash;
 with ASF.Factory;
 with Ada.Containers.Indefinite_Hashed_Maps;

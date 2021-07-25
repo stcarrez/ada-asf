@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2019, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,7 +54,8 @@ package ASF.Views.Facelets is
    procedure Find_Facelet (Factory : in out Facelet_Factory;
                            Name    : in String;
                            Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
-                           Result  : out Facelet);
+                           Result  : out Facelet;
+                           Ignore  : in Boolean := False);
 
    --  Create the component tree from the facelet view.
    procedure Build_View (View    : in Facelet;

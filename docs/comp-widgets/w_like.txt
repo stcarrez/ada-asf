@@ -1,0 +1,50 @@
+## w:like
+
+This component renders a like button for Facebook or Twitter (more like implementations
+can be added programatically in Ada).  The like button code is rendered within a `div` element
+whose style and class can be customized.
+
+The `kind` attribute defines what like button must be generated.
+
+### Facebook
+
+The [Facebook like button](https://developers.facebook.com/docs/plugins/like-button/)
+is generated with the `facebook` kind attribute value.
+
+When using the Facebook button, the component will pass several attributes to the Facebook
+button: data-layout, data-show-faces, data-width, data-action, data-font,
+data-colorscheme, data-ref, data-kid_directed_site, data-send.
+
+The Facebook like button requires that you register your application and get a facebook client ID.
+The like component will use the configuration property `facebook.client_id` to retrieve
+this client ID.
+
+### Twitter
+
+The [Tweet Button](https://dev.twitter.com/docs/tweet-button) is
+generated with the `twitter` kind attribute value.  The following attributes are
+passed to the Tweet button: data-via, data-count, data-size.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| kind             | true     | String          | The type of like button to generate: "facebook", "twitter". |
+| href             | false    | String          | The optional URL to pass to the like button.  The default is to use the current page URL. |
+| styleClass       | false    | String          | The CSS class to be applied in the div element that contains the like button. |
+| style            | false    | String          | The CSS style to be applied in the div element that contains the like button. |
+| rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
+
+
+### Example
+
+```
+<div xmlns:w="http://code.google.com/p/ada-asf/widget" style='overflow: auto;'>
+    <div class="ui-widget ui-widget-header">
+        Display a social like button
+    </div>
+    <w:like type="facebook" href="http://www.google.com"/>
+    <w:like type="twitter" data-count="vertical"/>
+</div>
+```
+

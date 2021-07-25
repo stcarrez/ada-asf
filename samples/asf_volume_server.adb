@@ -57,6 +57,7 @@ begin
    C.Set ("web.dir", "samples/web");
    begin
       C.Load_Properties (CONFIG_PATH);
+      Util.Log.Loggers.Initialize (CONFIG_PATH);
 
    exception
       when Ada.IO_Exceptions.Name_Error =>

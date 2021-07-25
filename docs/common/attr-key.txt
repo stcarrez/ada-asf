@@ -1,0 +1,2 @@
+| accesskey              | false    | String          | Access key that, when pressed, transfers focus to this element. |
+| tabindex               | false    | Natural         | Position of this element in the tabbing order for the current document. This value must be an integer between 0 and 32767. |

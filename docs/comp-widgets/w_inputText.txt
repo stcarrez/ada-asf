@@ -1,0 +1,46 @@
+## w:inputText
+
+The `w:inputText` component combines the `h:inputText` and `h:message`
+components.  It renders the title and the input form field.  The error message associated
+with the input field is rendered if there is one.  The title, input field and message
+are combined within an HTML `dl`, `dt` and `dd` elements.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| title            | false    | String          | The title to display for the input field. |
+@include-doc docs/common/attr-common.txt
+@include-doc docs/common/attr-converter.txt
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:w="http://code.google.com/p/ada-asf/widget"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <div class="ui-widget ui-widget-header">
+        Compute the volume of a cylinder
+    </div>
+    <h:form id='text-form'>
+        <w:inputText title="Height" id='height' size='10'
+                     value='#{compute.height}'
+                     styleClass="ui-corner-all">
+            <f:converter converterId="float" />
+        </w:inputText>
+        <w:inputText title="Radius" id='radius' size='10'
+                     value='#{compute.radius}'
+                     styleClass="ui-corner-all">
+            <f:converter converterId="float" />
+        </w:inputText>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>
+```
+

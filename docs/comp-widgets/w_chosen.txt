@@ -1,0 +1,46 @@
+## w:chosen
+
+The `w:chosen` component is a `h:selectOne` component that uses jQuery Chosen support
+It renders the `select` component with its options and activates the jQuery Chosen support on it.
+
+The `w:chosen` component uses the `options` facet to allow to provide specific options
+to the jQuery Chosen library.  The `events` facet can be used to invoke jQuery specific
+operations on the Chosen selector and bind some events.
+
+### Attributes
+
+| Name      | Required | Type            | Description                                        |
+| --------- | -------- | --------------- | -------------------------------------------------- |
+| id        | true     | String          | The id of the element (this is mandatory for the correct jQuery Chosen support). |
+| rendered  | false | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:w="http://code.google.com/p/ada-asf/widget"
+     style='padding: 10px'>
+    <div style="padding: 10px">
+        <w:chosen value='#{compute.height}' id="chosen-example-1">
+            <f:facet name="options">width: "95%", disable_search: true</f:facet>
+            <f:facet name="events">.bind("change", function(event, params) {
+                alert("Selected country: " + $(this).val());
+            } )
+            </f:facet>
+            <f:selectItems value="#{countries}"/>
+        </w:chosen>
+    </div>
+    <div style="padding: 10px">
+        <w:chosen value='#{compute.height}' id="chosen-example-2">
+            <f:facet name="options">width: "95%"</f:facet>
+            <f:facet name="events">.bind("change", function(event, params) {
+                alert("Selected country: " + $(this).val());
+            } )
+            </f:facet>
+            <f:selectItems value="#{countries}"/>
+        </w:chosen>
+    </div>
+</div>
+```
+

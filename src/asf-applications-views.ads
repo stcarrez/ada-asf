@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.views -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,8 @@ package ASF.Applications.Views is
    procedure Restore_View (Handler : in out View_Handler;
                            Name    : in String;
                            Context : in out ASF.Contexts.Faces.Faces_Context'Class;
-                           View    : out ASF.Components.Root.UIViewRoot);
+                           View    : out ASF.Components.Root.UIViewRoot;
+                           Ignore  : in Boolean := False);
 
    --  Create a new UIViewRoot instance initialized from the context and with
    --  the view identifier.  If the view is a valid view, create the component tree
@@ -55,7 +56,8 @@ package ASF.Applications.Views is
    procedure Create_View (Handler : in out View_Handler;
                           Name    : in String;
                           Context : in out ASF.Contexts.Faces.Faces_Context'Class;
-                          View    : out ASF.Components.Root.UIViewRoot);
+                          View    : out ASF.Components.Root.UIViewRoot;
+                          Ignore  : in Boolean := False);
 
    --  Render the view represented by the component tree.  The view is
    --  rendered using the context.

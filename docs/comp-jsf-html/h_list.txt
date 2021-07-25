@@ -1,0 +1,38 @@
+## h:list
+
+Renders a list of items.
+
+When the list layout is `orderedList` an `ol/li` list is generated,
+when the layout is `unorderedList` an `ul/li` list is generated.
+The default (`simple`) renders the list as is.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| var              | true     | String           | Name of the variable which holds the current row value. |
+| value            | true     | ValueExpression  | The value expression representing the list to iterate on. |
+@include-doc docs/common/attr-common.txt
+@include-doc docs/common/attr-style.txt
+| layout           | false    | String           | The layout of the list: simple, unorderedList, orderedList. |
+| itemStyleClass   | false    | String           | The CSS class attribute to apply to the li or div items. |
+
+
+### Example
+
+```
+<div xmlns:h="http://java.sun.com/jsf/html">
+    <h:list value="#{messages}" var="msg">
+        <div class="message">
+            <div class="email">
+                #{msg.email}
+            </div>
+            <div class="text">
+                #{msg.text}
+            </div>
+        </div>
+    </h:list>
+    <!-- Demo Hint: use the 'Forum' demo to populate the above list if it is empty  -->
+</div>
+```
+

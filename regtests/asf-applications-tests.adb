@@ -131,6 +131,11 @@ package body ASF.Applications.Tests is
                         Name  : in String;
                         Value : in Util.Beans.Objects.Object) is
    begin
+      --  Simulate a Set_Value that raises some exception during the Update_Values phase.
+      if Util.Beans.Objects.To_String (Value) = "error" then
+         From.Perm_Error := True;
+         raise Constraint_Error;
+      end if;
       if Name = "email" then
          From.Email := Util.Beans.Objects.To_Unbounded_String (Value);
       elsif Name = "password" then
@@ -370,6 +375,7 @@ package body ASF.Applications.Tests is
                                                 Storage => STATIC));
 
       --  Post with password too short and empty email
+      Request.Set_Parameter ("ok", "1");
       Request.Set_Parameter ("formText", "1");
       Request.Set_Parameter ("name", "John");
       Request.Set_Parameter ("password", "12");
@@ -388,6 +394,7 @@ package body ASF.Applications.Tests is
       Assert_Equals (T, "", Form.Password, "Form password was saved in the bean");
       Assert_Equals (T, "", Form.Email, "Form email was saved in the bean");
 
+      Request.Set_Parameter ("ok", "1");
       Request.Set_Parameter ("email", "1");
       Request.Set_Parameter ("password", "12333");
       Request.Set_Parameter ("name", "122222222222222222222222222222222222222222");
@@ -400,6 +407,7 @@ package body ASF.Applications.Tests is
                       Reply, "Invalid error message for name");
 
 
+      Request.Set_Parameter ("ok", "1");
       Request.Set_Parameter ("email", "1dddddd");
       Request.Set_Parameter ("password", "12333ddddddddddddddd");
       Request.Set_Parameter ("name", "1222222222");
@@ -409,6 +417,16 @@ package body ASF.Applications.Tests is
                       & "allowable maximum of '10'.*",
                       Reply, "Invalid error message for password");
 
+      Request.Set_Parameter ("ok", "1");
+      Request.Set_Parameter ("email", "error");
+      Request.Set_Parameter ("password", "12333");
+      Request.Set_Parameter ("name", "1222222222");
+      Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post-4.txt");
+
+      Assert_Matches (T, ".*<span class=.error.>Validation Error: Value is not correct.*",
+                      Reply, "Invalid error message for name");
+
+      Assert_Equals (T, 0, Form.Called, "Save method should not be called");
    end Test_Form_Post_Validation_Error;
 
    --  ------------------------------

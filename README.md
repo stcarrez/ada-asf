@@ -17,16 +17,17 @@ framework.
 
 To build ASF, you will need:
 
-* Ada Util     (https://github.com/stcarrez/ada-util          2.4.0)
-* Ada EL       (https://github.com/stcarrez/ada-el            1.8.1)
+* Ada Util     (https://github.com/stcarrez/ada-util          2.4.1)
+* Ada EL       (https://github.com/stcarrez/ada-el            1.8.3)
 * Ada Security (https://github.com/stcarrez/ada-security      1.4.0)
-* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.5.1)
+* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.5.2)
 * AWS          (https://libre.adacore.com/libre/tools/aws/     2018 or 20)
 * XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.4)
 
-## Version 1.4.2   - Feb 2021
-- Fix compilation warnings
-- Cleanup build and examples
+## Version 1.4.3   - Jul 2021
+- Add jQuery 3.6.0
+- Add a programmer's guide
+- Remove very old jQuery 1.11.3, jQuery UI 1.11.4, jQuery Chosen 1.4.2
 
 [List all versions](https://github.com/stcarrez/ada-asf/blob/master/NEWS.md)
 
@@ -55,9 +56,17 @@ And unit tests are executed with:
 
 # Documentation
 
-The Ada Server Faces sources as well as a wiki documentation is provided on:
+* [Ada Server Faces Programmer's Guide](https://ada-asf.readthedocs.io/en/latest/) [PDF](https://github.com/stcarrez/ada-asf/blob/master/docs/asf-book.pdf)
+* [Ada Server Faces wiki (old documentation)](https://github.com/stcarrez/ada-asf/wiki)
 
-   https://github.com/stcarrez/ada-asf/wiki
+## Tutorial
+
+* [Ada Server Faces Application Example part 1: the presentation](http://blog.vacs.fr/index.php?post/2011/03/21/Ada-Server-Faces-Application-Example)
+* [Ada Server Faces Application Example part 2: the Ada beans](http://blog.vacs.fr/index.php?post/2011/04/10/Ada-Server-Faces-Application-Example-part-2%3A-the-Ada-beans)
+* [Ada Server Faces Application Example part 3: the action bean](http://blog.vacs.fr/index.php?post/2011/05/02/Ada-Server-Faces-Application-Example-part-3%3A-the-action-bean)
+* [Ada Server Faces Application Example part 4: the server](http://blog.vacs.fr/index.php?post/2011/05/18/Ada-Server-Faces-Application-Example-part-3-the-server)
+
+## Components
 
 The following tags are supported:
 
@@ -69,6 +78,7 @@ The following tags are supported:
 | [JSF HTML](https://demo.vacs.fr/demo/jsf/html/view.html) | `xmlns:h="http://java.sun.com/jsf/html"`             | <h:body>, <h:commandButton>, <h:form>, <h:head>, <h:inputFile>, <h:inputHidden>, <h:inputSecret>, <h:inputText>, <h:inputTextarea>, <h:list>, <h:message>, <h:messages>, <h:ouputFormat>, <h:outputLabel>, <h:outputLink>, <h:outputText>, <h:panelGroup>, <h:selectBooleanCheckbox>, <h:selectOneMenu>, <h:selectOneRadio> |
 | [Widget](https://demo.vacs.fr/demo/widgets/view.html) | `xmlns:w="http://code.google.com/p/ada-asf/widget"`  | <w:accordion>, <w:autocomplete>, <w:chosen>, <w:inputDate>, <w:inputText>, <w:gravatar>, <w:like>, <w:panel>, <w:tab>, <w:tabView> |
 | [Util](https://demo.vacs.fr/demo/util/view.html)     | `xmlns:util="http://code.google.com/p/ada-asf/util"` | <util:escape>, <util:file>, <util:flush>, <util:script> |
+
 
 
 # Licenses

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -128,7 +128,8 @@ package body ASF.Applications.Views is
    procedure Restore_View (Handler : in out View_Handler;
                            Name    : in String;
                            Context : in out ASF.Contexts.Faces.Faces_Context'Class;
-                           View    : out ASF.Components.Root.UIViewRoot) is
+                           View    : out ASF.Components.Root.UIViewRoot;
+                           Ignore  : in Boolean := False) is
 
       use ASF.Views;
       use Util.Locales;
@@ -144,7 +145,8 @@ package body ASF.Applications.Views is
       Facelets.Find_Facelet (Factory => Handler.Facelets,
                              Name    => View_Name,
                              Context => Ctx,
-                             Result  => Tree);
+                             Result  => Tree,
+                             Ignore  => Ignore);
 
       --  If the view could not be found, do not report any error yet.
       --  The SC_NOT_FOUND response will be returned when rendering the response.
@@ -186,13 +188,14 @@ package body ASF.Applications.Views is
    procedure Create_View (Handler : in out View_Handler;
                           Name    : in String;
                           Context : in out ASF.Contexts.Faces.Faces_Context'Class;
-                          View    : out ASF.Components.Root.UIViewRoot) is
+                          View    : out ASF.Components.Root.UIViewRoot;
+                          Ignore  : in Boolean := False) is
       Pos : constant Natural := Util.Strings.Rindex (Name, '.');
    begin
       if Pos > 0 then
-         Handler.Restore_View (Name (Name'First .. Pos - 1), Context, View);
+         Handler.Restore_View (Name (Name'First .. Pos - 1), Context, View, Ignore);
       else
-         Handler.Restore_View (Name, Context, View);
+         Handler.Restore_View (Name, Context, View, Ignore);
       end if;
    end Create_View;
 

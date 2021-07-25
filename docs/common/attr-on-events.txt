@@ -1,0 +1,11 @@
+| onchange               | false    | String          | Javascript code executed when the value of the element changes. |
+| onclick                | false    | String          | Javascript code executed when a pointer button is clicked over this element. |
+| ondbclick              | false    | String          | Javascript code executed when a pointer button is double clicked over this element. |
+| onkeydown              | false    | String          | Javascript code executed when a key is pressed down over this element. |
+| onkeypress             | false    | String          | Javascript code executed when a key is pressed or released over this element. |
+| onkeyup                | false    | String          | Javascript code executed when a key is released over this element. |
+| onmousedown            | false    | String          | Javascript code executed when a pointer button is pressed down over this element. |
+| onmousemove            | false    | String          | Javascript code executed when a pointer button is moved within this element. |
+| onmouseout             | false    | String          | Javascript code executed when a pointer button is moved away from this element. |
+| onmouseover            | false    | String          | Javascript code executed when a pointer button is moved onto this element. |
+| onmouseup              | false    | String          | Javascript code executed when a pointer button is released over this element. |

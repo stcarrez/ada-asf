@@ -1,0 +1,57 @@
+## w:gravatar
+
+This component renders an image whose link is the gravatar's link of
+a person's email address.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| email            | true     | String          | The email address to create the gravatar image link. |
+| secure           | false    | Boolean         | When True, the secure link to the gravatar image is created (https).  The default creates an `http` link only. |
+| size             | false    | Integer         | The size of the gravatar image (from 1 to 2048 pixels max). |
+| default          | false    | String          | Default. |
+| alt              | false    | String          | The image `alt` attribute. By default, the email address is used for the `alt` attribute. |
+| rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:w="http://code.google.com/p/ada-asf/widget"
+     xmlns:h="http://java.sun.com/jsf/html" style='overflow: auto;'>
+    <div class="ui-widget ui-widget-header">
+        Display a person's gravatar
+    </div>
+    <h:form id='text-form'>
+        <w:inputText title="Type the person email address" id='email' size='40'
+                     value='#{message.email}'
+                     styleClass="ui-corner-all">
+        </w:inputText>
+        <div class='gravatar grid_6'>
+            <span>default</span>
+            <w:gravatar email='#{message.email}' size='120'/>
+        </div>
+        <div class='gravatar grid_6'>
+            <span>wavatar</span>
+            <w:gravatar email='#{message.email}' default='wavatar' size='120'/>
+        </div>
+        <div class='gravatar grid_6'>
+            <span>retry</span>
+            <w:gravatar email='#{message.email}' default='retro' size='120'/>
+        </div>
+        <div class='gravatar grid_6'>
+            <span>monsterid</span>
+            <w:gravatar email='#{message.email}' default='monsterid' size='120'/>
+        </div>
+        <ul class='buttons'>
+            <li>
+                <h:commandButton id='run' value='Display gravatar'
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>
+```
+

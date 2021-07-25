@@ -1,0 +1,31 @@
+## ui:define
+
+The define tag defines content that is inserted into a page by a template.
+The define tag can be used inside `ui:composition`, `ui:component`, `ui:decorate`,
+and `ui:fragment` tags.
+
+### Attributes
+
+| Name  | Required | Type            | Description                                        |
+| ----- | -------- | --------------- | -------------------------------------------------- |
+| name  | true     | String          | Assigns a name to the content inside a define tag. That name is used by corresponding ui:insert tags in a template that insert the named content into a page. |
+
+
+### Example
+
+```XML
+<ui:decorate xmlns:ui="http://java.sun.com/jsf/facelets"
+             template="/facelet/composition.xhtml">
+    <ui:param name="name" value="decorate"/>
+    <ui:define name="description">
+        The decorate tag allows to use a template and insert data
+        at various places.
+    </ui:define>
+    <ui:define name="list">
+        <li>The decorate tag uses a template</li>
+        <li>It includes optional ui:param elements</li>
+        <li>It fills the template by using the ui:define element.</li>
+    </ui:define>
+</ui:decorate>
+```
+

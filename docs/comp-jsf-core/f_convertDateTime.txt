@@ -1,0 +1,81 @@
+## f:convertDateTime
+
+This tag registers an instance of a `Date_Time_Converter`, and associates it
+with the nearest parent UIComponent.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| dateStyle        | false    | String          | Predefined formatting style which determines how the date component of a date string is to be formatted and parsed. Applied only if type is "date" or "both". Valid values are "default", "short", "medium", "long", and "full". Default value is "default". |
+| locale           | false    | String          | Locale whose predefined styles for dates and times are used during formatting or parsing. If not specified, the Locale returned by `FacesContext.Get_View_Root().Get_Locale()` will be used. Value must be either a VB expression that evaluates to a valid String locale. |
+| pattern          | false    | String          | Custom formatting pattern which determines how the date/time string should be formatted and parsed. |
+| timeStyle        | false    | String          | Predefined formatting style which determines how the time component of a date string is to be formatted and parsed. Applied only if type is "time" or "both". Valid values are "default", "short", "medium", "long", and "full". Default value is "default". |
+| timeZone         | false    | String          | Time zone in which to interpret any time information in the date String. Value must be either a VB expression that evaluates to a valid string that is a timezone ID. |
+| type             | false    | String          | Specifies what contents the string value will be formatted to include, or parsed expecting. Valid values are "date", "time", and "both". Default value is "date". |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <dl>
+        <dt>No converter</dt>
+        <dd>
+            <!-- pi is a float, use a default converter -->
+            #{messages.today}
+        </dd>
+        <dt>With converter</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <!-- use the 'float' converter defined by the application  -->
+                <f:convertDateTime dateStyle="short"/>
+            </h:outputText>
+        </dd>
+    </dl>
+    <h4>dateStyle</h4>
+    <dl class='list'>
+        <dt>short</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime dateStyle="short"/>
+            </h:outputText>
+        </dd>
+        <dt>medium</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime dateStyle="medium"/>
+            </h:outputText>
+        </dd>
+        <dt>long</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime dateStyle="long"/>
+            </h:outputText>
+        </dd>
+        <dt>full</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime dateStyle="full"/>
+            </h:outputText>
+        </dd>
+    </dl>
+    <h4>timeStyle</h4>
+    <dl class='list'>
+        <dt>short</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime timeStyle="short"/>
+            </h:outputText>
+        </dd>
+        <dt>medium</dt>
+        <dd>
+            <h:outputText value='#{messages.today}'>
+                <f:convertDateTime timeStyle="long"/>
+            </h:outputText>
+        </dd>
+    </dl>
+</div>
+```
+

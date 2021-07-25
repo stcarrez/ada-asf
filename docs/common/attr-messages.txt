@@ -1,0 +1,12 @@
+| for               | false    | String          | Client identifier of the component for which to display messages. |
+| showDetail        | false    | Boolean         | Flag indicating whether the detail portion of displayed messages should be included. Default value is "true". |
+| showSummary       | false    | Boolean         | Flag indicating whether the summary portion of displayed messages should be included. Default value is "false". |
+| tooltip           | false    | Boolean         | Flag indicating whether the detail portion of the message should be displayed as a tooltip. |
+| errorClass        | false    | String          | CSS style class to apply to any message with a severity class of "ERROR". |
+| errorStyle        | false    | String          | CSS style(s) to apply to any message with a severity class of "ERROR". |
+| fatalClass        | false    | String          | CSS style class to apply to any message with a severity class of "FATAL". |
+| fatalStyle        | false    | String          | CSS style(s) to apply to any message with a severity class of "FATAL". |
+| infoClass         | false    | String          | CSS style class to apply to any message with a severity class of "INFO". |
+| infoStyle         | false    | String          | CSS style class to apply to any message with a severity class of "INFO". |
+| warnClass         | false    | String          | CSS style class to apply to any message with a severity class of "WARN". |
+| warnStyle         | false    | String          | CSS style(s) to apply to any message with a severity class of "WARN". |

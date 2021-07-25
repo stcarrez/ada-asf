@@ -1,0 +1,41 @@
+## h:outputLink
+
+Render an HTML "a" anchor element. The value of the component is rendered as the value
+of the "href" attribute. Any child UIParameter components are appended to the String
+to be output as the value of the "href" attribute as query parameters before rendering.
+The entire "href" string must be passed through a call to the encodeResourceURL() method
+of the ExternalContext. The name of the UIParameter goes on the left hand side, and the value
+of the UIParameter on the right hand side. The name and the value must be URLEncoded.
+Each UIParameter instance is separeted by an ampersand, as dictated in the URL spec.
+If the "styleClass" attribute is specified, render its value as the value of the "class" attribute.
+If the "id" attribute is specified, follow the same steps as mentioned in
+the "General Notes on Encoding" regarding the "id" attribute for UIInput components.
+If the "disabled" attribute is specified, do not render the HTML "a" anchor element or
+the "href" element. Instead, render a "span" element. If the "styleClass" attribute is specified,
+render its value as the value of the "class" attribute on the "span".
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+@include-doc docs/common/attr-common.txt
+@include-doc docs/common/attr-style.txt
+@include-doc docs/common/attr-lang.txt
+@include-doc docs/common/attr-key.txt
+@include-doc docs/common/attr-on-events.txt
+| value            | false    | String          | The current value of this component. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <!-- Link is enabled -->
+    <p><h:outputLink value="https://github.com/stcarrez/ada-asf">Ada Server Faces</h:outputLink></p>
+    <!-- Write a text with a style.  Generate a <span> element.  -->
+    <p><h:outputLink value="https://github.com/stcarrez/ada-el" disabled="true"
+                     style="font-weight: bold;">Ada EL</h:outputLink></p>
+</div>
+```
+

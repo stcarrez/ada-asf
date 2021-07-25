@@ -1,0 +1,30 @@
+## f:param
+
+This tag associates a parameter name-value pair with the nearest parent UIComponent.
+A UIComponent is created to represent this name-value pair, and stored as a child
+of the parent component; what effect this has depends upon the renderer of that
+parent component.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| name             | false    | String          | The name under which the value is stored. |
+| value            | false    | String          | The value of this component. |
+| id               | false    | String          | Get a string which uniquely identifies this UIComponent within the nearest ancestor naming component. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:outputFormat value="The value of PI is {0} and 2 x PI is {1}.">
+        <f:param value="#{compute.pi}"/>
+        <f:param value="#{compute.pi + compute.pi}"/>
+    </h:outputFormat>
+</div>
+```
+

@@ -1,0 +1,34 @@
+## util:file
+
+This component allows to include an external file in the render response phase.
+
+### Attributes
+
+| Name      | Required | Type            | Description                                        |
+| --------- | -------- | --------------- | -------------------------------------------------- |
+| src       | true     | String          | The relative path for the file to be included. |
+| rendered  | false | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
+
+
+### Example
+
+```
+<div xmlns:util="http://code.google.com/p/ada-asf/util"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:form>
+        <input type="submit" name="file" value="Display 'file.xhtml'"
+               onclick="return ASF.Submit(this);"/>
+        <input type="submit" name="escape" value="Display 'escape.xhtml'"
+               onclick="return ASF.Submit(this);"/>
+        <div  style='overflow: hidden; width: 100%;'>
+            <code>
+                <util:file src="/util/file.xhtml" escape="true"
+                           rendered="#{param['file'] eq '1'}"/>
+                <util:file src="/util/escape.xhtml" escape="true"
+                           rendered="#{param['file'] ne '1'}"/>
+            </code>
+        </div>
+    </h:form>
+</div>
+```
+

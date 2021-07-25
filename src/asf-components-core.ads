@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  components-core -- ASF Core Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2018 Stephane Carrez
+--  asf-components-core -- ASF Core Components
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,23 @@
 with ASF.Views.Nodes;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
+
+--  = Core Components =
+--  The facelets is the default view declaration language that uses XML and XHTML.
+--  It is a composition and templating framework that allows to create the component
+--  tree.
+--
+--  The core components are defined in the following namespace:
+--  ```
+--  xmlns:f="http://java.sun.com/jsf/core"
+--  ```
+--
+--  The core components are implemented by the `ASF.Components.Core`
+--  package which defines the `UIComponent` that describes the various elements
+--  provided by the core components.  These components are instantiated when the
+--  view is created from the facelet tree that was read from the XHTML view description.
+--
+--  @include-doc docs/comp-jsf-core/*.txt
 package ASF.Components.Core is
 
    use ASF.Contexts.Faces;

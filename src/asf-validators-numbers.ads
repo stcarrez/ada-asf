@@ -19,6 +19,7 @@ with EL.Objects;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
 
+--  == Range validator ==
 --  The <b>ASF.Validators.Numbers</b> defines various number oriented validators.
 package ASF.Validators.Numbers is
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  components-util -- ASF Util Components
---  Copyright (C) 2009, 2010, 2011, 2013 Stephane Carrez
+--  asf-components-utils -- ASF Util Components
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,17 @@ with Util.Beans.Basic;
 
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
-package ASF.Components.Utils is
 
-   --  Get the line information where the component is defined.
---     function Get_Line_Info (UI : in UIComponent'Class) return Views.Nodes.Line_Info;
+--  = Util Components =
+--  The `util` components are specific to Ada Server Faces and they are provided to help in
+--  writing server faces pages.  The component is defined in the following namespace:
+--
+--  ```
+--  xmlns:util="http://code.google.com/p/ada-asf/util"
+--  ```
+--
+--  @include-doc docs/comp-util/*.txt
+package ASF.Components.Utils is
 
    --  Get the line information where the component is defined.
    function Get_Line_Info (UI : in Base.UIComponent'Class) return String;

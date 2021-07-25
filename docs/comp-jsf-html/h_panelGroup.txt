@@ -1,0 +1,34 @@
+## h:panelGroup
+
+This element is used to group other components where the specification requires one child element.
+If any of the HTML or CSS attributes are set, its content is rendered within a span or div element.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+@include-doc docs/common/attr-common.txt
+@include-doc docs/common/attr-style.txt
+| layout           | false    | String          | The type of layout markup to use when rendering this group. If the value is "block" the renderer must produce an HTML "div" element. Otherwise HTML "span" element must be produced. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:panelGroup layout="block">
+        A div element
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sampleName eq 'demo'}">
+        A text block which is not present (rendered = false)
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sampleName ne 'demo'}">
+        A text block which is present (rendered = true)
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sampleName ne 'demo'}" style="padding-top: 20px; color: red;">
+        A text block which is present (rendered = true)
+    </h:panelGroup>
+</div>
+```
+

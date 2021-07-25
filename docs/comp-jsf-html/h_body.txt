@@ -1,0 +1,30 @@
+## h:body
+
+Render an html `body` element.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+@include-doc docs/common/attr-lang.txt
+@include-doc docs/common/attr-on-events.txt
+| onload           | false    | String           | Javascript code executed when the user agent finishes loading a window or all frames within a frameset. |
+| onunload         | false    | String           | Javascript code executed when the user agent removes a document from a window or frame. |
+
+
+### Example
+
+```
+<f:view xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        contentType="text/html; charset=UTF-8">
+    <h:head dir="ltr" lang="en">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/samples.css"/>
+    </h:head>
+    <h:body dir="ltr" lang="en">
+        <p>Hello world!</p>
+    </h:body>
+ </f:view>
+```
+

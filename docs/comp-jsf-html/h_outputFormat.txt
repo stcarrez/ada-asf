@@ -1,0 +1,47 @@
+## h:outputFormat
+
+Render parameterized text.
+
+Obtain the style, styleClass, dir, and lang attributees
+from this component. If any are present, render a `span` element. Output the
+styleClass attribute (if present) as the value of the class attribute. Output the
+style attribute as the value of the style attribute. Output the dir and lang attributes
+as pass through attributes. Accrue a list of the values of all child `UIParameter` components
+of this component. If there are one or more accumulated parameter values, convert the list
+of parameter values to an Object array, call MessageFormat.format(), passing the value of
+this component as the first argument, and the array of parameter values as the second argument,
+and render the result. Otherwise, render the value of this component unmodified.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+@include-doc docs/common/attr-common.txt
+@include-doc docs/common/attr-style.txt
+@include-doc docs/common/attr-lang.txt
+@include-doc docs/common/attr-key.txt
+@include-doc docs/common/attr-on-events.txt
+| for              | false    | String          | Client identifier of the component for which this element is a label. |
+| value            | false    | String          | The current value of this component. |
+| escape           | false    | Boolean         | Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag is set to "true" by default. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <!-- Write a text string escaping special characters -->
+    <p><h:outputFormat value="The application name is: {0}">
+        <f:param value="#{sampleName}"/>
+    </h:outputFormat>
+    </p>
+    <!-- Write a text with a style.  Generate a <span> element.  -->
+    <p><h:outputFormat value="The context path is: #{contextPath}"
+                       style="font-weight: bold;">
+        <f:param value="#{contextPath}"/>
+    </h:outputFormat>
+    </p>
+</div>
+```
+

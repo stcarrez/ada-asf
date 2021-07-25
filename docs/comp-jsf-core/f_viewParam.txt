@@ -1,0 +1,42 @@
+## f:viewParam
+
+The viewParam element is used in a metadata facet.  It allows to initialize
+a bean attribute from a request parameter.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| name             | false    | String          | The name of the request parameter from which the value for this component is retrieved on an initial request or to override the stored value on a postback. |
+
+
+### Example
+
+```
+<f:view xmlns:f="http://java.sun.com/jsf/core">
+    <f:metadata>
+        <f:viewParam id='height' value='#{compute.height}'>
+            <f:converter converterId="float" />
+        </f:viewParam>
+        <f:viewParam id='radius' value='#{compute.radius}'>
+            <f:converter converterId="float" />
+        </f:viewParam>
+        <f:viewAction action="#{compute.run}"/>
+    </f:metadata>
+    <dl>
+        <dt>Height</dt>
+        <dd>
+            #{compute.height}
+        </dd>
+         <dt>Radius</dt>
+        <dd>
+            #{compute.radius}
+        </dd>
+        <dt>Volume</dt>
+        <dd>
+            #{compute.volume}
+        </dd>
+    </dl>
+</f:view>
+```
+

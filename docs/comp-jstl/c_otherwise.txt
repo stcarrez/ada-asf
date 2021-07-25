@@ -1,0 +1,23 @@
+## c:otherwise
+
+Subtag of `choose` that follows `when` tags and runs only if all of
+the prior conditions evaluated to 'false'.
+
+### Attributes
+
+This tag has no attribute.
+
+
+### Example
+
+```XML
+<c:choose>
+  <c:when test="#{not empty compute.radius}">
+    Radius is not empty: #{compute.radius}.
+  </c:when>
+  <c:otherwise>
+    Radius is empty
+  </c:otherwise>
+</c:choose>
+```
+

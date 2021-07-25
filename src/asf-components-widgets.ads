@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  components-widgets -- ASF Widget Components
---  Copyright (C) 2013 Stephane Carrez
+--  asf-components-widgets -- ASF Widget Components
+--  Copyright (C) 2013-2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,15 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+--  = Widget Components =
+--  The `widget` components are specific to Ada Server Faces and they provide high level
+--  components to help in designing and providing a web interface.
+--
+--  ```
+--  xmlns:w="http://code.google.com/p/ada-asf/widget"
+--  ```
+--
+--  @include-doc docs/comp-widgets/*.txt
 package ASF.Components.Widgets is
 
 end ASF.Components.Widgets;

@@ -1,0 +1,58 @@
+## f:validator
+
+Creates a validator and associates it with the nearest parent UIComponent.
+
+During the validation phase (or the apply-request-values phase for immediate components),
+if the associated component has any submitted value and the conversion of that
+value to the required type has succeeded then the specified validator type is invoked
+to test the validity of the converted value.
+
+Commonly associated with an `h:inputText` entity, but may be applied to any input component.
+Some validators may allow the component to use attributes to define component-specific
+validation constraints; see the f:attribute tag. See also the "validator" attribute of
+all input components, which allows a component to specify an arbitrary validation
+`method` (rather than a registered validation type, as this tag does).
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| validatorId      | false    | String          | The registered ID of the desired Validator.  |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:form id='text-form'>
+        <dl class='ui-widget container_12'>
+            <dt><label for='height'>Height</label><h:message for='height'/></dt>
+            <dd>
+                <h:inputText id='height' size='10' value='#{compute.height}'
+                             styleClass="ui-corner-all">
+                    <f:converter converterId="float" />
+                    <f:validator validatorId="validateDimension"/>
+                </h:inputText>
+            </dd>
+            <dt><label for='radius'>Radius</label><h:message for='radius'/></dt>
+            <dd>
+                <h:inputText id='radius' size='10' value='#{compute.radius}'
+                             styleClass="ui-corner-all">
+                    <f:converter converterId="float"/>
+                    <f:validator validatorId="validateDimension"/>
+                </h:inputText>
+            </dd>
+        </dl>
+        <ul class='container_12 buttons'>
+            <li>
+                <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>
+```
+

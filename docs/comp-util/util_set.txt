@@ -1,0 +1,32 @@
+
+## util:set
+
+Sets a value on a manage bean attribute.  The `var` attribute is a Value expression
+that describe a manage bean attribute to set.  The `value` attribute corresponds to
+the value that will be assigned to the value expression.  This allows to invoke
+the `Set_Value` method of the managed bean to assign a named value.
+
+### Attributes
+
+| Name  | Type            | Description                                        |
+| ----- | --------------- | -------------------------------------------------- |
+| var   | ValueExpression | Value expression to set.                           |
+| value | any             | Value to assign.                                   |
+
+
+### Example
+
+```
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <util:set var="#{form.email}" value="Potter@gmail.com" />
+    <util:set var="#{form.name}" value="Harry" />
+    Email:  #{form.email}
+    Name: #{form.name}
+  </body>
+</html>
+```
+
+

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Stephane Carrez
+--  asf-components-html-forms -- ASF HTML Form Components
+--  Copyright (C) 2010 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -314,11 +314,16 @@ package body ASF.Components.Html.Forms is
    exception
       when E : others =>
          UI.Is_Valid := False;
-         UI.Add_Message (CONVERTER_MESSAGE_NAME, "convert", Context);
+         UI.Add_Message (Name    => CONVERTER_MESSAGE_NAME,
+                         Default => ERROR_MESSAGE_ID,
+                         Context => Context);
          Log.Info (Utils.Get_Line_Info (UI)
                    & ": Exception raised when updating value {0} for component {1}: {2}",
                    EL.Objects.To_String (UI.Submitted_Value),
                    To_String (UI.Get_Client_Id), Ada.Exceptions.Exception_Name (E));
+
+         --  Render the response after the current phase if something is wrong.
+         Context.Render_Response;
    end Process_Updates;
 
    --  ------------------------------
@@ -516,7 +521,9 @@ package body ASF.Components.Html.Forms is
    exception
       when E : others =>
          UI.Is_Valid := False;
-         UI.Add_Message (CONVERTER_MESSAGE_NAME, "convert", Context);
+         UI.Add_Message (Name    => CONVERTER_MESSAGE_NAME,
+                         Default => ERROR_MESSAGE_ID,
+                         Context => Context);
          Log.Info (Utils.Get_Line_Info (UI)
                    & ": Exception raised when updating value {0} for component {1}: {2}",
                    EL.Objects.To_String (UI.Submitted_Value),

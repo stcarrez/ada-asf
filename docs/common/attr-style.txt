@@ -1,0 +1,3 @@
+| style               | false    | String          | CSS style(s) to be applied when this component is rendered. |
+| styleClass          | false    | String          | Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be passed through as the "class" attribute on generated markup. |
+| title               | false    | String          | Advisory title information about markup elements generated for this component. |

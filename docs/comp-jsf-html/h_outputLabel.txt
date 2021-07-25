@@ -1,0 +1,50 @@
+## h:outputLabel
+
+Renders an HTML `label` element. Render the current value of the component as label
+text if it is specified. If a `for` attribute is specified, find the component specified
+by the value of the `for` attribute, and render its client id as the value of
+the `for` attribute. If "styleClass" attribute is specified, render its value as the
+value of the "class" attribute.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+@include-doc docs/common/attr-common.txt
+@include-doc docs/common/attr-style.txt
+@include-doc docs/common/attr-lang.txt
+@include-doc docs/common/attr-key.txt
+@include-doc docs/common/attr-on-events.txt
+| for              | false    | String          | Client identifier of the component for which this element is a label. |
+| value            | false    | String          | The current value of this component. |
+| escape           | false    | Boolean         | Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag is set to "true" by default. |
+
+
+### Example
+
+```
+<dl xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+    <dt><h:outputLabel for='height' value="Height"/><h:message for='height'/></dt>
+    <dd>
+        <h:selectOneMenu id='height' size='10' value='#{compute.height}'
+                         styleClass="ui-state-default ui-corner-all">
+            <f:selectItem itemLabel="1 inch" itemValue="25.4"/>
+            <f:selectItem itemLabel="1 feet" itemValue="304.8"/>
+            <f:selectItem itemLabel="1 yard" itemValue="914.4"/>
+            <f:converter converterId="float" />
+        </h:selectOneMenu>
+    </dd>
+    <dt><h:outputLabel for='radius' value="Radius"/><h:message for='radius'/></dt>
+    <dd>
+        <h:selectOneMenu id='radius' size='10' value='#{compute.radius}'
+                         styleClass="ui-state-default ui-corner-all">
+            <f:selectItem itemLabel="1 inch" itemValue="25.4"/>
+            <f:selectItem itemLabel="1 feet" itemValue="304.8"/>
+            <f:selectItem itemLabel="1 yard" itemValue="914.4"/>
+            <f:converter converterId="float"/>
+        </h:selectOneMenu>
+    </dd>
+</dl>
+```
+

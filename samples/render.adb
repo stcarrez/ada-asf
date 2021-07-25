@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  render -- XHTML Rendering example
---  Copyright (C) 2010, 2017, 2020 Stephane Carrez
+--  Copyright (C) 2010, 2017, 2020, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -91,7 +91,7 @@ begin
       end if;
 
       Req.Set_Method ("GET");
-      Req.Set_Request_URI ("/render/" & View_Name); --  View_Name (View_Name'First .. Pos - 1) & ".html");
+      Req.Set_Request_URI ("/render/" & View_Name);
       App.Dispatch (View_Name, Req, Reply);
 
       Reply.Read_Content (Content);

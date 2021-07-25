@@ -12,14 +12,9 @@ project Samples is
    for Main use Mains;
 
    package Naming is
-      case UtilAda_Sys.Has_Vector_Mappers is
-           when "yes" =>
-                for Implementation ("Facebook") use "facebook-with_feeds.adb";
-
-           when "no" =>
-                for Implementation ("Facebook") use "facebook-no_feeds.adb";
-
-      end case;
+      for Implementation ("Facebook") use "facebook-with_feeds.adb";
+      
+      --  for Implementation ("Facebook") use "facebook-no_feeds.adb";
    end Naming;
 
    for Source_Dirs use ("samples", "samples/beans");

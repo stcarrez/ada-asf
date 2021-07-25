@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2013 Stephane Carrez
+--  asf-components-html -- ASF HTML Components
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,15 @@ with ASF.Contexts.Writer;
 with ASF.Contexts.Faces;
 with ASF.Components.Core;
 with Util.Strings;
+
+--  = HTML Components =
+--  The `html` components provide the HTML components.
+--
+--  ```
+--  xmlns:h="http://java.sun.com/jsf/html"
+--  ```
+--
+--  @include-doc docs/comp-jsf-html/*.txt
 package ASF.Components.Html is
 
    use ASF.Contexts.Writer;

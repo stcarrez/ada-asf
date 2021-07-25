@@ -1,0 +1,758 @@
+<!-- JSF Core tag library documentation
+  -  Copyright (C) 2012, 2014 Stephane Carrez
+  -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+  -
+  -  Licensed under the Apache License, Version 2.0 (the "License");
+  -  you may not use this file except in compliance with the License.
+  -  You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -  Unless required by applicable law or agreed to in writing, software
+  -  distributed under the License is distributed on an "AS IS" BASIS,
+  -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  -  See the License for the specific language governing permissions and
+  -  limitations under the License.
+  -->
+<c:choose xmlns:c="http://java.sun.com/jstl/core"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:ui="http://java.sun.com/jsf/facelets"
+          xmlns:util="http://code.google.com/p/ada-asf/util">
+    <!-- For security reasons, check that the code parameter matches what is allowed  -->
+
+    <c:when test="#{param['code'] eq 'body'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:body"/>
+            <ui:define name="description">
+                Render an html <tt>body</tt> element.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <li class="attr-optional">
+                    <b>onload</b>
+                    <i>String</i>
+                    <span>Javascript code executed when the user agent finishes loading a window or all frames within a frameset.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>onunload</b>
+                    <i>String</i>
+                    <span>Javascript code executed when the user agent removes a document from a window or frame.</span>
+                </li>
+                <ui:include src="doc-style.xhtml"/>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'commandButton'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:commandButton"/>
+            <ui:define name="description">
+                Renders an HTML <tt>input</tt> element.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>value</b>
+                    <i>ValueExpression</i>
+                    <span>The current value of this component.
+                    </span>
+                </li>
+                <ui:include src="doc-actions.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-key.xhtml"/>
+                <li class="attr-optional">
+                    <b>alt</b>
+                    <i>String</i>
+                    <span>Alternate textual description of the element rendered by this component.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>disabled</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that this element must never receive focus or be included
+                        in a subsequent submit. A value of false causes no attribute to be rendered,
+                        while a value of true causes the attribute to be rendered as disabled="disabled".
+                    </span>
+                </li>
+                <li class="attr-unimpl">
+                    <b>image</b>
+                    <i>String</i>
+                    <span>Absolute or relative URL of the image to be displayed for this button.
+                        If specified, this "input" element will be of type "image". Otherwise, it will
+                        be of the type specified by the "type" property with a label specified by the
+                        "value" property. Note that if the value of this attribute starts with "/", the
+                        rendered value for this attribute will be prefixed with the context-root for this application.
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>label</b>
+                    <i>String</i>
+                    <span>A localized user presentable name for this component.</span>
+                </li>
+                <ui:include src="doc-on-events.xhtml"/>
+                <li class="attr-optional">
+                    <b>onblur</b>
+                    <i>String</i>
+                    <span>Javascript code executed when this element loses focus.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>onchange</b>
+                    <i>String</i>
+                    <span>Javascript code executed when this element loses focus and its value
+                        has been modified since gaining focus.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>onfocus</b>
+                    <i>String</i>
+                    <span>Javascript code executed when this element receives focus.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>onselect</b>
+                    <i>String</i>
+                    <span>Javascript code executed when text within this element is selected by the user.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>readonly</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that this component will prohibit changes by the user.
+                        The element may receive focus unless it has also been disabled.
+                        A value of false causes no attribute to be rendered, while a value of true
+                        causes the attribute to be rendered as readonly="readonly".
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>type</b>
+                    <i>String</i>
+                    <span>Type of button to create. Valid values are "submit", "button", and "reset".
+                        If not specified, or not a valid value, the default value is "submit".
+                    </span>
+                </li>
+                <ui:include src="doc-style.xhtml"/>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{empty param['code'] or param['code'] eq 'form'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:form"/>
+            <ui:define name="description">
+                Renders the HTML <tt>form</tt> element.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>accept</b>
+                    <i>String</i>
+                    <span>List of content types that a server processing this form will handle correctly.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>acceptcharset</b>
+                    <i>String</i>
+                    <span>List of character encodings accepted by the server for this form.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>enctype</b>
+                    <i>String</i>
+                    <span>Content type used to submit the form to the server.
+                        If not specified, the default value is <tt>application/x-www-form-urlencoded</tt>.
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>target</b>
+                    <i>String</i>
+                    <span>Name of a frame where the response retrieved after this form submit is to be displayed.</span>
+                </li>
+
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <li class="attr-optional">
+                    <b>onreset</b>
+                    <i>String</i>
+                    <span>Javascript code executed when this form is reset.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>onsubmit</b>
+                    <i>String</i>
+                    <span>Javascript code executed when this form is submitted.</span>
+                </li>
+                <ui:include src="doc-style.xhtml"/>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'head'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:head"/>
+            <ui:define name="description">
+                Renders an HTML <tt>head</tt> element.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-lang.xhtml"/>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'inputFile'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:inputFile"/>
+            <ui:define name="description">
+                Renders an HTML <tt>input</tt> element of type <tt>file</tt>.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-converter.xhtml"/>
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+
+                <li class="attr-unimpl">
+                    <b>binding</b>
+                    <i>ValueExpression</i>
+                    <span>A <tt>ValueExpression</tt> that evaluates to a UIComponent.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'inputHidden'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:inputHidden"/>
+            <ui:define name="description">
+                Renders an HTML <tt>input</tt> element of type <tt>hidden</tt>.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-converter.xhtml"/>
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+
+                <li class="attr-unimpl">
+                    <b>binding</b>
+                    <i>ValueExpression</i>
+                    <span>A <tt>ValueExpression</tt> that evaluates to a UIComponent.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'inputSecret'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:inputSecret"/>
+            <ui:define name="description">
+                Renders an HTML <tt>input</tt> element of type <tt>password</tt>.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-converter.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+                <ui:include src="doc-key.xhtml"/>
+                <li class="attr-optional">
+                    <b>maxlength</b>
+                    <i>Natural</i>
+                    <span>The maximum number of characters that may be entered in this field.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>size</b>
+                    <i>Natural</i>
+                    <span>The number of characters used to determine the width of this field.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>redisplay</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that any existing value in this field should be rendered
+                        when the form is created. Because this is a potential security risk,
+                        password values are not displayed by default.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>readonly</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that this component will prohibit changes by the user.
+                        The element may receive focus unless it has also been disabled.
+                        A value of false causes no attribute to be rendered, while a value of true
+                        causes the attribute to be rendered as readonly="readonly".
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>disabled</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that this element must never receive focus or be included
+                        in a subsequent submit. A value of false causes no attribute to be rendered,
+                        while a value of true causes the attribute to be rendered as disabled="disabled".
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>label</b>
+                    <i>String</i>
+                    <span>A localized user presentable name for this component.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'inputText'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:inputText"/>
+            <ui:define name="description">
+                Renders an HTML <tt>input</tt> element of type <tt>text</tt>.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-converter.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+                <ui:include src="doc-key.xhtml"/>
+                <li class="attr-optional">
+                    <b>maxlength</b>
+                    <i>Natural</i>
+                    <span>The maximum number of characters that may be entered in this field.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>size</b>
+                    <i>Natural</i>
+                    <span>The number of characters used to determine the width of this field.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>redisplay</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that any existing value in this field should be rendered
+                        when the form is created. Because this is a potential security risk,
+                        password values are not displayed by default.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>readonly</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that this component will prohibit changes by the user.
+                        The element may receive focus unless it has also been disabled.
+                        A value of false causes no attribute to be rendered, while a value of true
+                        causes the attribute to be rendered as readonly="readonly".
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>disabled</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that this element must never receive focus or be included
+                        in a subsequent submit. A value of false causes no attribute to be rendered,
+                        while a value of true causes the attribute to be rendered as disabled="disabled".
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>label</b>
+                    <i>String</i>
+                    <span>A localized user presentable name for this component.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'inputTextarea'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:inputTextarea"/>
+            <ui:define name="description">
+                Renders an HTML <tt>textarea</tt> element.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-converter.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+                <ui:include src="doc-key.xhtml"/>
+                <li class="attr-optional">
+                    <b>rows</b>
+                    <i>Natural</i>
+                    <span>The number of rows to be displayed.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>cols</b>
+                    <i>Natural</i>
+                    <span>The number of columns to be displayed.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>readonly</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that this component will prohibit changes by the user.
+                        The element may receive focus unless it has also been disabled.
+                        A value of false causes no attribute to be rendered, while a value of true
+                        causes the attribute to be rendered as readonly="readonly".
+                    </span>
+                </li>
+                <li class="attr-optional">
+                    <b>label</b>
+                    <i>String</i>
+                    <span>A localized user presentable name for this component.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'list'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:list"/>
+            <ui:define name="description">
+                Renders a list of items.
+                <p>
+                    When the list layout is <b>orderedList</b> an ol/li list is generated,
+                    when the layout is <b>unorderedList</b> an ul/li list is generated.
+                    The default (<b>simple</b>) renders the list as is.
+                </p>
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b>var</b>
+                    <i>String</i>
+                    <span>Name of the variable which holds the current row value.</span>
+                </li>
+                <li class="attr-required">
+                    <b>value</b>
+                    <i>ValueExpression</i>
+                    <span>The value expression representing the list to iterate on.</span>
+                </li>
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <li class="attr-optional">
+                    <b>layout</b>
+                    <i>String</i>
+                    <span>The layout of the list: simple, unorderedList, orderedList.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>itemStyleClass</b>
+                    <i>String</i>
+                    <span>The CSS class attribute to apply to the li or div items.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'message'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:message"/>
+            <ui:define name="description">
+                Renders an error message.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-messages.xhtml"/>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'messages'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:messages"/>
+            <ui:define name="description">
+                Renders list of messages.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-messages.xhtml"/>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'outputFormat'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:outputFormat"/>
+            <ui:define name="description">
+                Render parameterized text. <br></br>Obtain the style, styleClass, dir, and lang attributees
+                from this component. If any are present, render a <tt>span</tt> element. Output the
+                styleClass attribute (if present) as the value of the class attribute. Output the
+                style attribute as the value of the style attribute. Output the dir and lang attributes
+                as pass through attributes. Accrue a list of the values of all child <tt>UIParameter</tt> components
+                of this component. If there are one or more accumulated parameter values, convert the list
+                of parameter values to an Object array, call MessageFormat.format(), passing the value of
+                this component as the first argument, and the array of parameter values as the second argument,
+                and render the result. Otherwise, render the value of this component unmodified.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <li class="attr-optional">
+                    <b>value</b>
+                    <i>Object</i>
+                    <span>The current value of this component.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>escape</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that characters that are sensitive in HTML and XML markup must be escaped.
+                        This flag is set to "true" by default.
+                    </span>
+                </li>
+                <li class="attr-unimpl">
+                    <b>converter</b>
+                    <i>Converter</i>
+                    <span>Converter instance registered with this component.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'outputLabel'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:outputLabel"/>
+            <ui:define name="description">
+                Renders an HTML <tt>label</tt> element. Render the current value of the component as label
+                text if it is specified. If a <tt>for</tt> attribute is specified, find the component specified
+                by the value of the <tt>for</tt> attribute, and render its client id as the value of
+                the <tt>for</tt> attribute. If "styleClass" attribute is specified, render its value as the
+                value of the "class" attribute.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-key.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <li class="attr-optional">
+                    <b>for</b>
+                    <i>String</i>
+                    <span>Client identifier of the component for which this element is a label.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>value</b>
+                    <i>Object</i>
+                    <span>The current value of this component.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>escape</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that characters that are sensitive in HTML and XML markup must be escaped.
+                        This flag is set to "true" by default.
+                    </span>
+                </li>
+                <li class="attr-unimpl">
+                    <b>converter</b>
+                    <i>Converter</i>
+                    <span>Converter instance registered with this component.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'outputLink'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:outputLink"/>
+            <ui:define name="description">
+                Render an HTML "a" anchor element. The value of the component is rendered as the value
+                of the "href" attribute. Any child UIParameter components are appended to the String
+                to be output as the value of the "href" attribute as query parameters before rendering.
+                The entire "href" string must be passed through a call to the encodeResourceURL() method
+                of the ExternalContext. The name of the UIParameter goes on the left hand side, and the value
+                of the UIParameter on the right hand side. The name and the value must be URLEncoded.
+                Each UIParameter instance is separeted by an ampersand, as dictated in the URL spec.
+                If the "styleClass" attribute is specified, render its value as the value of the "class" attribute.
+                If the "id" attribute is specified, follow the same steps as mentioned in
+                the "General Notes on Encoding" regarding the "id" attribute for UIInput components.
+                If the "disabled" attribute is specified, do not render the HTML "a" anchor element or
+                the "href" element. Instead, render a "span" element. If the "styleClass" attribute is specified,
+                render its value as the value of the "class" attribute on the "span".
+           </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-key.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <li class="attr-optional">
+                    <b>value</b>
+                    <i>Object</i>
+                    <span>The current value of this component.</span>
+                </li>
+                <li class="attr-unimpl">
+                    <b>converter</b>
+                    <i>Converter</i>
+                    <span>Converter instance registered with this component.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'outputText'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:outputText"/>
+            <ui:define name="description">
+                Renders the value of the associated UIOutput component.
+                If this element has an ID or CSS style properties, the text is wrapped in a span element.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <li class="attr-optional">
+                    <b>value</b>
+                    <i>Object</i>
+                    <span>The current value of this component.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>escape</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating that characters that are sensitive in HTML and XML markup must be escaped.
+                        This flag is set to "true" by default.
+                    </span>
+                </li>
+                <li class="attr-unimpl">
+                    <b>converter</b>
+                    <i>Converter</i>
+                    <span>Converter instance registered with this component.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'panelGroup'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:panelGroup"/>
+            <ui:define name="description">
+                This element is used to group other components where the specification requires one child element.
+                If any of the HTML or CSS attributes are set, its content is rendered within a span or div element.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <li class="attr-optional">
+                    <b>layout</b>
+                    <i>String</i>
+                    <span>The type of layout markup to use when rendering this group.
+                        If the value is "block" the renderer must produce an HTML "div" element.
+                        Otherwise HTML "span" element must be produced.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'selectOneMenu'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="h:selectOneMenu"/>
+            <ui:define name="description">
+                Allow the user to choose one option from a set of options.
+                Renders a drop-down menu (aka "combo-box") containing a set of choices, of which
+                only one can be chosen at a time. The available choices are defined via child
+                <tt>f:selectItem</tt> or <tt>f:selectItems</tt> elements.
+
+                <br></br>
+                The value attribute of this component is read to determine which of the available
+                options is initially selected; its value should match the "value" property of one of the
+                child <tt>SelectItem</tt> objects.
+
+                <br></br>
+                On submit of the enclosing form, the value attribute's bound property is updated to contain
+                the "value" property from the chosen <tt>SelectItem</tt>.
+            </ui:define>
+            <ui:define name="attributes">
+                <ui:include src="doc-common.xhtml"/>
+                <ui:include src="doc-style.xhtml"/>
+                <ui:include src="doc-lang.xhtml"/>
+                <ui:include src="doc-on-events.xhtml"/>
+                <ui:include src="doc-input.xhtml"/>
+                <li class="attr-optional">
+                    <b>layout</b>
+                    <i>String</i>
+                    <span>The type of layout markup to use when rendering this group.
+                        If the value is "block" the renderer must produce an HTML "div" element.
+                        Otherwise HTML "span" element must be produced.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'validateLongRange'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:validateLongRange"/>
+            <ui:define name="description">
+                Creates a validator and associates it with the nearest parent <tt>UIComponent</tt>.
+                When invoked, the validator ensures that values are valid longs that lie within the
+                minimum and maximum values specified. Commonly associated
+                with a <tt>h:inputText</tt> entity. Unless otherwise specified, all attributes
+                accept static values or EL expressions.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>maximum</b>
+                    <i>Long</i>
+                    <span>The largest value that should be considered valid.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>minimum</b>
+                    <i>Long</i>
+                    <span>The smallest value that should be considered valid.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'view-example'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="f:view"/>
+            <ui:define name="description">
+                Creates a JSF View, which is a container that holds all of the components
+                that are part of the view.  The <tt>UIView</tt> represents the root of
+                the component tree.
+
+                <br></br>
+                Unless otherwise specified, all attributes accept static values or EL expressions.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>locale</b>
+                    <i>String</i>
+                    <span>The locale of this view. Default: the default locale from the configuration file.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>contentType</b>
+                    <i>String</i>
+                    <span>The content type to be placed in the response header.
+                    The default content type is <tt>text/html</tt>.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'script'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="util:script"/>
+            <ui:define name="description">
+                In the render response phase, queue some javascript code in the response stream.
+                The javascript code is automatically flushed before sending the response stream.
+                It can be flushed explicitly by using the <b>util:flush</b> component.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>rendered</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
+                        or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+    <c:when test="#{param['code'] eq 'view'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="util:view"/>
+            <ui:define name="description">
+                Create a root view component.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-required">
+                    <b></b>
+                    <i></i>
+                    <span>No attributes defined</span>
+                </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:otherwise>
+        <p>
+            <h:outputFormat value="You have not selected the valid code: '{0}' is not recognized.">
+                <f:param value="#{param['code']}"/>
+            </h:outputFormat>
+        </p>
+    </c:otherwise>
+</c:choose>

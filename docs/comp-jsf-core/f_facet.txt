@@ -1,0 +1,29 @@
+## f:facet
+
+This tag allows to register the named facet to the closest parent UIComponent.
+
+Facets are used by some components to render and control specific parts of the component:
+for example a table header or footer, the column header, the widget panel titles.
+Example of components that use facets: `h:dataTable`, `h:panelGrid`, `w:panel`.
+
+Warning: if a facet is used within a component that does not recognize the name,
+the facet content will be ignored.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| name             | true     | String          | The facet name. |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <f:facet name="title">
+        title
+    </f:facet>
+</div>
+```
+

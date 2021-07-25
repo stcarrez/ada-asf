@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-base -- Component tree
---  Copyright (C) 2009 - 2020 Stephane Carrez
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -645,14 +645,9 @@ package body ASF.Components.Base is
                           Name    : in String;
                           Default : in String;
                           Context : in out Faces_Context'Class) is
-      Id  : constant String := To_String (UI.Get_Client_Id);
-      Msg : constant EL.Objects.Object := UI.Get_Attribute (Name => Name, Context => Context);
+      Args : constant ASF.Utils.Object_Array (1 .. 0) := (others => <>);
    begin
-      if EL.Objects.Is_Null (Msg) then
-         Context.Add_Message (Client_Id => Id, Message => Default);
-      else
-         Context.Add_Message (Client_Id => Id, Message => EL.Objects.To_String (Msg));
-      end if;
+      UI.Add_Message (Name, Default, Args, Context);
    end Add_Message;
 
    --  ------------------------------

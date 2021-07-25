@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  html.forms -- ASF HTML Form Components
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2018 Stephane Carrez
+--  asf-components-html-forms -- ASF HTML Form Components
+--  Copyright (C) 2010 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,9 @@ package ASF.Components.Html.Forms is
 
    --  Message displayed when the submitted value is required but is empty.
    REQUIRED_MESSAGE_ID          : constant String := "asf.faces.component.UIInput.REQUIRED";
+
+   --  Message displayed when setting a value on the bean fails during the update values phase.
+   ERROR_MESSAGE_ID             : constant String := "asf.faces.component.UIInput.ERROR";
 
    --  ------------------------------
    --  Form Component

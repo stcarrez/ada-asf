@@ -1,0 +1,57 @@
+## h:commandButton
+
+Renders an HTML `input` element.
+
+### Attributes
+
+| Name             | Required | Type            | Description                                        |
+| ---------------- | -------- | --------------- | -------------------------------------------------- |
+| value            | true     | ValueExpression | The current value of this component. |
+@include-doc docs/common/attr-actions.txt
+@include-doc docs/common/attr-common.txt
+@include-doc docs/common/attr-lang.txt
+@include-doc docs/common/attr-key.txt
+| alt              | false    | String           | Alternate textual description of the element rendered by this component. |
+| image            | false    | String           | Absolute or relative URL of the image to be displayed for this button. If specified, this "input" element will be of type "image". Otherwise, it will be of the type specified by the "type" property with a label specified by the "value" property. Note that if the value of this attribute starts with "/", the rendered value for this attribute will be prefixed with the context-root for this application. |
+| disabled         | false    | Boolean          | Flag indicating that this element must never receive focus or be included in a subsequent submit. A value of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as disabled="disabled". |
+| label            | false    | String           | A localized user presentable name for this component. |
+| onblur           | false    | String           | Javascript code executed when this element loses focus. |
+| onchange         | false    | String           | Javascript code executed when this element loses focus and its value has been modified since gaining focus. |
+| onfocus          | false    | String           | Javascript code executed when this element receives focus. |
+| onselect         | false    | String           | Javascript code executed when text within this element is selected by the user. |
+| readonly         | false    | String           | Flag indicating that this component will prohibit changes by the user. The element may receive focus unless it has also been disabled. A value of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as readonly="readonly". |
+| type             | false    | String           | Type of button to create. Valid values are "submit", "button", and "reset". If not specified, or not a valid value, the default value is "submit". |
+
+
+### Example
+
+```
+<div xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <h:form id='text-form'>
+        <dl class='ui-widget container_12'>
+            <dt><label for='height'>Height</label><h:message for='height'/></dt>
+            <dd>
+                <h:inputText id='height' size='10' value='#{compute.height}'
+                             styleClass="ui-corner-all">
+                    <f:converter converterId="float" />
+                </h:inputText>
+            </dd>
+            <dt><label for='radius'>Radius</label><h:message for='radius'/></dt>
+            <dd>
+                <h:inputText id='radius' size='10' value='#{compute.radius}'
+                             styleClass="ui-corner-all">
+                    <f:converter converterId="float"/>
+                </h:inputText>
+            </dd>
+        </dl>
+        <ul class='container_12 buttons'>
+            <li>
+                <h:commandButton id='run' value='Compute' action="#{compute.run}"
+                                 styleClass="ui-button ui-state-default ui-corner-all"/>
+            </li>
+        </ul>
+    </h:form>
+</div>
+```
+

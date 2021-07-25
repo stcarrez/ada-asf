@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2017, 2019, 2020 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2017, 2019, 2020, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,7 +50,8 @@ package body ASF.Views.Facelets is
    procedure Load (Factory : in out Facelet_Factory;
                    Name    : in String;
                    Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
-                   Result  : out Facelet);
+                   Result  : out Facelet;
+                   Ignore  : in Boolean);
 
    --  Update the factory to store the facelet node tree
    procedure Update (Factory : in out Facelet_Factory;
@@ -72,13 +73,14 @@ package body ASF.Views.Facelets is
    procedure Find_Facelet (Factory : in out Facelet_Factory;
                            Name    : in String;
                            Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
-                           Result  : out Facelet) is
+                           Result  : out Facelet;
+                           Ignore  : in Boolean := False) is
    begin
       Log.Debug ("Find facelet {0}", Name);
 
       Find (Factory, Name, Result);
       if Result.Facelet = null then
-         Load (Factory, Name, Context, Result);
+         Load (Factory, Name, Context, Result, Ignore);
          if Result.Facelet = null then
             return;
          end if;
@@ -168,11 +170,16 @@ package body ASF.Views.Facelets is
    procedure Load (Factory : in out Facelet_Factory;
                    Name    : in String;
                    Context : in ASF.Contexts.Facelets.Facelet_Context'Class;
-                   Result  : out Facelet) is
+                   Result  : out Facelet;
+                   Ignore  : in Boolean) is
       Path   : constant String := Find_Facelet_Path (Factory, Name);
    begin
       if Path = "" or else not Ada.Directories.Exists (Path) then
-         Log.Warn ("Cannot read '{0}': file does not exist", Path);
+         if not Ignore then
+            Log.Warn ("Cannot read '{0}': file does not exist", Path);
+         else
+            Log.Debug ("No default navigation file for '{0}'", Path);
+         end if;
          Result.Facelet := null;
          return;
       end if;

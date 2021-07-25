@@ -30,9 +30,10 @@ package body ASF.Contexts.Exceptions.Iterator is
    procedure Iterate
      (Queue   : in out Exception_Queue;
       Context : in out ASF.Contexts.Faces.Faces_Context'Class;
-      Process : not null access procedure (Event   : in ASF.Events.Exceptions.Exception_Event'Class;
-                                           Remove  : out Boolean;
-                                           Context : in out Contexts.Faces.Faces_Context'Class)) is
+      Process : not null
+        access procedure (Event   : in ASF.Events.Exceptions.Exception_Event'Class;
+                          Remove  : out Boolean;
+                          Context : in out Contexts.Faces.Faces_Context'Class)) is
 
       procedure Free is
         new Ada.Unchecked_Deallocation (Object => ASF.Events.Exceptions.Exception_Event'Class,

@@ -25,12 +25,13 @@ with ASF.Contexts.Faces;
 --  Notes: this procedure should not be called directly (use ASF.Contexts.Faces.Iterate).
 --  This procedure is separate to avoid circular dependency.
 package ASF.Contexts.Exceptions.Iterator is
-   
+
    procedure Iterate
      (Queue   : in out Exception_Queue;
       Context : in out ASF.Contexts.Faces.Faces_Context'Class;
-      Process : not null access procedure (Event   : in ASF.Events.Exceptions.Exception_Event'Class;
-                                           Remove  : out Boolean;
-                                           Context : in out ASF.Contexts.Faces.Faces_Context'Class));
+      Process : not null access
+        procedure (Event   : in ASF.Events.Exceptions.Exception_Event'Class;
+                   Remove  : out Boolean;
+                   Context : in out ASF.Contexts.Faces.Faces_Context'Class));
 
 end ASF.Contexts.Exceptions.Iterator;

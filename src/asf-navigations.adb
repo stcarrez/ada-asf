@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations -- Navigations
---  Copyright (C) 2010, 2011, 2012, 2013, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2018, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -152,12 +152,12 @@ package body ASF.Navigations is
          begin
             Log.Debug ("Using default navigation from view {0} to {1}", View, Name);
 
-            Handler.View_Handler.Create_View (Name, Context, Root);
+            Handler.View_Handler.Create_View (Name, Context, Root, Ignore => True);
          end;
       else
          Log.Debug ("Using default navigation from view {0} to {1}", View, View);
 
-         Handler.View_Handler.Create_View (Outcome, Context, Root);
+         Handler.View_Handler.Create_View (Outcome, Context, Root, Ignore => True);
       end if;
 
       --  If the 'outcome' refers to a real view, use it.  Otherwise keep the current view.

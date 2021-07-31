@@ -5,9 +5,9 @@
 [![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
 [![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
 [![codecov](https://codecov.io/gh/stcarrez/ada-asf/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-asf)
-[![Download](https://img.shields.io/badge/download-1.4.2-brightgreen.svg)](http://download.vacs.fr/ada-asf/ada-asf-1.4.2.tar.gz)
+[![Download](https://img.shields.io/badge/download-1.4.3-brightgreen.svg)](http://download.vacs.fr/ada-asf/ada-asf-1.4.3.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.4.2.svg)
+![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.4.3.svg)
 
 Ada Server Faces allows to create web applications using the same pattern
 as the Java Server Faces (See JSR 252, JSR 314 and JSR 344). 

@@ -116,8 +116,12 @@ div.ui-panel-header a.ui-panel-icon {
     margin-bottom: 0.2em;
     text-align: left;
 }
-.asf-progress-status {
+.asf-progress-status-horizontal, .asf-progress-status-vertical {
     display: inline-block;
     height: 19px;
     background: green;
+    vertical-align: bottom;
+}
+.asf-progress-status-vertical {
+    width: 100%;
 }

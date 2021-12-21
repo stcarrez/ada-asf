@@ -23,6 +23,7 @@ package ASF.Components.Widgets.Progress is
    VALUE_ATTR_NAME      : constant String := "value";
    MIN_VALUE_ATTR_NAME  : constant String := "minValue";
    MAX_VALUE_ATTR_NAME  : constant String := "maxValue";
+   DIRECTION_ATTR_NAME  : constant String := "direction";
 
    type Progress_Type is delta 0.1 digits 4 range 0.0 .. 100.0;
 

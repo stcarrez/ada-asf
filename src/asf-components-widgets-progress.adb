@@ -75,12 +75,14 @@ package body ASF.Components.Widgets.Progress is
       if UI.Is_Rendered (Context) then
          Writer.Start_Element ("div");
          declare
-            Style    : constant Object := UI.Get_Attribute (Context, "style");
-            Class    : constant Object := UI.Get_Attribute (Context, "styleClass");
-            Title    : constant Object := UI.Get_Attribute (Context, "title");
-            Progress : constant Progress_Type := UI.Get_Progress (Context);
-            Image    : constant String := Formatter.Image (Progress, Format);
-            Pos      : Positive := Image'First;
+            Style     : constant Object := UI.Get_Attribute (Context, "style");
+            Class     : constant Object := UI.Get_Attribute (Context, "styleClass");
+            Title     : constant Object := UI.Get_Attribute (Context, "title");
+            Direction : constant Object := UI.Get_Attribute (Context, DIRECTION_ATTR_NAME);
+            Progress  : constant Progress_Type := UI.Get_Progress (Context);
+            Image     : constant String := Formatter.Image (Progress, Format);
+            Pos       : Positive := Image'First;
+            Vertical  : constant Boolean := To_String (Direction) = "vertical";
          begin
             while Pos < Image'Last and then Image (Pos) = ' ' loop
                Pos := Pos + 1;
@@ -100,9 +102,15 @@ package body ASF.Components.Widgets.Progress is
                Writer.Write_Attribute ("title", Title);
             end if;
             Writer.Start_Element ("span");
-            Writer.Write_Attribute ("class", "asf-progress-status");
-            Writer.Write_Attribute ("style",
-                                    "width:" & Image (Pos .. Image'Last) & "%");
+            if Vertical then
+               Writer.Write_Attribute ("class", "asf-progress-status-vertical");
+               Writer.Write_Attribute ("style",
+                                       "height:" & Image (Pos .. Image'Last) & "%");
+            else
+               Writer.Write_Attribute ("class", "asf-progress-status-horizontal");
+               Writer.Write_Attribute ("style",
+                                       "width:" & Image (Pos .. Image'Last) & "%");
+            end if;
          end;
       end if;
    end Encode_Begin;

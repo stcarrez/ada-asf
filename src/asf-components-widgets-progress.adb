@@ -91,7 +91,7 @@ package body ASF.Components.Widgets.Progress is
             if not Is_Null (Class) then
                Writer.Write_Attribute ("class", Class);
             else
-               Writer.Write_Attribute ("class", "asf-progress");
+               Writer.Write_Attribute ("class", "asf-progress-bar");
             end if;
             if not Is_Null (Style) then
                Writer.Write_Attribute ("style", Style);

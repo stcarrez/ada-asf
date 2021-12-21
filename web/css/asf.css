@@ -104,3 +104,20 @@ div.ui-panel-header a.ui-panel-icon {
     display: inline-block;
     padding: .4em 1em;
 }
+/* <w:progress> progress bar CSS */
+.asf-progress-bar {
+    float: left;
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 21px;
+    border: 1px solid #ccc;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    text-align: left;
+}
+.asf-progress-status {
+    display: inline-block;
+    height: 19px;
+    background: green;
+}

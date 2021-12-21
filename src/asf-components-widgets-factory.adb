@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  widgets-factory -- Factory for widget Components
---  Copyright (C) 2013, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2013, 2015, 2018, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ with ASF.Components.Widgets.Likes;
 with ASF.Components.Widgets.Panels;
 with ASF.Components.Widgets.Tabs;
 with ASF.Components.Widgets.Selects;
+with ASF.Components.Widgets.Progress;
 
 package body ASF.Components.Widgets.Factory is
 
@@ -36,6 +37,7 @@ package body ASF.Components.Widgets.Factory is
    function Create_Gravatar return UIComponent_Access;
    function Create_Like return UIComponent_Access;
    function Create_Panel return UIComponent_Access;
+   function Create_Progress return UIComponent_Access;
    function Create_TabView return UIComponent_Access;
    function Create_Tab return UIComponent_Access;
 
@@ -104,6 +106,14 @@ package body ASF.Components.Widgets.Factory is
    end Create_Panel;
 
    --  ------------------------------
+   --  Create a UIProgressBar component
+   --  ------------------------------
+   function Create_Progress return UIComponent_Access is
+   begin
+      return new ASF.Components.Widgets.Progress.UIProgressBar;
+   end Create_Progress;
+
+   --  ------------------------------
    --  Create a UITab component
    --  ------------------------------
    function Create_Tab return UIComponent_Access is
@@ -130,6 +140,7 @@ package body ASF.Components.Widgets.Factory is
    GRAVATAR_TAG     : aliased constant String := "gravatar";
    LIKE_TAG         : aliased constant String := "like";
    PANEL_TAG        : aliased constant String := "panel";
+   PROGRESS_TAG     : aliased constant String := "progress";
    TAB_TAG          : aliased constant String := "tab";
    TAB_VIEW_TAG     : aliased constant String := "tabView";
 
@@ -178,6 +189,11 @@ package body ASF.Components.Widgets.Factory is
                             Name   => PANEL_TAG'Access,
                             Tag    => Create_Component_Node'Access,
                             Create => Create_Panel'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => PROGRESS_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_Progress'Access);
       ASF.Factory.Register (Factory,
                             URI    => URI'Access,
                             Name   => TAB_TAG'Access,

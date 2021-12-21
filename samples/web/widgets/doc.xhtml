@@ -1,5 +1,5 @@
 <!-- ASF Widget tag library documentation
-  -  Copyright (C) 2013, 2014, 2019 Stephane Carrez
+  -  Copyright (C) 2013, 2014, 2019, 2021 Stephane Carrez
   -  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
   -
   -  Licensed under the Apache License, Version 2.0 (the "License");
@@ -281,6 +281,58 @@
                     <i>Boolean</i>
                     <span>When true, the panel can be collapsed by clicking on the expand/collapse icon action in the header.</span>
                 </li>
+            </ui:define>
+        </ui:decorate>
+    </c:when>
+
+    <c:when test="#{param['code'] eq 'progress'}">
+        <ui:decorate template="/WEB-INF/layouts/doc.xhtml">
+            <ui:param name="name" value="w:progress"/>
+            <ui:define name="description">
+              The <b>w:progress</b> component displays a simple progress bar using HTML component and some CSS help.
+              The progress bar is controled by a value that can be defined between a minimum value and a maximum value.
+              The progress value is computed as (value - minValue) / (maxValue - minValue).  When (maxValue - minValue) is
+              zero, the progress value is set to 0%.
+              If the value is out of range, the progress is either set to 100% or 0%.
+            </ui:define>
+            <ui:define name="attributes">
+                <li class="attr-optional">
+                    <b>rendered</b>
+                    <i>Boolean</i>
+                    <span>Flag indicating whether or not this component should be rendered (during Render Response Phase),
+                        or processed on any subsequent form submit. The default value for this property is true.</span>
+                </li>
+                <li class="attr-required">
+                    <b>value</b>
+                    <i>Float</i>
+                    <span>The value of the progress bar.  This can be an integer or a floating point.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>minValue</b>
+                    <i>Float</i>
+                    <span>The minimum value that we expect.  The default minimum is 0.</span>
+                </li>
+                <li class="attr-optional">
+                    <b>maxValue</b>
+                    <i>Float</i>
+                    <span>The maximum value that we expect.  The default maxmimum is 0.</span>
+                </li>
+    <li class="attr-optional">
+        <b>style</b>
+        <i>String</i>
+        <span>CSS style(s) to be applied when this component is rendered.</span>
+    </li>
+    <li class="attr-optional">
+        <b>styleClass</b>
+        <i>String</i>
+        <span>Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be passed through as the "class" attribute on generated markup.
+        </span>
+    </li>
+    <li class="attr-optional">
+        <b>title</b>
+        <i>String</i>
+        <span>Advisory title information about markup elements generated for this component.</span>
+    </li>
             </ui:define>
         </ui:decorate>
     </c:when>

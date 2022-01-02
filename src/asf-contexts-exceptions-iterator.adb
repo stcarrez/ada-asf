@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts-exceptions-iterator -- Exception handlers in faces context
---  Copyright (C) 2011, 2021 Stephane Carrez
+--  Copyright (C) 2011, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,5 +59,5 @@ package body ASF.Contexts.Exceptions.Iterator is
          end if;
       end loop;
    end Iterate;
-   
+
 end ASF.Contexts.Exceptions.Iterator;

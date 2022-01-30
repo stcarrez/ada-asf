@@ -73,7 +73,7 @@ package ASF.Components.Html.Text is
    function Get_Formatted_Value (UI      : in UIOutput;
                                  Context : in Contexts.Faces.Faces_Context'Class) return String;
 
-   --  Format the value by appling the To_String converter on it if there is one.
+   --  Format the value by applying the To_String converter on it if there is one.
    function Get_Formatted_Value (UI      : in UIOutput;
                                  Value   : in Util.Beans.Objects.Object;
                                  Context : in Contexts.Faces.Faces_Context'Class) return String;

@@ -41,7 +41,7 @@ with ASF.Applications.Messages.Vectors;
 --
 --   4/ the flash context is cleared and a new flash context could be setup with new information.
 --
---  The flash context is accessed from the XHTML facetlet files throught the <b>flash</b> variable.
+--  The flash context is accessed from the XHTML facetlet files through the <b>flash</b> variable.
 package ASF.Contexts.Flash is
 
    use Ada.Strings.Unbounded;

@@ -59,7 +59,7 @@ package ASF.Components.Core.Views is
    procedure Set_Locale (UI     : in out UIView;
                          Locale : in Util.Locales.Locale);
 
-   --  Encode the begining of the view.  Set the response content type.
+   --  Encode the beginning of the view.  Set the response content type.
    overriding
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class);

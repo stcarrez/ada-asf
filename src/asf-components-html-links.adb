@@ -51,7 +51,7 @@ package body ASF.Components.Html.Links is
    end Get_Link;
 
    --  ------------------------------
-   --  Encode the begining of the link.
+   --  Encode the beginning of the link.
    --  ------------------------------
    procedure Encode_Begin (UI      : in UIOutputLink;
                            Context : in out Faces_Context'Class) is

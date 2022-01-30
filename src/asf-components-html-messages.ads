@@ -45,7 +45,7 @@ package ASF.Components.Html.Messages is
    --  The <b>h:message</b> component renders a message associated with an input component.
    type UIMessage is new UIHtmlComponent with private;
 
-   --  Encode the begining of the <b>h:message</b> component.
+   --  Encode the beginning of the <b>h:message</b> component.
    procedure Encode_Begin (UI      : in UIMessage;
                            Context : in out Faces_Context'Class);
 
@@ -59,7 +59,7 @@ package ASF.Components.Html.Messages is
    --  The <b>h:messages</b> component renders the global messages.
    type UIMessages is new UIHtmlComponent with private;
 
-   --  Encode the begining of the <b>h:messages</b> component.
+   --  Encode the beginning of the <b>h:messages</b> component.
    procedure Encode_Begin (UI      : in UIMessages;
                            Context : in out Faces_Context'Class);
 

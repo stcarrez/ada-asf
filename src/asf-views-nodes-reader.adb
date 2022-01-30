@@ -235,7 +235,7 @@ package body ASF.Views.Nodes.Reader is
    --  ------------------------------
    --  Collect the text for an EL expression.  The EL expression starts
    --  with either '#{' or with '${' and ends with the matching '}'.
-   --  If the <b>Value</b> string does not contain the whole EL experssion
+   --  If the <b>Value</b> string does not contain the whole EL expression
    --  the <b>Expr_Buffer</b> stored in the reader is used to collect
    --  that expression.
    --  ------------------------------

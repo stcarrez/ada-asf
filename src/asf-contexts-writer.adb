@@ -569,7 +569,7 @@ package body ASF.Contexts.Writer is
 
    --  ------------------------------
    --  Flush the response.
-   --  Before flusing the response, the javascript are also flushed
+   --  Before flushing the response, the javascript are also flushed
    --  by calling <b>Write_Scripts</b>.
    --  ------------------------------
    overriding

@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  asf-beans-mappers -- Read XML managed bean declaratiosn
+--  asf-beans-mappers -- Read XML managed bean declarations
 --  Copyright (C) 2010, 2011, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --

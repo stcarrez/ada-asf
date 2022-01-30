@@ -79,7 +79,7 @@ package ASF.Contexts.Flash is
    --  preserved so they are accessible through the flash instance at the next request.
    function Is_Keep_Messages (Flash : in Flash_Context) return Boolean;
 
-   --  Set the keep messages property which controlls whether the faces messages
+   --  Set the keep messages property which controls whether the faces messages
    --  that are queued in the faces context must be preserved so they are accessible through
    --  the flash instance at the next request.
    procedure Set_Keep_Messages (Flash : in out Flash_Context;

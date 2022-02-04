@@ -151,7 +151,7 @@ package body ASF.Components.Html.Messages is
    end Write_Messages;
 
    --  ------------------------------
-   --  Encode the begining of the <b>h:message</b> component.
+   --  Encode the beginning of the <b>h:message</b> component.
    --  ------------------------------
    procedure Encode_Begin (UI      : in UIMessage;
                            Context : in out Faces_Context'Class) is
@@ -201,7 +201,7 @@ package body ASF.Components.Html.Messages is
    end Encode_End;
 
    --  ------------------------------
-   --  Encode the begining of the <b>h:message</b> component.
+   --  Encode the beginning of the <b>h:message</b> component.
    --  ------------------------------
    procedure Encode_Begin (UI      : in UIMessages;
                            Context : in out Faces_Context'Class) is

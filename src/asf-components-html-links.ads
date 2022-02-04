@@ -33,7 +33,7 @@ package ASF.Components.Html.Links is
    procedure Set_Value (UI    : in out UIOutputLink;
                         Value : in EL.Objects.Object);
 
-   --  Encode the begining of the link.
+   --  Encode the beginning of the link.
    procedure Encode_Begin (UI      : in UIOutputLink;
                            Context : in out Faces_Context'Class);
 

@@ -101,7 +101,7 @@ package body ASF.Contexts.Flash is
    end Is_Keep_Messages;
 
    --  ------------------------------
-   --  Set the keep messages property which controlls whether the faces messages
+   --  Set the keep messages property which controls whether the faces messages
    --  that are queued in the faces context must be preserved so they are accessible through
    --  the flash instance at the next request.
    --  ------------------------------

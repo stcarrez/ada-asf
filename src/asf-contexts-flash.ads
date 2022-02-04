@@ -41,7 +41,7 @@ with ASF.Applications.Messages.Vectors;
 --
 --   4/ the flash context is cleared and a new flash context could be setup with new information.
 --
---  The flash context is accessed from the XHTML facetlet files throught the <b>flash</b> variable.
+--  The flash context is accessed from the XHTML facetlet files through the <b>flash</b> variable.
 package ASF.Contexts.Flash is
 
    use Ada.Strings.Unbounded;
@@ -79,7 +79,7 @@ package ASF.Contexts.Flash is
    --  preserved so they are accessible through the flash instance at the next request.
    function Is_Keep_Messages (Flash : in Flash_Context) return Boolean;
 
-   --  Set the keep messages property which controlls whether the faces messages
+   --  Set the keep messages property which controls whether the faces messages
    --  that are queued in the faces context must be preserved so they are accessible through
    --  the flash instance at the next request.
    procedure Set_Keep_Messages (Flash : in out Flash_Context;

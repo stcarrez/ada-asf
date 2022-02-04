@@ -130,7 +130,7 @@ package body ASF.Components.Html.Text is
    end Get_Converter;
 
    --  ------------------------------
-   --  Format the value by appling the To_String converter on it if there is one.
+   --  Format the value by applying the To_String converter on it if there is one.
    --  ------------------------------
    function Get_Formatted_Value (UI      : in UIOutput;
                                  Value   : in Util.Beans.Objects.Object;

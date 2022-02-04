@@ -59,7 +59,7 @@ package ASF.Components.Core.Views is
    procedure Set_Locale (UI     : in out UIView;
                          Locale : in Util.Locales.Locale);
 
-   --  Encode the begining of the view.  Set the response content type.
+   --  Encode the beginning of the view.  Set the response content type.
    overriding
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class);
@@ -180,7 +180,7 @@ package ASF.Components.Core.Views is
    --  as the root of the component tree.  The APPLY_REQUESTS .. INVOKE_APPLICATION actions
    --  are called on that component tree.  It is also used for the RENDER_RESPONSE, and
    --  we have to propagate the rendering on the real view root.  Therefore, the Encode_XXX
-   --  operations are overriden to propagate on the real root.
+   --  operations are overridden to propagate on the real root.
    type UIViewMetaData is new UIView with private;
 
    --  Start encoding the UIComponent.

@@ -56,21 +56,21 @@ package ASF.Applications.Main is
    --  Create the lifecycle handler.  The lifecycle handler is created during
    --  the initialization phase of the application.  The default implementation
    --  creates an <b>ASF.Lifecycles.Default.Default_Lifecycle</b> object.
-   --  It can be overriden to change the behavior of the ASF request lifecycle.
+   --  It can be overridden to change the behavior of the ASF request lifecycle.
    function Create_Lifecycle_Handler (App : in Application_Factory)
                                       return ASF.Lifecycles.Lifecycle_Access;
 
    --  Create the view handler.  The view handler is created during
    --  the initialization phase of the application.  The default implementation
    --  creates an <b>ASF.Applications.Views.View_Handler</b> object.
-   --  It can be overriden to change the views associated with the application.
+   --  It can be overridden to change the views associated with the application.
    function Create_View_Handler (App : in Application_Factory)
                                  return ASF.Applications.Views.View_Handler_Access;
 
    --  Create the navigation handler.  The navigation handler is created during
    --  the initialization phase of the application.  The default implementation
    --  creates an <b>ASF.Navigations.Navigation_Handler</b> object.
-   --  It can be overriden to change the navigations associated with the application.
+   --  It can be overridden to change the navigations associated with the application.
    function Create_Navigation_Handler (App : in Application_Factory)
                                        return ASF.Navigations.Navigation_Handler_Access;
 

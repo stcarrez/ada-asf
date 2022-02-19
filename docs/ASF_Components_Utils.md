@@ -169,7 +169,6 @@ the `Set_Value` method of the managed bean to assign a named value.
 | var   | ValueExpression | Value expression to set.                           |
 | value | any             | Value to assign.                                   |
 
-
 ### Example
 
 ```

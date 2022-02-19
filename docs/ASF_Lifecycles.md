@@ -32,4 +32,3 @@ The `Render Response` phase is the final phase that walks the component tree
 and renders the HTML response.
 
 
-

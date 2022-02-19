@@ -22,7 +22,6 @@ Unless otherwise specified, all attributes accept static values or EL expression
 
 No attributes are defined.
 
-
 ### Example
 
 ```XML
@@ -48,7 +47,6 @@ this condition.
 | test  | Boolean         | The test condition that determines whether or not the body content should be processed. |
 | var   | String          | Name of the exported scoped variable for the resulting value of the test condition. The type of the scoped variable is Boolean. |
 
-
 ### Example
 
 ```XML
@@ -68,7 +66,6 @@ the prior conditions evaluated to 'false'.
 ### Attributes
 
 This tag has no attribute.
-
 
 ### Example
 
@@ -93,7 +90,6 @@ Sets the result of an expression evaluation based on the value of the attributes
 | var   | String          | Name of the variable.                              |
 | value | ValueExpression | Expression to be evaluated.                        |
 
-
 ### Example
 
 ```XML
@@ -112,7 +108,6 @@ Subtag of `choose` that includes its body if its condition evalutes to 'true'.
 | Name  | Type    | Description                                        |
 | ----- | --------| -------------------------------------------------- |
 | test  | Boolean | The test condition that determines whether or not the body content should be processed. |
-
 
 ### Example
 

@@ -41,7 +41,6 @@ Unless otherwise specified, all attributes accept static values or EL expression
 | name             | false    | String          | The name of the attribute. |
 | value            | false    | String          | The attribute's value. |
 
-
 ### Example
 
 ```
@@ -77,7 +76,6 @@ with the nearest parent UIComponent.
 | timeStyle        | false    | String          | Predefined formatting style which determines how the time component of a date string is to be formatted and parsed. Applied only if type is "time" or "both". Valid values are "default", "short", "medium", "long", and "full". Default value is "default". |
 | timeZone         | false    | String          | Time zone in which to interpret any time information in the date String. Value must be either a VB expression that evaluates to a valid string that is a timezone ID. |
 | type             | false    | String          | Specifies what contents the string value will be formatted to include, or parsed expecting. Valid values are "date", "time", and "both". Default value is "date". |
-
 
 ### Example
 
@@ -156,7 +154,6 @@ closest parent UIComponent custom action.
 | ---------------- | -------- | --------------- | -------------------------------------------------- |
 | converterId      | true     | String          | The converter's registered identifier.    |
 
-
 ### Example
 
 ```
@@ -195,7 +192,6 @@ the facet content will be ignored.
 | ---------------- | -------- | --------------- | -------------------------------------------------- |
 | name             | true     | String          | The facet name. |
 
-
 ### Example
 
 ```
@@ -213,7 +209,6 @@ Declares the metadata facet for the view.
 ### Attributes
 
 None.
-
 
 ### Example
 
@@ -261,7 +256,6 @@ Unless otherwise specified, all attributes accept static values or EL expression
 | value            | false    | String          | The value of this component. |
 | id               | false    | String          | Get a string which uniquely identifies this UIComponent within the nearest ancestor naming component. |
 
-
 ### Example
 
 ```
@@ -286,7 +280,6 @@ UISelectItem should be nested inside a `UISelectMany` or
 `UISelectOne` component, and results in the addition of a `SelectItem`
 instance to the list of available options for the parent component.
 
-
 ### Attributes
 
 | Name             | Required | Type            | Description                                        |
@@ -297,7 +290,6 @@ instance to the list of available options for the parent component.
 | itemLabel        | false    | String          | The string which will be presented to the user for this option. |
 | itemValue        | false    | String          | The value for this item. |
 | value            | false    | ValueExpression | The initial value of this component. |
-
 
 ### Example
 
@@ -336,7 +328,6 @@ instance to the list of available options for the parent component.
 | itemValue        | false    | String          | The value for this item. |
 | value            | false    | ValueExpression | The initial value of this component. |
 
-
 ### Example
 
 ```
@@ -362,7 +353,6 @@ accept static values or EL expressions.
 | ---------------- | -------- | --------------- | -------------------------------------------------- |
 | maximum          | false    | Natural         | The largest value that should be considered valid. |
 | minimum          | false    | Natural         | The smallest value that should be considered valid. |
-
 
 ### Example
 
@@ -411,7 +401,6 @@ accept static values or EL expressions.
 | ---------------- | -------- | --------------- | -------------------------------------------------- |
 | maximum          | false    | Long            | The largest value that should be considered valid. |
 | minimum          | false    | Long            | The smallest value that should be considered valid. |
-
 
 ### Example
 
@@ -469,7 +458,6 @@ Unless otherwise specified, all attributes accept static values or EL expression
 | ---------------- | -------- | --------------- | -------------------------------------------------- |
 | validatorId      | false    | String          | The registered ID of the desired Validator.  |
 
-
 ### Example
 
 ```
@@ -518,7 +506,6 @@ Unless otherwise specified, all attributes accept static values or EL expression
 | locale           | false    | String          | The locale of this view. Default: the default locale from the configuration file. |
 | contentType      | false    | String          | The content type to be placed in the response header. The default content type is `text/html`. |
 
-
 ### Example
 
 ```
@@ -554,7 +541,6 @@ method when a request is processed. The Ada bean method is executed before rende
 | itemLabel        | false    | String          | The string which will be presented to the user for this option. |
 | itemValue        | false    | String          | The value for this item. |
 | value            | false    | ValueExpression | The initial value of this component. |
-
 
 ### Example
 
@@ -595,7 +581,6 @@ a bean attribute from a request parameter.
 | Name             | Required | Type            | Description                                        |
 | ---------------- | -------- | --------------- | -------------------------------------------------- |
 | name             | false    | String          | The name of the request parameter from which the value for this component is retrieved on an initial request or to override the stored value on a postback. |
-
 
 ### Example
 

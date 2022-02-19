@@ -29,7 +29,6 @@ Render an html `body` element.
 | onload           | false    | String           | Javascript code executed when the user agent finishes loading a window or all frames within a frameset. |
 | onunload         | false    | String           | Javascript code executed when the user agent removes a document from a window or frame. |
 
-
 ### Example
 
 ```
@@ -73,7 +72,6 @@ Renders an HTML `input` element.
 | onselect         | false    | String           | Javascript code executed when text within this element is selected by the user. |
 | readonly         | false    | String           | Flag indicating that this component will prohibit changes by the user. The element may receive focus unless it has also been disabled. A value of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as readonly="readonly". |
 | type             | false    | String           | Type of button to create. Valid values are "submit", "button", and "reset". If not specified, or not a valid value, the default value is "submit". |
-
 
 ### Example
 
@@ -133,7 +131,6 @@ Renders the HTML `form` element.
 | onreset          | false    | String          | Javascript code executed when this form is reset. |
 | onsubmit         | false    | String          | Javascript code executed when this form is submitted. |
 
-
 ### Example
 
 ```
@@ -181,7 +178,6 @@ Renders an HTML `head` element.
 | dir               | false    | String          | Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right) and "RTL" (right-to-left). |
 | lang              | false    | String          | Code describing the language used in the generated markup for this component. |
 
-
 ### Example
 
 ```
@@ -212,7 +208,6 @@ Renders an HTML `input` element of type `file`.
 | requiredMessage        | false    | String           | A ValueExpression enabled attribute that, if present, will be used as the text of the validation message for the "required" facility, if the "required" facility is used. |
 | validatorMessage       | false    | String           | A ValueExpression enabled attribute that, if present, will be used as the text of the validator message, replacing any message that comes from the validator. |
 | value                  | false    | ValueExpression  | The current value of this component. |
-
 
 ### Example
 
@@ -256,7 +251,6 @@ Renders an HTML `input` element of type `hidden`.
 | requiredMessage        | false    | String           | A ValueExpression enabled attribute that, if present, will be used as the text of the validation message for the "required" facility, if the "required" facility is used. |
 | validatorMessage       | false    | String           | A ValueExpression enabled attribute that, if present, will be used as the text of the validator message, replacing any message that comes from the validator. |
 | value                  | false    | ValueExpression  | The current value of this component. |
-
 
 ### Example
 
@@ -324,7 +318,6 @@ Renders an HTML `input` element of type `password`.
 | readonly         | false    | Boolean          | Flag indicating that this component will prohibit changes by the user. The element may receive focus unless it has also been disabled. A value of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as readonly="readonly". |
 | disabled         | false    | Boolean          | Flag indicating that this element must never receive focus or be included in a subsequent submit. A value of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as disabled="disabled". |
 | label            | false    | String           | A localized user presentable name for this component. |
-
 
 ### Example
 
@@ -402,7 +395,6 @@ Renders an HTML `input` element of type `text`.
 | disabled         | false    | Boolean          | Flag indicating that this element must never receive focus or be included in a subsequent submit. A value of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as disabled="disabled". |
 | label            | false    | String           | A localized user presentable name for this component. |
 
-
 ### Example
 
 ```
@@ -477,7 +469,6 @@ Renders an HTML `textarea` element.
 | readonly         | false    | Boolean          | Flag indicating that this component will prohibit changes by the user. The element may receive focus unless it has also been disabled. A value of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as readonly="readonly". |
 | label            | false    | String           | A localized user presentable name for this component. |
 
-
 ### Example
 
 ```
@@ -530,7 +521,6 @@ The default (`simple`) renders the list as is.
 | title               | false    | String          | Advisory title information about markup elements generated for this component. |
 | layout           | false    | String           | The layout of the list: simple, unorderedList, orderedList. |
 | itemStyleClass   | false    | String           | The CSS class attribute to apply to the li or div items. |
-
 
 ### Example
 
@@ -591,7 +581,6 @@ and render the result. Otherwise, render the value of this component unmodified.
 | value            | false    | String          | The current value of this component. |
 | escape           | false    | Boolean         | Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag is set to "true" by default. |
 
-
 ### Example
 
 ```
@@ -645,7 +634,6 @@ value of the "class" attribute.
 | for              | false    | String          | Client identifier of the component for which this element is a label. |
 | value            | false    | String          | The current value of this component. |
 | escape           | false    | Boolean         | Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag is set to "true" by default. |
-
 
 ### Example
 
@@ -748,7 +736,6 @@ If this element has an ID or CSS style properties, the text is wrapped in a span
 | lang              | false    | String          | Code describing the language used in the generated markup for this component. |
 | value            | false    | String          | The current value of this component. |
 | escape           | false    | Boolean         | Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag is set to "true" by default. |
-
 
 ### Example
 

@@ -17,7 +17,6 @@ The `w:accordion` component provides a vertical tab component.
 | collapsible      | false    | Boolean         | This flag indicates whether the accordion must close all the sections at once. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
 
-
 ### Example
 
 ```XML
@@ -65,7 +64,6 @@ The `w:autocomplete` component handles the form submission and uses the
 `autocompleteList` attribute to find out possible completions.  It then returns
 that list that is then displayed by the client.
 
-
 ### Attributes
 
 | Name             | Required | Type            | Description                                        |
@@ -73,7 +71,6 @@ that list that is then displayed by the client.
 | title            | false    | String          | The title to display for the input field. |
 | autocompleteList | false    | String          | The list of values for the autocompletion. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
-
 
 ### Example
 
@@ -113,7 +110,6 @@ operations on the Chosen selector and bind some events.
 | --------- | -------- | --------------- | -------------------------------------------------- |
 | id        | true     | String          | The id of the element (this is mandatory for the correct jQuery Chosen support). |
 | rendered  | false | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
-
 
 ### Example
 
@@ -158,7 +154,6 @@ a person's email address.
 | default          | false    | String          | Default. |
 | alt              | false    | String          | The image `alt` attribute. By default, the email address is used for the `alt` attribute. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
-
 
 ### Example
 
@@ -216,7 +211,6 @@ The date picker is based on the jQuery date picker.
 | title            | false    | String          | The title to display for the input field. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
 
-
 ### Example
 
 ```
@@ -260,7 +254,6 @@ are combined within an HTML `dl`, `dt` and `dd` elements.
 | id               | false    | String          | The component identifier for this component. This value must be unique within the closest parent component that is a naming container. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
 | converterMessage        | false    | String          | A ValueExpression enabled attribute that, if present, will be used as the text of the converter message, replacing any message that comes from the converter. |
-
 
 ### Example
 
@@ -328,7 +321,6 @@ passed to the Tweet button: data-via, data-count, data-size.
 | style            | false    | String          | The CSS style to be applied in the div element that contains the like button. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
 
-
 ### Example
 
 ```
@@ -354,7 +346,6 @@ footer.
 | closable         | false    | Boolean         | When true, the panel can be closed by clicking on the close icon action in the header. |
 | toggleable       | false    | Boolean         | When true, the panel can be collapsed by clicking on the expand/collapse icon action in the header. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
-
 
 ### Example
 
@@ -388,7 +379,6 @@ The `w:tab` component defines a tab content to be displayed within a tab selecti
 | ---------------- | -------- | --------------- | -------------------------------------------------- |
 | title            | false    | String          | The tab title. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
-
 
 ### Example
 
@@ -440,7 +430,6 @@ title and content.
 | effect           | false    | String          | The effect to use when switching tabs. |
 | duration         | false    | Integer         | The effect duration. |
 | rendered         | false    | Boolean         | Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on any subsequent form submit. The default value for this property is true. |
-
 
 ### Example
 

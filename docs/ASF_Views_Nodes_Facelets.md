@@ -21,13 +21,11 @@ and reusing layout. JSF disregards everything outside of the composition, which 
 developers embed compositions in well-formed XHTML pages that can be viewed in an XHTML viewer,
 such as Dreamweaver or a browser, without including extraneous elements such as head and body.
 
-
 ### Attributes
 
 | Name  | Required | Type            | Description                                        |
 | ----- | -------- | --------------- | -------------------------------------------------- |
 | template | false | String          | A URI that points to a template, also known as a layout, that inserts pieces of the page defined in the composition. |
-
 
 ### Example
 
@@ -57,13 +55,11 @@ unlike `ui:composition`, does not disregard all content outside of the tag.
 The decorate is useful when you want to decorate some content in a page, for example,
 you might want to decorate a list of items.
 
-
 ### Attributes
 
 | Name  | Required | Type            | Description                                        |
 | ----- | -------- | --------------- | -------------------------------------------------- |
 | template | true  | String          | A URI that points to a template, also known as a layout, that inserts pieces of the page defined in the decorator. |
-
 
 ### Example
 
@@ -93,7 +89,6 @@ and `ui:fragment` tags.
 | Name  | Required | Type            | Description                                        |
 | ----- | -------- | --------------- | -------------------------------------------------- |
 | name  | true     | String          | Assigns a name to the content inside a define tag. That name is used by corresponding ui:insert tags in a template that insert the named content into a page. |
-
 
 ### Example
 
@@ -126,13 +121,11 @@ included `pageDecorations/header.xhtml`, and `pageDecorations/header.xhtml` incl
 `pageDecorations` directory, because `companyLogo.xhtml` has to be in the same
 directory as `login.xhtml`.
 
-
 ### Attributes
 
 | Name  | Required | Type            | Description                                        |
 | ----- | -------- | --------------- | -------------------------------------------------- |
 | src   | true     | String          | The filename of an XHTML page to include. The filename is relative to the XHTML page that was originally loaded. |
-
 
 ### Example
 
@@ -154,7 +147,6 @@ in either a `ui:composition`, `ui:component`, `ui:decorate`, or `ui:fragment`.
 | Name  | Required | Type            | Description                                        |
 | ----- | -------- | --------------- | -------------------------------------------------- |
 | name  | true     | String          | The fragment name to insert. |
-
 
 ### Example
 
@@ -189,7 +181,6 @@ in either `ui:include`, `ui:composition`, or `ui:decorate` to pass the parameter
 | ----- | -------- | --------------- | -------------------------------------------------- |
 | name  | true     | String          | The name of the parameter. |
 | value | true     | String          | The value of the parameter. Notice that this attribute's value can be an EL expression, which means that you can pass objects to either an included file or a template. |
-
 
 ### Example
 

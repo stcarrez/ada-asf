@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-html-forms -- ASF HTML Form Components
---  Copyright (C) 2010 - 2021 Stephane Carrez
+--  Copyright (C) 2010 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -206,12 +206,17 @@ package body ASF.Components.Html.Forms is
          else
             Log.Info ("Set secret input parameter {0} -> XXXXXX", Id);
          end if;
+         UI.Is_Submitted := True;
          UI.Submitted_Value := UIInput'Class (UI).Convert_Value (Val, Context);
          UI.Is_Valid := True;
 
       exception
          when E : others =>
             UI.Is_Valid := False;
+            UI.Add_Message (Name    => CONVERTER_MESSAGE_NAME,
+                            Default => ERROR_MESSAGE_ID,
+                            Arg1    => UI.Get_Label (Context),
+                            Context => Context);
             Log.Info (Utils.Get_Line_Info (UI)
                       & ": Exception raised when converting value {0} for component {1}: {2}",
                       Val, To_String (Id), Ada.Exceptions.Exception_Name (E));
@@ -252,7 +257,7 @@ package body ASF.Components.Html.Forms is
    begin
       Log.Debug ("Validating input field {0}", Id);
 
-      if not EL.Objects.Is_Null (UI.Submitted_Value) then
+      if UI.Is_Submitted then --  not EL.Objects.Is_Null (UI.Submitted_Value) then
          UIInput'Class (UI).Validate_Value (UI.Submitted_Value, Context);
 
          --  Render the response after the current phase if something is wrong.

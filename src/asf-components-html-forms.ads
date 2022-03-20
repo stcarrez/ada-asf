@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-html-forms -- ASF HTML Form Components
---  Copyright (C) 2010 - 2021 Stephane Carrez
+--  Copyright (C) 2010 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -258,6 +258,7 @@ private
       Submitted_Value : EL.Objects.Object;
       Is_Valid        : Boolean := False;
       Is_Secret       : Boolean := False;
+      Is_Submitted    : Boolean := False;
       Validators      : Validator_Array;
    end record;
 

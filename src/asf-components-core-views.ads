@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core-views -- ASF View Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2021 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ with Util.Locales;
 with ASF.Events.Faces;
 with ASF.Lifecycles;
 with ASF.Components.Html.Forms;
-with ASF.Components.Core;
 with ASF.Views.Nodes;
 private with Ada.Containers.Vectors;
 package ASF.Components.Core.Views is

@@ -7,6 +7,7 @@
 [![codecov](https://codecov.io/gh/stcarrez/ada-asf/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-asf)
 [![Download](https://img.shields.io/badge/download-1.4.3-brightgreen.svg)](http://download.vacs.fr/ada-asf/ada-asf-1.4.3.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
+[![GitLab](https://img.shields.io/badge/repo-GitLab-6C488A.svg)](https://gitlab.com/stcarrez/ada-asf)
 ![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.4.3.svg)
 
 Ada Server Faces allows to create web applications using the same pattern

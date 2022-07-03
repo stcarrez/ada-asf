@@ -26,7 +26,9 @@ on top of Ada Server Faces.
 security = "^1.4.1"
 serverfaces = "^1.5.0"
 servletada = "^1.5.3"
-utilada = "^2.4.0"
+utilada = "^2.5.0"
+utilada_unit = "^2.5.0"
+servletada_unit = "^1.5.3"
 
 [gpr-externals]
 BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]

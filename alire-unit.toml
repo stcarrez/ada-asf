@@ -1,8 +1,8 @@
 description = "Web Server Faces JSR 252, JSR 314 and JSR 344 (Testing framework)"
 tags = ["web", "servlet", "http", "framework", "facelet", "jsf", "testing"]
 name = "serverfaces_unit"
-version = "1.4.2"
-licenses = ["Apache 2.0"]
+version = "1.5.0"
+licenses = "Apache-2.0"
 authors = ["Stephane.Carrez@gmail.com"]
 maintainers = ["Stephane.Carrez@gmail.com"]
 maintainers-logins = ["stcarrez"]
@@ -23,11 +23,14 @@ on top of Ada Server Faces.
 """
 
 [[depends-on]]
-security = "^1.4.0"
-serverfaces = "^1.4.2"
-servletada = "^1.5.1"
+security = "^1.4.1"
+serverfaces = "^1.5.0"
+servletada = "^1.5.3"
 utilada = "^2.4.0"
 
 [gpr-externals]
 BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
 SECURITY_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
+
+[configuration]
+disabled = true

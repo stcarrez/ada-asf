@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-tests -  Tests for ASF lifecycles
---  Copyright (C) 2012, 2019 Stephane Carrez
+--  Copyright (C) 2012, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -162,6 +162,7 @@ package body ASF.Lifecycles.Tests is
    --  ------------------------------
    --  Notifies that the lifecycle phase described by the event is about to begin.
    --  ------------------------------
+   overriding
    procedure Before_Phase (Listener : in Test_Phase_Listener;
                            Event    : in ASF.Events.Phases.Phase_Event'Class) is
    begin
@@ -171,6 +172,7 @@ package body ASF.Lifecycles.Tests is
    --  ------------------------------
    --  Notifies that the lifecycle phase described by the event has finished.
    --  ------------------------------
+   overriding
    procedure After_Phase (Listener : in Test_Phase_Listener;
                           Event    : in ASF.Events.Phases.Phase_Event'Class) is
    begin
@@ -181,6 +183,7 @@ package body ASF.Lifecycles.Tests is
    --  Return the phase that this listener is interested in processing the <b>Phase_Event</b>
    --  events.  If the listener is interested by several events, it should return <b>ANY_PHASE</b>.
    --  ------------------------------
+   overriding
    function Get_Phase (Listener : in Test_Phase_Listener) return ASF.Events.Phases.Phase_Type is
    begin
       return Listener.Phase;

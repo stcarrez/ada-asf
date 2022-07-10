@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-tests -  ASF Application tests using ASFUnit
---  Copyright (C) 2011, 2012, 2015, 2017, 2021 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2017, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -406,7 +406,6 @@ package body ASF.Applications.Tests is
       Assert_Matches (T, ".*<span class=.error.>Invalid name</span>.*",
                       Reply, "Invalid error message for name");
 
-
       Request.Set_Parameter ("ok", "1");
       Request.Set_Parameter ("email", "1dddddd");
       Request.Set_Parameter ("password", "12333ddddddddddddddd");
@@ -690,6 +689,5 @@ package body ASF.Applications.Tests is
                       Reply, "Wrong generated content");
 
    end Test_View_Inject_Parameter;
-
 
 end ASF.Applications.Tests;

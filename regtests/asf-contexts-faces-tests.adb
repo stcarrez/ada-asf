@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts-faces-tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -295,7 +295,6 @@ package body ASF.Contexts.Faces.Tests is
 
       T.Assert (Ctx.Get_Flash /= null, "Null flash context returned");
    end Test_Flash_Context;
-
 
    --  ------------------------------
    --  Test the mockup faces context.

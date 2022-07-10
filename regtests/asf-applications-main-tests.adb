@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-main-tests - Unit tests for Applications
---  Copyright (C) 2011, 2012, 2014, 2019, 2021 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2014, 2019, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,7 @@ package body ASF.Applications.Main.Tests is
    --  ------------------------------
    --  Initialize the test application
    --  ------------------------------
+   overriding
    procedure Set_Up (T : in out Test) is
       Fact : ASF.Applications.Main.Application_Factory;
       C    : ASF.Applications.Config;

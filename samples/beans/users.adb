@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  users - Gives access to the OpenID principal through an Ada bean
---  Copyright (C) 2012, 2013 Stephane Carrez
+--  Copyright (C) 2012, 2013, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +54,7 @@ package body Users is
    --  ------------------------------
    --  Get the user information identified by the given name.
    --  ------------------------------
+   overriding
    function Get_Value (From : in User_Info;
                        Name : in String) return Util.Beans.Objects.Object is
       pragma Unreferenced (From);

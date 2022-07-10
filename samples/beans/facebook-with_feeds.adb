@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  facebook - Use Facebook Graph API
---  Copyright (C) 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2012, 2013, 2014, 2015, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -259,7 +259,7 @@ package body Facebook is
 
       F    : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
    begin
-      if F /= null and Name = "authenticate_url" then
+      if F /= null and then Name = "authenticate_url" then
          declare
             S      : constant ASF.Sessions.Session := F.Get_Session (True);
             Id     : constant String := S.Get_Id;
@@ -271,7 +271,7 @@ package body Facebook is
             return Util.Beans.Objects.To_Object ("https://www.facebook.com/dialog/oauth?"
                                                  & Params);
          end;
-      elsif F /= null and Name = "isAuthenticated" then
+      elsif F /= null and then Name = "isAuthenticated" then
          declare
             S      : constant ASF.Sessions.Session := F.Get_Session (False);
          begin
@@ -298,8 +298,8 @@ package body Facebook is
 
       F       : constant ASF.Contexts.Faces.Faces_Context_Access := ASF.Contexts.Faces.Current;
       Session : ASF.Sessions.Session := F.Get_Session;
-      State   : constant String := F.Get_Parameter (Security.OAuth.State);
-      Code    : constant String := F.Get_Parameter (Security.OAuth.Code);
+      State   : constant String := F.Get_Parameter (Security.OAuth.STATE);
+      Code    : constant String := F.Get_Parameter (Security.OAuth.CODE);
    begin
       Log.Info ("Auth code {0} for state {1}", Code, State);
       if Session.Is_Valid then

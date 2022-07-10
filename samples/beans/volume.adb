@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  volume - Bean to compute the cylinder volume
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,16 +64,17 @@ package body Volume is
    --  ------------------------------
    --  Get the value identified by the name.
    --  ------------------------------
+   overriding
    function Get_Value (From : Compute_Bean;
                        Name : String) return Util.Beans.Objects.Object is
    begin
-      if Name = "radius" and From.Radius >= 0.0 then
+      if Name = "radius" and then From.Radius >= 0.0 then
          return Util.Beans.Objects.To_Object (Float (From.Radius));
 
-      elsif Name = "height" and From.Height >= 0.0 then
+      elsif Name = "height" and then From.Height >= 0.0 then
          return Util.Beans.Objects.To_Object (Float (From.Height));
 
-      elsif Name = "volume" and From.Volume >= 0.0 then
+      elsif Name = "volume" and then From.Volume >= 0.0 then
          return Util.Beans.Objects.To_Object (Float (From.Volume));
 
       elsif Name = "pi" then
@@ -87,6 +88,7 @@ package body Volume is
    --  ------------------------------
    --  Set the value identified by the name.
    --  ------------------------------
+   overriding
    procedure Set_Value (From  : in out Compute_Bean;
                         Name  : in String;
                         Value : in Util.Beans.Objects.Object) is
@@ -103,6 +105,7 @@ package body Volume is
    --  with the specified component.
    --  If the string cannot be converted, the Invalid_Conversion exception should be raised.
    --  ------------------------------
+   overriding
    function To_String (Convert   : in Float_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;
@@ -119,6 +122,7 @@ package body Volume is
    --  Convert the string into an object for the specified component.
    --  If the string cannot be converted, the Invalid_Conversion exception should be raised.
    --  ------------------------------
+   overriding
    function To_Object (Convert   : in Float_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;

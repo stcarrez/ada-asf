@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  render -- XHTML Rendering example
---  Copyright (C) 2010, 2017, 2020, 2021 Stephane Carrez
+--  Copyright (C) 2010, 2017, 2020, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -84,7 +84,7 @@ begin
       Reply     : ASF.Responses.Mockup.Response;
       Content   : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      if View_Name = "" or Pos = 0 then
+      if View_Name = "" or else Pos = 0 then
          Ada.Text_IO.Put_Line ("Usage: render [-DNAME=VALUE ] file");
          Ada.Text_IO.Put_Line ("Example: render -DcontextPath=/test samples/web/ajax.xhtml");
          return;

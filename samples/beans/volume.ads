@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  volume - A simple bean example
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,10 +34,12 @@ package Volume is
    end record;
 
    --  Get the value identified by the name.
+   overriding
    function Get_Value (From : Compute_Bean;
                        Name : String) return Util.Beans.Objects.Object;
 
    --  Set the value identified by the name.
+   overriding
    procedure Set_Value (From  : in out Compute_Bean;
                         Name  : in String;
                         Value : in Util.Beans.Objects.Object);

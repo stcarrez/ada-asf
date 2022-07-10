@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  messages - A simple memory-based forum
---  Copyright (C) 2012, 2014 Stephane Carrez
+--  Copyright (C) 2012, 2014, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ package body Messages is
    --  ------------------------------
    --  Get the value identified by the name.
    --  ------------------------------
+   overriding
    function Get_Value (From : in Message_Bean;
                        Name : in String) return Util.Beans.Objects.Object is
    begin
@@ -46,6 +47,7 @@ package body Messages is
    --  ------------------------------
    --  Set the value identified by the name.
    --  ------------------------------
+   overriding
    procedure Set_Value (From  : in out Message_Bean;
                         Name  : in String;
                         Value : in Util.Beans.Objects.Object) is

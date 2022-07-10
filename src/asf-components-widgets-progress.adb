@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-widgets-progress -- Simple progress bar
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,6 @@ package body ASF.Components.Widgets.Progress is
 
    package Formatter is
       new Ada.Text_IO.Editing.Decimal_Output (Num => Progress_Type);
-
 
    Format : constant Ada.Text_IO.Editing.Picture := Ada.Text_IO.Editing.To_Picture ("ZZ9.9");
 

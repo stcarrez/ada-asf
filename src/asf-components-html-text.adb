@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -179,7 +179,7 @@ package body ASF.Components.Html.Text is
    begin
       Writer.Start_Optional_Element ("span");
       UI.Render_Attributes (Context, TEXT_ATTRIBUTE_NAMES, Writer);
-      if Is_Null (Escape) or To_Boolean (Escape) then
+      if Is_Null (Escape) or else To_Boolean (Escape) then
          Writer.Write_Text (Value);
       else
          Writer.Write_Raw (Value);
@@ -187,6 +187,7 @@ package body ASF.Components.Html.Text is
       Writer.End_Optional_Element ("span");
    end Write_Output;
 
+   overriding
    procedure Encode_Begin (UI      : in UIOutput;
                            Context : in out Faces_Context'Class) is
    begin
@@ -213,6 +214,7 @@ package body ASF.Components.Html.Text is
    --  Label Component
    --  ------------------------------
 
+   overriding
    procedure Encode_Begin (UI      : in UIOutputLabel;
                            Context : in out Faces_Context'Class) is
       Writer : Response_Writer_Access;
@@ -251,6 +253,7 @@ package body ASF.Components.Html.Text is
       end if;
    end Encode_Begin;
 
+   overriding
    procedure Encode_End (UI      : in UIOutputLabel;
                          Context : in out Faces_Context'Class) is
       Writer : Response_Writer_Access;
@@ -264,6 +267,7 @@ package body ASF.Components.Html.Text is
    --  ------------------------------
    --  OutputFormat Component
    --  ------------------------------
+   overriding
    procedure Encode_Begin (UI      : in UIOutputFormat;
                            Context : in out Faces_Context'Class) is
       use ASF.Components.Core;

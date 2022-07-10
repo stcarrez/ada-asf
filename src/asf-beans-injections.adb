@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-beans-injections -- Injection of parameters, headers, cookies in beans
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,7 +68,7 @@ package body ASF.Beans.Injections is
       Count : Natural := Descriptor.Pos;
       Next_Pos : Natural;
    begin
-      while Count > 0 and Pos < URI'Last loop
+      while Count > 0 and then Pos < URI'Last loop
          Next_Pos := Util.Strings.Index (URI, '/', Pos + 1);
          Count := Count - 1;
          if Count = 0 then

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-base -- Component tree
---  Copyright (C) 2009 - 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -328,7 +328,6 @@ package body ASF.Components.Base is
    begin
       null;
    end Set_Rendered;
-
 
    --  ------------------------------
    --  Get the UIAttribute associated with the given name.

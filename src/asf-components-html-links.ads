@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-links -- ASF HTML Links Components
---  Copyright (C) 2009, 2010, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,10 +34,12 @@ package ASF.Components.Html.Links is
                         Value : in EL.Objects.Object);
 
    --  Encode the beginning of the link.
+   overriding
    procedure Encode_Begin (UI      : in UIOutputLink;
                            Context : in out Faces_Context'Class);
 
    --  Encode the end of the link.
+   overriding
    procedure Encode_End (UI      : in UIOutputLink;
                          Context : in out Faces_Context'Class);
 

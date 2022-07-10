@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.panels -- Layout panels
---  Copyright (C) 2009, 2010, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ package body ASF.Components.Html.Panels is
       Value  : constant EL.Objects.Object := UI.Get_Attribute (Context, "layout");
       Layout : constant String := EL.Objects.To_String (Value);
    begin
-      if Layout = "div" or Layout = "block" then
+      if Layout = "div" or else Layout = "block" then
          return "div";
       elsif Layout = "none" then
          return "";
@@ -32,6 +32,7 @@ package body ASF.Components.Html.Panels is
       end if;
    end Get_Layout;
 
+   overriding
    procedure Encode_Begin (UI      : in UIPanelGroup;
                            Context : in out Faces_Context'Class) is
    begin
@@ -53,6 +54,7 @@ package body ASF.Components.Html.Panels is
       end;
    end Encode_Begin;
 
+   overriding
    procedure Encode_End (UI      : in UIPanelGroup;
                          Context : in out Faces_Context'Class) is
    begin

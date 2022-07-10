@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -112,7 +112,6 @@ package ASF.Views.Nodes.Reader is
                         Name      : Unicode.CES.Byte_Sequence;
                         Public_Id : Unicode.CES.Byte_Sequence := "";
                         System_Id : Unicode.CES.Byte_Sequence := "");
-
 
    --  Get the root node that was created upon parsing of the XHTML file.
    function Get_Root (Reader : Xhtml_Reader) return Tag_Node_Access;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-dates -- Date Converters
---  Copyright (C) 2011, 2014, 2016 Stephane Carrez
+--  Copyright (C) 2011, 2014, 2016, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,6 +46,7 @@ package ASF.Converters.Dates is
    --  Convert the object value into a string.  The object value is associated
    --  with the specified component.
    --  If the string cannot be converted, the Invalid_Conversion exception should be raised.
+   overriding
    function To_String (Convert   : in Date_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;
@@ -53,6 +54,7 @@ package ASF.Converters.Dates is
 
    --  Convert the date string into an object for the specified component.
    --  If the string cannot be converted, the Invalid_Conversion exception should be raised.
+   overriding
    function To_Object (Convert   : in Date_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;

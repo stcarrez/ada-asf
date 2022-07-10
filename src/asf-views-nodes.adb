@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -74,6 +74,7 @@ package body ASF.Views.Nodes is
       return Left.Name = Right;
    end "=";
 
+   overriding
    function "=" (Left, Right : in Tag_Attribute) return Boolean is
    begin
       return Left.Name = Right.Name;
@@ -542,6 +543,7 @@ package body ASF.Views.Nodes is
    --  ------------------------------
    --  Delete the node and its children freeing the memory as necessary
    --  ------------------------------
+   overriding
    procedure Delete (Node : access Text_Tag_Node) is
       Content : Tag_Content_Access := Node.Content.Next;
    begin

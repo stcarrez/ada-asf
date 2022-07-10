@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.lists -- List of items
---  Copyright (C) 2009, 2010, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2014, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +54,7 @@ package ASF.Components.Html.Lists is
                           Item_Class  : in String;
                           Context     : in out Faces_Context'Class);
 
+   overriding
    procedure Encode_Children (UI      : in UIList;
                               Context : in out Faces_Context'Class);
 

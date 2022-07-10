@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes-jsf -- JSF Core Tag Library
---  Copyright (C) 2010 - 2020 Stephane Carrez
+--  Copyright (C) 2010 - 2020, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -130,7 +130,7 @@ package body ASF.Views.Nodes.Jsf is
                             return ASF.Converters.Dates.Style_Type is
       Style : constant String := Get_Value (Attr, Context, "");
    begin
-      if Style = "default" or Style = "" then
+      if Style = "default" or else Style = "" then
          return ASF.Converters.Dates.DEFAULT;
       elsif Style = "short" then
          return ASF.Converters.Dates.SHORT;
@@ -311,7 +311,9 @@ package body ASF.Views.Nodes.Jsf is
    --  Range Validator Tag
    --  ------------------------------
 
+   --  ------------------------------
    --  Create the Range_Validator Tag
+   --  ------------------------------
    function Create_Range_Validator_Tag_Node (Binding    : in Binding_Type;
                                              Line       : in Views.Line_Info;
                                              Parent     : in Views.Nodes.Tag_Node_Access;
@@ -322,15 +324,17 @@ package body ASF.Views.Nodes.Jsf is
       Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       Node.Minimum := Find_Attribute (Attributes, "minimum");
       Node.Maximum := Find_Attribute (Attributes, "maximum");
-      if Node.Minimum = null and Node.Maximum = null then
+      if Node.Minimum = null and then Node.Maximum = null then
          Node.Error ("Missing 'minimum' or 'maximum' attribute");
       end if;
       return Node.all'Access;
    end Create_Range_Validator_Tag_Node;
 
+   --  ------------------------------
    --  Get the validator instance that corresponds to the range validator.
    --  Returns in <b>Validator</b> the validator instance if it exists and indicate
    --  in <b>Shared</b> whether it must be freed or not when the component is deleted.
+   --  ------------------------------
    overriding
    procedure Get_Validator (Node      : in Range_Validator_Tag_Node;
                             Context   : in out Contexts.Facelets.Facelet_Context'Class;
@@ -381,7 +385,7 @@ package body ASF.Views.Nodes.Jsf is
       Initialize (Node.all'Access, Binding, Line, Parent, Attributes);
       Node.Minimum := Find_Attribute (Attributes, "minimum");
       Node.Maximum := Find_Attribute (Attributes, "maximum");
-      if Node.Minimum = null and Node.Maximum = null then
+      if Node.Minimum = null and then Node.Maximum = null then
          Node.Error ("Missing 'minimum' or 'maximum' attribute");
       end if;
       return Node.all'Access;
@@ -522,7 +526,7 @@ package body ASF.Views.Nodes.Jsf is
                                Context : in out Contexts.Facelets.Facelet_Context'Class) is
       use EL.Expressions;
    begin
-      if Node.Attr_Name /= null and Node.Value /= null then
+      if Node.Attr_Name /= null and then Node.Value /= null then
          if Node.Value.Binding /= null then
             declare
                Expr : constant EL.Expressions.Expression
@@ -558,7 +562,6 @@ package body ASF.Views.Nodes.Jsf is
       end if;
       return Node.all'Access;
    end Create_Facet_Tag_Node;
-
 
    --  ------------------------------
    --  Build the component tree from the tag node and attach it as

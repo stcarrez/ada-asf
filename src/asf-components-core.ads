@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-core -- ASF Core Components
---  Copyright (C) 2009 - 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,6 @@ package ASF.Components.Core is
 
    use ASF.Contexts.Faces;
 
-
    type UIComponentBase is new Base.UIComponent with null record;
 
    --  Return a client-side identifier for this component, generating
@@ -58,6 +57,7 @@ package ASF.Components.Core is
    type UIText_Access is access all UIText'Class;
 
    --  Renders the UIText evaluating the EL expressions it may contain.
+   overriding
    procedure Encode_Begin (UI      : in UIText;
                            Context : in out Faces_Context'Class);
 

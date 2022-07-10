@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-validators-numbers -- ASF Number Validators
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,7 @@ package body ASF.Validators.Numbers is
    --  The procedure can examine the state and modify the component tree.
    --  It must raise the <b>Invalid_Value</b> exception if the value is not valid.
    --  ------------------------------
+   overriding
    procedure Validate (Valid     : in Range_Validator;
                        Context   : in out ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in out ASF.Components.Base.UIComponent'Class;

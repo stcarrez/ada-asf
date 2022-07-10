@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html -- ASF HTML Components
---  Copyright (C) 2009, 2010, 2011, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2017, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -82,6 +82,7 @@ package ASF.Components.Html.Text is
                            Context : in out Contexts.Faces.Faces_Context'Class;
                            Value   : in String);
 
+   overriding
    procedure Encode_Begin (UI      : in UIOutput;
                            Context : in out Contexts.Faces.Faces_Context'Class);
 
@@ -90,9 +91,11 @@ package ASF.Components.Html.Text is
    --  ------------------------------
    type UIOutputLabel is new UIOutput with private;
 
+   overriding
    procedure Encode_Begin (UI      : in UIOutputLabel;
                            Context : in out Contexts.Faces.Faces_Context'Class);
 
+   overriding
    procedure Encode_End (UI      : in UIOutputLabel;
                          Context : in out Contexts.Faces.Faces_Context'Class);
 
@@ -102,6 +105,7 @@ package ASF.Components.Html.Text is
    --
    type UIOutputFormat is new UIOutput with private;
 
+   overriding
    procedure Encode_Begin (UI      : in UIOutputFormat;
                            Context : in out Contexts.Faces.Faces_Context'Class);
 

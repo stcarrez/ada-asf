@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-validators-texts -- ASF Texts Validators
---  Copyright (C) 2011, 2020 Stephane Carrez
+--  Copyright (C) 2011, 2020, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,6 +45,7 @@ package body ASF.Validators.Texts is
    --  The procedure can examine the state and modify the component tree.
    --  It must raise the <b>Invalid_Value</b> exception if the value is not valid.
    --  ------------------------------
+   overriding
    procedure Validate (Valid     : in Length_Validator;
                        Context   : in out ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in out ASF.Components.Base.UIComponent'Class;
@@ -99,6 +100,7 @@ package body ASF.Validators.Texts is
    --  The procedure can examine the state and modify the component tree.
    --  It must raise the <b>Invalid_Value</b> exception if the value is not valid.
    --  ------------------------------
+   overriding
    procedure Validate (Valid     : in Regex_Validator;
                        Context   : in out ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in out ASF.Components.Base.UIComponent'Class;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications.messages -- Application Messages
---  Copyright (C) 2010, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,10 +89,11 @@ package body ASF.Applications.Messages is
    --  ------------------------------
    --  Returns true if both messages are identical (same severity, same messages)
    --  ------------------------------
+   overriding
    function "=" (Left, Right : in Message) return Boolean is
    begin
-      return Left.Kind = Right.Kind and Left.Summary = Right.Summary
-        and Left.Detail = Right.Detail;
+      return Left.Kind = Right.Kind and then Left.Summary = Right.Summary
+        and then Left.Detail = Right.Detail;
    end "=";
 
 end ASF.Applications.Messages;

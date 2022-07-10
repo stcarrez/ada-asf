@@ -110,6 +110,7 @@ package ASF.Components.Core.Views is
    --  Queue an event for broadcast at the end of the current request
    --  processing lifecycle phase.  The event object
    --  will be freed after being dispatched.
+   overriding
    procedure Queue_Event (UI    : in out UIView;
                           Event : not null access ASF.Events.Faces.Faces_Event'Class);
 

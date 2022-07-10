@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html-selects -- ASF HTML UISelectOne and UISelectMany components
---  Copyright (C) 2011, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2013, 2014, 2015, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -123,7 +123,7 @@ package body ASF.Components.Html.Selects is
    function Has_Element (Pos : in Cursor) return Boolean is
       use type ASF.Components.Base.UIComponent_Access;
    begin
-      if Pos.Pos > 0 and Pos.Pos <= Pos.Last then
+      if Pos.Pos > 0 and then Pos.Pos <= Pos.Last then
          return True;
       else
          return Pos.Current /= null;
@@ -136,7 +136,7 @@ package body ASF.Components.Html.Selects is
    function Element (Pos     : in Cursor;
                      Context : in Faces_Context'Class) return ASF.Models.Selects.Select_Item is
    begin
-      if Pos.Pos > 0 and Pos.Pos <= Pos.Last then
+      if Pos.Pos > 0 and then Pos.Pos <= Pos.Last then
          return Pos.List.Get_Select_Item (Pos.Pos);
       else
          return UISelectItem'Class (Pos.Current.all).Get_Select_Item (Context);
@@ -149,7 +149,7 @@ package body ASF.Components.Html.Selects is
    procedure Next (Pos     : in out Cursor;
                    Context : in Faces_Context'Class) is
    begin
-      if Pos.Pos > 0 and Pos.Pos < Pos.Last then
+      if Pos.Pos > 0 and then Pos.Pos < Pos.Last then
          Pos.Pos := Pos.Pos + 1;
       else
          Pos.Pos := 0;

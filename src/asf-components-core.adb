@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core -- ASF Core Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ package body ASF.Components.Core is
    --  Return a client-side identifier for this component, generating
    --  one if necessary.
    --  ------------------------------
+   overriding
    function Get_Client_Id (UI : UIComponentBase) return Unbounded_String is
       Id : constant access ASF.Views.Nodes.Tag_Attribute := UI.Get_Attribute ("id");
    begin
@@ -37,6 +38,7 @@ package body ASF.Components.Core is
    --  ------------------------------
    --  Renders the UIText evaluating the EL expressions it may contain.
    --  ------------------------------
+   overriding
    procedure Encode_Begin (UI      : in UIText;
                            Context : in out Faces_Context'Class) is
    begin

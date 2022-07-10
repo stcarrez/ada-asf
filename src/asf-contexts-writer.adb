@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,6 +53,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Flush the response stream and release the buffer.
    --  ------------------------------
+   overriding
    procedure Finalize (Object : in out Response_Writer) is
    begin
       Object.Flush;
@@ -174,7 +175,7 @@ package body ASF.Contexts.Writer is
                               Value  : in String) is
    begin
       --  If we have an optional element, start it.
-      if Stream.Optional_Element_Size > 0 and not Stream.Optional_Element_Written then
+      if Stream.Optional_Element_Size > 0 and then not Stream.Optional_Element_Written then
          Stream.Write ('<');
          Stream.Write (Stream.Optional_Element (1 .. Stream.Optional_Element_Size));
          Stream.Close_Start := True;
@@ -220,7 +221,7 @@ package body ASF.Contexts.Writer is
                                    Value  : in Wide_Wide_String) is
    begin
       --  If we have an optional element, start it.
-      if Stream.Optional_Element_Size > 0 and not Stream.Optional_Element_Written then
+      if Stream.Optional_Element_Size > 0 and then not Stream.Optional_Element_Written then
          Stream.Write ('<');
          Stream.Write (Stream.Optional_Element (1 .. Stream.Optional_Element_Size));
          Stream.Close_Start := True;
@@ -344,7 +345,7 @@ package body ASF.Contexts.Writer is
    begin
       --  If "?" or over, no escaping is needed (this covers
       --  most of the Latin alphabet)
-      if Code > 16#3F# or Code <= 16#20# then
+      if Code > 16#3F# or else Code <= 16#20# then
          Stream.Write (Char);
       elsif Char = '<' then
          Stream.Write ("&lt;");
@@ -370,7 +371,7 @@ package body ASF.Contexts.Writer is
       if Code < 16#A0# then
          --  If "?" or over, no escaping is needed (this covers
          --  most of the Latin alphabet)
-         if Code > 16#3F# or Code <= 16#20# then
+         if Code > 16#3F# or else Code <= 16#20# then
             Stream.Write (Character'Val (Code));
          elsif Char = '<' then
             Stream.Write ("&lt;");
@@ -435,6 +436,7 @@ package body ASF.Contexts.Writer is
    --  ------------------------------
    --  Write a string on the stream.
    --  ------------------------------
+   overriding
    procedure Write (Stream : in out Response_Writer;
                     Item   : in Ada.Strings.Unbounded.Unbounded_String) is
    begin

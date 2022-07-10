@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core-views -- ASF View Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -142,7 +142,7 @@ package body ASF.Components.Core.Views is
       UIView'Class (UI).Broadcast (ASF.Events.Phases.APPLY_REQUEST_VALUES, Context);
 
       --  Drop other events if the response is to be returned.
-      if Context.Get_Render_Response or Context.Get_Response_Completed then
+      if Context.Get_Render_Response or else Context.Get_Response_Completed then
          UIView'Class (UI).Clear_Events;
       end if;
    end Process_Decodes;
@@ -166,7 +166,7 @@ package body ASF.Components.Core.Views is
       UIView'Class (UI).Broadcast (ASF.Events.Phases.PROCESS_VALIDATION, Context);
 
       --  Drop other events if the response is to be returned.
-      if Context.Get_Render_Response or Context.Get_Response_Completed then
+      if Context.Get_Render_Response or else Context.Get_Response_Completed then
          UIView'Class (UI).Clear_Events;
       end if;
    end Process_Validators;
@@ -190,7 +190,7 @@ package body ASF.Components.Core.Views is
       UIView'Class (UI).Broadcast (ASF.Events.Phases.UPDATE_MODEL_VALUES, Context);
 
       --  Drop other events if the response is to be returned.
-      if Context.Get_Render_Response or Context.Get_Response_Completed then
+      if Context.Get_Render_Response or else Context.Get_Response_Completed then
          UIView'Class (UI).Clear_Events;
       end if;
    end Process_Updates;
@@ -213,6 +213,7 @@ package body ASF.Components.Core.Views is
    --  processing lifecycle phase.  The event object
    --  will be freed after being dispatched.
    --  ------------------------------
+   overriding
    procedure Queue_Event (UI    : in out UIView;
                           Event : not null access ASF.Events.Faces.Faces_Event'Class) is
       Parent : constant Base.UIComponent_Access := UI.Get_Parent;

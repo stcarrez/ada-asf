@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  writer.string -- A simple string writer
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  asf-contexts-writer-string -- A simple string writer
+--  Copyright (C) 2009, 2010, 2011, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ package ASF.Contexts.Writer.String is
    --  ------------------------------
    type String_Writer is new Response_Writer with private;
 
+   overriding
    procedure Initialize (Stream : in out String_Writer);
 
    --  Get the response

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles-default -- Default Lifecycle handler
---  Copyright (C) 2010, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,7 @@ package body ASF.Lifecycles.Default is
    --  procedure for each phase.  This is called by <b>Initialize</b> to build
    --  the lifecycle handler.
    --  ------------------------------
+   overriding
    procedure Create_Phase_Controllers (Controller : in out Lifecycle) is
       use ASF.Events.Phases;
    begin

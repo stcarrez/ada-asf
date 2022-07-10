@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-locales -- Locale support
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2021 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,7 @@ package body ASF.Locales is
    end record;
    type Locale_Binding_Access is access all Locale_Binding;
 
+   overriding
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access);
@@ -83,7 +84,7 @@ package body ASF.Locales is
             --  We need a match on the language.  The variant/country can be ignored and will
             --  be honored by the resource bundle.
             if Fac.Locales (I) = Locale
-              or Get_Language (Fac.Locales (I)) = Get_Language (Locale)
+              or else Get_Language (Fac.Locales (I)) = Get_Language (Locale)
             then
                Found_Locale := Locale;
                Found_Quality := Quality;
@@ -111,7 +112,6 @@ package body ASF.Locales is
       L.Name   := Bundle;
       ASF.Beans.Register (Beans, Name, L.all'Access, P);
    end Register;
-
 
    --  Load the resource bundle identified by the <b>Name</b> and for the given
    --  <b>Locale</b>.
@@ -162,6 +162,7 @@ package body ASF.Locales is
       Into.Default_Locale := Locale;
    end Set_Default_Locale;
 
+   overriding
    procedure Create (Factory : in Locale_Binding;
                      Name    : in Ada.Strings.Unbounded.Unbounded_String;
                      Result  : out Util.Beans.Basic.Readonly_Bean_Access) is

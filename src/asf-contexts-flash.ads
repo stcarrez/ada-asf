@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  contexts-facelets-flash -- Flash context
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,6 +125,7 @@ private
 
    --  Get the value identified by the name.
    --  If the name cannot be found, the method should return the Null object.
+   overriding
    function Get_Value (From : in Flash_Bean;
                        Name : in String) return Util.Beans.Objects.Object;
 

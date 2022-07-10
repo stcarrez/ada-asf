@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-facelets -- Facelets composition nodes
---  Copyright (C) 2009, 2010, 2011, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -445,7 +445,7 @@ package body ASF.Views.Nodes.Facelets is
                                Context : in out Facelet_Context'Class) is
       pragma Unreferenced (Parent);
    begin
-      if Node.Value /= null and Node.Var /= null then
+      if Node.Value /= null and then Node.Var /= null then
          declare
             Value  : constant EL.Expressions.Expression
               := Get_Expression (Node.Value.all);

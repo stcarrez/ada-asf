@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.messages -- Faces messages
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,10 +46,12 @@ package ASF.Components.Html.Messages is
    type UIMessage is new UIHtmlComponent with private;
 
    --  Encode the beginning of the <b>h:message</b> component.
+   overriding
    procedure Encode_Begin (UI      : in UIMessage;
                            Context : in out Faces_Context'Class);
 
    --  Encode the end of the <b>h:message</b> component.
+   overriding
    procedure Encode_End (UI      : in UIMessage;
                          Context : in out Faces_Context'Class);
 
@@ -60,10 +62,12 @@ package ASF.Components.Html.Messages is
    type UIMessages is new UIHtmlComponent with private;
 
    --  Encode the beginning of the <b>h:messages</b> component.
+   overriding
    procedure Encode_Begin (UI      : in UIMessages;
                            Context : in out Faces_Context'Class);
 
    --  Encode the end of the <b>h:messages</b> component.
+   overriding
    procedure Encode_End (UI      : in UIMessages;
                          Context : in out Faces_Context'Class);
 

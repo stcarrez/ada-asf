@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-factory -- Component and tag factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -117,6 +117,7 @@ private
    function Hash (Key : in Tag_Name) return Ada.Containers.Hash_Type;
 
    --  Returns true if both tag names are identical.
+   overriding
    function "=" (Left, Right : in Tag_Name) return Boolean;
 
    --  Tag library map indexed on the library namespace.

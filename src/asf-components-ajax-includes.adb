@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-ajax-includes -- AJAX Include component
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ package body ASF.Components.Ajax.Includes is
                                                     Context => Context,
                                                     Default => "div");
    begin
-      if Layout = "div" or Layout = "span" or Layout = "pre" or Layout = "b" then
+      if Layout = "div" or else Layout = "span" or else Layout = "pre" or else Layout = "b" then
          return Layout;
       else
          return "div";

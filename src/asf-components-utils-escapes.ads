@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-utils-escape -- Escape generated content produced by component children
---  Copyright (C) 2011, 2012, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2014, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,4 +50,3 @@ private
    type UIEscape is new ASF.Components.Core.UIComponentBase with null record;
 
 end ASF.Components.Utils.Escapes;
-

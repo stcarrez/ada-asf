@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes-reader -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -288,9 +288,9 @@ package body ASF.Views.Nodes.Reader is
             when NO_CONTENT =>
                loop
                   C := Value (Pos);
-                  if C = ASCII.CR or C = ASCII.LF then
+                  if C = ASCII.CR or else C = ASCII.LF then
                      Handler.Spaces := Null_Unbounded_String;
-                  elsif C = ' ' or C = ASCII.HT then
+                  elsif C = ' ' or else C = ASCII.HT then
                      Append (Handler.Spaces, C);
                   else
                      Handler.State := HAS_CONTENT;
@@ -341,7 +341,7 @@ package body ASF.Views.Nodes.Reader is
                loop
                   C := Value (Pos);
                   --  Check for the EL start #{ or ${
-                  if (C = '#' or C = '$')
+                  if (C = '#' or else C = '$')
                     and then Pos + 1 <= Value'Last
                     and then Value (Pos + 1) = '{'
                   then
@@ -355,7 +355,7 @@ package body ASF.Views.Nodes.Reader is
                      --  Handle \#{ and \${ as escape sequence
                   elsif C = '\' and then Pos + 2 <= Value'Last
                     and then Value (Pos + 2) = '{'
-                    and then (Value (Pos + 1) = '#' or Value (Pos + 1) = '$')
+                    and then (Value (Pos + 1) = '#' or else Value (Pos + 1) = '$')
                   then
                      --  Since we have to strip the '\', flush the spaces and append the text
                      --  but ignore the '\'.
@@ -367,7 +367,9 @@ package body ASF.Views.Nodes.Reader is
                      Start_Pos := Pos + 1;
                      Pos := Pos + 2;
 
-                  elsif (C = ASCII.CR or C = ASCII.LF) and Handler.Ignore_Empty_Lines then
+                  elsif (C = ASCII.CR or else C = ASCII.LF)
+                    and then Handler.Ignore_Empty_Lines
+                  then
                      Last_Pos := Pos;
                      Handler.State := NO_CONTENT;
                      exit;
@@ -448,7 +450,7 @@ package body ASF.Views.Nodes.Reader is
                Expr  : EL.Expressions.Expression_Access;
             begin
                Attr.Name  := To_Unbounded_String (Name);
-               if Index (Value, "#{") > 0 or Index (Value, "${") > 0 then
+               if Index (Value, "#{") > 0 or else Index (Value, "${") > 0 then
                   begin
                      Expr := new EL.Expressions.Expression;
                      Attr.Binding := Expr.all'Access;
@@ -488,7 +490,7 @@ package body ASF.Views.Nodes.Reader is
 
       else
          declare
-            Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
+            Is_Unknown : constant Boolean := Namespace_URI /= "" and then Index (Qname, ":") > 0;
          begin
             --  Optimization: we know in which state we are.
             Handler.State := HAS_CONTENT;
@@ -498,7 +500,7 @@ package body ASF.Views.Nodes.Reader is
                Log.Error ("{0}: Element '{1}' not found",
                           To_String (Handler.Locator), Qname);
             end if;
-            if Handler.Escape_Unknown_Tags and Is_Unknown then
+            if Handler.Escape_Unknown_Tags and then Is_Unknown then
                Handler.Collect_Text ("&lt;");
             else
                Handler.Collect_Text ("<");
@@ -524,7 +526,7 @@ package body ASF.Views.Nodes.Reader is
                   Handler.Collect_Text ("""");
                end loop;
             end if;
-            if Handler.Escape_Unknown_Tags and Is_Unknown then
+            if Handler.Escape_Unknown_Tags and then Is_Unknown then
                Handler.Collect_Text ("&gt;");
 --            else
 --               Handler.Collect_Text (">");
@@ -569,13 +571,13 @@ package body ASF.Views.Nodes.Reader is
          Handler.Current.Parent.Freeze;
 
       end if;
-      if Handler.Current.Text or Handler.Text /= null then
+      if Handler.Current.Text or else Handler.Text /= null then
          declare
-            Is_Unknown : constant Boolean := Namespace_URI /= "" and Index (Qname, ":") > 0;
+            Is_Unknown : constant Boolean := Namespace_URI /= "" and then Index (Qname, ":") > 0;
          begin
             --  Optimization: we know in which state we are.
             Handler.State := HAS_CONTENT;
-            if Handler.Escape_Unknown_Tags and Is_Unknown then
+            if Handler.Escape_Unknown_Tags and then Is_Unknown then
                Handler.Collect_Text ("&lt;/");
                Handler.Collect_Text (Qname);
                Handler.Collect_Text ("&gt;");

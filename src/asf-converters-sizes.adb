@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-sizes -- Size converter
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +42,7 @@ package body ASF.Converters.Sizes is
    --  with the specified component.
    --  If the string cannot be converted, the Invalid_Conversion exception should be raised.
    --  ------------------------------
+   overriding
    function To_String (Convert   : in Size_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;
@@ -102,6 +103,7 @@ package body ASF.Converters.Sizes is
    --  Convert the date string into an object for the specified component.
    --  If the string cannot be converted, the Invalid_Conversion exception should be raised.
    --  ------------------------------
+   overriding
    function To_Object (Convert   : in Size_Converter;
                        Context   : in ASF.Contexts.Faces.Faces_Context'Class;
                        Component : in ASF.Components.Base.UIComponent'Class;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.lists -- List of items
---  Copyright (C) 2009, 2010, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013, 2014, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,9 +41,9 @@ package body ASF.Components.Html.Lists is
       Value  : constant EL.Objects.Object := UI.Get_Attribute (Context, "layout");
       Layout : constant String := EL.Objects.To_String (Value);
    begin
-      if Layout = "orderedList" or Layout = "ordered" then
+      if Layout = "orderedList" or else Layout = "ordered" then
          return "ol";
-      elsif Layout = "unorderedList" or Layout = "unordered" then
+      elsif Layout = "unorderedList" or else Layout = "unordered" then
          return "ul";
       elsif Class'Length > 0 or else not UI.Is_Generated_Id then
          return "div";
@@ -114,6 +114,7 @@ package body ASF.Components.Html.Lists is
       end if;
    end Encode_Item;
 
+   overriding
    procedure Encode_Children (UI      : in UIList;
                               Context : in out Faces_Context'Class) is
    begin

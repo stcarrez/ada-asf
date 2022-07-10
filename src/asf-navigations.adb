@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-navigations -- Navigations
---  Copyright (C) 2010, 2011, 2012, 2013, 2018, 2021 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2018, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -215,7 +215,7 @@ package body ASF.Navigations is
                exit when N = 0;
 
                Navigator := Find_Navigation (Name (Name'First .. N) & "*");
-               exit when Navigator /= null or N = Name'First;
+               exit when Navigator /= null or else N = Name'First;
                Last := N - 1;
             end loop;
          end;

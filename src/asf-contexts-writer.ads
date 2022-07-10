@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts-writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -152,6 +152,7 @@ package ASF.Contexts.Writer is
                               Char   : in Wide_Wide_Character);
 
    --  Write a string on the stream.
+   overriding
    procedure Write (Stream : in out Response_Writer;
                     Item   : in Ada.Strings.Unbounded.Unbounded_String);
 

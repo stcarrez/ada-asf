@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  html.panels -- Layout panels
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +22,11 @@ package ASF.Components.Html.Panels is
    function Get_Layout (UI      : UIPanelGroup;
                         Context : in Faces_Context'Class) return String;
 
+   overriding
    procedure Encode_Begin (UI      : in UIPanelGroup;
                            Context : in out Faces_Context'Class);
 
+   overriding
    procedure Encode_End (UI      : in UIPanelGroup;
                          Context : in out Faces_Context'Class);
 

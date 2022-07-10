@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020, 2021 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -83,6 +83,7 @@ package body ASF.Applications.Views is
    --  Get a converter from a name.
    --  Returns the converter object or null if there is no converter.
    --  ------------------------------
+   overriding
    function Get_Converter (Context : in Facelet_Context;
                            Name    : in EL.Objects.Object)
                             return ASF.Converters.Converter_Access is
@@ -94,6 +95,7 @@ package body ASF.Applications.Views is
    --  Get a validator from a name.
    --  Returns the validator object or null if there is no validator.
    --  ------------------------------
+   overriding
    function Get_Validator (Context : in Facelet_Context;
                            Name    : in EL.Objects.Object)
                            return ASF.Validators.Validator_Access is
@@ -239,9 +241,9 @@ package body ASF.Applications.Views is
    begin
       if Directory'Length = 0 then
          return Name;
-      elsif Directory (Directory'Last) = '/' and Name (Name'First) = '/' then
+      elsif Directory (Directory'Last) = '/' and then Name (Name'First) = '/' then
          return Directory & Name (Name'First + 1 .. Name'Last);
-      elsif Directory (Directory'Last) = '/' or Name (Name'First) = '/' then
+      elsif Directory (Directory'Last) = '/' or else Name (Name'First) = '/' then
          return Directory & Name;
       else
          return Directory & "/" & Name;

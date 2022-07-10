@@ -130,7 +130,7 @@ package body ASF.Components.Html.Forms is
             Convert : constant access Converters.Converter'Class
               := UIInput'Class (UI).Get_Converter;
          begin
-            if Convert /= null and Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
+            if Convert /= null and then Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
                Writer.Write_Attribute (Name  => "value",
                                        Value => Convert.To_String (Value => Value,
                                                                    Component => UI,
@@ -232,6 +232,7 @@ package body ASF.Components.Html.Forms is
    --    <li>Call the <b>Process_Validators</b> of all facets and children.
    --  <ul>
    --  ------------------------------
+   overriding
    procedure Process_Validators (UI      : in out UIInput;
                                  Context : in out Faces_Context'Class) is
    begin
@@ -283,7 +284,10 @@ package body ASF.Components.Html.Forms is
                              Context : in out Faces_Context'Class) is
       use type ASF.Validators.Validator_Access;
    begin
-      if EL.Objects.Is_Empty (Value) and UI.Is_Required (Context) and UI.Is_Valid then
+      if EL.Objects.Is_Empty (Value)
+        and then UI.Is_Required (Context)
+        and then UI.Is_Valid
+      then
          UI.Add_Message (Name    => REQUIRED_MESSAGE_NAME,
                          Default => REQUIRED_MESSAGE_ID,
                          Arg1    => UI.Get_Label (Context),
@@ -291,7 +295,7 @@ package body ASF.Components.Html.Forms is
          UI.Is_Valid := False;
       end if;
 
-      if UI.Is_Valid and not EL.Objects.Is_Empty (Value) then
+      if UI.Is_Valid and then not EL.Objects.Is_Empty (Value) then
          for I in UI.Validators'Range loop
             exit when UI.Validators (I).Validator = null;
             UI.Validators (I).Validator.Validate (Context, UI, Value);
@@ -396,7 +400,7 @@ package body ASF.Components.Html.Forms is
             Convert : constant access Converters.Converter'Class
               := UIInput'Class (UI).Get_Converter;
          begin
-            if Convert /= null and Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
+            if Convert /= null and then Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
                Writer.Write_Text (Text => Convert.To_String (Value => Value,
                                                              Component => UI,
                                                              Context => Context));
@@ -427,7 +431,7 @@ package body ASF.Components.Html.Forms is
             Convert : constant access Converters.Converter'Class
               := UIInput'Class (UI).Get_Converter;
          begin
-            if Convert /= null and Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
+            if Convert /= null and then Util.Beans.Objects.Is_Null (UI.Submitted_Value) then
                Writer.Write_Attribute (Name  => "value",
                                        Value => Convert.To_String (Value => Value,
                                                                    Component => UI,
@@ -486,7 +490,7 @@ package body ASF.Components.Html.Forms is
       UI.Is_Valid := False;
       Req.Process_Part (Id, Process_Part'Access);
 
-      if not UI.Is_Valid and UI.Is_Required (Context) then
+      if not UI.Is_Valid and then UI.Is_Required (Context) then
          UI.Add_Message (Name    => REQUIRED_MESSAGE_NAME,
                          Default => REQUIRED_MESSAGE_ID,
                          Arg1    => UI.Get_Label (Context),
@@ -609,7 +613,7 @@ package body ASF.Components.Html.Forms is
       App  : constant access Applications.Main.Application'Class := Context.Get_Application;
       Disp : constant Action_Listener_Access := App.Get_Action_Listener;
    begin
-      if Disp /= null and Event.all in Action_Event'Class then
+      if Disp /= null and then Event.all in Action_Event'Class then
          Disp.Process_Action (Event   => Action_Event (Event.all),
                               Context => Context);
       end if;

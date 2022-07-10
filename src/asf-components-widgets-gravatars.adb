@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-widgets-gravatars -- Gravatar Components
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,7 +61,7 @@ package body ASF.Components.Widgets.Gravatars is
             D       : constant String := Util.Strings.Image (Size);
             Alt     : constant String := UI.Get_Attribute ("alt", Context, "");
          begin
-            if Size <= 0 or Size > 2048 then
+            if Size <= 0 or else Size > 2048 then
                Size := 80;
             end if;
             Writer.Write_Attribute ("width", D);

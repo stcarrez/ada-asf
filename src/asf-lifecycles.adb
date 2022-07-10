@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-lifecycles -- Lifecycle
---  Copyright (C) 2010, 2011, 2012, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -90,7 +90,7 @@ package body ASF.Lifecycles is
       procedure Before_Phase (Listener : in ASF.Events.Phases.Phase_Listener_Access) is
          P : constant ASF.Events.Phases.Phase_Type := Listener.Get_Phase;
       begin
-         if P = Event.Phase or P = ASF.Events.Phases.ANY_PHASE then
+         if P = Event.Phase or else P = ASF.Events.Phases.ANY_PHASE then
             Listener.Before_Phase (Event);
          end if;
 
@@ -105,7 +105,7 @@ package body ASF.Lifecycles is
       procedure After_Phase (Listener : in ASF.Events.Phases.Phase_Listener_Access) is
          P : constant ASF.Events.Phases.Phase_Type := Listener.Get_Phase;
       begin
-         if P = Event.Phase or P = ASF.Events.Phases.ANY_PHASE then
+         if P = Event.Phase or else P = ASF.Events.Phases.ANY_PHASE then
             Listener.After_Phase (Event);
          end if;
 
@@ -156,7 +156,7 @@ package body ASF.Lifecycles is
       Listeners : constant Listener_Vectors.Ref := Controller.Listeners.Get;
    begin
       for Phase in RESTORE_VIEW .. INVOKE_APPLICATION loop
-         if Context.Get_Render_Response or Context.Get_Response_Completed then
+         if Context.Get_Render_Response or else Context.Get_Response_Completed then
             return;
          end if;
          Controller.Execute (Context, Listeners, Phase);

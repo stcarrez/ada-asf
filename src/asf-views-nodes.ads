@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes -- Facelet node tree representation
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -203,8 +203,8 @@ package ASF.Views.Nodes is
    procedure Freeze (Node : access Text_Tag_Node);
 
    --  Delete the node and its children freeing the memory as necessary
+   overriding
    procedure Delete (Node : access Text_Tag_Node);
-
 
    type Cursor is private;
    function First (Node : in Tag_Node_Access) return Cursor;

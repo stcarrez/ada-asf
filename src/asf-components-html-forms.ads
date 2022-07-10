@@ -122,6 +122,7 @@ package ASF.Components.Html.Forms is
    --    <li>If this component <b>rendered</b> property is false, skip further processing.
    --    <li>Call the <b>Process_Validators</b> of all facets and children.
    --  <ul>
+   overriding
    procedure Process_Validators (UI      : in out UIInput;
                                  Context : in out Faces_Context'Class);
 

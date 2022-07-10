@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.ajax -- AJAX servlet
---  Copyright (C) 2011, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,7 @@ package ASF.Servlets.Ajax is
    --  GET requests are not permitted.
    --
    --  Returns 403 error.
+   overriding
    procedure Do_Get (Server   : in Ajax_Servlet;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class);
@@ -60,6 +61,7 @@ package ASF.Servlets.Ajax is
    --  6. Execute the navigation (render page, redirect, ...
    --
    --  If an error is found, return SC_NOT_FOUND if an object or method cannot be found.
+   overriding
    procedure Do_Post (Server   : in Ajax_Servlet;
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class);

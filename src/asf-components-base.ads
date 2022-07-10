@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components -- Component tree
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -122,7 +122,6 @@ package ASF.Components.Base is
    --  Set whether the component is rendered.
    procedure Set_Rendered (UI       : in out UIComponent;
                            Rendered : in Boolean);
-
 
    function Get_Attribute (UI      : UIComponent;
                            Context : Faces_Context'Class;

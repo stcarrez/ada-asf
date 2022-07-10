@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  nodes-core -- Core nodes
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -472,7 +472,7 @@ package body ASF.Views.Nodes.Core is
                P : constant Wide_Wide_String := EL.Objects.To_Wide_Wide_String (Search);
                I : constant Natural := Ada.Strings.Wide_Wide_Fixed.Index (S, P);
             begin
-               return EL.Objects.To_Object (I > 0 and I + P'Length - 1 = S'Last);
+               return EL.Objects.To_Object (I > 0 and then I + P'Length - 1 = S'Last);
             end;
 
          when others =>
@@ -481,7 +481,7 @@ package body ASF.Views.Nodes.Core is
                P : constant String := EL.Objects.To_String (Search);
                I : constant Natural := Ada.Strings.Fixed.Index (S, P);
             begin
-               return EL.Objects.To_Object (I > 0 and I + P'Length - 1 = S'Last);
+               return EL.Objects.To_Object (I > 0 and then I + P'Length - 1 = S'Last);
             end;
 
       end case;

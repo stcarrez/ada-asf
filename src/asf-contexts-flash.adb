@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts-flash -- Flash context
---  Copyright (C) 2012, 2015, 2019 Stephane Carrez
+--  Copyright (C) 2012, 2015, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -148,13 +148,12 @@ package body ASF.Contexts.Flash is
                                     Context : in out ASF.Contexts.Faces.Faces_Context'Class) is
       use type ASF.Events.Phases.Phase_Type;
    begin
-      if (Phase = ASF.Events.Phases.INVOKE_APPLICATION
-          or Phase = ASF.Events.Phases.RENDER_RESPONSE) and then not Flash.Last_Phase_Done
+      if Phase in ASF.Events.Phases.INVOKE_APPLICATION | ASF.Events.Phases.RENDER_RESPONSE
+        and then not Flash.Last_Phase_Done
       then
          Flash.Do_Last_Phase_Actions (Context);
       end if;
    end Do_Post_Phase_Actions;
-
 
    --  ------------------------------
    --  Perform the last actions that must be made to save the flash context in the session.
@@ -207,8 +206,11 @@ package body ASF.Contexts.Flash is
       Result := Flash.Next;
    end Get_Execute_Flash;
 
+   --  ------------------------------
    --  Get the value identified by the name.
    --  If the name cannot be found, the method should return the Null object.
+   --  ------------------------------
+   overriding
    function Get_Value (From : in Flash_Bean;
                        Name : in String) return Util.Beans.Objects.Object is
       pragma Unreferenced (From, Name);

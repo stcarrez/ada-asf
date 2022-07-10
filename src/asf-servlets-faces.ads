@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf.servlets.faces -- Faces servlet
---  Copyright (C) 2010, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -69,6 +69,7 @@ package ASF.Servlets.Faces is
    --  data is neither safe nor idempotent.
    --
    --  If the request is incorrectly formatted, Do_Get  returns an HTTP "Bad Request"
+   overriding
    procedure Do_Get (Server   : in Faces_Servlet;
                      Request  : in out Requests.Request'Class;
                      Response : in out Responses.Response'Class);
@@ -102,6 +103,7 @@ package ASF.Servlets.Faces is
    --
    --  If the HTTP POST request is incorrectly formatted, doPost returns
    --  an HTTP "Bad Request" message.
+   overriding
    procedure Do_Post (Server   : in Faces_Servlet;
                       Request  : in out Requests.Request'Class;
                       Response : in out Responses.Response'Class);

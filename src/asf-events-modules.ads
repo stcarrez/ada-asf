@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-events -- ASF Events
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,7 @@ package ASF.Events.Modules is
                            Name    : String) return String;
 
    --  Get the value that corresponds to the parameter with the given name.
+   overriding
    function Get_Value (Message : in Module_Event;
                        Name    : in String) return Util.Beans.Objects.Object;
 

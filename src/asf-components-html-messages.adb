@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  html.messages -- Faces messages
---  Copyright (C) 2011, 2012, 2013, 2017 Stephane Carrez
+--  asf-components-html-messages -- Faces messages
+--  Copyright (C) 2011, 2012, 2013, 2017, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,6 @@ package body ASF.Components.Html.Messages is
 
    use ASF.Components.Base;
    use ASF.Applications.Messages;
-
 
    MSG_ATTRIBUTE_NAMES    : Util.Strings.String_Set.Set;
 
@@ -153,6 +152,7 @@ package body ASF.Components.Html.Messages is
    --  ------------------------------
    --  Encode the beginning of the <b>h:message</b> component.
    --  ------------------------------
+   overriding
    procedure Encode_Begin (UI      : in UIMessage;
                            Context : in out Faces_Context'Class) is
    begin
@@ -193,7 +193,10 @@ package body ASF.Components.Html.Messages is
       end;
    end Encode_Begin;
 
+   --  ------------------------------
    --  Encode the end of the <b>h:message</b> component.
+   --  ------------------------------
+   overriding
    procedure Encode_End (UI      : in UIMessage;
                          Context : in out Faces_Context'Class) is
    begin
@@ -203,6 +206,7 @@ package body ASF.Components.Html.Messages is
    --  ------------------------------
    --  Encode the beginning of the <b>h:message</b> component.
    --  ------------------------------
+   overriding
    procedure Encode_Begin (UI      : in UIMessages;
                            Context : in out Faces_Context'Class) is
    begin
@@ -254,13 +258,15 @@ package body ASF.Components.Html.Messages is
       end if;
    end Encode_Begin;
 
+   --  ------------------------------
    --  Encode the end of the <b>h:message</b> component.
+   --  ------------------------------
+   overriding
    procedure Encode_End (UI      : in UIMessages;
                          Context : in out Faces_Context'Class) is
    begin
       null;
    end Encode_End;
-
 
    FATAL_CLASS_ATTR       : aliased constant String := "fatalClass";
    FATAL_STYLE_CLASS_ATTR : aliased constant String := "fatalStyle";
@@ -276,10 +282,6 @@ package body ASF.Components.Html.Messages is
 
 begin
    ASF.Utils.Set_Text_Attributes (MSG_ATTRIBUTE_NAMES);
---     ASF.Utils.Set_Text_Attributes (WARN_ATTRIBUTE_NAMES);
---     ASF.Utils.Set_Text_Attributes (INFO_ATTRIBUTE_NAMES);
---
---     ASF.Utils.Set_Text_Attributes (FATAL_ATTRIBUTE_NAMES);
    FATAL_ATTRIBUTE_NAMES.Insert (FATAL_CLASS_ATTR'Access);
    FATAL_ATTRIBUTE_NAMES.Insert (FATAL_STYLE_CLASS_ATTR'Access);
 

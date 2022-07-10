@@ -34,3 +34,6 @@ ASF_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
 
 [configuration]
 disabled = true
+
+[environment]
+DYNAMO_BUNDLE_PATH.prepend = "${CRATE_ROOT}/bundles"

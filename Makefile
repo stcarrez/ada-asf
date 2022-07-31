@@ -84,3 +84,5 @@ $(eval $(call pandoc_build,asf-book,$(ASF_DOC),\
 
 $(eval $(call ada_library,asf))
 $(eval $(call ada_library,asf_unit))
+$(eval $(call alire_publish,alire.toml,se/serverfaces,serverfaces-$(VERSION).toml))
+$(eval $(call alire_publish,alire-unit.toml,se/serverfaces_unit,serverfaces_unit-$(VERSION).toml))

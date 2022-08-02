@@ -5,10 +5,10 @@
 [![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
 [![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
 [![codecov](https://codecov.io/gh/stcarrez/ada-asf/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-asf)
-[![Download](https://img.shields.io/badge/download-1.4.3-brightgreen.svg)](http://download.vacs.fr/ada-asf/ada-asf-1.4.3.tar.gz)
+[![Download](https://img.shields.io/badge/download-1.5.0-brightgreen.svg)](http://download.vacs.fr/ada-asf/ada-asf-1.5.0.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 [![GitLab](https://img.shields.io/badge/repo-GitLab-6C488A.svg)](https://gitlab.com/stcarrez/ada-asf)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.4.3.svg)
+![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.5.0.svg)
 
 Ada Server Faces allows to create web applications using the same pattern
 as the Java Server Faces (See JSR 252, JSR 314 and JSR 344). 
@@ -18,20 +18,15 @@ framework.
 
 To build ASF, you will need:
 
-* Ada Util     (https://github.com/stcarrez/ada-util          2.4.1)
-* Ada EL       (https://github.com/stcarrez/ada-el            1.8.3)
-* Ada Security (https://github.com/stcarrez/ada-security      1.4.0)
-* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.5.2)
+* Ada Util     (https://github.com/stcarrez/ada-util          2.5.0)
+* Ada EL       (https://github.com/stcarrez/ada-el            1.8.5)
+* Ada Security (https://github.com/stcarrez/ada-security      1.4.1)
+* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.6.0)
 * AWS          (https://libre.adacore.com/libre/tools/aws/     2018 or 20)
 * XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.4)
 
-## Version 1.5.0   - Under development
+## Version 1.5.0   - Aug 2022
 - New widget <w:progress> to display horizontal/vertical progress bars
-
-## Version 1.4.3   - Jul 2021
-- Add jQuery 3.6.0
-- Add a programmer's guide
-- Remove very old jQuery 1.11.3, jQuery UI 1.11.4, jQuery Chosen 1.4.2
 
 [List all versions](https://github.com/stcarrez/ada-asf/blob/master/NEWS.md)
 

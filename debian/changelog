@@ -1,3 +1,15 @@
+libasf (1.4.3) unstable; urgency=low
+
+  * Update for Ada Server Faces 1.4.3
+
+ -- Stephane Carrez <Stephane.Carrez@gmail.com>  Sun, 25 Jul 2021 17:42:17 +0100
+
+libasf (1.4.2) unstable; urgency=low
+
+  * Update for Ada Server Faces 1.4.2
+
+ -- Stephane Carrez <Stephane.Carrez@gmail.com>  Sat, 13 Feb 2021 16:42:17 +0100
+
 libasf (1.4.1) unstable; urgency=low
 
   * Update for Ada Server Faces 1.4.1

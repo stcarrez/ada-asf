@@ -25,6 +25,9 @@ To build ASF, you will need:
 * AWS          (https://libre.adacore.com/libre/tools/aws/     2018 or 20)
 * XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.4)
 
+## Version 1.6.0   - Under development
+  - Improvement of <f:viewParam> to accept a from EL expression to setup the value
+
 ## Version 1.5.0   - Aug 2022
 - New widget <w:progress> to display horizontal/vertical progress bars
 

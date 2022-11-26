@@ -8,6 +8,7 @@ a bean attribute from a request parameter.
 | Name             | Required | Type            | Description                                        |
 | ---------------- | -------- | --------------- | -------------------------------------------------- |
 | name             | false    | String          | The name of the request parameter from which the value for this component is retrieved on an initial request or to override the stored value on a postback. |
+| from             | false    | String          | A value or expression that is evaluated to initialize the parameter value.  This is an extension compared to the standard implementation. |
 
 
 ### Example
@@ -15,7 +16,7 @@ a bean attribute from a request parameter.
 ```
 <f:view xmlns:f="http://java.sun.com/jsf/core">
     <f:metadata>
-        <f:viewParam id='height' value='#{compute.height}'>
+        <f:viewParam name='height' value='#{compute.height}'>
             <f:converter converterId="float" />
         </f:viewParam>
         <f:viewParam id='radius' value='#{compute.radius}'>

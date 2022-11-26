@@ -353,12 +353,20 @@ package body ASF.Components.Core.Views is
    overriding
    function Get_Parameter (UI      : in UIViewParameter;
                            Context : in Faces_Context'Class) return String is
-      Name : constant String := UI.Get_Attribute ("name", Context);
+      Name  : constant String := UI.Get_Attribute ("name", Context);
    begin
       if Name'Length > 0 then
          return Context.Get_Parameter (Name);
       else
-         return Html.Forms.UIInput (UI).Get_Parameter (Context);
+         declare
+            Value : constant Util.Beans.Objects.Object := UI.Get_Attribute (Context, "from");
+         begin
+            if Util.Beans.Objects.Is_Null (Value) then
+               return Html.Forms.UIInput (UI).Get_Parameter (Context);
+            else
+               return Util.Beans.Objects.To_String (Value);
+            end if;
+         end;
       end if;
    end Get_Parameter;
 

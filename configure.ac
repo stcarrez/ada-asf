@@ -16,7 +16,8 @@ dnl  limitations under the License.
 dnl 
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(src/asf.ads)
+AC_INIT
+AC_CONFIG_SRCDIR([src/asf.ads])
 
 # Current release settings
 ASF_MAJOR_VERSION=1
@@ -41,11 +42,11 @@ AM_GNAT_FIND_ADA_EL([Ada Server Faces])
 AM_GNAT_FIND_ADA_SECURITY([Ada Server Faces])
 AM_GNAT_FIND_ADA_SERVLET([Ada Server Faces])
 
-AC_OUTPUT(
-Makefile.conf
+AC_CONFIG_FILES([Makefile.conf
 asf.gpr
 asf_tests.gpr
 samples.gpr
 asf_unit.gpr
-)
+])
+AC_OUTPUT
 

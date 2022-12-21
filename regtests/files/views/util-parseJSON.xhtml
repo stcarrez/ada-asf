@@ -1,0 +1,10 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:util="http://code.google.com/p/ada-asf/util">
+  <body>
+    <h1>ParseJSON</h1>
+    <util:set var="json" value='{"command":"make"}' />
+    <b>#{util:parseJSON(json)['command']}</b>
+    <b>#{util:parseJSON(json).command}</b>
+  </body>
+</html>

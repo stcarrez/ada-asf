@@ -36,6 +36,8 @@ with Util.Beans.Objects.Time;
 with Util.Locales;
 with Util.Encoders.SHA256;
 with Util.Strings.Transforms; use Util.Strings;
+with Util.Serialize.IO.JSON;
+with Util.Beans.Objects.Readers;
 
 package body ASF.Components.Utils.Factory is
 
@@ -159,6 +161,9 @@ package body ASF.Components.Utils.Factory is
                        Prefix  : in EL.Objects.Object;
                        Value   : in EL.Objects.Object) return EL.Objects.Object;
 
+   --  Parse a JSON string and return the object.
+   function Parse_JSON (Value : in EL.Objects.Object) return EL.Objects.Object;
+
    procedure Set_Functions (Mapper : in out EL.Functions.Function_Mapper'Class) is
    begin
       Mapper.Set_Function (Name      => "escapeJavaScript",
@@ -190,6 +195,9 @@ package body ASF.Components.Utils.Factory is
       Mapper.Set_Function (Name      => "sha256",
                            Namespace => URI,
                            Func      => SHA256'Access);
+      Mapper.Set_Function (Name      => "parseJSON",
+                           Namespace => URI,
+                           Func      => Parse_JSON'Access);
    end Set_Functions;
 
    function Escape_Javascript (Value : EL.Objects.Object) return EL.Objects.Object is
@@ -325,5 +333,21 @@ package body ASF.Components.Utils.Factory is
       Util.Encoders.SHA256.Finish (Context, Result);
       return Util.Beans.Objects.To_Object (Result);
    end SHA256;
+
+   --  ------------------------------
+   --  Parse a JSON string and return the object.
+   --  ------------------------------
+   function Parse_JSON (Value : in EL.Objects.Object) return EL.Objects.Object is
+      Content  : constant String := Util.Beans.Objects.To_String (Value);
+      Parser   : Util.Serialize.IO.JSON.Parser;
+      Reader   : Util.Beans.Objects.Readers.Reader;
+   begin
+      Parser.Parse_String (Content, Reader);
+      if Parser.Has_Error then
+         return Util.Beans.Objects.Null_Object;
+      else
+         return Reader.Get_Root;
+      end if;
+   end Parse_JSON;
 
 end ASF.Components.Utils.Factory;

@@ -11,9 +11,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/grids/reset.css"/>
-    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/grids/fluid_grid.css"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/main.css"/>
-    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}/jquery-ui.structure.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}/jquery-ui.theme.css"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.chosenCssPath}"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/asf.css"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/samples.css"/>
@@ -24,7 +24,7 @@
 </head>
 <h:body styleClass="#{not empty pageStyle ? pageStyle : ''}">
 <!-- Top header with user account -->
-<div id='awa-hdr'>
+<header id='awa-hdr'>
   <div id='awa-top'>
     <ul>
       <li id='help'><a href="https://github.com/stcarrez/ada-asf/wiki" title="#{samplesMsg.layout_help_title}">
@@ -36,13 +36,13 @@
        </a></li>
     </ul>
   </div>
-</div>
+</header>
 
-<div id='awa-page' class='container_12'>
+<main id='awa-page'>
     <ui:include src="header.xhtml"/>
     <ui:insert name="pageBody"/>
     <div id="awa-clfooter"></div>
-</div>
+</main>
 <ui:include src="footer.xhtml"/>
 
     <script type="text/javascript" src="#{jquery.path}"></script>

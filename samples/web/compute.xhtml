@@ -9,14 +9,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/grids/reset.css"/>
-    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/grids/fluid_grid.css"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/main.css"/>
-    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}/jquery-ui.structure.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}/jquery-ui.theme.css"/>
     <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/samples.css"/>
     <title>#{samplesMsg.compute_title}</title>
 </head>
 <body class='sample-demos'>
-<div id='awa-hdr'>
+<header id='awa-hdr'>
   <div id='awa-top'>
     <ul>
       <li id='help'><a href="https://github.com/stcarrez/ada-asf/wiki" title="#{samplesMsg.layout_help_title}">
@@ -28,15 +28,15 @@
        </a></li>
     </ul>
   </div>
-</div>
-  <div id='awa-page' class="container_12">
+</header>
+<main id='awa-page'>
       <ui:include src="/WEB-INF/layouts/header.xhtml"/>
-      <div class="grid_12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
+      <div class="awa-grid-12 left ui-tabs ui-widget ui-widget-content ui-corner-all">
 
           <ui:include src="/WEB-INF/layouts/demo-tabs.xhtml">
               <ui:param name="tab" value="volume"/>
           </ui:include>
-          <div id='content' class="grid_12 ui-tabs-panel">
+          <div id='content' class="awa-grid-12 ui-tabs-panel">
               <h1>#{samplesMsg.compute_message}</h1>
 
               <h:form id='compute'>
@@ -74,7 +74,7 @@
 
       </div>
       <div id="awa-clfooter"></div>
-  </div>
+  </main>
   <ui:include src="/WEB-INF/layouts/footer.xhtml">
       <ui:param name="source_file" value="compute.xhtml"/>
   </ui:include>

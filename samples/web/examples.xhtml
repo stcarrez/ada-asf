@@ -11,12 +11,12 @@
     <ui:define name="demoBody">
 
             <h1>#{samplesMsg.demo_forum_messages}</h1>
-            <div class="grid_12 ui-widget">
+            <div class="awa-grid-12 ui-widget">
                 <div id='form-block' class="asf-container ui-widget ui-widget-content ui-corner-all">
                     <ajax:include src="post.xhtml"/>
                 </div>
             </div>
-            <div class="grid_12 ui-widget forum">
+            <div class="awa-grid-12 ui-widget forum">
                 <div id='forum-posts' class="asf-container ui-widget ui-widget-content ui-corner-all forum">
                     <h:list value="#{messages}" var="msg" reverse="true">
                         <div class="message">

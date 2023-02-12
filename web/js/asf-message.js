@@ -1,6 +1,6 @@
 /*
  *  asf-message -- Message component
- *  Copyright (C) 2013, 2018 Stephane Carrez
+ *  Copyright (C) 2013, 2018, 2023 Stephane Carrez
  *  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
  */
 /**
  * @namespace ui.message
-     * @class ui.message
+ * @class ui.message
  */
 (function($, undefined) {
 
@@ -86,8 +86,13 @@
 
             this.element.show('fast');
             if (this.options.attachment) {
-                var offset = $(this.options.attachment).offset();
-                this.element.offset(offset);
+               let itemWidth = $(this.element).width();
+               let width = window.innerWidth;
+               let offset = $(this.options.attachment).offset();
+               if (offset.left + itemWidth > width) {
+                  offset.left = width - itemWidth;
+               }
+               this.element.offset(offset);
             }
         },
 

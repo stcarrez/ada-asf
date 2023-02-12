@@ -1,6 +1,6 @@
 /**
  * asf.css - ASF component styles
- * Copyright (C) 2012, 2013, 2016 Stephane Carrez
+ * Copyright (C) 2012, 2013, 2016, 2023 Stephane Carrez
  * Licensed under the Apache License, Version 2.0 (the "License");
  */
 
@@ -61,8 +61,8 @@ div.asf-block-title a {
  * The delete action icon.
  */
 .asf-delete {
-    background: url(../images/delete-icon.png) 0 0 no-repeat;
-    opacity: 0.6;
+    mask: url(../images/delete-icon.png) no-repeat center;
+    background: black;
 }
 
 /**

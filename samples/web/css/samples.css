@@ -242,6 +242,10 @@ li.active {
     float: right;
     width: 66%;
 }
+.ui-tabs-panel div.grid_4 {
+    float: left;
+    width: 33%;
+}
 ul.tag-doc {
     float: left;
     display: block;

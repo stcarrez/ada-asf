@@ -36,3 +36,9 @@ debian/autoreconf.after
 debian/autoreconf.before
 debian/debhelper-build-stamp
 debian/files
+docs/*.aux
+docs/*.out
+docs/*.toc
+docs/asf-book.tex
+docs/asf-book.html
+

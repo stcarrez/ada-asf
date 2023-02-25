@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  html.messages -- Faces messages
+--  asf-components-html-messages -- Faces messages
 --  Copyright (C) 2011, 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --

@@ -29,6 +29,7 @@ To build ASF, you will need:
   - Improvement of <f:viewParam> to accept a from EL expression to setup the value
   - Add util:parseJSON() EL function
   - Integrate jQuery UI 1.13.2
+  - Fix #4: Support to build with -gnatW8
 
 ## Version 1.5.0   - Aug 2022
 - New widget <w:progress> to display horizontal/vertical progress bars

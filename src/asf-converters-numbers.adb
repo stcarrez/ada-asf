@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-numbers -- Floating point number converters
---  Copyright (C) 2010, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2019, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Exceptions;
 with Ada.Strings.Maps;
+with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 
 with Util.Properties.Bundles;
 with Util.Beans.Objects;
@@ -30,6 +31,8 @@ package body ASF.Converters.Numbers is
 
    Local_Set : constant Ada.Strings.Maps.Character_Set
      := Ada.Strings.Maps.To_Set ("$#V_");
+
+   Euro : constant Wide_Wide_String := "€";
 
    type Float_Number is delta 0.0000000001 digits 18;
 
@@ -128,7 +131,8 @@ package body ASF.Converters.Numbers is
                           Bundle    : in ASF.Locales.Bundle) return String is
       pragma Unreferenced (Converter);
    begin
-      return Bundle.Get ("faces.numbers.currency", "€");
+      return Bundle.Get ("faces.numbers.currency",
+                         Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Encode (Euro));
    end Get_Currency;
 
    --  ------------------------------

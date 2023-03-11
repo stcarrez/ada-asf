@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Faces Context Tests - Unit tests for ASF.Contexts.Faces
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2018, 2019, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
 with Ada.Unchecked_Deallocation;
+with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 with Util.Beans.Objects.Time;
 with Util.Test_Caller;
 with Util.Dates;
@@ -43,7 +44,7 @@ package body ASF.Converters.Tests is
    procedure Test_Number_Conversion (T       : in out Test;
                                      Picture : in String;
                                      Value   : in Float;
-                                     Expect  : in String);
+                                     Expect  : in Wide_Wide_String);
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
 
@@ -255,7 +256,7 @@ package body ASF.Converters.Tests is
    procedure Test_Number_Conversion (T       : in out Test;
                                      Picture : in String;
                                      Value   : in Float;
-                                     Expect  : in String) is
+                                     Expect  : in Wide_Wide_String) is
       procedure Free is
         new Ada.Unchecked_Deallocation (Object => ASF.Converters.Numbers.Number_Converter'Class,
                                         Name   => ASF.Converters.Numbers.Number_Converter_Access);
@@ -272,9 +273,11 @@ package body ASF.Converters.Tests is
       UI.Set_Converter (C.all'Access);
       C.Set_Picture (Picture);
       declare
+         use Ada.Strings.UTF_Encoding;
+
          R : constant String := C.To_String (Ctx, UI, D);
       begin
-         Util.Tests.Assert_Equals (T, Expect, R,
+         Util.Tests.Assert_Equals (T, Wide_Wide_Strings.Encode (Expect), R,
                                    "Invalid number conversion with picture " & Picture);
       end;
       Free (C);

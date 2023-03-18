@@ -28,6 +28,9 @@ with ASF.Converters.Dates;
 with ASF.Converters.Numbers;
 package body ASF.Converters.Tests is
 
+   --  This file contains Wide_Wide_String constants.
+   pragma Wide_Character_Encoding (UTF8);
+
    use Util.Tests;
    use ASF.Converters.Dates;
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-html-forms -- ASF HTML Form Components
---  Copyright (C) 2010 - 2022 Stephane Carrez
+--  Copyright (C) 2010 - 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,9 @@ package ASF.Components.Html.Forms is
    --  Message displayed when setting a value on the bean fails during the update values phase.
    ERROR_MESSAGE_ID             : constant String := "asf.faces.component.UIInput.ERROR";
 
+   --  Message displayed when the form submussion contains an invalid CSRF token.
+   EXPIRED_MESSAGE_ID           : constant String := "asf.faces.component.UIForm.EXPIRED";
+
    --  ------------------------------
    --  Form Component
    --  ------------------------------
@@ -50,6 +53,15 @@ package ASF.Components.Html.Forms is
    --  Get the action URL to set on the HTML form
    function Get_Action (UI      : in UIForm;
                         Context : in Faces_Context'Class) return String;
+
+   --  Get the CSRF token validity.  Returns 0 if the form has no CSRF token.
+   function Get_Token_Validity (UI : in UIForm;
+                                Context : in Faces_Context'Class) return Natural;
+
+   --  Create the CSRF token for the form submission and the given form ID.
+   function Create_Token (UI : in UIForm;
+                          Id : in String;
+                          Context : in Faces_Context'Class) return String;
 
    overriding
    procedure Encode_Begin (UI      : in UIForm;
@@ -278,6 +290,7 @@ private
 
    type UIForm is new UIHtmlComponent with record
       Is_Submitted : Boolean := False;
+      Is_Valid     : Boolean := False;
    end record;
 
 end ASF.Components.Html.Forms;

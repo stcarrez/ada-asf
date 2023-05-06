@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components -- Component tree
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,6 +60,10 @@ package ASF.Components is
    --  text of the validation message for the "required" facility, if the "required"
    --  facility is used.
    REQUIRED_MESSAGE_NAME  : constant String := "requiredMessage";
+
+   --  A ValueExpression enabled attribute that, if present, will be used as the
+   --  text of the expiration message when the form CSRF token has expired.
+   EXPIRED_MESSAGE_NAME   : constant String := "expiredMessage";
 
    --  The current value of the component.
    VALUE_NAME             : constant String := "value";

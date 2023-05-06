@@ -680,6 +680,42 @@ package body ASF.Components.Html.Forms is
       return View_Handler.Get_Action_URL (Context, ASF.Components.Root.Get_View_Id (View));
    end Get_Action;
 
+   --  ------------------------------
+   --  Get the CSRF token validity.  Returns 0 if the form has no CSRF token.
+   --  ------------------------------
+   function Get_Token_Validity (UI : in UIForm;
+                                Context : in Faces_Context'Class) return Natural is
+      Validity : constant String := UI.Get_Attribute ("validity", Context);
+   begin
+      if Validity = "all" then
+         return 0;
+      elsif Validity'Length = 0 then
+         return 24 * 3600;
+      else
+         return Natural'Value (Validity);
+      end if;
+
+   exception
+      when Constraint_Error =>
+         UI.Log_Error ("Invalid validity value: '{0}'", Validity);
+         return 24 * 3600;
+   end Get_Token_Validity;
+
+   --  ------------------------------
+   --  Create the CSRF token for the form submission and the given form ID.
+   --  ------------------------------
+   function Create_Token (UI : in UIForm;
+                          Id : in String;
+                          Context : in Faces_Context'Class) return String is
+      Validity : constant Natural := UI.Get_Token_Validity (Context);
+   begin
+      if Validity = 0 then
+         return "1";
+      end if;
+
+      return Context.Create_Token (Id, Duration (Validity));
+   end Create_Token;
+
    overriding
    procedure Encode_Begin (UI      : in UIForm;
                            Context : in out Faces_Context'Class) is
@@ -690,6 +726,7 @@ package body ASF.Components.Html.Forms is
       declare
          Writer : constant Response_Writer_Access := Context.Get_Response_Writer;
          Id     : constant Unbounded_String := UI.Get_Client_Id;
+         Token  : constant String := UI.Create_Token (To_String (Id), Context);
       begin
          Writer.Start_Element ("form");
          Writer.Write_Attribute (Name => "method", Value => "post");
@@ -700,7 +737,7 @@ package body ASF.Components.Html.Forms is
          Writer.Start_Element ("input");
          Writer.Write_Attribute (Name => "type", Value => "hidden");
          Writer.Write_Attribute (Name => "name", Value => Id);
-         Writer.Write_Attribute (Name => "value", Value => "1");
+         Writer.Write_Attribute (Name => "value", Value => Token);
          Writer.End_Element ("input");
       end;
    end Encode_Begin;
@@ -722,12 +759,26 @@ package body ASF.Components.Html.Forms is
    overriding
    procedure Decode (UI      : in out UIForm;
                      Context : in out Faces_Context'Class) is
-      Id  : constant Unbounded_String := UI.Get_Client_Id;
-      Val : constant String := Context.Get_Parameter (To_String (Id));
+      Id    : constant Unbounded_String := UI.Get_Client_Id;
+      Ident : constant String := To_String (Id);
+      Val   : constant String := Context.Get_Parameter (Ident);
    begin
       if Val /= "" then
-         Log.Debug ("Submission of form {0}", Id);
-         UIForm'Class (UI).Set_Submitted;
+         declare
+            Validity : constant Natural := UI.Get_Token_Validity (Context);
+         begin
+            Log.Debug ("Submission of form {0}", Id);
+            if Validity > 0 and then not Context.Verify_Token (Ident, Val) then
+               UI.Is_Valid := False;
+               UI.Add_Message (Name    => EXPIRED_MESSAGE_NAME,
+                               Default => EXPIRED_MESSAGE_ID,
+                               Context => Context);
+               UI.Log_Error ("Token verification failed for form '{0}'", Ident);
+            else
+               UI.Is_Valid := True;
+            end if;
+            UIForm'Class (UI).Set_Submitted;
+         end;
       end if;
    end Decode;
 
@@ -744,12 +795,15 @@ package body ASF.Components.Html.Forms is
 
       --  If the form is submitted, process the children.
       --  Otherwise, none of the parameters are for this form.
-      if UI.Is_Submitted then
+      if not UI.Is_Submitted then
+         Log.Debug ("Form {0} was not submitted", UI.Get_Client_Id);
+
+      elsif UI.Is_Valid then
          Log.Info ("Decoding form {0}", UI.Get_Client_Id);
 
          UI.Decode_Children (Context);
       else
-         Log.Debug ("Form {0} was not submitted", UI.Get_Client_Id);
+         Log.Info ("Submitted form {0} has invalid CSRF token", UI.Get_Client_Id);
       end if;
    end Process_Decodes;
 

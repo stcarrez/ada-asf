@@ -1,6 +1,7 @@
 <h:form xmlns:h="http://java.sun.com/jsf/html"
         xmlns:f="http://java.sun.com/jsf/core"
 	id="formText">
+  <h:message for='formText' styleClass='error'/>
   <label for='name'>Name</label>
     <h:message for='name' styleClass='error'/>
     <h:inputText id='name' value='#{form.name}' validatorMessage='Invalid name'>

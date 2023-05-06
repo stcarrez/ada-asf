@@ -39,7 +39,8 @@
           <div id='content' class="awa-grid-12 ui-tabs-panel">
               <h1>#{samplesMsg.compute_message}</h1>
 
-              <h:form id='compute'>
+              <h:form id='compute' validity='60'>
+                  <h:message for='compute'/>
                   <dl>
                       <dt>#{samplesMsg.compute_height_label}</dt>
                       <dd>

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-tests - ASF Tests Framework
---  Copyright (C) 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2015, 2017, 2018, 2019, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,10 @@
 -----------------------------------------------------------------------
 
 with Ada.Unchecked_Deallocation;
+with Ada.Strings.Fixed;
+with Ada.Strings.Unbounded;
+
+with Util.Files;
 
 with Servlet.Core;
 with ASF.Servlets.Faces;
@@ -111,6 +115,35 @@ package body ASF.Tests is
          return App;
       end if;
    end Get_Application;
+
+   --  ------------------------------
+   --  Extract from the response output saved in `Filename` the form parameter
+   --  that corresponds to the `Field` hidden field.
+   --  ------------------------------
+   function Extract (Field    : in String;
+                     Filename : in String) return String is
+      use Ada.Strings.Unbounded;
+      procedure Process (Line : in String);
+
+      Pattern : constant String := "<input type=""hidden"" name=""" & Field & """ value=""";
+      Result  : Ada.Strings.Unbounded.Unbounded_String;
+
+      procedure Process (Line : in String) is
+         Pos, Sep : Natural;
+      begin
+         Pos := Ada.Strings.Fixed.Index (Line, Pattern);
+         if Pos > 0 then
+            Pos := Pos + Pattern'Length;
+            Sep := Ada.Strings.Fixed.Index (Line, """", Pos);
+            if Sep > 0 then
+               Result := To_Unbounded_String (Line (Pos .. Sep - 1));
+            end if;
+         end if;
+      end Process;
+   begin
+      Util.Files.Read_File (Util.Tests.Get_Test_Path (Filename), Process'Access);
+      return To_String (Result);
+   end Extract;
 
    --  ------------------------------
    --  Cleanup the test instance.

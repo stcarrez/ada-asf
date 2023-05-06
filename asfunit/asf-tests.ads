@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ASF tests - ASF Tests Framework
---  Copyright (C) 2011, 2012, 2015, 2020 Stephane Carrez
+--  asf-tests - ASF Tests Framework
+--  Copyright (C) 2011, 2012, 2015, 2020, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,6 +48,11 @@ package ASF.Tests is
 
    --  Get the test application.
    function Get_Application return ASF.Applications.Main.Application_Access;
+
+   --  Extract from the response output saved in `Filename` the form parameter
+   --  that corresponds to the `Field` hidden field.
+   function Extract (Field    : in String;
+                     Filename : in String) return String;
 
    --  Simulate a GET request on the given URI with the request parameters.
    --  Get the result in the response object.

@@ -57,6 +57,9 @@ package body ASF.Applications.Tests is
       Caller.Add_Test (Suite, "Test service HTTP POST+PROCESS_VALIDATION (inputText)",
                        Test_Form_Post_Validation_Error'Access);
 
+      Caller.Add_Test (Suite, "Test service HTTP POST+CSRF errors",
+                       Test_Form_Post_CSRF'Access);
+
       Caller.Add_Test (Suite, "Test service HTTP POST+PROCESS_VALIDATION (selectOneMenu)",
                        Test_Form_Post_Select'Access);
 
@@ -345,7 +348,7 @@ package body ASF.Applications.Tests is
       Assert_Matches (T, ".*<input type=.text. name=.name. value=.. id=.name.*",
                       Reply, "Wrong form content");
 
-      Request.Set_Parameter ("formText", "1");
+      Request.Set_Parameter ("formText", ASF.Tests.Extract ("formText", "form-text.txt"));
       Request.Set_Parameter ("name", "John");
       Request.Set_Parameter ("password", "12345");
       Request.Set_Parameter ("email", "john@gmail.com");
@@ -373,10 +376,13 @@ package body ASF.Applications.Tests is
    begin
       Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
                                                 Storage => STATIC));
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Do_Get (Request, Reply, "/tests/form-text.html", "form-text.txt");
 
       --  Post with password too short and empty email
       Request.Set_Parameter ("ok", "1");
-      Request.Set_Parameter ("formText", "1");
+      Request.Set_Parameter ("formText", ASF.Tests.Extract ("formText", "form-text.txt"));
       Request.Set_Parameter ("name", "John");
       Request.Set_Parameter ("password", "12");
       Request.Set_Parameter ("email", "");
@@ -429,6 +435,50 @@ package body ASF.Applications.Tests is
    end Test_Form_Post_Validation_Error;
 
    --  ------------------------------
+   --  Test a POST request with an invalid CSRF token.
+   --  ------------------------------
+   procedure Test_Form_Post_CSRF (T : in out Test) is
+      use Util.Beans.Objects;
+
+      Request : ASF.Requests.Mockup.Request;
+      Reply   : ASF.Responses.Mockup.Response;
+      Form    : aliased Form_Bean;
+   begin
+      Request.Set_Attribute ("form", To_Object (Value   => Form'Unchecked_Access,
+                                                Storage => STATIC));
+      Do_Get (Request, Reply, "/tests/form-text.html", "form-text.txt");
+
+      Assert_Matches (T, ".*<label for=.name.>Name</label>.*", Reply, "Wrong form content");
+      Assert_Matches (T, ".*<input type=.text. name=.name. value=.. id=.name.*",
+                      Reply, "Wrong form content");
+
+      declare
+         Token : constant String := ASF.Tests.Extract ("formText", "form-text.txt");
+      begin
+         Request.Set_Parameter ("formText", Token & "x");
+         Request.Set_Parameter ("name", "John");
+         Request.Set_Parameter ("password", "12345");
+         Request.Set_Parameter ("email", "john@gmail.com");
+         Request.Set_Parameter ("ok", "1");
+         Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post-csrf-1.txt");
+
+         Assert_Matches (T, ".*The form has expired.*",
+                        Reply, "Wrong form content");
+
+         Request.Set_Parameter ("formText", "2" & Token);
+         Request.Set_Parameter ("name", "John");
+         Request.Set_Parameter ("password", "12345");
+         Request.Set_Parameter ("email", "john@gmail.com");
+         Request.Set_Parameter ("ok", "1");
+         Do_Post (Request, Reply, "/tests/form-text.html", "form-text-post-csrf-2.txt");
+
+         Assert_Matches (T, ".*The form has expired.*",
+                        Reply, "Wrong form content");
+      end;
+      Assert_Equals (T, 0, Form.Called, "form action must not be called");
+   end Test_Form_Post_CSRF;
+
+   --  ------------------------------
    --  Test a GET+POST request with form having <h:selectOneMenu> element.
    --  ------------------------------
    procedure Test_Form_Post_Select (T : in out Test) is
@@ -446,14 +496,14 @@ package body ASF.Applications.Tests is
       Assert_Matches (T, ".*<select name=.gender.*",
                       Reply, "Wrong form content");
 
-      Request.Set_Parameter ("formSelect", "1");
+      Request.Set_Parameter ("formSelect", ASF.Tests.Extract ("formSelect", "form-select.txt"));
       Request.Set_Parameter ("gender", "2");
       Do_Post (Request, Reply, "/tests/form-select.html", "form-select-post.txt");
 
       Assert_Matches (T, ".*<option value=.2. selected=.selected.*",
                       Reply, "Wrong form content");
 
-      Request.Set_Parameter ("formSelect", "1");
+      Request.Set_Parameter ("formSelect", ASF.Tests.Extract ("formSelect", "form-select.txt"));
       Request.Set_Parameter ("gender", "3");
       Do_Post (Request, Reply, "/tests/form-select.html", "form-select-post2.txt");
 
@@ -536,7 +586,7 @@ package body ASF.Applications.Tests is
       Assert_Matches (T, ".*<input type=.text. name=.name. value=.. id=.name.*",
                       Reply, "Wrong form content");
 
-      Request.Set_Parameter ("formText", "1");
+      Request.Set_Parameter ("formText", ASF.Tests.Extract ("formText", "form-text-flash.txt"));
       Request.Set_Parameter ("name", "John");
       Request.Set_Parameter ("password", "12345");
       Request.Set_Parameter ("email", "john@gmail.com");
@@ -582,7 +632,7 @@ package body ASF.Applications.Tests is
       Assert_Matches (T, ".*<input type=.text. name=.name. value=.. id=.name.*",
                       Reply, "Wrong form content");
 
-      Request.Set_Parameter ("formText", "1");
+      Request.Set_Parameter ("formText", ASF.Tests.Extract ("formText", "form-text-default.txt"));
       Request.Set_Parameter ("name", "John");
       Request.Set_Parameter ("password", "12345");
       Request.Set_Parameter ("email", "john@gmail.com");

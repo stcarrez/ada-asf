@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-tests -  ASF Application tests using ASFUnit
---  Copyright (C) 2011, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2015, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +54,9 @@ package ASF.Applications.Tests is
 
    --  Test a POST request with an invalid submitted value
    procedure Test_Form_Post_Validation_Error (T : in out Test);
+
+   --  Test a POST request with an invalid CSRF token.
+   procedure Test_Form_Post_CSRF (T : in out Test);
 
    --  Test a GET+POST request with form having <h:selectOneMenu> element.
    procedure Test_Form_Post_Select (T : in out Test);

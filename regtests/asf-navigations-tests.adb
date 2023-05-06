@@ -88,7 +88,7 @@ package body ASF.Navigations.Tests is
                                                 Storage => STATIC));
       Do_Get (Request, Reply, "/tests/" & Name & ".html", Name & ".txt");
 
-      Request.Set_Parameter ("formText", "1");
+      Request.Set_Parameter ("formText", ASF.Tests.Extract ("formText", Name & ".txt"));
       Request.Set_Parameter ("name", "John");
       Request.Set_Parameter ("password", "12345");
       Request.Set_Parameter ("email", "john@gmail.com");

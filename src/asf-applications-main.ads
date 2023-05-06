@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,7 @@ with ASF.Servlets;
 with ASF.Events.Faces.Actions;
 with Security.Policies;  use Security;
 with Security.OAuth.Servers;
+private with Security.Random;
 
 package ASF.Applications.Main is
 
@@ -255,6 +256,19 @@ package ASF.Applications.Main is
    procedure Add_Components (App      : in out Application;
                              Bindings : in ASF.Factory.Factory_Bindings_Access);
 
+   --  Verify the token validity associated with the `Data`.
+   --  Returns True if the token is valid and false if it has expired or is invalid.
+   function Verify_Token (App   : in Application;
+                          Data  : in String;
+                          Token : in String) return Boolean;
+
+   --  Create a token for the data and the expiration time.
+   --  The token has an expiration deadline and is signed by the application.
+   --  The `Data` remains private and is never part of the returned token.
+   function Create_Token (App    : in Application;
+                          Data   : in String;
+                          Expire : in Duration) return String;
+
    --  Closes the application
    procedure Close (App : in out Application);
 
@@ -318,6 +332,8 @@ private
 
    type Application_Factory is tagged limited null record;
 
+   TOKEN_KEY_LENGTH : constant := 32;
+
    type Application is new ASF.Servlets.Servlet_Registry
      and ASF.Events.Faces.Actions.Action_Listener with record
       View    : aliased ASF.Applications.Views.View_Handler;
@@ -345,6 +361,10 @@ private
 
       --  Exception handler
       Exceptions      : ASF.Contexts.Exceptions.Exception_Handler_Access;
+
+      --  Token CSRF generation support.
+      Random          : Security.Random.Generator;
+      Token_Key       : String (1 .. TOKEN_KEY_LENGTH);
    end record;
 
 end ASF.Applications.Main;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009 - 2020 Stephane Carrez
+--  Copyright (C) 2009 - 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,16 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Interfaces.C;
+with Ada.Calendar.Conversions;
+with Ada.Streams;
 
 with Util.Log.Loggers;
 with Util.Strings.Transforms;
+with Util.Strings;
+with Util.Encoders.Base64;
+with Util.Encoders.SHA256;
+with Util.Encoders.HMAC.SHA256;
 
 with ASF.Streams;
 with ASF.Contexts.Writer;
@@ -260,9 +267,13 @@ package body ASF.Applications.Main is
    procedure Initialize (App     : in out Application;
                          Conf    : in Config;
                          Factory : in out Application_Factory'Class) is
+      Buf : Ada.Streams.Stream_Element_Array (1 .. TOKEN_KEY_LENGTH);
+      for Buf'Address use App.Token_Key'Address;
+
       Params     : Config := Conf;
    begin
       App.Action_Listener := App'Unchecked_Access;
+      App.Random.Generate (Buf);
 
       --  Create the lifecycle handler.
       App.Lifecycle := Factory.Create_Lifecycle_Handler;
@@ -522,6 +533,85 @@ package body ASF.Applications.Main is
       ASF.Factory.Register (Factory  => App.Components,
                             Bindings => Bindings);
    end Add_Components;
+
+   --  ------------------------------
+   --  Verify the token validity associated with the `Data`.
+   --  Returns True if the token is valid and false if it has expired or is invalid.
+   --  ------------------------------
+   function Verify_Token (App   : in Application;
+                          Data  : in String;
+                          Token : in String) return Boolean is
+      use Ada.Streams;
+      use Util.Encoders;
+      use Ada.Calendar;
+
+      Buf        : Ada.Streams.Stream_Element_Array (1 .. Token'Length);
+      for Buf'Address use Token'Address;
+
+      Base64     : Util.Encoders.Base64.Decoder;
+      Buffer     : Ada.Streams.Stream_Element_Array (1 .. 100);
+      Last       : Stream_Element_Offset;
+      Encoded    : Stream_Element_Offset;
+      Decoded    : Stream_Element_Offset;
+      Sign       : SHA256.Hash_Array;
+      Deadline   : Interfaces.Unsigned_64;
+   begin
+      Base64.Transform (Data => Buf, Into => Buffer,
+                        Last => Decoded, Encoded => Encoded);
+      Util.Encoders.Decode_LEB128 (Buffer, Buffer'First, Deadline, Last);
+      if Last + Sign'Length - 1 /= Decoded then
+         return False;
+      end if;
+      Sign := HMAC.SHA256.Sign (App.Token_Key,
+                                Util.Strings.Image (Long_Long_Integer (Deadline)) & "." & Data);
+      if Buffer (Last .. Decoded) /= Sign then
+         return False;
+      end if;
+      return Conversions.To_Ada_Time (Interfaces.C.long (Deadline)) > Clock;
+
+   exception
+      when Util.Encoders.Encoding_Error =>
+         return False;
+   end Verify_Token;
+
+   --  ------------------------------
+   --  Create a token for the data and the expiration time.
+   --  The token has an expiration deadline and is signed by the application.
+   --  The `Data` remains private and is never part of the returned token.
+   --  ------------------------------
+   function Create_Token (App    : in Application;
+                          Data   : in String;
+                          Expire : in Duration) return String is
+      use Ada.Calendar;
+      use Ada.Streams;
+      use Util.Encoders;
+
+      Expiration : constant Time := Clock + Expire;
+      Deadline   : constant Interfaces.C.long := Conversions.To_Unix_Time (Expiration);
+      Token      : constant String := Util.Strings.Image (Long_Long_Integer (Deadline)) & ".";
+      Sign       : constant SHA256.Hash_Array := HMAC.SHA256.Sign (App.Token_Key, Token & Data);
+      Base64     : Util.Encoders.Base64.Encoder;
+      Encoded    : Stream_Element_Offset;
+      Last       : Stream_Element_Offset;
+      Result     : String (1 .. 100);
+      Public     : Ada.Streams.Stream_Element_Array (1 .. 10);
+      Buf        : Ada.Streams.Stream_Element_Array (1 .. Result'Length);
+      for Buf'Address use Result'Address;
+   begin
+      Util.Encoders.Encode_LEB128 (Public, Public'First, Interfaces.Unsigned_64 (Deadline), Last);
+      Base64.Transform (Data => Public (1 .. Last), Into => Buf,
+                        Last => Last, Encoded => Encoded);
+      Base64.Transform (Data => Sign, Into => Buf (Last + 1 .. Buf'Last),
+                        Last => Last, Encoded => Encoded);
+      Base64.Finish (Into => Buf (Last + 1 .. Buf'Last), Last => Last);
+      if Result (Positive (Last - 1)) = '=' then
+         return Result (1 .. Positive (Last - 2));
+      elsif Result (Positive (Last)) = '=' then
+         return Result (1 .. Positive (Last - 1));
+      else
+         return Result (1 .. Positive (Last));
+      end if;
+   end Create_Token;
 
    --  ------------------------------
    --  Closes the application

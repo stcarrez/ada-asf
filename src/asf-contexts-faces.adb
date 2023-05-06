@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009 - 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -486,6 +486,31 @@ package body ASF.Contexts.Faces is
    begin
       ASF.Components.Root.Create_Unique_Id (Context.Root, Id);
    end Create_Unique_Id;
+
+   --  ------------------------------
+   --  Verify the CSRF token validity for the component identified by `Id`.
+   --  Returns True if the token is valid and false if it has expired or is invalid.
+   --  ------------------------------
+   function Verify_Token (Context : in Faces_Context;
+                          Id      : in String;
+                          Token   : in String) return Boolean is
+      Session : constant ASF.Sessions.Session := Context.Request.Get_Session (False);
+   begin
+      return Session.Is_Valid
+         and then Context.Application.Verify_Token (Id & "." & Session.Get_Id, Token);
+   end Verify_Token;
+
+   --  ------------------------------
+   --  Create a CSRF token for the component identified by `Id`.
+   --  The token is associated with the web session and signed by the application.
+   --  ------------------------------
+   function Create_Token (Context : in Faces_Context;
+                          Id      : in String;
+                          Expire  : in Duration) return String is
+      Session : constant ASF.Sessions.Session := Context.Request.Get_Session (True);
+   begin
+      return Context.Application.Create_Token (Id & "." & Session.Get_Id, Expire);
+   end Create_Token;
 
    --  ------------------------------
    --  Set the exception handler that will receive unexpected exceptions and process them.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-contexts.faces -- Faces Contexts
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -223,6 +223,18 @@ package ASF.Contexts.Faces is
    --  Create an identifier for a component.
    procedure Create_Unique_Id (Context : in out Faces_Context;
                                Id      : out Natural);
+
+   --  Verify the CSRF token validity for the component identified by `Id`.
+   --  Returns True if the token is valid and false if it has expired or is invalid.
+   function Verify_Token (Context : in Faces_Context;
+                          Id      : in String;
+                          Token   : in String) return Boolean;
+
+   --  Create a CSRF token for the component identified by `Id`.
+   --  The token is associated with the web session and signed by the application.
+   function Create_Token (Context : in Faces_Context;
+                          Id      : in String;
+                          Expire  : in Duration) return String;
 
    --  Set the exception handler that will receive unexpected exceptions and process them.
    procedure Set_Exception_Handler (Context : in out Faces_Context;

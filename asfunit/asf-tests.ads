@@ -54,6 +54,12 @@ package ASF.Tests is
    function Extract (Field    : in String;
                      Filename : in String) return String;
 
+   --  Set in the request the CSRF form parameter identified by `Field` that
+   --  can be extracted from the response output saved in `Filename`.
+   procedure Set_CSRF (Request  : in out ASF.Requests.Mockup.Request'Class;
+                       Field    : in String;
+                       Filename : in String);
+
    --  Simulate a GET request on the given URI with the request parameters.
    --  Get the result in the response object.
    procedure Do_Get (Request  : in out ASF.Requests.Mockup.Request'Class;

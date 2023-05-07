@@ -146,6 +146,18 @@ package body ASF.Tests is
    end Extract;
 
    --  ------------------------------
+   --  Set in the request the CSRF form parameter identified by `Field` that
+   --  can be extracted from the response output saved in `Filename`.
+   --  ------------------------------
+   procedure Set_CSRF (Request  : in out ASF.Requests.Mockup.Request'Class;
+                       Field    : in String;
+                       Filename : in String) is
+      Token : constant String := Extract (Field, Filename);
+   begin
+      Request.Set_Parameter (Field, Token);
+   end Set_CSRF;
+
+   --  ------------------------------
    --  Cleanup the test instance.
    --  ------------------------------
    overriding

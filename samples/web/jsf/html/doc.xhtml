@@ -161,6 +161,18 @@
                     <i>String</i>
                     <span>Name of a frame where the response retrieved after this form submit is to be displayed.</span>
                 </li>
+                <li class="attr-optional">
+                    <b>validate</b>
+                    <i>Natural</i>
+                    <span>The validity duration of the CSRF token created for the form submit protection.</span>
+                </li>
+                <li class="attr-optional">
+                  <b>expireMessage</b>
+                  <i>String</i>
+                  <span>A ValueExpression enabled attribute that, if present, will be used as the
+                    text of the expiration message when the form CSRF token has expired.
+                  </span>
+                </li>
 
                 <ui:include src="doc-lang.xhtml"/>
                 <ui:include src="doc-on-events.xhtml"/>

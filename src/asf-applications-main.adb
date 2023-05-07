@@ -267,13 +267,10 @@ package body ASF.Applications.Main is
    procedure Initialize (App     : in out Application;
                          Conf    : in Config;
                          Factory : in out Application_Factory'Class) is
-      Buf : Ada.Streams.Stream_Element_Array (1 .. TOKEN_KEY_LENGTH);
-      for Buf'Address use App.Token_Key'Address;
-
       Params     : Config := Conf;
    begin
       App.Action_Listener := App'Unchecked_Access;
-      App.Random.Generate (Buf);
+      App.Random.Generate (App.Token_Key);
 
       --  Create the lifecycle handler.
       App.Lifecycle := Factory.Create_Lifecycle_Handler;

@@ -1,5 +1,5 @@
 dnl Autoconf configure script for Ada Server Faces
-dnl Copyright (C) 2009 - 2022 Stephane Carrez
+dnl Copyright (C) 2009 - 2023 Stephane Carrez
 dnl Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 dnl
 dnl  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ AC_CONFIG_SRCDIR([src/asf.ads])
 
 # Current release settings
 ASF_MAJOR_VERSION=1
-ASF_MINOR_VERSION=5
+ASF_MINOR_VERSION=6
 ASF_MICRO_VERSION=0
 ASF_VERSION=$ASF_MAJOR_VERSION.$ASF_MINOR_VERSION.$ASF_MICRO_VERSION
 

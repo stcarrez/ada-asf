@@ -1,13 +1,13 @@
 description = "Web Server Faces JSR 252, JSR 314 and JSR 344 (Testing framework)"
 tags = ["web", "servlet", "http", "framework", "facelet", "jsf", "testing"]
 name = "serverfaces_unit"
-version = "1.5.0"
+version = "1.6.0"
 licenses = "Apache-2.0"
 authors = ["Stephane.Carrez@gmail.com"]
 maintainers = ["Stephane.Carrez@gmail.com"]
 maintainers-logins = ["stcarrez"]
 website = "https://gitlab.com/stcarrez/ada-asf"
-project-files = [".alire/unit/asf_unit.gpr"]
+project-files = ["asf_unit.gpr"]
 long-description = """
 
 [![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
@@ -24,10 +24,10 @@ on top of Ada Server Faces.
 
 [[depends-on]]
 security = "^1.4.1"
-serverfaces = "^1.5.0"
+serverfaces = "^1.6.0"
 servletada = "^1.6.0"
-utilada = "^2.5.0"
-utilada_unit = "^2.5.0"
+utilada = "^2.6.0"
+utilada_unit = "^2.6.0"
 servletada_unit = "^1.5.3"
 
 [gpr-externals]

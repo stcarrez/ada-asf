@@ -13,6 +13,7 @@ long-description = """
 [![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-Servlet.svg)](https://jenkins.vacs.fr/job/Ada-Servlet/)
 [![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-Servlet.svg)](https://jenkins.vacs.fr/job/Ada-Servlet/)
 [![codecov](https://codecov.io/gh/stcarrez/ada-servlet/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-servlet)
+[![Documentation Status](https://readthedocs.org/projects/ada-asf/badge/?version=latest)](https://ada-asf.readthedocs.io/en/latest/?badge=latest)
 
 Ada Servlet allows to create web applications using the same pattern
 as the Java Servlet (See JSR 154, JSR 315). 
@@ -20,6 +21,10 @@ as the Java Servlet (See JSR 154, JSR 315).
 The Ada Servlet library is used by the [Ada Server Faces](https://github.com/stcarrez/ada-asf)
 framework and [Ada Web Application](https://github.com/stcarrez/ada-awa)
 to provide server web requests.
+
+# Documentation
+
+* [Ada Server Faces Programmer's Guide](https://ada-asf.readthedocs.io/en/latest/) [PDF](https://gitlab.com/stcarrez/ada-asf/blob/master/docs/asf-book.pdf)
 
 """
 

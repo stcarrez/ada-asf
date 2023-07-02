@@ -2,26 +2,27 @@
 
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/serverfaces.json)](https://alire.ada.dev/crates/serverfaces)
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/serverfaces_unit.json)](https://alire.ada.dev/crates/serverfaces_unit)
-[![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
-[![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-Server-Faces.svg)](https://jenkins.vacs.fr/job/Ada-Server-Faces/)
-[![codecov](https://codecov.io/gh/stcarrez/ada-asf/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-asf)
+[![Build Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-asf/badges/build.json)](https://porion.vacs.fr/porion/projects/view/ada-asf/summary)
+[![Test Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-asf/badges/tests.json)](https://porion.vacs.fr/porion/projects/view/ada-asf/xunits)
+[![Coverage](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-asf/badges/coverage.json)](https://porion.vacs.fr/porion/projects/view/ada-asf/summary)
+[![Documentation Status](https://readthedocs.org/projects/ada-asf/badge/?version=latest)](https://ada-asf.readthedocs.io/en/latest/?badge=latest)
 [![Download](https://img.shields.io/badge/download-1.5.0-brightgreen.svg)](http://download.vacs.fr/ada-asf/ada-asf-1.5.0.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 [![GitLab](https://img.shields.io/badge/repo-GitLab-6C488A.svg)](https://gitlab.com/stcarrez/ada-asf)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.5.0.svg)
+[![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-asf/1.5.0.svg)](Commits)
 
 Ada Server Faces allows to create web applications using the same pattern
 as the Java Server Faces (See JSR 252, JSR 314 and JSR 344). 
 
-It is part of [Ada Web Application](https://github.com/stcarrez/ada-awa/)
+It is part of [Ada Web Application](https://gitlab.com/stcarrez/ada-awa/)
 framework.
 
 To build ASF, you will need:
 
-* Ada Util     (https://github.com/stcarrez/ada-util          2.5.0)
-* Ada EL       (https://github.com/stcarrez/ada-el            1.8.5)
-* Ada Security (https://github.com/stcarrez/ada-security      1.4.1)
-* Ada Servlet  (https://github.com/stcarrez/ada-servlet       1.6.0)
+* Ada Util     (https://gitlab.com/stcarrez/ada-util          2.5.0)
+* Ada EL       (https://gitlab.com/stcarrez/ada-el            1.8.5)
+* Ada Security (https://gitlab.com/stcarrez/ada-security      1.4.1)
+* Ada Servlet  (https://gitlab.com/stcarrez/ada-servlet       1.6.0)
 * AWS          (https://libre.adacore.com/libre/tools/aws/     2018 or 20)
 * XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.4)
 
@@ -34,9 +35,15 @@ To build ASF, you will need:
 ## Version 1.5.0   - Aug 2022
 - New widget <w:progress> to display horizontal/vertical progress bars
 
-[List all versions](https://github.com/stcarrez/ada-asf/blob/master/NEWS.md)
+[List all versions](https://gitlab.com/stcarrez/ada-asf/blob/master/NEWS.md)
 
-## Build
+## Build with Alire
+
+```
+alr with serverfaces
+```
+
+## Build with configure
 
 Build with the following commands:
 ```
@@ -61,8 +68,8 @@ And unit tests are executed with:
 
 # Documentation
 
-* [Ada Server Faces Programmer's Guide](https://ada-asf.readthedocs.io/en/latest/) [PDF](https://github.com/stcarrez/ada-asf/blob/master/docs/asf-book.pdf)
-* [Ada Server Faces wiki (old documentation)](https://github.com/stcarrez/ada-asf/wiki)
+* [Ada Server Faces Programmer's Guide](https://ada-asf.readthedocs.io/en/latest/) [PDF](https://gitlab.com/stcarrez/ada-asf/blob/master/docs/asf-book.pdf)
+* [Ada Server Faces wiki (old documentation)](https://gitlab.com/stcarrez/ada-asf/wiki)
 
 ## Tutorial
 

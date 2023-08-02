@@ -19,14 +19,14 @@ framework.
 
 To build ASF, you will need:
 
-* Ada Util     (https://gitlab.com/stcarrez/ada-util          2.5.0)
-* Ada EL       (https://gitlab.com/stcarrez/ada-el            1.8.5)
+* Ada Util     (https://gitlab.com/stcarrez/ada-util          2.6.0)
+* Ada EL       (https://gitlab.com/stcarrez/ada-el            1.8.6)
 * Ada Security (https://gitlab.com/stcarrez/ada-security      1.4.1)
 * Ada Servlet  (https://gitlab.com/stcarrez/ada-servlet       1.6.0)
-* AWS          (https://libre.adacore.com/libre/tools/aws/     2018 or 20)
-* XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  4.4)
+* AWS          (https://libre.adacore.com/libre/tools/aws/     20..23)
+* XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  23)
 
-## Version 1.6.0   - Under development
+## Version 1.6.0   - Aug 2023
   - Improvement of <f:viewParam> to accept a from EL expression to setup the value
   - Add util:parseJSON() EL function
   - Integrate jQuery UI 1.13.2

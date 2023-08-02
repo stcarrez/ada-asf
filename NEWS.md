@@ -1,4 +1,4 @@
-Version 1.6.0   - Under development
+Version 1.6.0   - Aug 2023
   - Improvement of <f:viewParam> to accept a from EL expression to setup the value
   - Add util:parseJSON() EL function
   - Integrate jQuery UI 1.13.2

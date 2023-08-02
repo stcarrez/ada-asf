@@ -34,7 +34,7 @@ servletada = "^1.6.0"
 utilada = "^2.6.0"
 
 [gpr-externals]
-BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
+ASF_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
 ASF_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
 
 [configuration]

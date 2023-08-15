@@ -3,6 +3,7 @@ Version 1.6.0   - Aug 2023
   - Add util:parseJSON() EL function
   - Integrate jQuery UI 1.13.2, jQuery 3.7.0, jQuery Chosen 2.2.1, jQuery Datetime picker 2.5.22
   - Fix #4: Support to build with -gnatW8
+  - Feature #2: Upgrade dropzone to 6.0
 
 Version 1.5.0   - Aug 2022
   - New widget <w:progress> to display horizontal/vertical progress bars

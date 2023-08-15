@@ -132,7 +132,7 @@ dd {
 ## Writing the Cylinder Ada Bean
 
 The Ada bean is a instance of an Ada tagged record that must implement a getter and a setter operation.
-These operations are invoked through an [EL expression](/index.php?post/2010/04/28/Ada-EL-The-JSR-245-Unified-Expression-Language-for-Ada).
+These operations are invoked through an [EL expression](https://blog.vacs.fr/index.php?post/2010/04/28/Ada-EL-The-JSR-245-Unified-Expression-Language-for-Ada).
 Basically the getter is called when the view is rendered and the setter is called when the form is submitted and validated.
 The `Bean` interface defines the two operations that
 must be implemented by the Ada type:
@@ -197,16 +197,16 @@ end Set_Value;
 
 ## Register the Cylinder Ada Bean
 
-The next step is to register the cylinder bean and associate it with the @@compute@@ name.
+The next step is to register the cylinder bean and associate it with the `compute` name.
 There are several ways to do that but for the purpose of this example, there will be a global instance of the bean.
-That instance must be @@aliased@@ so that we can use the @@Access@@ attributes.
+That instance must be `aliased` so that we can use the `Access` attributes.
 
 ```Ada
  Bean  : aliased Compute_Bean;
 ```
 
-The Ada bean is registered on the application object by using the @@Set_Global@@ procedure.  This creates
-a global binding between a name and an @@Object@@ record. In our case, the object will hold a reference to the Ada bean.
+The Ada bean is registered on the application object by using the `Set_Global` procedure.  This creates
+a global binding between a name and an `Object` record. In our case, the object will hold a reference to the Ada bean.
 
 ```Ada
 App : aliased ASF.Applications.Main.Application;
@@ -217,7 +217,8 @@ App : aliased ASF.Applications.Main.Application;
 ## Command buttons and method expression
 
 This submit button can be associated with an action that will be executed when the button is pressed.
-The [EL expression|http://blog.vacs.fr/index.php?post/2010/04/28/Ada-EL-The-JSR-245-Unified-Expression-Language-for-Ada] is the mechanism by which we create a binding
+The [EL expression](https://blog.vacs.fr/index.php?post/2010/04/28/Ada-EL-The-JSR-245-Unified-Expression-Language-for-Ada)
+is the mechanism by which we create a binding
 between the XHTML presentation page and the component implemented in Java or Ada. A method expression is a simple EL expression that represents a bean and a method to invoke on that bean. This method expression represent our action.
 
 A typical use is on the __h:commandButton__ component where we can specify an action to invoke when the button is pressed. This is written as:
@@ -323,18 +324,18 @@ When the user presses the __Compute__ button, the brower will submit the form an
 * It will check the validity of input parameters,
 * It will save the input parameters on the `compute` bean by using the `Set_Value` procedure,
 * It will execute the method expression `#{compute.run}`:
-** It calls the `Get_Method_Bindings` function to get a list of valid method,
-** Having found the right binding, it calls the binding procedure
-** The binding procedure invokes the `Run` procedure on the object.
+  * It calls the `Get_Method_Bindings` function to get a list of valid method,
+  * Having found the right binding, it calls the binding procedure
+  * The binding procedure invokes the `Run` procedure on the object.
 
 
 ## Application Initialization
 
-An [Ada Server Faces](https://github.com/stcarrez/ada-asf/) Application is represented by the @@Application@@ type which holds
+An [Ada Server Faces](https://github.com/stcarrez/ada-asf/) Application is represented by the `Application` type which holds
 all the information to process and dispatch requests.  First, let's declare a variable that represents
 our application.
 
-''Note: for the purpose of this article, we will assume that every variable is declared at some package level scope. If those variables are declared in another scope, the @@Access@@ attribute should be replaced by @@Unchecked_Access@@.''
+''Note: for the purpose of this article, we will assume that every variable is declared at some package level scope. If those variables are declared in another scope, the `Access` attribute should be replaced by `Unchecked_Access`.''
 
 ```Ada
 with ASF.Applications.Main;
@@ -355,9 +356,9 @@ with ASF.Applications;
 ```
 
 The initialization requires to define some configuration properties.
-The @@VIEW_EXT@@ property indicates the URI extension that are recognized by ASF
-to associate an XHTML file (the @@compute.html@@ corresponds to the XHTML file @@compute.xhtml@@).
-The @@VIEW_DIR@@ property defines the root directory where the XHTML
+The `VIEW_EXT` property indicates the URI extension that are recognized by ASF
+to associate an XHTML file (the `compute.html` corresponds to the XHTML file `compute.xhtml`).
+The `VIEW_DIR` property defines the root directory where the XHTML
 files are stored.
 
 ```Ada
@@ -369,7 +370,7 @@ App.Initialize (C, Factory);
 
 ## Servlets
 
-[Ada Server Faces](https://github.com/stcarrez/ada-asf/) uses the [Ada Servlet framework|http://blog.vacs.fr/index.php?post/2010/11/11/Ada-Servlet-Example]  to
+[Ada Server Faces](https://github.com/stcarrez/ada-asf/) uses the [Ada Servlet framework](https://blog.vacs.fr/index.php?post/2010/11/11/Ada-Servlet-Example)  to
 receive and dispatch web requests. It provides a `Faces_Servlet` servlet which can be plugged in the servlet container.
 This servlet is the entry point for ASF to process incoming requests. We will also need a `File_Servlet` to process
 the static files. Note that these servlets are implemented using tagged records and you can easily override the entry
@@ -425,7 +426,7 @@ The application object that we created is similar to a Java Web Application pack
 in a [WAR](https://en.wikipedia.org/wiki/WAR_%28Sun_file_format%29) file. It represents the application and it must
 be deployed in a Web Container. With [Ada Server Faces](https://github.com/stcarrez/ada-asf/) this is almost the same, the application
 needs a Web container. By default, ASF provides a web container based on the excellent 
-[Ada Web Server|http://libre.adacore.com/libre/tools/aws/] implementation (other web containers could be provided in the future
+[Ada Web Server](https://github.com/AdaCore/aws) implementation (other web containers could be provided in the future
 based on other web servers).
 
 ```Ada
@@ -447,7 +448,7 @@ WS.Register_Application (CONTEXT_PATH, App'Access);
 ## Global Objects
 
 An application can provide some global objects which will be available during the request processing through
-the [EL expression|http://blog.vacs.fr/index.php?post/2010/04/28/Ada-EL-The-JSR-245-Unified-Expression-Language-for-Ada].
+the [EL expression](https://blog.vacs.fr/index.php?post/2010/04/28/Ada-EL-The-JSR-245-Unified-Expression-Language-for-Ada).
 First, we will expose the application context path which allows to write links in the XHTML page that match the URI used for
 registering the application in the web container.
 
@@ -455,7 +456,7 @@ registering the application in the web container.
 App.Set_Global ("contextPath", CONTEXT_PATH);
 ```
 
-Below is an example of use of this @@contextPath@@ variable:
+Below is an example of use of this `contextPath` variable:
 
 ```XML
 <link media="screen" type="text/css" rel="stylesheet"
@@ -463,7 +464,7 @@ Below is an example of use of this @@contextPath@@ variable:
 ```
 
 Now, we will register the bean that we created for our application! This was explained in the
-[Ada beans|http://blog.vacs.fr/index.php?post/2011/04/10/Ada-Server-Faces-Application-Example-part-2%3A-the-Ada-beans] previous article.
+[Ada beans](https://blog.vacs.fr/index.php?post/2011/04/10/Ada-Server-Faces-Application-Example-part-2%3A-the-Ada-beans) previous article.
 
 ```Ada
 with Volume;
@@ -473,13 +474,13 @@ with Volume;
    App.Set_Global ("compute", Util.Beans.Objects.To_Object (Bean'Access));
 ```
 
-''Note: For the purpose of this example, the @@Compute_Bean@@ is registered as a global object. This means that it will be shared
+''Note: For the purpose of this example, the `Compute_Bean` is registered as a global object. This means that it will be shared
 by every request. A future article will explain how to get a session or a request bean as in Java Server Faces.''
 
 ## Starting the server
 
-Once the application is registered, we can start our server.  Note that since [Ada Web Server|http://libre.adacore.com/libre/tools/aws/] starts several threads that listen to requests,
-the @@Start@@ procedure does not block and returns as soon as the server is started. The delay is necessary
+Once the application is registered, we can start our server.  Note that since [Ada Web Server](https://github.com/AdaCore/aws) starts several threads that listen to requests,
+the `Start` procedure does not block and returns as soon as the server is started. The delay is necessary
 to let the server wait for requests during some time.
 
 ```Ada

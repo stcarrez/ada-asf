@@ -115,6 +115,8 @@ Renders the HTML `form` element.
 | accept           | false    | String          | List of content types that a server processing this form will handle correctly. |
 | acceptcharset    | false    | String          | List of character encodings accepted by the server for this form. |
 | enctype          | false    | String          | Content type used to submit the form to the server. If not specified, the default value is `application/x-www-form-urlencoded` |
+| validate         | false    | Natural         | The validity duration of the CSRF token created for the form submit protection. |
+| expireMessage    | false    | String          | A ValueExpression enabled attribute that, if present, will be used as the text of the expiration message when the form CSRF token has expired. |
 | dir               | false    | String          | Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right) and "RTL" (right-to-left). |
 | lang              | false    | String          | Code describing the language used in the generated markup for this component. |
 | onchange               | false    | String          | Javascript code executed when the value of the element changes. |

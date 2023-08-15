@@ -2,7 +2,33 @@
 
 This chapter explains how to build and install the framework.
 
-## Before Building
+## Using Alire
+
+The Ada Server Faces Library is available as several Alire crates to simplify the installation
+and setup your project.  Run the following commands to setup your project to use the library:
+
+```
+alr index --update-all
+alr with serverfaces
+alr with serverfaces_unit
+```
+
+If you want to use the Ada Server Faces library in a web server, you must choose a servlet
+web container that will handle the requests.  Two web server implementations are provided:
+
+* [AWS](https://github.com/AdaCore/aws)
+* [EWS](https://github.com/simonjwright/ews)
+
+and you should run one of the following `alr` command depending on your choice:
+
+```
+alr with servletada_aws
+alr with servletada_ews
+```
+
+## Without Alire
+
+### Before Building
 
 Before building the framework, you will need:
 
@@ -16,7 +42,7 @@ Before building the framework, you will need:
 First get, build and install the above components and then get, build and install
 the [Ada Server Faces](https://github.com/stcarrez/ada-asf).
 
-## Configuration
+### Configuration
 
 The library uses the `configure` script to detect the build environment, check whether XML/Ada,
 AWS support are available and configure everything before building.  If some component is missing, the
@@ -48,7 +74,7 @@ can configure as follows:
 ./configure --enable-shared
 ```
 
-## Build
+### Build
 
 After configuration is successful, you can build the library by running:
 ```
@@ -62,7 +88,7 @@ make test
 ```
 And unit tests are executed by running the `bin/asf_harness` test program.
 
-## Installation
+### Installation
 The installation is done by running the `install` target:
 
 ```

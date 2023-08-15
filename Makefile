@@ -58,6 +58,8 @@ ASF_DOC= \
   pagebreak.tex \
   ASF_Lifecycles.md \
   pagebreak.tex \
+  ASF_Converters.md \
+  pagebreak.tex \
   ASF_Validators.md \
   pagebreak.tex \
   ASF_Components.md \
@@ -73,14 +75,15 @@ ASF_DOC= \
   ASF_Components_Utils.md \
   pagebreak.tex \
   ASF_Components_Widgets.md \
+  pagebreak.tex \
+  Tips.md \
   pagebreak.tex
 
 DOC_OPTIONS=-f markdown --listings --number-sections --toc
 HTML_OPTIONS=-f markdown --listings --number-sections --toc --css pandoc.css
 
 $(eval $(call pandoc_build,asf-book,$(ASF_DOC),\
-	rm -f docs/user-list.md docs/alloc-sequence.md docs/user_hbm.md; \
-	cat docs/ASF_Components.md > docs/ADO_Model.md))
+	rm -f docs/user-list.md docs/alloc-sequence.md docs/user_hbm.md))
 
 $(eval $(call ada_library,asf))
 $(eval $(call ada_library,asf_unit))

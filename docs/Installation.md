@@ -37,7 +37,7 @@ Before building the framework, you will need:
 * [Ada Security Library](https://github.com/stcarrez/ada-security),
 * [Ada Servlet Library](https://github.com/stcarrez/ada-servlet),
 * [XML/Ada](http://libre.adacore.com/libre/tools/xmlada/)
-* [AWS](http://libre.adacore.com/libre/tools/aws/)
+* [AWS](https://github.com/AdaCore/aws) or [EWS](https://github.com/simonjwright/ews)
 
 First get, build and install the above components and then get, build and install
 the [Ada Server Faces](https://github.com/stcarrez/ada-asf).

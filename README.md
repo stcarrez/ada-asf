@@ -29,7 +29,7 @@ To build ASF, you will need:
 ## Version 1.6.0   - Aug 2023
   - Improvement of <f:viewParam> to accept a from EL expression to setup the value
   - Add util:parseJSON() EL function
-  - Integrate jQuery UI 1.13.2 and jQuery 3.7.0
+  - Integrate jQuery UI 1.13.2, jQuery 3.7.0, jQuery Chosen 2.2.1
   - Fix #4: Support to build with -gnatW8
 
 ## Version 1.5.0   - Aug 2022

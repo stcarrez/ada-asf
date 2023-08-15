@@ -546,6 +546,8 @@
 	/* IE10+ */
 	background: linear-gradient(to bottom, #fff 0%, #f4f8fa 73%);
 	/* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff', endColorstr='#f4f8fa',GradientType=0 );
+/* IE6-9 */
 }
 .xdsoft_datetimepicker .blue-gradient-button:hover, .xdsoft_datetimepicker .blue-gradient-button:focus, .xdsoft_datetimepicker .blue-gradient-button:hover span, .xdsoft_datetimepicker .blue-gradient-button:focus span {
   color: #454551;
@@ -561,4 +563,6 @@
   /* IE10+ */
   background: linear-gradient(to bottom, #f4f8fa 0%, #FFF 73%);
   /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f8fa', endColorstr='#FFF',GradientType=0 );
+  /* IE6-9 */
 }

@@ -33,6 +33,9 @@ runtest:
 build-test::	setup
 	$(GNATMAKE) $(GPRFLAGS) -p -Pasf_tests $(MAKE_ARGS)
 
+samples:
+	$(GNATMAKE) $(GPRFLAGS) -p -Psamples.gpr $(MAKE_ARGS)
+
 install:: install-data
 
 install-data::
@@ -89,3 +92,5 @@ $(eval $(call ada_library,asf))
 $(eval $(call ada_library,asf_unit))
 $(eval $(call alire_publish,.,se/serverfaces,serverfaces-$(VERSION).toml))
 $(eval $(call alire_publish,.alire/unit,se/serverfaces_unit,serverfaces_unit-$(VERSION).toml))
+
+.PHONY: samples

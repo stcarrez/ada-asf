@@ -21,15 +21,15 @@ To build ASF, you will need:
 
 * Ada Util     (https://gitlab.com/stcarrez/ada-util          2.6.0)
 * Ada EL       (https://gitlab.com/stcarrez/ada-el            1.8.6)
-* Ada Security (https://gitlab.com/stcarrez/ada-security      1.4.1)
-* Ada Servlet  (https://gitlab.com/stcarrez/ada-servlet       1.6.0)
-* AWS          (https://libre.adacore.com/libre/tools/aws/     20..23)
+* Ada Security (https://gitlab.com/stcarrez/ada-security      1.5.0)
+* Ada Servlet  (https://gitlab.com/stcarrez/ada-servlet       1.7.0)
+* AWS          (https://github.com/AdaCore/aws                20..23)
 * XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  23)
 
 ## Version 1.6.0   - Aug 2023
   - Improvement of <f:viewParam> to accept a from EL expression to setup the value
   - Add util:parseJSON() EL function
-  - Integrate jQuery UI 1.13.2
+  - Integrate jQuery UI 1.13.2 and jQuery 3.7.0
   - Fix #4: Support to build with -gnatW8
 
 ## Version 1.5.0   - Aug 2022
@@ -41,6 +41,19 @@ To build ASF, you will need:
 
 ```
 alr with serverfaces
+```
+
+If you want to use the Ada Server Faces library in a web server, you must choose a servlet
+web container that will handle the requests.  Two web server implementations are provided:
+
+* [AWS](https://github.com/AdaCore/aws)
+* [EWS](https://github.com/simonjwright/ews)
+
+and you should run one of the following `alr` command depending on your choice:
+
+```
+alr with servletada_aws
+alr with servletada_ews
 ```
 
 ## Build with configure

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-sizes -- Size converter
---  Copyright (C) 2012, 2022 Stephane Carrez
+--  Copyright (C) 2012, 2022, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,8 @@ with Util.Beans.Objects;
 with ASF.Components.Base;
 with ASF.Contexts.Faces;
 
---  == Size Converter ==
---  The <b>ASF.Converters.Sizes</b> defines a converter to display a file size in bytes,
+--  == Size converter ==
+--  The `ASF.Converters.Sizes` defines a converter to display a file size in bytes,
 --  kilo bytes, mega bytes or giga bytes.
 package ASF.Converters.Sizes is
 

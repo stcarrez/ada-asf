@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-numbers -- Floating point number converters
---  Copyright (C) 2010, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2019, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ with ASF.Locales;
 private with Util.Locales;
 private with Ada.Text_IO.Editing;
 
+--  == Number converter ==
 --  The `ASF.Converters.Numbers` provides a floating point number converter.
 --  It can be used to print floating point numbers in various formats.
 package ASF.Converters.Numbers is

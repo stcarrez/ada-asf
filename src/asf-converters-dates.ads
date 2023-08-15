@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-converters-dates -- Date Converters
---  Copyright (C) 2011, 2014, 2016, 2022 Stephane Carrez
+--  Copyright (C) 2011, 2014, 2016, 2022, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,11 +22,15 @@ with ASF.Components.Base;
 with ASF.Contexts.Faces;
 with ASF.Locales;
 
---  The <b>ASF.Converters.Dates</b> defines the date converter to format a date object
---  into a localized representation.
+--  == Date converter ==
+--  The `ASF.Converters.Dates` defines the date converter to format a date object
+--  into a localized representation.  It is automatically created when the
+--  `f:convertDateTime` tag is used in the facelet file, for example as follows:
 --
---  See JSR 314 - JavaServer Faces Specification 9.4.3 <f:convertDateTime>
---  (To_String is the JSF getAsString method and To_Object is the JSF getAsObject method)
+--     <h:outputText value='#{messages.today}'>
+--        <f:convertDateTime dateStyle="short"/>
+--     </h:outputText>
+--
 package ASF.Converters.Dates is
 
    type Style_Type is (DEFAULT, SHORT, MEDIUM, LONG, FULL);

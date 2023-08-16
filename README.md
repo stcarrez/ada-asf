@@ -33,9 +33,6 @@ To build ASF, you will need:
   - Fix #4: Support to build with -gnatW8
   - Feature #2: Upgrade dropzone to 6.0
 
-## Version 1.5.0   - Aug 2022
-- New widget <w:progress> to display horizontal/vertical progress bars
-
 [List all versions](https://gitlab.com/stcarrez/ada-asf/blob/master/NEWS.md)
 
 ## Build with Alire
@@ -67,17 +64,12 @@ Build with the following commands:
 
 The samples can be built using:
 ```
-   gnatmake -Psamples
+   make samples
 ```
    
-The unit tests are built using:
+The unit tests are built using and executed with:
 ```
-   gnatmake -Ptests
-```
-
-And unit tests are executed with:
-```
-   bin/asf_harness
+   make test
 ```
 
 # Documentation

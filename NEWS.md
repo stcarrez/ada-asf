@@ -1,3 +1,6 @@
+Version 1.6.1  - Under development
+  - Cleanup build environment to drop configure
+
 Version 1.6.0   - Aug 2023
   - Improvement of <f:viewParam> to accept a from EL expression to setup the value
   - Add util:parseJSON() EL function

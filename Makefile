@@ -1,5 +1,9 @@
 NAME=asf
 
+MAKE_ARGS += -XASF_BUILD=$(BUILD)
+PANDOC := $(shell which pandoc)
+DYNAMO := $(shell which dynamo)
+
 -include Makefile.conf
 
 STATIC_MAKE_ARGS = $(MAKE_ARGS) -XASF_LIBRARY_TYPE=static
@@ -31,10 +35,10 @@ runtest:
 	bin/asf_harness -l $(NAME): -xml asf-aunit.xml -config test.properties
 
 build-test::	setup
-	$(GNATMAKE) $(GPRFLAGS) -p -Pasf_tests $(MAKE_ARGS)
+	cd regtests && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS) 
 
 samples:
-	$(GNATMAKE) $(GPRFLAGS) -p -Psamples.gpr $(MAKE_ARGS)
+	cd samples && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
 
 install:: install-data
 

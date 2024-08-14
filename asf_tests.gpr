@@ -1,0 +1,24 @@
+with "asf_config";
+with "utilada_sys";
+with "utilada_unit";
+with "elada";
+with "servletada";
+with "asf";
+with "asf_unit";
+
+project Asf_Tests is
+
+   Mains := ("asf_harness.adb");
+
+   for Source_Dirs use ("regtests");
+   for Main use Mains;
+
+   for Object_Dir use "./" & Asf_Config'Object_Dir & "/obj";
+   for Exec_Dir use ".bin";
+
+   package Binder renames Asf_Config.Binder;
+   package Builder renames Asf_Config.Builder;
+   package Compiler renames Asf_Config.Compiler;
+   package Linker renames Asf_Config.Linker;
+
+end Asf_Tests;

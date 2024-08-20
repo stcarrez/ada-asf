@@ -96,8 +96,8 @@ HTML_OPTIONS=-f markdown --listings --number-sections --toc --css pandoc.css
 $(eval $(call pandoc_build,asf-book,$(ASF_DOC),\
 	rm -f docs/user-list.md docs/alloc-sequence.md docs/user_hbm.md))
 
-$(eval $(call ada_library,asf))
-$(eval $(call ada_library,asf_unit))
+$(eval $(call ada_library,asf,.))
+$(eval $(call ada_library,asf_unit,unit))
 $(eval $(call alire_publish,.,se/serverfaces,serverfaces-$(VERSION).toml))
 $(eval $(call alire_publish,.alire/unit,se/serverfaces_unit,serverfaces_unit-$(VERSION).toml))
 

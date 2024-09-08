@@ -17,14 +17,8 @@ as the Java Server Faces (See JSR 252, JSR 314 and JSR 344).
 It is part of [Ada Web Application](https://gitlab.com/stcarrez/ada-awa/)
 framework.
 
-To build ASF, you will need:
-
-* Ada Util     (https://gitlab.com/stcarrez/ada-util          2.6.0)
-* Ada EL       (https://gitlab.com/stcarrez/ada-el            1.8.6)
-* Ada Security (https://gitlab.com/stcarrez/ada-security      1.5.0)
-* Ada Servlet  (https://gitlab.com/stcarrez/ada-servlet       1.7.0)
-* AWS          (https://github.com/AdaCore/aws                20..23)
-* XML/Ada      (https://libre.adacore.com/libre/tools/xmlada/  23)
+To build the Ada Keystore you will need the GNAT Ada compiler as well
+as the [Alire](https://alire.ada.dev/) package manager.
 
 ## Version 1.6.1  - Under development
   - Cleanup build environment to drop configure
@@ -57,22 +51,33 @@ alr with servletada_aws
 alr with servletada_ews
 ```
 
-## Build with configure
+## Build for Ada Server Faces development
 
-Build with the following commands:
+You can also build and install the library and install it as follows
+(but the Alire setup is prefered):
+
 ```
-   ./configure
-   make
+make
 ```
 
-The samples can be built using:
+After building, it is good practice to run the unit tests before installing the library.
+The unit tests are built and executed using:
 ```
-   make samples
+make test
 ```
-   
-The unit tests are built using and executed with:
+And unit tests are executed by running the `bin/asf_harness` test program.
+
+The installation is done by running the `install` target:
+
 ```
-   make test
+make install
+```
+
+If you want to install on a specific place, you can change the `prefix` and indicate the installation
+direction as follows:
+
+```
+make install prefix=/opt
 ```
 
 # Documentation

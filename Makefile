@@ -38,7 +38,7 @@ runtest:
 	export PATH="$$DIR/lib/asf/relocatable:$$DIR/lib/asfunit/relocatable:$$PATH"; \
 	bin/asf_harness -l $(NAME): -xml asf-aunit.xml -config test.properties
 
-build-test::	setup
+build-test::	lib-setup
 	cd regtests && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS) 
 
 samples:

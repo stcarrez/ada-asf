@@ -1,7 +1,7 @@
 ---
 title: "Ada Server Faces Programmer's Guide"
 author: [Stephane Carrez]
-date: 2023-08-14
+date: 2024-09-08
 subject: "Ada Server Faces"
 tags: [Ada, Web, Servlets, JSF, Server, Faces, HTML, Validation]
 titlepage: true

@@ -99,6 +99,6 @@ $(eval $(call pandoc_build,asf-book,$(ASF_DOC),\
 $(eval $(call ada_library,asf,.))
 $(eval $(call ada_library,asf_unit,unit))
 $(eval $(call alire_publish,.,se/serverfaces,serverfaces-$(VERSION).toml))
-$(eval $(call alire_publish,.alire/unit,se/serverfaces_unit,serverfaces_unit-$(VERSION).toml))
+$(eval $(call alire_publish,unit,se/serverfaces_unit,serverfaces_unit-$(VERSION).toml))
 
 .PHONY: samples

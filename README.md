@@ -20,15 +20,8 @@ framework.
 To build the Ada Keystore you will need the GNAT Ada compiler as well
 as the [Alire](https://alire.ada.dev/) package manager.
 
-## Version 1.6.1  - Under development
+## Version 1.6.1  - Sep 2024
   - Cleanup build environment to drop configure
-
-## Version 1.6.0   - Aug 2023
-  - Improvement of <f:viewParam> to accept a from EL expression to setup the value
-  - Add util:parseJSON() EL function
-  - Integrate jQuery UI 1.13.2, jQuery 3.7.0, jQuery Chosen 2.2.1, jQuery Datetime picker 2.5.22
-  - Fix #4: Support to build with -gnatW8
-  - Feature #2: Upgrade dropzone to 6.0
 
 [List all versions](https://gitlab.com/stcarrez/ada-asf/blob/master/NEWS.md)
 

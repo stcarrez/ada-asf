@@ -5,8 +5,6 @@ DIST_DIR=ada-asf-$(VERSION)
 DIST_FILE=ada-asf-$(VERSION).tar.gz
 
 MAKE_ARGS += -XASF_BUILD=$(BUILD)
-PANDOC := $(shell which pandoc)
-DYNAMO := $(shell which dynamo)
 
 -include Makefile.conf
 

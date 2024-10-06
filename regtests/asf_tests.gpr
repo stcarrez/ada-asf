@@ -13,7 +13,7 @@ project Asf_Tests is
    for Source_Dirs use ("src");
    for Main use Mains;
 
-   for Object_Dir use "../" & Asf_Config'Object_Dir & "/obj";
+   for Object_Dir use "../" & Asf_Config'Object_Dir & "/obj/regtests";
    for Exec_Dir use "../bin";
 
    package Binder renames Asf_Config.Binder;

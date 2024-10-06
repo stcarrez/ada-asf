@@ -20,4 +20,4 @@ disabled = true
 
 [[pins]]
 serverfaces = { path = '..' }
-serverfaces_unit = { path = '../asfunit' }
+serverfaces_unit = { path = '../unit' }

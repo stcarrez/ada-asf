@@ -17,15 +17,15 @@ as the Java Server Faces (See JSR 252, JSR 314 and JSR 344).
 It is part of [Ada Web Application](https://gitlab.com/stcarrez/ada-awa/)
 framework.
 
-To build the Ada Keystore you will need the GNAT Ada compiler as well
-as the [Alire](https://alire.ada.dev/) package manager.
-
 ## Version 1.6.1  - Sep 2024
   - Cleanup build environment to drop configure
 
 [List all versions](https://gitlab.com/stcarrez/ada-asf/blob/master/NEWS.md)
 
-## Build with Alire
+## Using with Alire
+
+If you are using [Alire](https://alire.ada.dev/) in your project, run the following command
+within your [Alire](https://alire.ada.dev/) project to use the library:
 
 ```
 alr with serverfaces
@@ -44,21 +44,38 @@ alr with servletada_aws
 alr with servletada_ews
 ```
 
-## Build for Ada Server Faces development
+## Using without Alire
 
-You can also build and install the library and install it as follows
-(but the Alire setup is prefered):
+If you don't have [Alire](https://alire.ada.dev/) or want to build and install the library
+on a specific place, run a `setup` command to configure the build as well as installation
+directory.
+
+The `HAVE_ALIRE` configuration allows you to disable the build with [Alire](https://alire.ada.dev/).
+
+```
+make setup BUILD=debug PREFIX=/build/install HAVE_ALIRE=no
+```
+
+Since this build method does not verify that all dependencies are met, make sure that you
+have already built and install the following components and they are available to `gprbuild`
+through `ADA_PROJECT_PATH` if needed:
+
+* [Ada Servlet](https://gitlab.com/stcarrez/ada-servlet/)
+* [Ada Security Library](https://gitlab.com/stcarrez/ada-security/)
+* [Ada EL Library](https://gitlab.com/stcarrez/ada-el/)
+* [Ada Utility Library](https://gitlab.com/stcarrez/ada-util/)
+
+Then build, run the unit tests and install by using:
 
 ```
 make
+make test
+make install
 ```
 
-After building, it is good practice to run the unit tests before installing the library.
-The unit tests are built and executed using:
-```
-make test
-```
-And unit tests are executed by running the `bin/asf_harness` test program.
+To use the installed libraries, make sure your `ADA_PROJECT_PATH` contains the directory
+where you installed the libraries (configured by the `PREFIX=<path>` option in the setup phase).
+The installed GNAT projects are the same as those used when using [Alire](https://alire.ada.dev/).
 
 The installation is done by running the `install` target:
 

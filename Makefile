@@ -27,6 +27,8 @@ SHARED_MAKE_ARGS += -XLIBRARY_TYPE=relocatable
 
 include Makefile.defaults
 
+DEFAULT_ADA_PROJECT_PATH=$(SRC_ROOT):$(SRC_ROOT)/unit:$(ADA_PROJECT_PATH)
+
 # Build and run the unit tests
 check test:	build runtest
 

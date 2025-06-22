@@ -4,7 +4,6 @@
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
-with Ada.Calendar;
 with Util.Beans.Objects.Time;
 with ASF.Events.Faces.Actions;
 package body Messages is
@@ -62,6 +61,8 @@ package body Messages is
       if Length (From.Text) > 200 then
          Ada.Strings.Unbounded.Replace_Slice (From.Text, 200, Length (From.Text), "...");
       end if;
+      From.Created := Ada.Calendar.Clock;
+      Database.Clean;
       Database.Post (From);
       Outcome := To_Unbounded_String ("posted");
    end Post;
@@ -171,6 +172,22 @@ package body Messages is
       begin
          Messages.Delete (Id);
       end Delete;
+
+      --  ------------------------------
+      --  Clean old messages (older than 24 h).
+      --  ------------------------------
+      procedure Clean is
+         use all type Ada.Calendar.Time;
+
+         Limit : constant Duration := 86400.0;
+         Old   : constant Ada.Calendar.Time := Ada.Calendar.Clock - Limit;
+      begin
+         while not Messages.Is_Empty
+           and then Messages.First_Element.Created < Old
+         loop
+            Messages.Delete_First;
+         end loop;
+      end Clean;
 
       --  ------------------------------
       --  Get the message identified by <b>Id</b>.

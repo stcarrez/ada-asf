@@ -1,11 +1,12 @@
 -----------------------------------------------------------------------
 --  messages - A simple memory-based forum
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 with Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
+with Ada.Calendar;
 with Util.Beans.Objects;
 with Util.Beans.Basic;
 with Util.Beans.Methods;
@@ -70,9 +71,10 @@ package Messages is
 private
 
    type Message_Bean is new Util.Beans.Basic.Bean and Util.Beans.Methods.Method_Bean with record
-      Id     : Message_Id;
-      Text   : Ada.Strings.Unbounded.Unbounded_String;
-      Email  : Ada.Strings.Unbounded.Unbounded_String;
+      Id      : Message_Id;
+      Text    : Ada.Strings.Unbounded.Unbounded_String;
+      Email   : Ada.Strings.Unbounded.Unbounded_String;
+      Created : Ada.Calendar.Time;
    end record;
 
    package Message_Vector is
@@ -87,6 +89,9 @@ private
 
       --  Delete the message identified by <b>Id</b>.
       procedure Delete (Id : in Message_Id);
+
+      --  Clean old messages (older than 24 h).
+      procedure Clean;
 
       --  Get the message identified by <b>Id</b>.
       function Get_Message (Id : in Message_Id) return Message_Bean;

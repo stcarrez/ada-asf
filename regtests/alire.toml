@@ -1,7 +1,7 @@
 description = "Unit tests for Web Server Faces JSR 252, JSR 314 and JSR 344"
 tags = ["web", "servlet", "http", "json"]
 name = "serverfaces_tests"
-version = "1.6.1"
+version = "1.6.2"
 licenses = "Apache-2.0"
 authors = ["Stephane.Carrez@gmail.com"]
 maintainers = ["Stephane.Carrez@gmail.com"]
@@ -10,10 +10,10 @@ project-files = ["asf_tests.gpr"]
 website = "https://gitlab.com/stcarrez/ada-asf"
 
 [[depends-on]]
-utilada = "^2.6.0"
+utilada = "^2.8.0"
 serverfaces = "*"
 serverfaces_unit = "*"
-utilada_unit = "^2.6.0"
+utilada_unit = "^2.8.0"
 
 [configuration]
 disabled = true

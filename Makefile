@@ -1,5 +1,5 @@
 NAME=asf
-VERSION=1.6.1
+VERSION=1.6.2
 
 DIST_DIR=ada-asf-$(VERSION)
 DIST_FILE=ada-asf-$(VERSION).tar.gz

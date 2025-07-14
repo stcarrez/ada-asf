@@ -1,3 +1,6 @@
+Version 1.6.2  - Jul 2025
+  - Fix #10: Install files with gprinstall
+
 Version 1.6.1  - Sep 2024
   - Cleanup build environment to drop configure
 

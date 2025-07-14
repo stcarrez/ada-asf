@@ -18,6 +18,9 @@ as the Java Server Faces (See JSR 252, JSR 314 and JSR 344).
 It is part of [Ada Web Application](https://gitlab.com/stcarrez/ada-awa/)
 framework.
 
+## Version 1.6.2  - Jul 2025
+  - Fix #10: Install files with gprinstall
+
 ## Version 1.6.1  - Sep 2024
   - Cleanup build environment to drop configure
 

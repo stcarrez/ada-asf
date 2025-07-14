@@ -24,4 +24,12 @@ library project Asf is
    package Compiler renames Asf_Config.Compiler;
    package Ide      renames Asf_Config.Ide;
 
+   package Install is
+      for Artifacts ("share/dynamo/asf") use ("dynamo.xml", "NOTICE.txt", "LICENSE.txt");
+      for Artifacts ("share/dynamo/asf/bundles") use ("bundles/*");
+      for Artifacts ("share/dynamo/asf/web/css") use ("web/css/*");
+      for Artifacts ("share/dynamo/asf/web/js") use ("web/js/*");
+      for Artifacts ("share/dynamo/asf/web/images") use ("web/images/*");
+   end Install;
+
 end Asf;

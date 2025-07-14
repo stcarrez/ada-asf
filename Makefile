@@ -44,17 +44,6 @@ build-test::	lib-setup
 samples:
 	cd samples && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
 
-install:: install-data
-
-install-data::
-	${MKDIR} -p $(DESTDIR)${dynamodir}/asf/bundles
-	${MKDIR} -p $(DESTDIR)${dynamodir}/asf/web
-	(cd web && tar --exclude='*~' -cf - . )| (cd $(DESTDIR)${dynamodir}/asf/web && tar xf -)
-	${CP} bundles/*.properties $(DESTDIR)${dynamodir}/asf/bundles/
-	${CP} dynamo.xml $(DESTDIR)${dynamodir}/asf/
-	${CP} NOTICE.txt $(DESTDIR)${dynamodir}/asf/
-	${CP} LICENSE.txt $(DESTDIR)${dynamodir}/asf/
-
 uninstall::
 	rm -rf $(DESTDIR)${dynamodir}/asf
 

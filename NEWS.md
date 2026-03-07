@@ -1,3 +1,6 @@
+Version 1.6.3  - Under development
+  - Feature #11: Support HTML5 Self-Closing Tag Syntax
+
 Version 1.6.2  - Jul 2025
   - Fix #10: Install files with gprinstall
 

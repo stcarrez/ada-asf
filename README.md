@@ -18,6 +18,9 @@ as the Java Server Faces (See JSR 252, JSR 314 and JSR 344).
 It is part of [Ada Web Application](https://gitlab.com/stcarrez/ada-awa/)
 framework.
 
+## Version 1.6.3  - Under development
+  - Feature #11: Support HTML5 Self-Closing Tag Syntax
+
 ## Version 1.6.2  - Jul 2025
   - Fix #10: Install files with gprinstall
 

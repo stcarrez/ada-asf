@@ -12,7 +12,7 @@ website = "https://gitlab.com/stcarrez/ada-asf"
 [[depends-on]]
 utilada = "^2.6.0"
 serverfaces = "*"
-servletada_aws = "1.7.0"
+servletada_aws = "1.8.1"
 aws = "24.0"
 
 [configuration]

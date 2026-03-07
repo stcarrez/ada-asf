@@ -17,7 +17,9 @@ with ASF.Responses.Mockup;
 with ASF.Servlets;
 with ASF.Servlets.Faces;
 with ASF.Server;
+with Servlet.Core;
 
+with Util.Log.Loggers;
 with EL.Objects;
 --  This example reads an XHTML file and renders the result.
 procedure Render is
@@ -29,6 +31,8 @@ procedure Render is
 
    use EL.Objects;
 
+   CONFIG_PATH  : constant String := "samples.properties";
+   Log       : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Render");
    Factory   : ASF.Applications.Main.Application_Factory;
    Faces     : aliased ASF.Servlets.Faces.Faces_Servlet;
    App       : aliased Applications.Main.Application;
@@ -38,8 +42,17 @@ begin
    Conf.Set ("view.ignore_white_spaces", "false");
    Conf.Set ("view.escape_unknown_tags", "false");
    Conf.Set ("view.ignore_empty_lines", "true");
-   Conf.Set ("view.dir", "./");
+   Conf.Set ("view.dir", "./;./samples/web");
    Conf.Set ("view.file_ext", "");
+   begin
+      Conf.Load_Properties (CONFIG_PATH);
+      Util.Log.Loggers.Initialize (CONFIG_PATH);
+
+   exception
+      when Ada.IO_Exceptions.Name_Error =>
+         Log.Error ("Cannot read application configuration file {0}", CONFIG_PATH);
+
+   end;
    App.Initialize (Conf, Factory);
 
    App.Add_Servlet (Name => "file", Server => Faces'Unchecked_Access);
@@ -66,6 +79,7 @@ begin
       end case;
    end loop;
 
+   App.Start;
    declare
       View_Name : constant String := Get_Argument;
       Pos       : constant Natural := Index (View_Name, ".");
@@ -81,8 +95,11 @@ begin
 
       Req.Set_Method ("GET");
       Req.Set_Request_URI ("/render/" & View_Name);
-      App.Dispatch (View_Name, Req, Reply);
-
+      declare
+         Dispatcher : constant ASF.Servlets.Request_Dispatcher := App.Get_Request_Dispatcher (View_Name);
+      begin
+         Servlet.Core.Forward (Dispatcher, Req, Reply);
+      end;
       Reply.Read_Content (Content);
       Ada.Text_IO.Put_Line (Ada.Strings.Unbounded.To_String (Content));
 

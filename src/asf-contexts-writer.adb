@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  writer -- Response stream writer
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -8,6 +8,7 @@
 with Util.Strings.Transforms;
 with Unicode;
 with Interfaces;
+with ASF.Views.Nodes.Reader;
 package body ASF.Contexts.Writer is
 
    use Unicode;
@@ -106,9 +107,11 @@ package body ASF.Contexts.Writer is
                           Name   : in String) is
    begin
       Close_Current (Stream);
-      Stream.Write ("</");
-      Stream.Write (Name);
-      Stream.Write ('>');
+      if not ASF.Views.Nodes.Reader.Is_Self_Closing (Name) then
+         Stream.Write ("</");
+         Stream.Write (Name);
+         Stream.Write ('>');
+      end if;
    end End_Element;
 
    --  ------------------------------
@@ -483,7 +486,6 @@ package body ASF.Contexts.Writer is
          return;
       end if;
       Stream.Start_Element ("script");
-      Stream.Write_Attribute ("type", "text/javascript");
       Close_Current (Stream);
       Stream.Write (Stream.Script_Queue);
       Stream.End_Element ("script");
@@ -549,7 +551,7 @@ package body ASF.Contexts.Writer is
                                    Async  : in Boolean := False) is
    begin
       Util.Strings.Builders.Append (Stream.Include_Queue,
-                                    "<script type=""text/javascript"" src=""");
+                                    "<script src=""");
       Util.Strings.Builders.Append (Stream.Include_Queue, URL);
       if Async then
          Util.Strings.Builders.Append (Stream.Include_Queue, """ async></script>");

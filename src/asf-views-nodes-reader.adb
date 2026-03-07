@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-nodes-reader -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2019, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -32,8 +32,6 @@ package body ASF.Views.Nodes.Reader is
 
    --  Freeze the current Text_Tag node, counting the number of elements it contains.
    procedure Finish_Text_Node (Handler : in out Xhtml_Reader'Class);
-
-   function Is_Self_Closing (Tag : in String) return Boolean;
 
    --  ------------------------------
    --  Push the current context when entering in an element.
@@ -527,16 +525,28 @@ package body ASF.Views.Nodes.Reader is
    function Is_Self_Closing (Tag : in String) return Boolean is
    begin
       case Tag (Tag'First) is
+         when 'a' =>
+            return Tag = "area";
          when 'b' =>
-            return Tag = "br";
+            return Tag = "br" or else Tag = "base";
+         when 'c' =>
+            return Tag = "col";
+         when 'e' =>
+            return Tag = "embed";
          when 'h' =>
             return Tag = "hr";
+         when 'i' =>
+            return Tag = "img" or else Tag = "input";
          when 'm' =>
             return Tag = "meta";
-         when 'i' =>
-            return Tag = "img";
          when 'l' =>
             return Tag = "link";
+         when 'p' =>
+            return Tag = "param";
+         when 's' =>
+            return Tag = "source";
+         when 'w' =>
+            return Tag = "wbr";
          when others =>
             return False;
       end case;
@@ -571,7 +581,7 @@ package body ASF.Views.Nodes.Reader is
                Handler.Collect_Text (Qname);
                Handler.Collect_Text ("&gt;");
             elsif not Handler.Current.Has_Content and then Is_Self_Closing (Qname) then
-               Handler.Collect_Text (" />");
+               Handler.Collect_Text (">");
             else
                if not Handler.Current.Has_Content then
                   Handler.Collect_Text ("></");

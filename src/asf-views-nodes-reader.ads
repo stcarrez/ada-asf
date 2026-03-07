@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf -- XHTML Reader
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -20,6 +20,8 @@ private with Util.Strings.Maps;
 package ASF.Views.Nodes.Reader is
 
    Parsing_Error : exception;
+
+   function Is_Self_Closing (Tag : in String) return Boolean;
 
    type Xhtml_Reader is new Sax.Readers.Reader with private;
 

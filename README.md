@@ -20,6 +20,7 @@ framework.
 
 ## Version 1.6.3  - Under development
   - Feature #11: Support HTML5 Self-Closing Tag Syntax
+  - Integrate jQuery UI 1.14.2, jQuery 4.0.0, jQuery Chosen 3.0.0
 
 ## Version 1.6.2  - Jul 2025
   - Fix #10: Install files with gprinstall

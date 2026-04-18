@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009 - 2023 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -356,13 +356,23 @@ package body ASF.Applications.Main is
    end Initialize_Config;
 
    --  ------------------------------
-   --  Get the configuration parameter;
+   --  Get the configuration parameter.
    --  ------------------------------
    function Get_Config (App   : Application;
                         Param : Config_Param) return String is
    begin
       return App.Get_Init_Parameter (Param.Name.all, Param.Default.all);
    end Get_Config;
+
+   --  ------------------------------
+   --  Set the configuration parameter.
+   --  ------------------------------
+   procedure Set_Config (App   : in out Application;
+                         Param : in Config_Param;
+                         Value : in String) is
+   begin
+      App.Set_Init_Parameter (Param.Name.all, Value);
+   end Set_Config;
 
    --  ------------------------------
    --  Set a global variable in the global EL contexts.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2023 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -162,9 +162,14 @@ package ASF.Applications.Main is
    overriding
    procedure Finalize (App : in out Application);
 
-   --  Get the configuration parameter;
+   --  Get the configuration parameter.
    function Get_Config (App   : Application;
                         Param : Config_Param) return String;
+
+   --  Set the configuration parameter.
+   procedure Set_Config (App   : in out Application;
+                         Param : in Config_Param;
+                         Value : in String);
 
    --  Set a global variable in the global EL contexts.
    procedure Set_Global (App     : in out Application;

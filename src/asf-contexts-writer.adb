@@ -36,8 +36,8 @@ package body ASF.Contexts.Writer is
                          Output       : in ASF.Streams.Print_Stream) is
    begin
       Stream.Initialize (Output);
-      Stream.Content_Type := To_Unbounded_String (Content_Type);
       Stream.Encoding     := Unicode.Encodings.Get_By_Name (Encoding);
+      Stream.Set_Content_Type (Content_Type);
    end Initialize;
 
    --  ------------------------------
@@ -64,6 +64,16 @@ package body ASF.Contexts.Writer is
    begin
       return Stream.Encoding.Name.all;
    end Get_Encoding;
+
+   --  ------------------------------
+   --  Set the content type.
+   --  ------------------------------
+   procedure Set_Content_Type (Stream       : in out Response_Writer;
+                               Content_Type : in String) is
+   begin
+      Stream.Content_Type := To_Unbounded_String (Content_Type);
+      Stream.Allow_Self_Closing := Content_Type = "text/html";
+   end Set_Content_Type;
 
    --  ------------------------------
    --  Close the current XML entity if an entity was started
@@ -107,7 +117,9 @@ package body ASF.Contexts.Writer is
                           Name   : in String) is
    begin
       Close_Current (Stream);
-      if not ASF.Views.Nodes.Reader.Is_Self_Closing (Name) then
+      if not Stream.Allow_Self_Closing
+        or else not ASF.Views.Nodes.Reader.Is_Self_Closing (Name)
+      then
          Stream.Write ("</");
          Stream.Write (Name);
          Stream.Write ('>');

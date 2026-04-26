@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  applications -- Ada Web Application
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2018, 2020, 2021, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -41,7 +41,6 @@ package body ASF.Applications.Views is
 
    --  Compose a URI path with two components.  Unlike the Ada.Directories.Compose,
    --  and Util.Files.Compose the path separator must be a URL path separator (ie, '/').
-   --  ------------------------------
    function Compose (Directory : in String;
                      Name      : in String) return String;
 
@@ -106,6 +105,9 @@ package body ASF.Applications.Views is
          return Name (Name'First .. Pos - 1) & To_String (Handler.File_Ext);
 
       elsif Pos > 0 and then Handler.File_Ext = Name (Pos .. Name'Last) then
+         return Name;
+
+      elsif Pos > 0 and then Name (Pos .. Name'Last) = ".xml" then
          return Name;
 
       end if;

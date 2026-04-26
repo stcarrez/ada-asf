@@ -10,6 +10,7 @@ with ASF.Events.Phases;
 with ASF.Components.Base;
 with ASF.Events.Faces.Actions;
 with ASF.Applications.Main;
+with ASF.Contexts.Writer;
 
 package body ASF.Components.Core.Views is
 
@@ -94,7 +95,9 @@ package body ASF.Components.Core.Views is
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class) is
       Content_Type : constant String := UI.Get_Content_Type (Context => Context);
+      Writer       : constant ASF.Contexts.Writer.Response_Writer_Access := Context.Get_Response_Writer;
    begin
+      Writer.Set_Content_Type (Content_Type);
       Context.Get_Response.Set_Content_Type (Content_Type);
       if UI.Left_Tree /= null then
          UI.Left_Tree.Encode_All (Context);

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-views-facelets -- Facelets representation and management
---  Copyright (C) 2009, 2010, 2011, 2014, 2015, 2017, 2019, 2020, 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -13,6 +13,7 @@ with Input_Sources.File;
 with Sax.Readers;
 with EL.Contexts.Default;
 with Util.Files;
+with Util.Strings;
 with Util.Log.Loggers;
 package body ASF.Views.Facelets is
 
@@ -203,6 +204,7 @@ package body ASF.Views.Facelets is
          Reader.Set_Ignore_White_Spaces (Factory.Ignore_White_Spaces);
          Reader.Set_Escape_Unknown_Tags (Factory.Escape_Unknown_Tags);
          Reader.Set_Ignore_Empty_Lines (Factory.Ignore_Empty_Lines);
+         Reader.Set_Allow_Self_Closing (Util.Strings.Ends_With (Name, ".xhtml"));
          begin
             Reader.Parse (File, Read, Factory.Factory, Ctx'Unchecked_Access);
 

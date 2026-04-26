@@ -123,6 +123,10 @@ package ASF.Views.Nodes.Reader is
    procedure Set_Ignore_Empty_Lines (Reader : in out Xhtml_Reader;
                                      Value  : in Boolean);
 
+   --  Set the allow self closing.
+   procedure Set_Allow_Self_Closing (Reader : in out Xhtml_Reader;
+                                     Value  : in Boolean);
+
    --  Parse an XML stream, and calls the appropriate SAX callbacks for each
    --  event.
    --  This is not re-entrant: you can not call Parse with the same Parser
@@ -236,6 +240,8 @@ private
       --  Whether empty lines should be ignored (when white spaces are kept).
       Ignore_Empty_Lines  : Boolean := True;
 
+      --  Whether HTML self closing tags are allowed.
+      Allow_Self_Closing  : Boolean := True;
    end record;
 
 end ASF.Views.Nodes.Reader;

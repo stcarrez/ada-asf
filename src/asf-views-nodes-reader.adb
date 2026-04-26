@@ -580,7 +580,10 @@ package body ASF.Views.Nodes.Reader is
                Handler.Collect_Text ("&lt;/");
                Handler.Collect_Text (Qname);
                Handler.Collect_Text ("&gt;");
-            elsif not Handler.Current.Has_Content and then Is_Self_Closing (Qname) then
+            elsif not Handler.Current.Has_Content
+              and then Handler.Allow_Self_Closing
+              and then Is_Self_Closing (Qname)
+            then
                Handler.Collect_Text (">");
             else
                if not Handler.Current.Has_Content then
@@ -750,6 +753,15 @@ package body ASF.Views.Nodes.Reader is
    begin
       Reader.Ignore_Empty_Lines := Value;
    end Set_Ignore_Empty_Lines;
+
+   --  ------------------------------
+   --  Set the allow self closing.
+   --  ------------------------------
+   procedure Set_Allow_Self_Closing (Reader : in out Xhtml_Reader;
+                                     Value  : in Boolean) is
+   begin
+      Reader.Allow_Self_Closing := Value;
+   end Set_Allow_Self_Closing;
 
    --  ------------------------------
    --  Set the XHTML reader to escape or not the unknown tags.

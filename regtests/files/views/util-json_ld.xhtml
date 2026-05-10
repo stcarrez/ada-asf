@@ -1,0 +1,28 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:u="http://code.google.com/p/ada-asf/util">
+      <u:json jtype="WebSite">
+	<u:json-prop name="name" value="This is the WebSite name"/>
+	<u:json-prop name="url" value="https://blog.vacs.fr/blog/post-information"/>
+	<u:json-prop name="description" value="This is the some description of WebSite name"/>
+	<u:json-obj name="author" jid='Ada Server Faces' jtype="Person"/>
+	<u:json-obj name="creator" jid="Someone"/>
+	<u:json-array name="breadcrumb">
+	  <u:json-obj jtype="ListItem">
+	    <u:json-prop name="item" value="https://blog.vacs.fr"/>
+	    <u:json-prop name="name" value="Homepage"/>
+	    <u:json-prop name="position" value="1"/>
+	  </u:json-obj>
+	  <u:json-obj jtype="ListItem">
+	    <u:json-prop name="item" value="https://blog.vacs.fr/blog"/>
+	    <u:json-prop name="name" value="Blog"/>
+	    <u:json-prop name="position" value="2"/>
+	  </u:json-obj>
+	  <u:json-obj jtype="ListItem">
+	    <u:json-prop name="item" value="https://blog.vacs.fr/blog/post-information"/>
+	    <u:json-prop name="name" value="Blog post information"/>
+	    <u:json-prop name="position" value="3"/>
+	  </u:json-obj>
+	</u:json-array>
+      </u:json>
+</html>

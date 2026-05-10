@@ -18,8 +18,9 @@ as the Java Server Faces (See JSR 252, JSR 314 and JSR 344).
 It is part of [Ada Web Application](https://gitlab.com/stcarrez/ada-awa/)
 framework.
 
-## Version 1.6.3  - Under development
+## Version 1.7.0  - Under development
   - Feature #11: Support HTML5 Self-Closing Tag Syntax
+  - Feature #12: Support to generate ld+json schemas
   - Integrate jQuery UI 1.14.2, jQuery 4.0.0, jQuery Chosen 3.0.0
 
 ## Version 1.6.2  - Jul 2025

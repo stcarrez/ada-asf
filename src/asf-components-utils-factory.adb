@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  core-factory -- Factory for Core UI Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -14,6 +14,7 @@ with ASF.Components.Utils.Flush;
 with ASF.Components.Utils.Scripts;
 with ASF.Components.Utils.Escapes;
 with ASF.Components.Utils.Beans;
+with ASF.Components.Utils.JSON_LD;
 with ASF.Components.Html.Messages;
 with ASF.Applications.Main;
 
@@ -41,6 +42,10 @@ package body ASF.Components.Utils.Factory is
    function Create_Script return UIComponent_Access;
    function Create_Escape return UIComponent_Access;
    function Create_Set return UIComponent_Access;
+   function Create_JSON_Root return UIComponent_Access;
+   function Create_JSON_Object return UIComponent_Access;
+   function Create_JSON_Array return UIComponent_Access;
+   function Create_JSON_Property return UIComponent_Access;
 
    --  -------------------------
    --  ------------------------------
@@ -83,6 +88,38 @@ package body ASF.Components.Utils.Factory is
       return new ASF.Components.Utils.Beans.UISetBean;
    end Create_Set;
 
+   --  ------------------------------
+   --  Create a JSON UIRoot component
+   --  ------------------------------
+   function Create_JSON_Root return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.JSON_LD.UIJSON;
+   end Create_JSON_Root;
+
+   --  ------------------------------
+   --  Create a UIObject component
+   --  ------------------------------
+   function Create_JSON_Object return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.JSON_LD.UIObject;
+   end Create_JSON_Object;
+
+   --  ------------------------------
+   --  Create a UIArray component
+   --  ------------------------------
+   function Create_JSON_Array return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.JSON_LD.UIArray;
+   end Create_JSON_Array;
+
+   --  ------------------------------
+   --  Create a UIObject component
+   --  ------------------------------
+   function Create_JSON_Property return UIComponent_Access is
+   begin
+      return new ASF.Components.Utils.JSON_LD.UIProperty;
+   end Create_JSON_Property;
+
    use ASF.Views.Nodes;
 
    URI        : aliased constant String := "http://code.google.com/p/ada-asf/util";
@@ -91,6 +128,10 @@ package body ASF.Components.Utils.Factory is
    FLUSH_TAG  : aliased constant String := "flush";
    SCRIPT_TAG : aliased constant String := "script";
    SET_TAG    : aliased constant String := "set";
+   JSON_TAG   : aliased constant String := "json";
+   JSON_OBJ_TAG    : aliased constant String := "json-obj";
+   JSON_ARRAY_TAG  : aliased constant String := "json-array";
+   JSON_PROP_TAG   : aliased constant String := "json-prop";
 
    --  ------------------------------
    --  Register the HTML component factory.
@@ -122,6 +163,26 @@ package body ASF.Components.Utils.Factory is
                             Name   => SET_TAG'Access,
                             Tag    => Create_Component_Node'Access,
                             Create => Create_Set'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => JSON_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_JSON_Root'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => JSON_OBJ_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_JSON_Object'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => JSON_ARRAY_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_JSON_Array'Access);
+      ASF.Factory.Register (Factory,
+                            URI    => URI'Access,
+                            Name   => JSON_PROP_TAG'Access,
+                            Tag    => Create_Component_Node'Access,
+                            Create => Create_JSON_Property'Access);
    end Register;
 
    --  Truncate the string representation represented by <b>Value</b> to

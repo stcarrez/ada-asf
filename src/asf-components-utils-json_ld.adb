@@ -130,7 +130,7 @@ package body ASF.Components.Utils.JSON_LD is
                Stream.Write_Entity
                  (UBO.To_String (Name),
                   Util.Dates.ISO8601.Image (UBO.Time.To_Time (Value),
-                    Util.Dates.ISO8601.SECOND));
+                    Util.Dates.ISO8601.SECOND_TZ));
             elsif not UBO.Is_Null (Value) then
                Stream.Write_Entity (UBO.To_String (Name), Value);
                return;

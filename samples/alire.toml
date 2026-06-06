@@ -1,7 +1,7 @@
 description = "Examples for Web Server Faces JSR 252, JSR 314 and JSR 344"
 tags = ["web", "servlet", "http", "json"]
 name = "serverfaces_samples"
-version = "1.6.1"
+version = "1.7.0"
 licenses = "Apache-2.0"
 authors = ["Stephane.Carrez@gmail.com"]
 maintainers = ["Stephane.Carrez@gmail.com"]
@@ -10,7 +10,7 @@ project-files = ["samples.gpr"]
 website = "https://gitlab.com/stcarrez/ada-asf"
 
 [[depends-on]]
-utilada = "^2.6.0"
+utilada = "^2.9.0"
 serverfaces = "*"
 servletada_aws = "1.8.1"
 aws = "24.0"

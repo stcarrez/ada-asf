@@ -37,6 +37,13 @@
          <code class="prettyprint lang-script linenums:1"><util:file src="/util/script.xhtml" escape="true"/>
          </code>
      </c:when>
+    <c:when test="#{param['code'] eq 'json'}">
+         <util:script>
+             Sample_Highlight('script','util:json');
+         </util:script>
+         <code class="prettyprint lang-script linenums:1"><util:file src="/util/json.xhtml" escape="true"/>
+         </code>
+     </c:when>
 
     <c:otherwise>
         <p>

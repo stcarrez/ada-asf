@@ -12,6 +12,9 @@ package body ASF.Components.Utils.JSON_LD is
 
    package UBO renames Util.Beans.Objects;
    use type UBO.Data_Type;
+   procedure Write_Attributes (UI      : in ASF.Components.Core.UIComponentBase'Class;
+                               Context : in out ASF.Contexts.Faces.Faces_Context'Class;
+                               Stream  : in Output_Stream_Access);
 
    procedure Write_Attributes (UI      : in ASF.Components.Core.UIComponentBase'Class;
                                Context : in out ASF.Contexts.Faces.Faces_Context'Class;

@@ -4,13 +4,14 @@
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
-with Interfaces.C;
-with Ada.Calendar.Conversions;
+with Interfaces;
+with Ada.Calendar;
 with Ada.Streams;
 
 with Util.Log.Loggers;
 with Util.Strings.Transforms;
 with Util.Strings;
+with Util.Dates;
 with Util.Encoders.Base64;
 with Util.Encoders.SHA256;
 with Util.Encoders.HMAC.SHA256;
@@ -540,6 +541,7 @@ package body ASF.Applications.Main is
       use Ada.Streams;
       use Util.Encoders;
       use Ada.Calendar;
+      use Interfaces;
 
       Buf        : Ada.Streams.Stream_Element_Array (1 .. Token'Length);
       for Buf'Address use Token'Address;
@@ -563,7 +565,8 @@ package body ASF.Applications.Main is
       if Buffer (Last .. Decoded) /= Sign then
          return False;
       end if;
-      return Conversions.To_Ada_Time (Interfaces.C.long (Deadline)) > Clock;
+      Deadline := Deadline * 1_000_000_000;
+      return Util.Dates.To_Ada_Time (Util.Dates.Nanosecond_Type (Deadline)) > Clock;
 
    exception
       when Util.Encoders.Encoding_Error =>
@@ -581,9 +584,11 @@ package body ASF.Applications.Main is
       use Ada.Calendar;
       use Ada.Streams;
       use Util.Encoders;
+      use type Util.Dates.Nanosecond_Type;
 
       Expiration : constant Time := Clock + Expire;
-      Deadline   : constant Interfaces.C.long := Conversions.To_Unix_Time (Expiration);
+      Deadline   : constant Util.Dates.Nanosecond_Type
+        := Util.Dates.To_Nanoseconds (Expiration) / 1_000_000_000;
       Token      : constant String := Util.Strings.Image (Long_Long_Integer (Deadline)) & ".";
       Sign       : constant SHA256.Hash_Array := HMAC.SHA256.Sign (App.Token_Key, Token & Data);
       Base64     : Util.Encoders.Base64.Encoder;

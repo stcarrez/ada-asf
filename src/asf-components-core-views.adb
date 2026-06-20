@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-core-views -- ASF View Components
---  Copyright (C) 2009, 2010, 2011, 2012, 2019, 2022 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2019, 2022, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -95,7 +95,8 @@ package body ASF.Components.Core.Views is
    procedure Encode_Begin (UI      : in UIView;
                            Context : in out Faces_Context'Class) is
       Content_Type : constant String := UI.Get_Content_Type (Context => Context);
-      Writer       : constant ASF.Contexts.Writer.Response_Writer_Access := Context.Get_Response_Writer;
+      Writer       : constant ASF.Contexts.Writer.Response_Writer_Access
+        := Context.Get_Response_Writer;
    begin
       Writer.Set_Content_Type (Content_Type);
       Context.Get_Response.Set_Content_Type (Content_Type);

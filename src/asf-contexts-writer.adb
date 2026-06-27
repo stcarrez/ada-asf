@@ -6,6 +6,7 @@
 -----------------------------------------------------------------------
 
 with Util.Strings.Transforms;
+with Util.Http.Mimes;
 with Unicode;
 with Interfaces;
 with ASF.Views.Nodes.Reader;
@@ -72,7 +73,7 @@ package body ASF.Contexts.Writer is
                                Content_Type : in String) is
    begin
       Stream.Content_Type := To_Unbounded_String (Content_Type);
-      Stream.Allow_Self_Closing := Content_Type = "text/html";
+      Stream.Allow_Self_Closing := Util.Http.Mimes.Is_Mime (Content_Type, Util.Http.Mimes.Html);
    end Set_Content_Type;
 
    --  ------------------------------

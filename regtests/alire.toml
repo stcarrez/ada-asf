@@ -11,8 +11,8 @@ website = "https://gitlab.com/stcarrez/ada-asf"
 
 [[depends-on]]
 utilada = "^2.9.0"
-serverfaces = "*"
-serverfaces_unit = "*"
+serverfaces = "^2.7.0"
+serverfaces_unit = "^2.7.0"
 utilada_unit = "^2.9.0"
 
 [configuration]

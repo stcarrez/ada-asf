@@ -30,7 +30,7 @@ to provide server web requests.
 
 [[depends-on]]
 security = "^1.6.0"
-servletada = "^1.7.0"
+servletada = "^1.8.2"
 utilada = "^2.9.0"
 
 [gpr-externals]

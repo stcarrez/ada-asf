@@ -30,10 +30,10 @@ on top of Ada Server Faces.
 [[depends-on]]
 security = "^1.6.0"
 serverfaces = "^1.7.0"
-servletada = "^1.7.0"
+servletada = "^1.8.2"
 utilada = "^2.9.0"
 utilada_unit = "^2.9.0"
-servletada_unit = "^1.7.0"
+servletada_unit = "^1.8.2"
 
 [gpr-externals]
 ASF_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]

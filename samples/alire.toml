@@ -11,9 +11,9 @@ website = "https://gitlab.com/stcarrez/ada-asf"
 
 [[depends-on]]
 utilada = "^2.9.0"
-serverfaces = "*"
-servletada_aws = "1.8.1"
-aws = "24.0"
+serverfaces = "^1.7.0"
+servletada_aws = "^1.8.2"
+aws = "^24.0|^25.0"
 
 [configuration]
 disabled = true

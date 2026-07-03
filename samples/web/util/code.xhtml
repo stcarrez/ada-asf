@@ -44,6 +44,27 @@
          <code class="prettyprint lang-script linenums:1"><util:file src="/util/json.xhtml" escape="true"/>
          </code>
      </c:when>
+    <c:when test="#{param['code'] eq 'json-obj'}">
+         <util:script>
+             Sample_Highlight('script','util:json-obj');
+         </util:script>
+         <code class="prettyprint lang-script linenums:1"><util:file src="/util/json.xhtml" escape="true"/>
+         </code>
+     </c:when>
+    <c:when test="#{param['code'] eq 'json-prop'}">
+         <util:script>
+             Sample_Highlight('script','util:json-prop');
+         </util:script>
+         <code class="prettyprint lang-script linenums:1"><util:file src="/util/json.xhtml" escape="true"/>
+         </code>
+     </c:when>
+    <c:when test="#{param['code'] eq 'json-array'}">
+         <util:script>
+             Sample_Highlight('script','util:json-array');
+         </util:script>
+         <code class="prettyprint lang-script linenums:1"><util:file src="/util/json.xhtml" escape="true"/>
+         </code>
+     </c:when>
 
     <c:otherwise>
         <p>

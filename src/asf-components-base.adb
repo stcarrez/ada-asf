@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-components-base -- Component tree
---  Copyright (C) 2009 - 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -633,7 +633,7 @@ package body ASF.Components.Base is
                           Name    : in String;
                           Default : in String;
                           Context : in out Faces_Context'Class) is
-      Args : constant ASF.Utils.Object_Array (1 .. 0) := (others => <>);
+      Args : constant ASF.Utils.Object_Array (1 .. 0) := [others => <>];
    begin
       UI.Add_Message (Name, Default, Args, Context);
    end Add_Message;
@@ -649,7 +649,7 @@ package body ASF.Components.Base is
                           Default : in String;
                           Arg1    : in Util.Beans.Objects.Object;
                           Context : in out Faces_Context'Class) is
-      Args : constant ASF.Utils.Object_Array (1 .. 1) := (1 => Arg1);
+      Args : constant ASF.Utils.Object_Array (1 .. 1) := [1 => Arg1];
    begin
       UI.Add_Message (Name, Default, Args, Context);
    end Add_Message;
@@ -666,7 +666,7 @@ package body ASF.Components.Base is
                           Arg1    : in Util.Beans.Objects.Object;
                           Arg2    : in Util.Beans.Objects.Object;
                           Context : in out Faces_Context'Class) is
-      Args : constant ASF.Utils.Object_Array (1 .. 2) := (1 => Arg1, 2 => Arg2);
+      Args : constant ASF.Utils.Object_Array (1 .. 2) := [1 => Arg1, 2 => Arg2];
    begin
       UI.Add_Message (Name, Default, Args, Context);
    end Add_Message;

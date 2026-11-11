@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-views-tests - Unit tests for ASF.Applications.Views
---  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015, 2018, 2019, 2021 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015, 2018, 2019, 2021, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -134,7 +134,7 @@ package body ASF.Applications.Views.Tests is
       Expect_Path : constant String := Util.Tests.Get_Path (Expect_Dir);
       Result_Path : constant String := Util.Tests.Get_Test_Path (Result_Dir);
       Search      : Search_Type;
-      Filter      : constant Filter_Type := (others => True);
+      Filter      : constant Filter_Type := [others => True];
       Ent         : Directory_Entry_Type;
    begin
       if Kind (Path) /= Directory then

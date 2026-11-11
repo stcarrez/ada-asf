@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  components-widgets-likes -- Social Likes Components
---  Copyright (C) 2013, 2014, 2015, 2019 Stephane Carrez
+--  Copyright (C) 2013, 2014, 2015, 2019, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -55,9 +55,9 @@ package body ASF.Components.Widgets.Likes is
    TWITTER_NAME       : aliased constant String := "twitter";
    TWITTER_GENERATOR  : aliased Twitter_Like_Generator;
 
-   Generators : Like_Generator_Array := (1 => (FB_NAME'Access, FB_GENERATOR'Access),
+   Generators : Like_Generator_Array := [1 => (FB_NAME'Access, FB_GENERATOR'Access),
                                          2 => (TWITTER_NAME'Access, TWITTER_GENERATOR'Access),
-                                         others => (null, null));
+                                         others => [null, null]];
 
    --  ------------------------------
    --  Render the facebook like button according to the component attributes.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  asf-applications-tests -  ASF Application tests using ASFUnit
---  Copyright (C) 2011, 2012, 2015, 2017, 2021, 2022 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2017, 2021, 2022, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -80,8 +80,8 @@ package body ASF.Applications.Tests is
                                                       Name   => "save");
 
    Binding_Array : aliased constant Util.Beans.Methods.Method_Binding_Array
-     := (Save_Binding.Proxy'Access,
-         Save_Binding.Proxy'Access);
+     := [Save_Binding.Proxy'Access,
+         Save_Binding.Proxy'Access];
 
    --  ------------------------------
    --  Get the value identified by the name.

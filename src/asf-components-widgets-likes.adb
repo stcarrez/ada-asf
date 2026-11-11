@@ -55,8 +55,8 @@ package body ASF.Components.Widgets.Likes is
    TWITTER_NAME       : aliased constant String := "twitter";
    TWITTER_GENERATOR  : aliased Twitter_Like_Generator;
 
-   Generators : Like_Generator_Array := [1 => (FB_NAME'Access, FB_GENERATOR'Access),
-                                         2 => (TWITTER_NAME'Access, TWITTER_GENERATOR'Access),
+   Generators : Like_Generator_Array := [1 => [FB_NAME'Access, FB_GENERATOR'Access],
+                                         2 => [TWITTER_NAME'Access, TWITTER_GENERATOR'Access],
                                          others => [null, null]];
 
    --  ------------------------------
